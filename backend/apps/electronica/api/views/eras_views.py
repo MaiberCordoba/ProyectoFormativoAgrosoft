@@ -6,4 +6,4 @@ from rest_framework.permissions import IsAuthenticated
 class Erasview(ModelViewSet):
     queryset = Eras.objects.all()
     serializer_class = ErasSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
