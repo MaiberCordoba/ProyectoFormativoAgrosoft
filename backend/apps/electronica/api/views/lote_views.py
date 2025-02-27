@@ -12,7 +12,7 @@ import math
 class LoteView(ModelViewSet):
     queryset = Lote.objects.all()
     serializer_class = LoteSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     @action(detail=True, methods=['get'])
     def calcular_evapotranspiracion(self, request, pk=None):
