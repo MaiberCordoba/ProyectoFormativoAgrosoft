@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -75,8 +77,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "AgroSis.wsgi.application"
+#WSGI_APPLICATION = "AgroSis.wsgi.application"
+ASGI_APPLICATION = "AgroSis.asgi.application" #permite conexiones en tiempo real
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
