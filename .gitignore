@@ -6,6 +6,7 @@ node_modules/
 venv/
 __pycache__/
 db.sqlite3
+migrations
 
 # React/Vue
 frontend/node_modules/
