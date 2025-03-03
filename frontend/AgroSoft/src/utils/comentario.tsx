@@ -1,0 +1,1 @@
+// aqui van funciones reutilizables como formateo de fechas o validaciones.
