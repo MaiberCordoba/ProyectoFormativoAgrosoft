@@ -76,6 +76,10 @@ from apps.finanzas.api.routers.routerTiposDesechos import routerTiposDesecho
 from apps.finanzas.api.routers.routerUsosProductos import routerUsosProductos
 from apps.finanzas.api.routers.routerVentas import routerVentas
 
+#Usuarios
+from apps.users.urls import router_usuarios
+
+
 urlpatterns = [
     #SWAGGER Y ADMIN
     path('admin/', admin.site.urls),
@@ -118,6 +122,9 @@ urlpatterns = [
     path('api/',include(routerTiposDesecho.urls)),
     path('api/',include(routerUsosProductos.urls)),
     path('api/',include(routerVentas.urls)),
+    
+     #Usuarios
+    path('api/',include(router_usuarios.urls)),
 
     # Ruta para obtener el token JWT
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
