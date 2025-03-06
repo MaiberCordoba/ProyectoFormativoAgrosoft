@@ -1,12 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import IndexPage from "@/pages/index";
-import DocsPage from "@/pages/docs";
-import PricingPage from "@/pages/pricing";
-import BlogPage from "@/pages/blog";
-import AboutPage from "@/pages/about";
+
 import { UsersPage } from "./modules/test/pages/userPage";
+import Principal from "@/layouts/principal";
 
 const queryClient = new QueryClient(); // Crea la instancia de QueryClient
 
@@ -15,12 +12,9 @@ function App() {
 
     <QueryClientProvider client={queryClient}>
       <Routes>
-        <Route element={<IndexPage />} path="/" />
-        <Route element={<DocsPage />} path="/docs" />
-        <Route element={<PricingPage />} path="/pricing" />
-        <Route element={<BlogPage />} path="/blog" />
-        <Route element={<AboutPage />} path="/about" />
-        <Route element={<UsersPage />} path="/test" />
+        <Route element={<Principal />}>
+          <Route path="/" element={<UsersPage />} />
+        </Route>
       </Routes>
     </QueryClientProvider>
   );
