@@ -10,13 +10,16 @@ const Sidebar = () => {
       <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full hover:bg-gray-200 self-end">
         <Menu />
       </button>
-      <div className="flex justify-center mb-3">
+      
+      {/* Imagen del Logo */}
+      <div className="flex justify-center mb-2">
         <img
-          src="/logo.png"
+          src="./../public/logoAgrosoft.png"
           alt="Logo"
-          className={`transition-all duration-300 ${isOpen ? "w-20" : "w-0 opacity-0"}`}
+          className={`transition-all duration-300 ${isOpen ? "w-32 ml-[-15px]" : "w-0 opacity-0"}`}  // Aumento el tamaño a w-32 y ajusto el margen
         />
       </div>
+
       <nav className="flex flex-col gap-2">
         <Link to="/home" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
           <Home /> {isOpen && "Home"}
@@ -40,11 +43,13 @@ const Sidebar = () => {
           <DollarSign /> {isOpen && "Finanzas"}
         </Link>
       </nav>
+
       <div className="mt-auto flex flex-col items-center">
+        {/* Imagen de SENA */}
         <img
-          src="/sena-logo.png"
+          src="./../public/sena.png"
           alt="SENA"
-          className={`transition-all duration-300 ${isOpen ? "w-16" : "w-0 opacity-0"}`}
+          className={`transition-all duration-300 ${isOpen ? "w-16" : "w-0 opacity-0"}`} // Se mantiene un tamaño más pequeño para la imagen de SENA
         />
       </div>
     </aside>
