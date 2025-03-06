@@ -103,7 +103,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'AgroSisDjango',
         'USER': 'postgres',
-        'PASSWORD': '123',
+        'PASSWORD': 'adso2024',
         'HOST': 'localhost',
         'PORT': '5432',
     }
