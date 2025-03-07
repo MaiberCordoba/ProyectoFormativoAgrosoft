@@ -1,11 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { UsersPage } from "./modules/test/pages/userPage";
+
+//import { UsersPage } from "./modules/test/pages/userPage";
+
+
 import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 
  // Nueva página
+import IoTPage from "./modules/IoT/pages/IoTPage";
+
 
 const queryClient = new QueryClient(); // Crea la instancia de QueryClient
 
@@ -15,7 +20,7 @@ function App() {
       <Routes>
         <Route element={<Principal />}>
           <Route path="/" element={<Inicio />} />
-          <Route path="/usuarios" element={<UsersPage />} />
+          <Route path="iot" element={<IoTPage />} />
         </Route>
       </Routes>
     </QueryClientProvider>
