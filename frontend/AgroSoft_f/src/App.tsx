@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { UsersPage } from "./modules/test/pages/userPage";
 import Principal from "@/layouts/principal";
+import { Inicio } from "./pages/Inicio";
 
  // Nueva página
 
@@ -13,7 +14,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Routes>
         <Route element={<Principal />}>
-          <Route path="/" element={<UsersPage />} />
+          <Route path="/" element={<Inicio />} />
           <Route path="/usuarios" element={<UsersPage />} />
         </Route>
       </Routes>

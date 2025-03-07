@@ -21,7 +21,7 @@ const Sidebar = () => {
       </div>
 
       <nav className="flex flex-col gap-2">
-        <Link to="/home" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        <Link to="/" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
           <Home /> {isOpen && "Home"}
         </Link>
         <Link to="/usuarios" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
