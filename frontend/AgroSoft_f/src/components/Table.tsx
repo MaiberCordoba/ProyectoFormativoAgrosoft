@@ -1,35 +1,31 @@
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@heroui/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 
-export default function TableComponent() {
+interface TableComponentProps<T> {
+  columns: { key: keyof T; label: string }[]; // Definimos las columnas de la tabla dinámicamente
+  data: T[]; // Recibimos cualquier tipo de datos
+}
+
+const TableComponent = <T,>({ columns, data }: TableComponentProps<T>) => {
   return (
-    <Table aria-label="Example static collection table">
+    <Table aria-label="Tabla dinámica">
       <TableHeader>
-        <TableColumn>NAME</TableColumn>
-        <TableColumn>ROLE</TableColumn>
-        <TableColumn>STATUS</TableColumn>
+        {columns.map(column => (
+          <TableColumn key={column.key as string}>{column.label}</TableColumn>
+        ))}
       </TableHeader>
       <TableBody>
-        <TableRow key="1">
-          <TableCell>Tony Reichert</TableCell>
-          <TableCell>CEO</TableCell>
-          <TableCell>Active</TableCell>
-        </TableRow>
-        <TableRow key="2">
-          <TableCell>Zoey Lang</TableCell>
-          <TableCell>Technical Lead</TableCell>
-          <TableCell>Paused</TableCell>
-        </TableRow>
-        <TableRow key="3">
-          <TableCell>Jane Fisher</TableCell>
-          <TableCell>Senior Developer</TableCell>
-          <TableCell>Active</TableCell>
-        </TableRow>
-        <TableRow key="4">
-          <TableCell>William Howard</TableCell>
-          <TableCell>Community Manager</TableCell>
-          <TableCell>Vacation</TableCell>
-        </TableRow>
+        {data.map((row, rowIndex) => (
+          <TableRow key={rowIndex}>
+            {columns.map(column => (
+              <TableCell key={`${rowIndex}-${column.key as string}`}>
+                {String(row[column.key])}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
-}
+};
+
+export default TableComponent;
