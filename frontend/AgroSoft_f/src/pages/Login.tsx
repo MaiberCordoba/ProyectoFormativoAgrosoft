@@ -37,7 +37,7 @@ const Login = () => {
         </div>
   
         {/* Contenedor principal  */}
-        <div className="relative flex bg-white shadow-lg rounded-2xl w-[750px] h-[400px] max-w-full overflow-hidden z-10">
+        <div className="relative flex bg-white shadow-lg rounded-2xl w-[600] h-[300] max-w-full overflow-hidden z-10">
           {/* Formulario */}
           <div className="w-1/2 p-10">
             <h2 className="text-xl font-semibold mb-6 text-center">¡Bienvenido de vuelta!</h2>
@@ -75,7 +75,7 @@ const Login = () => {
         </div>
   
         {/* Logo inferior izquierdo más grande */}
-        <img src={logo} alt="Logo" className="absolute bottom-6 left-6 w-24" />
+        <img src={logo} alt="Logo" className="w-[90px] absolute bottom-6 left-4 w-24" />
       </div>
     );
   };
