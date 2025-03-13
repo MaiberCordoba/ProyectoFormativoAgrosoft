@@ -1,10 +1,19 @@
 import { Link } from "react-router-dom";
-import { Search, Bell, User, LogOut } from "lucide-react";
+import { Search, Bell, User, LogOut, Menu } from "lucide-react";
 
-const Navbar = () => {
+interface NavbarProps {
+  toggleSidebar: () => void; // Definiendo el tipo correctamente
+}
+
+const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
   return (
     <nav className="flex items-center justify-between bg-green-700 p-3 text-white">
       <div className="flex items-center gap-4">
+        {/* Botón para ocultar/mostrar Sidebar */}
+        <button onClick={toggleSidebar} className="p-2 rounded-full hover:bg-green-800">
+          <Menu />
+        </button>
+
         <input
           type="text"
           placeholder="Buscar..."

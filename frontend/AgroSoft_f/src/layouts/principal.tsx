@@ -1,15 +1,18 @@
-import Navbar from "@/components/Navbar";
+import { useState } from "react";
+import Navbar from "@/components/navbar";
 import Sidebar from "@/components/Sidebar";
-import { Outlet } from "react-router-dom";  // Importa Outlet
+import { Outlet } from "react-router-dom";
 
-const Principal = () => {
+const Principal: React.FC = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} />
       <div className="flex flex-col flex-1">
-        <Navbar />
+        <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="p-6">
-          <Outlet />  {/* Aquí se renderizarán las rutas hijas */}
+          <Outlet />
         </main>
       </div>
     </div>
