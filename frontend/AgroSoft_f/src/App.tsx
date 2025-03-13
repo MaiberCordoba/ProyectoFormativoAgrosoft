@@ -6,7 +6,7 @@ import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/routes/ProtectedRoute";
-import Login from "@/pages/Login";
+import Login from "@/modules/Users/pages/Login";
 
 const queryClient = new QueryClient();
 
