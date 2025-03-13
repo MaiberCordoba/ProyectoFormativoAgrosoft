@@ -3,7 +3,7 @@ import {useAuth} from "../hooks/UseAuth";
 
 const ProtectedRoute = () => {
   const { token } = useAuth();
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  return token ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default ProtectedRoute;
