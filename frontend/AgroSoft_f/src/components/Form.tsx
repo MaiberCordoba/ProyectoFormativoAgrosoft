@@ -37,7 +37,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ fields, onSubmit, submitL
           type={field.type || "text"}
         />
       ))}
-      <Button type="submit" variant="bordered">
+      <Button  color="success" size="sm" radius="sm" type="submit" variant="light">
         {submitLabel}
       </Button>
     </Form>
