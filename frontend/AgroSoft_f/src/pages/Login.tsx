@@ -60,7 +60,7 @@ const Login = () => {
           />
           
           {/* Enlaces adicionales debajo del formulario */}
-          <div className="mt-1 text-left">
+          <div className="mt-1 text-left ">
             <Link href="/forgot-password" size="sm" style={{ fontSize: "10px" }} underline="hover" className="text-blue-500 hover:text-blue-700">
               ¿Olvidaste tu contraseña?
             </Link>
