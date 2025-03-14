@@ -3,8 +3,8 @@ import { login } from "@/api/Auth";
 import { useAuth } from "@/hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
 import FormComponent from "@/components/Form";
-import logo from "../../../../public/sena.png"; 
-import sideLogo from "../../../../public/logoAgrosoft.png";
+import logo from "../../public/sena.png"; 
+import sideLogo from "../../public/logoAgrosoft.png";
 
 
 const Login = () => {
