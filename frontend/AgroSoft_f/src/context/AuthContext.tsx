@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import { getUser } from '@/api/Auth';
+import { getUser } from '@/api/Auth'; // Suponiendo que getUser verifica el token y devuelve los datos del usuario
 
 interface AuthContextType {
   user: any;
@@ -16,7 +16,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (token) {
-      getUser(token).then(setUser).catch(() => logout());
+      // Verificar si el token es válido
+      getUser(token)
+        .then((userData) => {
+          setUser(userData); // Guardar datos del usuario si el token es válido
+        })
+        .catch(() => {
+          logout(); // Si no es válido, cerrar sesión
+        });
     }
   }, [token]);
 
