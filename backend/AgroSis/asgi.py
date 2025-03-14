@@ -7,27 +7,23 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
+# asgi.py
 import os
-import django
+import django 
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "AgroSis.settings")
+django.setup() 
+
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-#archivo de rutas WebSocket
-from AgroSis import routing    
+#from apps.electronica.api.consumers.routing import websocket_urlpatterns
+from AgroSis import routing
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AgroSis.settings')
-
-django.setup()
-
-#define que tipo de protocolos seguira manejando Django
-application = ProtocolTypeRouter({   
-    #Sigue manejando peticiones HTTP
-    "http": get_asgi_application(), 
-    # Maneja conexiones WebSocket 
-    "websocket": AuthMiddlewareStack(  
-        #Ruta de WebSockets
-        URLRouter(
-            routing.websocket_urlpatterns 
-        )
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(routing.websocket_urlpatterns)  
     ),
-})
+}) 
+#cambiar

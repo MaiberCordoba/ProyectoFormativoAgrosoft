@@ -4,13 +4,14 @@ from apps.electronica.api.models.era import Eras
 
 class Sensor(models.Model):
     SENSOR_TYPES = [
-        ('TEM', 'Temperatura'),
-        ('LUM', 'Iluminación'),
-        ('HUM_A', 'Humedad Ambiental'),
-        ('VIE', 'Velocidad del Viento'),
-        ('HUM_T', 'Humedad del Terreno'),
-        ('PH', 'Nivel de PH')
-    ]
+    ('TEM', 'Temperatura'),
+    ('LUM', 'Iluminación'),
+    ('HUM_A', 'Humedad Ambiental'),
+    ('VIE', 'Velocidad del Viento'),
+    ('HUM_T', 'Humedad del Terreno'),
+    ('PH', 'Nivel de PH')
+]
+
 
     fk_lote = models.ForeignKey(Lote, on_delete=models.SET_NULL, null=True, related_name='sensores', blank=True)
     fk_eras = models.ForeignKey(Eras, on_delete=models.SET_NULL, null=True, related_name='sensores', blank=True)

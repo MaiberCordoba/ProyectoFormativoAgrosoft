@@ -6,7 +6,8 @@ import json
 import random
 from channels.layers import get_channel_layer
 
-sys.path.append("C:/Users/Adminsena/Desktop/Maiber/adsocasa/backend")
+sys.path.append("C:/Users/MAIBE/OneDrive/Documentos/adsoCasa/viernes/django/ProyectoFormativoAgrosoft/backend")
+
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "AgroSis.settings")  
