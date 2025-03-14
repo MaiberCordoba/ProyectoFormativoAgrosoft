@@ -17,8 +17,9 @@ function App() {
   const { token } = useAuth(); // Usamos el hook para acceder al token de AuthContext
 
   useEffect(() => {
-    // Si no hay token, redirige al login
-    if (!token) {
+    // No redirigir a login si estamos en la página de registro o recuperación de contraseña
+    const path = window.location.pathname;
+    if (!token && path !== '/forgot-password' && path !== '/registro') {
       navigate("/login");
     }
   }, [token, navigate]);
