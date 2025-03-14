@@ -1,11 +1,23 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Search, Bell, User, LogOut, Menu } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext"; // Importar el contexto de autenticación
 
 interface NavbarProps {
   toggleSidebar: () => void; // Definiendo el tipo correctamente
 }
 
 const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
+  const { logout } = useContext(AuthContext); // Obtenemos la función logout del contexto
+  const navigate = useNavigate(); // Accedemos a la función navigate
+
+  const handleLogout = () => {
+    if (logout) {
+      logout(); // Llamamos a la función logout del contexto
+      navigate("/login"); // Redirigimos a la página de login después de hacer logout
+    }
+  };
+
   return (
     <nav className="flex items-center justify-between bg-green-700 p-2 text-white">
       <div className="flex items-center gap-4">
@@ -24,9 +36,14 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
       <div className="flex items-center gap-4">
         <Bell className="cursor-pointer" />
         <User className="cursor-pointer" />
-        <Link to="/login" className="flex items-center gap-1 cursor-pointer hover:underline">
+        
+        {/* Aquí añadimos el botón de "Cerrar sesión" */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-1 cursor-pointer hover:underline"
+        >
           <LogOut /> Cerrar sesión
-        </Link>
+        </button>
       </div>
     </nav>
   );

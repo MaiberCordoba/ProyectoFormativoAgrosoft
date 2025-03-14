@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
+    console.log('Cerrando sesión...');
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
