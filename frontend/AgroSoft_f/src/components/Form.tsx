@@ -24,7 +24,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ fields, onSubmit, submitL
   };
 
   return (
-    <Form className="w-full max-w-md space-y-4" onSubmit={handleSubmit}>
+    <Form className="w-full max-w-xs flex flex-col gap-4" onSubmit={handleSubmit}>
       {fields.map((field) => (
         <Input
           key={field.name}
