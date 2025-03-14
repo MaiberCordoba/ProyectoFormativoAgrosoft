@@ -1,8 +1,6 @@
-import { useSensorData } from "../hooks/useSensorData";
+import { SensorData } from "../types/sensorTypes";
 
-const SensorTable = () => {
-  const { data } = useSensorData();
-
+const SensorTable = ({ data }: { data: SensorData[] }) => {
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="text-lg font-bold mb-2">Datos de Sensores</h2>
@@ -15,14 +13,15 @@ const SensorTable = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((sensor) => (
-            <tr key={sensor.timestamp} className="border-t">
-              <td className="p-2 border">{sensor.sensor_id}</td>
-              <td className="p-2 border">{sensor.valor}</td>
-              <td className="p-2 border">{sensor.timestamp}</td>
-            </tr>
-          ))}
-        </tbody>
+  {data.map((sensor, index) => (
+    <tr key={`${sensor.sensor_id}-${sensor.timestamp}-${index}`} className="border-t">
+      <td className="p-2 border">{sensor.sensor_id}</td>
+      <td className="p-2 border">{sensor.valor}</td>
+      <td className="p-2 border">{sensor.timestamp}</td>
+    </tr>
+  ))}
+</tbody>
+
       </table>
     </div>
   );

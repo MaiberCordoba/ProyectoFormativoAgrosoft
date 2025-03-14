@@ -1,29 +1,18 @@
 import { Route, Routes } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-
-//import { UsersPage } from "./modules/test/pages/userPage";
-
-
 import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
-
- // Nueva página
 import IoTPage from "./modules/IoT/pages/IoTPage";
-
-
-const queryClient = new QueryClient(); // Crea la instancia de QueryClient
+import SensorDetail from "./modules/IoT/pages/SensorDetail";
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Routes>
-        <Route element={<Principal />}>
-          <Route path="/" element={<Inicio />} />
-          <Route path="iot" element={<IoTPage />} />
-        </Route>
-      </Routes>
-    </QueryClientProvider>
+    <Routes>
+      <Route element={<Principal />}>
+        <Route path="/" element={<Inicio />} />
+        <Route path="/iot" element={<IoTPage />} />
+        <Route path="/iot/sensor/:id" element={<SensorDetail />} />
+      </Route>
+    </Routes>
   );
 }
 

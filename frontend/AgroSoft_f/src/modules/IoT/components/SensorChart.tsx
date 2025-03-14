@@ -1,9 +1,7 @@
-import { useSensorData } from "../hooks/useSensorData";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { SensorData } from "../types/sensorTypes";
 
-const SensorChart = () => {
-  const { data } = useSensorData();
-
+const SensorChart = ({ data }: { data: SensorData[] }) => {
   return (
     <div className="bg-white p-4 rounded shadow">
       <h2 className="text-lg font-bold mb-2">Gráfica de Sensores</h2>
@@ -19,5 +17,3 @@ const SensorChart = () => {
 };
 
 export default SensorChart;
-
-

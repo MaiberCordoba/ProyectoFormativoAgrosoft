@@ -1,25 +1,22 @@
-import { useState, useEffect } from "react";
-import { connectWebSocket } from "../api/sensorService"; // Asegúrate de que la ruta sea correcta
-import { SensorData } from "../types/sensorTypes"; // Asegúrate de que la ruta sea correcta
+import { useEffect, useState } from "react";
+import { connectWebSocket } from "../api/sensorService"; // Se corrigió la ruta
 
 export const useSensorData = () => {
-  const [data, setData] = useState<SensorData[]>([]);
-  const [alert, setAlert] = useState<string | null>(null); // Estado para la alerta
+  const [sensorData, setSensorData] = useState<any[]>([]); // Ahora es un array vacío
+  const [alerta, setAlerta] = useState<string | null>(null);
 
   useEffect(() => {
-    const socket = connectWebSocket((newData) => {
-      setData((prevData) => [...prevData.slice(-9), newData]); // Mantiene solo los últimos 9 datos
+    const socket = connectWebSocket((data) => {
+      if (!data) return;
+      
+      console.log("📩 Datos recibidos del WebSocket:", data);
 
-      // Verifica si hay una alerta en los datos del sensor
-      if (newData.mensaje_sensor.alerta) {
-        setAlert(newData.mensaje_sensor.alerta); // Actualiza la alerta
-      } else {
-        setAlert(null); // Resetea la alerta si no hay
-      }
+      setSensorData((prevData) => [...prevData.slice(-9), data]);
+      setAlerta(data?.alerta ?? null);
     });
 
-    return () => socket.close(); // Cierra el socket al desmontar el componente
+    return () => socket.close();
   }, []);
 
-  return { data, alert }; // Devuelve los datos y la alerta
+  return { data: sensorData, alerta };
 };

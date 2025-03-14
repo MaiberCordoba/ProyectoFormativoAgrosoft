@@ -1,3 +1,12 @@
-import IoTPage from "./pages/IoTPage.tsx";
+import { Outlet } from "react-router-dom";
 
-export { IoTPage };
+const Principal = () => {
+  return (
+    <div>
+      <h1>Aplicación IoT</h1>
+      <Outlet />
+    </div>
+  );
+};
+
+export default Principal;
