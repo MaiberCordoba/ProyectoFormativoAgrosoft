@@ -7,6 +7,7 @@ import { Inicio } from "./pages/Inicio";
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
+import UserRegister from "./modules/Users/pages/registrarUsuario";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="login" element={<Login />} />
+          <Route path="/registro" element={<UserRegister />} />
           <Route element={<Principal />}>
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<Inicio />} />

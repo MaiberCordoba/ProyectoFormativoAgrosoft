@@ -5,3 +5,8 @@ export const getUsers = async (): Promise<User[]> => {
   const response = await apiClient.get("usuarios/"); // Ajustamos la ruta a tu backend
   return response.data;
 };
+
+export const registerUser = async (userData: Partial<User>): Promise<User> => {
+  const response = await apiClient.post("usuarios/", userData);
+  return response.data;
+};

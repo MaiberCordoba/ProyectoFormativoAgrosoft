@@ -9,6 +9,7 @@ const apiClient = axios.create({
   },
 });
 
+
 // toma el token desde las headers 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");

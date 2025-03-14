@@ -7,4 +7,5 @@ export interface User {
   telefono: string;
   correoElectronico: string;
   admin: boolean;
+  password?: string;
 }

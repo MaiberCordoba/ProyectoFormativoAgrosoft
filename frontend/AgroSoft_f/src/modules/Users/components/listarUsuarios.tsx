@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
-import { User } from "@/modules/test/types";
+import { User } from "@/modules/Users/types";
 import { Button } from "@heroui/react";
 
 export function UserList() {
