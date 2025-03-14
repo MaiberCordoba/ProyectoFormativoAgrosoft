@@ -14,9 +14,15 @@ interface FormComponentProps {
   fields: FormField[];
   onSubmit: (data: Record<string, any>) => void;
   submitLabel?: string;
+  extraContent?: React.ReactNode; // Aquí agregamos la propiedad extraContent
 }
 
-const FormComponent: React.FC<FormComponentProps> = ({ fields, onSubmit, submitLabel = "Enviar" }) => {
+const FormComponent: React.FC<FormComponentProps> = ({
+  fields,
+  onSubmit,
+  submitLabel = "Enviar",
+  extraContent, // Recibimos el contenido adicional
+}) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.currentTarget));
@@ -37,7 +43,11 @@ const FormComponent: React.FC<FormComponentProps> = ({ fields, onSubmit, submitL
           type={field.type || "text"}
         />
       ))}
-      <Button  color="success" size="sm" radius="sm" type="submit" variant="light">
+      
+      {/* Espacio para contenido adicional */}
+      {extraContent && <div className="mt-4">{extraContent}</div>}
+
+      <Button color="success" size="sm" radius="sm" type="submit" variant="light">
         {submitLabel}
       </Button>
     </Form>
