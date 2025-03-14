@@ -27,8 +27,9 @@ const UserRegister = () => {
   };
 
   return (
-    <div>
-      <h2>Registro de Usuario</h2>
+    <div className="flex items-center justify-center min-h-screen px-5">
+        <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-xl font-semibold text-center mb-4">Registro de Usuario</h2>
       <FormComponent
         fields={[
           { name: "nombre", label: "Nombre", required: true },
@@ -44,6 +45,7 @@ const UserRegister = () => {
         submitLabel="Registrarse"
       />
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      </div>
     </div>
   );
 };
