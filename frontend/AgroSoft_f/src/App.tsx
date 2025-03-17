@@ -1,18 +1,47 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
+
+import { UsersPage } from "./modules/Users/pages/userPage";
 import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
+import ProtectedRoute from "@/routes/ProtectedRoute";
+import Login from "@/pages/Login";
+import UserRegister from "./modules/Users/pages/registrarUsuario";
+import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
 
+const queryClient = new QueryClient();
+
 function App() {
+  const navigate = useNavigate();
+  const { token } = useAuth(); // Usamos el hook para acceder al token de AuthContext
+
+  useEffect(() => {
+    // No redirigir a login si estamos en la página de registro o recuperación de contraseña
+    const path = window.location.pathname;
+    if (!token && path !== '/forgot-password' && path !== '/registro') {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
   return (
-    <Routes>
-      <Route element={<Principal />}>
-        <Route path="/" element={<Inicio />} />
-        <Route path="/iot" element={<IoTPage />} />
-        <Route path="/iot/sensor/:id" element={<SensorDetail />} />
-      </Route>
-    </Routes>
+
+    <QueryClientProvider client={queryClient}>
+      <Routes>
+        <Route path="login" element={<Login />} />
+        <Route path="/registro" element={<UserRegister />} />
+        <Route element={<Principal />}>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/iot" element={<IoTPage />} />
+          <Route path="/iot/sensor/:id" element={<SensorDetail />} />
+          </Route>
+        </Route>
+      </Routes>
+    </QueryClientProvider>
   );
 }
 

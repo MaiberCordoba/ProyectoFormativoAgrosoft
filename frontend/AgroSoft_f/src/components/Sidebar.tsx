@@ -1,57 +1,55 @@
 import { Link } from "react-router-dom";
-import { Home, Users, Monitor, Calendar, MapPin, Leaf, DollarSign, Menu } from "lucide-react";
-import { useState } from "react";
+import { Home, Users, Monitor, Calendar, MapPin, Leaf, DollarSign } from "lucide-react";
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+interface SidebarProps {
+  isOpen: boolean; // Definimos el tipo de la prop
+}
 
+const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   return (
-    <aside className={`bg-white p-4 shadow-lg min-h-screen flex flex-col gap-3 transition-all duration-300 ${isOpen ? "w-56" : "w-0"} rounded-xl`}>
-      <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full hover:bg-gray-200 self-end">
-        <Menu />
-      </button>
-      
+    <aside
+    className={`bg-white p-4 shadow-lg min-h-screen flex flex-col gap-3 transition-all duration-300 rounded-xl overflow-hidden ${
+      isOpen ? "w-46" : "w-0 hidden"
+    }`}
+    >
       {/* Imagen del Logo */}
-      <div className="flex justify-center mb-2">
-        <img
-          src="./../public/logoAgrosoft.png"
-          alt="Logo"
-          className={`transition-all duration-300 ${isOpen ? "w-32 ml-[-15px]" : "w-0 opacity-0"}`}  // Aumento el tamaño a w-32 y ajusto el margen
-        />
-      </div>
+      {isOpen && (
+        <div className="flex justify-center mb-2">
+          <img src="/logoAgrosoft.png" alt="Logo" className="w-32" />
+        </div>
+      )}
 
-      <nav className="flex flex-col gap-2">
+      {/* Menú de navegación */}
+      <nav className={`flex flex-col gap-2 ${isOpen ? "block" : "hidden"}`}>
         <Link to="/" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <Home /> {isOpen && "Home"}
+          <Home size={20} /> Home
         </Link>
         <Link to="/usuarios" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <Users /> {isOpen && "Usuarios"}
+          <Users size={20} /> Usuarios
         </Link>
         <Link to="/iot" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <Monitor /> {isOpen && "IoT"}
+          <Monitor size={20} /> IoT
         </Link>
         <Link to="/calendario" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <Calendar /> {isOpen && "Calendario"}
+          <Calendar size={20} /> Calendario
         </Link>
         <Link to="/mapa" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <MapPin /> {isOpen && "Mapa"}
+          <MapPin size={20} /> Mapa
         </Link>
         <Link to="/cultivos" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <Leaf /> {isOpen && "Cultivos"}
+          <Leaf size={20} /> Cultivos
         </Link>
         <Link to="/finanzas" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
-          <DollarSign /> {isOpen && "Finanzas"}
+          <DollarSign size={20} /> Finanzas
         </Link>
       </nav>
 
-      <div className="mt-auto flex flex-col items-center">
-        {/* Imagen de SENA */}
-        <img
-          src="./../public/sena.png"
-          alt="SENA"
-          className={`transition-all duration-300 ${isOpen ? "w-16" : "w-0 opacity-0"}`} // Se mantiene un tamaño más pequeño para la imagen de SENA
-        />
-      </div>
+      {/* Imagen de SENA */}
+      {isOpen && (
+        <div className="mt-auto flex flex-col items-center">
+          <img src="/sena.png" alt="SENA" className="w-16" />
+        </div>
+      )}
     </aside>
   );
 };
