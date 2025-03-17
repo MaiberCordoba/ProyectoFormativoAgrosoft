@@ -8,6 +8,8 @@ class UsuarioViewSet(ModelViewSet):
     serializer_class = UsuarioSerializer
 
     def get_permissions(self):
-        if self.request.method == "POST":  # Permitir acceso sin autenticación solo para POST
+
+        if self.request.method == "POST":  
             return [AllowAny()]
-        return [IsAdminUser()]  # Para los demás métodos, se requiere ser administrador
+        return [IsAdminUser()]  
+
