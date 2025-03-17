@@ -6,10 +6,9 @@ const IoTPage = () => {
     const { data } = useSensorData();
     const [chartData, setChartData] = useState<any[]>([]);
 
-    // Actualizar datos de la gráfica cada vez que llegan nuevos datos
     useEffect(() => {
         if (data && data.temperatura !== undefined) {
-            setChartData((prev) => [...prev.slice(-20), data]); // Solo guardar los últimos 20 datos
+            setChartData((prev) => [...prev.slice(-20), data]);
         }
     }, [data]);
 
