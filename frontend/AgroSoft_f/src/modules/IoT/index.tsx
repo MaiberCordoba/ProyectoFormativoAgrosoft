@@ -1,12 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import IoTPage from "./pages/IoTPage";
+import SensorDetail from "./pages/SensorDetail";
 
-const Principal = () => {
+function App() {
   return (
-    <div>
-      <h1>Aplicación IoT</h1>
-      <Outlet />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/iot" element={<IoTPage />} />
+        <Route path="/iot/sensor/:id" element={<SensorDetail />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
-export default Principal;
+export default App;

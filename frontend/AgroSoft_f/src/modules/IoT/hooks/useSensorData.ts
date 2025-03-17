@@ -1,22 +1,45 @@
 import { useEffect, useState } from "react";
-import { connectWebSocket } from "../api/sensorService"; // Se corrigió la ruta
 
-export const useSensorData = () => {
-  const [sensorData, setSensorData] = useState<any[]>([]); // Ahora es un array vacío
-  const [alerta, setAlerta] = useState<string | null>(null);
+const SOCKET_URL = "ws://127.0.0.1:8000/ws/sensores/";
 
-  useEffect(() => {
-    const socket = connectWebSocket((data) => {
-      if (!data) return;
-      
-      console.log("📩 Datos recibidos del WebSocket:", data);
+const useSensorData = () => {
+    const [data, setData] = useState<any[]>([]);
+    const [socket, setSocket] = useState<WebSocket | null>(null);
 
-      setSensorData((prevData) => [...prevData.slice(-9), data]);
-      setAlerta(data?.alerta ?? null);
-    });
+    useEffect(() => {
+        const connectWebSocket = () => {
+            const ws = new WebSocket(SOCKET_URL);
+            setSocket(ws);
 
-    return () => socket.close();
-  }, []);
+            ws.onopen = () => console.log("✅ WebSocket conectado");
 
-  return { data: sensorData, alerta };
+            ws.onmessage = (event) => {
+                console.log("📡 Datos recibidos:", event.data);
+                try {
+                    setData(JSON.parse(event.data));
+                } catch (error) {
+                    console.error("❌ Error al parsear JSON:", error);
+                }
+            };
+
+            ws.onerror = (error) => console.error("❌ Error en WebSocket:", error);
+
+            ws.onclose = () => {
+                console.warn("⚠️ WebSocket cerrado, reintentando en 5 segundos...");
+                setTimeout(connectWebSocket, 5000); // Reintento automático
+            };
+        };
+
+        connectWebSocket();
+
+        return () => {
+            if (socket) {
+                socket.close();
+            }
+        };
+    }, []);
+
+    return { data };
 };
+
+export default useSensorData;
