@@ -9,6 +9,7 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
+import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/afectaciones" element={<AfeccionesList />} />
           </Route>
         </Route>
       </Routes>
