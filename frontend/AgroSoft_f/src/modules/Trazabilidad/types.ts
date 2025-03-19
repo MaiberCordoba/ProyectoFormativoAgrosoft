@@ -1,10 +1,9 @@
 export interface Semillero {
   id: number;
-  fk_especie: number;
+  fk_Especie: number;
   unidades: string;
-  fechasiembra: string;
-  fechaestimada: string; // Puedes usar Date si lo parseas antes de usarlo
-
+  fechaSiembra: string;
+  fechaEstimada: string; // Puedes usar Date si lo parseas antes de usarlo>>>
 }
 
 export interface Cultivos {
