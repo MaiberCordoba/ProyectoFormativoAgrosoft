@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "@/api/Auth";
+import { login, getUser } from "@/api/Auth";
 import { useAuth } from "@/hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
 import FormComponent from "@/components/Form";
@@ -16,8 +16,17 @@ const Login = () => {
     setErrorMessage(""); // Limpiar errores previos
     try {
       const response = await login({ email: data.email, password: data.password });
-      authLogin(response.access);
-      navigate("/");
+  
+      // Obtener los datos del usuario
+      const userData = await getUser(response.access);
+      
+      // Guardar usuario y token en localStorage
+      localStorage.setItem("token", response.access);
+      localStorage.setItem("user", JSON.stringify(userData));
+  
+      authLogin(response.access); // Autenticar
+      navigate("/home"); // Redirigir a Home
+  
     } catch (error) {
       console.error("Error de autenticación:", error);
       setErrorMessage("Correo o contraseña incorrectos. Inténtalo de nuevo.");
