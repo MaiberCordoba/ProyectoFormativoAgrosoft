@@ -14,6 +14,17 @@ export function SemilleroList() {
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los semilleros</p>;
 
+  if (!semilleros || semilleros.length === 0) return <p>No se encontraron semilleros.</p>;
+
+  const semilleroColumns: { key: keyof Semillero | "acciones"; label: string }[] = [
+    { key: "id", label: "ID" },
+    { key: "fk_Especie", label: "Especie" },
+    { key: "unidades", label: "Unidades" },
+    { key: "fechaSiembra", label: "Fecha de Siembra" },
+    { key: "fechaEstimada", label: "Fecha Estimada" },
+    { key: "acciones", label: "Acciones" },
+  ];
+
   const handleDetailsClick = (semillero: Semillero) => {
     setSelectedSemillero(semillero);
     setModalOpen(true);
@@ -35,19 +46,11 @@ export function SemilleroList() {
         <p>No se encontraron semilleros.</p>
       ) : (
         <TableComponent<Semillero>
-          columns={[
-            { key: "id", label: "ID" },
-            { key: "fk_especie", label: "Especie" },
-            { key: "unidades", label: "Unidades" },
-            { key: "fechasiembra", label: "Fecha de Siembra" },
-            { key: "fechaestimada", label: "Fecha Estimada" },
-            { key: "acciones", label: "Acciones" },
-          ]}
+          columns={semilleroColumns}
           data={semilleros}
           renderActions={(semillero) => (
             <div className="flex gap-2">
-              {/* Botón de Detalles */}
-              <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
+              {/* Botón de Detalles */}              <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
                 Detalles
               </Button>
 
@@ -69,10 +72,11 @@ export function SemilleroList() {
         {selectedSemillero && (
           <div>
             <p><strong>ID:</strong> {selectedSemillero.id}</p>
-            <p><strong>Especie:</strong> {selectedSemillero.fk_especie}</p>
+            <p><strong>Especie:</strong> {selectedSemillero.fk_Especie}</p>
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
-            <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechasiembra}</p>
-            <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaestimada}</p>
+            <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechaSiembra}</p>
+            <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaEstimada}</p>
+
           </div>
         )}
       </ModalComponent>
