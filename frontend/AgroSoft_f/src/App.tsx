@@ -32,7 +32,7 @@ function App() {
         <Route path="/registro" element={<UserRegister />} />
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Inicio />} />
+            <Route path="/home" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/afectaciones" element={<AfeccionesList />} />
           </Route>
