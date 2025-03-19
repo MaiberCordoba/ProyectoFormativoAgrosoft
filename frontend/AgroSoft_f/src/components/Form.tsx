@@ -1,5 +1,5 @@
-import React from "react";
-import { Form, Input, Button } from "@heroui/react";
+import React, { useState } from "react";
+import { Form, Input, Button, Select, SelectItem } from "@heroui/react";
 
 interface FormField {
   name: string;
@@ -8,43 +8,78 @@ interface FormField {
   placeholder?: string;
   required?: boolean;
   errorMessage?: string;
+  options?: string; // Añadido para manejar opciones del select
 }
 
 interface FormComponentProps {
   fields: FormField[];
   onSubmit: (data: Record<string, any>) => void;
   submitLabel?: string;
-  extraContent?: React.ReactNode; // Aquí agregamos la propiedad extraContent
+  extraContent?: React.ReactNode;
 }
 
 const FormComponent: React.FC<FormComponentProps> = ({
   fields,
   onSubmit,
   submitLabel = "Enviar",
-  extraContent, // Recibimos el contenido adicional
+  extraContent,
 }) => {
+  const [formValues, setFormValues] = useState<Record<string, any>>({});
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = Object.fromEntries(new FormData(e.currentTarget));
-    onSubmit(formData);
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+    onSubmit(data);
+  };
+
+  const handleSelectChange = (name: string, value: boolean) => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   return (
     <Form className="w-full max-w-xs flex flex-col gap-4" onSubmit={handleSubmit}>
-      {fields.map((field) => (
-        <Input
-          key={field.name}
-          isRequired={field.required}
-          errorMessage={field.errorMessage}
-          label={field.label}
-          labelPlacement="outside"
-          name={field.name}
-          placeholder={field.placeholder}
-          type={field.type || "text"}
-        />
-      ))}
-      
-      {/* Espacio para contenido adicional */}
+      {fields.map((field) => {
+        if (field.options) {
+          // Aquí manejamos el caso del Select con valores booleanos
+          const options = [
+            { key: "true", label: "True", value: true },
+            { key: "false", label: "False", value: false },
+          ];
+
+          return (
+            <Select
+              key={field.name}
+              label={field.label}
+              name={field.name}
+              isRequired={field.required}
+              onChange={(e) => handleSelectChange(field.name, e.target.value === "true")}
+            >
+              {options.map((option) => (
+                <SelectItem key={option.key}>{option.label}</SelectItem>
+              ))}
+            </Select>
+          );
+        } else {
+          // Esto mantiene el comportamiento actual para los Inputs
+          return (
+            <Input
+              key={field.name}
+              isRequired={field.required}
+              errorMessage={field.errorMessage}
+              label={field.label}
+              labelPlacement="outside"
+              name={field.name}
+              placeholder={field.placeholder}
+              type={field.type || "text"}
+            />
+          );
+        }
+      })}
+
       {extraContent && <div className="mt-4">{extraContent}</div>}
 
       <Button color="success" size="sm" radius="sm" type="submit" variant="light">

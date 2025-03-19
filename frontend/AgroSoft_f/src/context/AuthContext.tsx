@@ -15,14 +15,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
   useEffect(() => {
-    if (token) {
-      // Verificar si el token es válido
+    if (token && !user) {
       getUser(token)
-        .then((userData) => {
-          setUser(userData); // Guardar datos del usuario si el token es válido
-        })
-        .catch(() => {
-          logout(); // Si no es válido, cerrar sesión
+        .then(setUser)
+        .catch((error) => {
+          if (error.response?.status === 403) {
+            console.warn('Token inválido o expirado. No cerrando sesión automáticamente.');
+          } else {
+            logout(); // Solo cerrar sesión si es otro tipo de error
+          }
         });
     }
   }, [token]);
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     console.log('Cerrando sesión...');
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setToken(null);
     setUser(null);
   };
