@@ -15,7 +15,6 @@ import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
 import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
 
-
 const queryClient = new QueryClient();
 
 function App() {
