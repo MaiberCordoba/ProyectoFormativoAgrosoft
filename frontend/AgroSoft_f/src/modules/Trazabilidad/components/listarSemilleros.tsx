@@ -17,10 +17,10 @@ export function SemilleroList() {
 
   const semilleroColumns: { key: keyof Semillero | "acciones"; label: string }[] = [
     { key: "id", label: "ID" },
-    { key: "fk_especie", label: "Especie" }, // Se cambió a minúsculas
+    { key: "fk_Especie", label: "Especie" },
     { key: "unidades", label: "Unidades" },
-    { key: "fechasiembra", label: "Fecha de Siembra" }, // Se cambió a minúsculas
-    { key: "fechaestimada", label: "Fecha Estimada" }, // Se cambió a minúsculas
+    { key: "fechaSiembra", label: "Fecha de Siembra" },
+    { key: "fechaEstimada", label: "Fecha Estimada" },
     { key: "acciones", label: "Acciones" },
   ];
 
@@ -39,6 +39,8 @@ export function SemilleroList() {
         </Link>
       </div>
     <br />
+
+
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
       <TableComponent<Semillero>
         columns={semilleroColumns}
@@ -63,10 +65,11 @@ export function SemilleroList() {
         {selectedSemillero && (
           <div>
             <p><strong>ID:</strong> {selectedSemillero.id}</p>
-            <p><strong>Especie:</strong> {selectedSemillero.fk_especie}</p>
+            <p><strong>Especie:</strong> {selectedSemillero.fk_Especie}</p>
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
-            <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechasiembra}</p>
-            <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaestimada}</p>
+            <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechaSiembra}</p>
+            <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaEstimada}</p>
+
           </div>
         )}
       </ModalComponent>
