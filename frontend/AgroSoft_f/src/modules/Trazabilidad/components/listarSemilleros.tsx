@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"; 
 import { useSemilleros } from "../hooks/useSemillero";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
@@ -17,10 +17,10 @@ export function SemilleroList() {
 
   const semilleroColumns: { key: keyof Semillero | "acciones"; label: string }[] = [
     { key: "id", label: "ID" },
-    { key: "fk_Especie", label: "Especie" },
+    { key: "fk_especie", label: "Especie" }, // Se cambió a minúsculas
     { key: "unidades", label: "Unidades" },
-    { key: "fechaSiembra", label: "Fecha de Siembra" },
-    { key: "fechaEstimada", label: "Fecha Estimada" },
+    { key: "fechasiembra", label: "Fecha de Siembra" }, // Se cambió a minúsculas
+    { key: "fechaestimada", label: "Fecha Estimada" }, // Se cambió a minúsculas
     { key: "acciones", label: "Acciones" },
   ];
 
@@ -32,13 +32,13 @@ export function SemilleroList() {
   return (
     <div className="p-4">
 
-      {/* Asegurar que el botón esté visible */}
-      <div className="mb-4 border-2 border-red-500 p-2">
-        <Link to="/crearSemillero">
-          <Button color="success" size="md">Crear Semillero</Button>
+      {/* Botón corregido para redirigir a /crearSemilleros */}
+      <div className="mb-4">
+        <Link to="/crearSemilleros">
+          <Button color="primary" size="md">Crear Semillero</Button>
         </Link>
       </div>
-
+    <br />
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
       <TableComponent<Semillero>
         columns={semilleroColumns}
@@ -58,17 +58,15 @@ export function SemilleroList() {
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         title="Detalles del Semillero"
-        footerButtons={[
-          { label: "Cerrar", color: "danger", onClick: () => setModalOpen(false) },
-        ]}
+        footerButtons={[{ label: "Cerrar", color: "danger", onClick: () => setModalOpen(false) }]}
       >
         {selectedSemillero && (
           <div>
             <p><strong>ID:</strong> {selectedSemillero.id}</p>
-            <p><strong>Especie:</strong> {selectedSemillero.fk_Especie}</p>
+            <p><strong>Especie:</strong> {selectedSemillero.fk_especie}</p>
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
-            <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechaSiembra}</p>
-            <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaEstimada}</p>
+            <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechasiembra}</p>
+            <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaestimada}</p>
           </div>
         )}
       </ModalComponent>
