@@ -10,6 +10,7 @@ import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
+import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/home" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/afectaciones" element={<AfeccionesList />} />
+            <Route path="/cosechas" element={<Cosechas />} />
           </Route>
         </Route>
       </Routes>
