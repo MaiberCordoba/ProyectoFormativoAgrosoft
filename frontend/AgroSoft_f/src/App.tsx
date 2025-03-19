@@ -10,6 +10,11 @@ import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 
+//semillero
+import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
+import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
+
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -33,6 +38,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
+            <Route path="/semilleros" element={<SemilleroList />}/>
           </Route>
         </Route>
       </Routes>
