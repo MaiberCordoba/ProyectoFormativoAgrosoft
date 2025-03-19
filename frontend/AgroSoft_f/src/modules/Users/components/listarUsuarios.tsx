@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useUsers } from "../hooks/useUsers";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
-import UserRegisterModal from "../components/userRegisterModal"; // Importa el modal de registro
 import { User } from "@/modules/Users/types";
 import { Button } from "@heroui/react";
 
@@ -10,7 +9,6 @@ export function UserList() {
   const { data: users, isLoading, error } = useUsers();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false); // Estado del modal de registro
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los usuarios</p>;
@@ -39,12 +37,6 @@ export function UserList() {
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Lista de Usuarios</h1>
 
-      {/* Botón para abrir el modal de registro, FUERA de la tabla */}
-      <div className="flex justify-end mb-4">
-        <Button color="success" onClick={() => setRegisterModalOpen(true)}>
-          Registrar Usuario
-        </Button>
-      </div>
 
       {/* Tabla de usuarios */}
       <TableComponent<User>
@@ -77,8 +69,6 @@ export function UserList() {
         )}
       </ModalComponent>
 
-      {/* Modal para registrar usuarios (se abre con el botón de arriba) */}
-      <UserRegisterModal isOpen={isRegisterModalOpen} onClose={() => setRegisterModalOpen(false)} />
     </div>
   );
 }
