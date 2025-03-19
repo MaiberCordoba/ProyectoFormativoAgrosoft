@@ -17,6 +17,15 @@ export function SemilleroList() {
   if (!semilleros || semilleros.length === 0) return <p>No se encontraron semilleros.</p>;
 
   const handleDetailsClick = (semillero: Semilleros) => {
+  const semilleroColumns: { key: keyof Semilleros | "acciones"; label: string }[] = [
+    { key: "id", label: "ID" },
+    { key: "fk_Especie", label: "Especie" },
+    { key: "unidades", label: "Unidades" },
+    { key: "fechaSiembra", label: "Fecha de Siembra" },
+    { key: "fechaEstimada", label: "Fecha Estimada" },
+    { key: "acciones", label: "Acciones" },
+  ];
+
     setSelectedSemillero(semillero);
     setModalOpen(true);
   };
@@ -29,6 +38,7 @@ export function SemilleroList() {
         </Link>
       </div>
       <br />
+
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
       <br />
       {(!semilleros || semilleros.length === 0) ? (
