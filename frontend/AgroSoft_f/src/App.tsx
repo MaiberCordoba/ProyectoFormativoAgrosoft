@@ -11,7 +11,6 @@ import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
-import TestNavigation from "./modules/IoT/pages/TestNavigation";
 
 const queryClient = new QueryClient();
 
