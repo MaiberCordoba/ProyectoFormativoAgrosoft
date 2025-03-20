@@ -11,6 +11,8 @@ import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
+import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
+
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,7 @@ function App() {
             <Route path="/" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/iot" element={<IoTPage />} />
+            <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
           </Route>
         </Route>

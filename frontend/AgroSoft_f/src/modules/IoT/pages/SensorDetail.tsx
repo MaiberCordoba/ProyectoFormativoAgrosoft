@@ -1,5 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  RadioGroup,
+  Radio,
+  Button
+} from "@heroui/react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 
 interface SensorData {
@@ -9,7 +20,9 @@ interface SensorData {
 
 export default function SensorDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [sensorData, setSensorData] = useState<SensorData[]>([]);
+  const [selectedColor, setSelectedColor] = useState("default");
 
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${id}/`);
@@ -28,6 +41,10 @@ export default function SensorDetail() {
 
   return (
     <div className="p-6">
+      <Button color="success" variant="light" onClick={() => navigate(-1)}>
+        Regresar
+      </Button>
+
       <h1 className="text-2xl font-bold text-center mb-4">Detalles del Sensor: {id}</h1>
 
       <div className="bg-white p-4 shadow-md rounded-lg mb-6">
@@ -44,23 +61,21 @@ export default function SensorDetail() {
       </div>
 
       <div className="bg-white p-4 shadow-md rounded-lg">
-        <h2 className="text-lg font-semibold mb-2"> Datos recientes</h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 p-2">Tiempo</th>
-              <th className="border border-gray-300 p-2">Valor</th>
-            </tr>
-          </thead>
-          <tbody>
+        <h2 className="text-lg font-semibold mb-2">Datos recientes</h2>
+        <Table aria-label="Datos del sensor" selectionMode="single">
+          <TableHeader>
+            <TableColumn>Tiempo</TableColumn>
+            <TableColumn>Valor</TableColumn>
+          </TableHeader>
+          <TableBody>
             {sensorData.map((item, index) => (
-              <tr key={index} className="text-center">
-                <td className="border border-gray-300 p-2">{item.timestamp}</td>
-                <td className="border border-gray-300 p-2">{item.valor}</td>
-              </tr>
+              <TableRow key={index}>
+                <TableCell>{item.timestamp}</TableCell>
+                <TableCell>{item.valor}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

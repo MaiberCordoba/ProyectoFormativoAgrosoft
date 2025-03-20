@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -63,16 +64,30 @@ export default function IoTPages() {
   ];
 
   return (
-    <div className="flex flex-wrap gap-4 p-4 justify-center">
-      {sensoresList.map((sensor) => (
-        <SensorCard
-          key={sensor.id}
-          icon={sensor.icon}
-          title={sensor.title}
-          value={sensoresData[sensor.id] ?? "Cargando..."} 
-          onClick={() => navigate(`/sensores/${sensor.id}`)}
-        />
-      ))}
+    <div className="flex flex-col items-center gap-6 p-4">
+
+      {/* 📌 Tarjetas de sensores */}
+      <div className="flex flex-wrap gap-4 justify-center">
+        {sensoresList.map((sensor) => (
+          <SensorCard
+            key={sensor.id}
+            icon={sensor.icon}
+            title={sensor.title}
+            value={sensoresData[sensor.id] ?? "Cargando..."} 
+            onClick={() => navigate(`/sensores/${sensor.id}`)}
+          />
+        ))}
+
+      </div>
+
+      <div>
+        {/* 📌 Botón para registrar un nuevo sensor */}
+      <Button color="primary" variant="faded" onClick={() => navigate("/sensores/registrar")}>
+        Registrar Nuevo Sensor
+      </Button>
+      </div>
+
+    
     </div>
   );
 }
