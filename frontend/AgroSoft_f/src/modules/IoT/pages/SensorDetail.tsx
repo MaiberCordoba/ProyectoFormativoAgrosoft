@@ -1,61 +1,50 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Chart from "react-apexcharts";
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 
 export default function SensorDetail() {
-  const { sensorId } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams();
   const [data, setData] = useState<{ time: string; value: number }[]>([]);
-  const [latestValue, setLatestValue] = useState("Cargando...");
 
   useEffect(() => {
-    if (!sensorId) return;
+    if (!id) return;
+    const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${id}/`);
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${sensorId}/`);
+    ws.onopen = () => console.log(`✅ Conectado al WebSocket del sensor ${id}`);
 
-    ws.onopen = () => console.log(`✅ Conectado al WebSocket de ${sensorId}`);
-    
     ws.onmessage = (event) => {
       try {
         const newData = JSON.parse(event.data);
-        setLatestValue(newData.valor || "-");
-
         setData((prevData) => [
-          ...prevData.slice(-9), // Mantener solo los últimos 10 datos
-          { time: new Date().toLocaleTimeString(), value: newData.valor || 0 },
+          ...prevData.slice(-20), // Máximo 20 valores en la gráfica
+          { time: new Date().toLocaleTimeString(), value: Number(newData.valor) || 0 },
         ]);
       } catch (error) {
-        console.error(`❌ Error en ${sensorId}:`, error);
+        console.error(`❌ Error al recibir datos del sensor ${id}:`, error);
       }
     };
 
-    ws.onclose = () => console.warn(`⚠️ WebSocket cerrado en ${sensorId}`);
+    ws.onclose = () => console.warn(`⚠️ WebSocket cerrado para el sensor ${id}`);
 
     return () => ws.close();
-  }, [sensorId]);
-
-  const chartOptions = {
-    chart: { id: "sensor-data", toolbar: { show: false } },
-    xaxis: { categories: data.map((d) => d.time) },
-    colors: ["#ff6600"],
-  };
-
-  const chartSeries = [{ name: sensorId, data: data.map((d) => d.value) }];
+  }, [id]);
 
   return (
-    <div className="p-6">
-      <button onClick={() => navigate(-1)} className="mb-4 p-2 bg-gray-200 rounded">
-        ⬅ Volver
-      </button>
+    <div className="p-4 text-center">
+      <h1 className="text-xl font-bold">Detalles del Sensor: {id}</h1>
+      <p className="mb-4">Aquí se muestra la información en tiempo real del sensor {id}.</p>
 
-      <h2 className="text-xl font-bold mb-4">
-        Sensor: {sensorId?.toUpperCase()}
-      </h2>
-      
-      <div className="text-lg mb-4">Último valor: <strong>{latestValue}</strong></div>
-
-      <div className="bg-white shadow-lg rounded-lg p-4">
-        <Chart options={chartOptions} series={chartSeries} type="line" height={300} />
+      {/* 📊 Gráfica en tiempo real */}
+      <div className="w-full h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

@@ -12,7 +12,8 @@ import SensorCard from "../components/SensorCard";
 
 export default function IoTPages() {
   const navigate = useNavigate();
-  const [sensoresData, setSensoresData] = useState({
+
+  const [sensoresData, setSensoresData] = useState<Record<string, string>>({
     viento: "Cargando...",
     temperatura: "Cargando...",
     luzSolar: "Cargando...",
@@ -22,8 +23,8 @@ export default function IoTPages() {
   });
 
   useEffect(() => {
-    const sensores = ["viento", "temperatura", "luz-solar", "humedad", "humedad-ambiente", "lluvia"];
-    const websockets: { [key: string]: WebSocket } = {};
+    const sensores = ["viento", "temperatura", "luzSolar", "humedad", "humedadAmbiente", "lluvia"];
+    const websockets = new Map<string, WebSocket>();
 
     sensores.forEach((sensor) => {
       const url = `ws://localhost:8000/ws/sensor/${sensor}/`;
@@ -44,20 +45,20 @@ export default function IoTPages() {
       };
 
       ws.onclose = () => console.warn(`⚠️ WebSocket cerrado en ${sensor}`);
-      websockets[sensor] = ws;
+      websockets.set(sensor, ws);
     });
 
     return () => {
-      Object.values(websockets).forEach((ws) => ws.close());
+      websockets.forEach((ws) => ws.close());
     };
   }, []);
 
   const sensoresList = [
     { id: "viento", title: "Viento", icon: <WiStrongWind size={32} /> },
     { id: "temperatura", title: "Temperatura", icon: <WiThermometer size={32} /> },
-    { id: "luz-solar", title: "Luz Solar", icon: <WiDayCloudy size={32} /> },
+    { id: "luzSolar", title: "Luz Solar", icon: <WiDayCloudy size={32} /> },
     { id: "humedad", title: "Humedad", icon: <WiRaindrop size={32} /> },
-    { id: "humedad-ambiente", title: "H. Ambiente", icon: <WiHumidity size={32} /> },
+    { id: "humedadAmbiente", title: "H. Ambiente", icon: <WiHumidity size={32} /> },
     { id: "lluvia", title: "Lluvia", icon: <WiRain size={32} /> },
   ];
 
@@ -65,16 +66,12 @@ export default function IoTPages() {
     <div className="flex flex-wrap gap-4 p-4 justify-center">
       {sensoresList.map((sensor) => (
         <SensorCard
-        key={sensor.id}
-        icon={sensor.icon}
-        title={sensor.title}
-        value={sensoresData[sensor.id] || "Cargando..."}
-        onClick={() => {
-          console.log(`Navegando a /sensores/${sensor.id}`); // Esto debe imprimirse en la consola
-          navigate(`/sensores/${sensor.id}`);
-        }}
-      />
-      
+          key={sensor.id}
+          icon={sensor.icon}
+          title={sensor.title}
+          value={sensoresData[sensor.id] ?? "Cargando..."} 
+          onClick={() => navigate(`/sensores/${sensor.id}`)}
+        />
       ))}
     </div>
   );
