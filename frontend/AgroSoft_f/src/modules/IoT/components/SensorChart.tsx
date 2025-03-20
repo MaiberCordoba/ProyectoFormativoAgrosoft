@@ -1,21 +1,19 @@
-import React from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { SensorData } from "../types/sensorTypes";
+import { Card, CardHeader, CardBody, CardFooter, Divider } from "@heroui/react";
+import useSensorData from "../hooks/useSensorData";
 
-interface Props {
-  data: SensorData[];
-}
+export default function SensorCard() {
+  const { temperatura, alerta } = useSensorData(1);
 
-const SensorChart: React.FC<Props> = ({ data }) => {
   return (
-    <LineChart width={600} height={300} data={data}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="timestamp" />
-      <YAxis />
-      <Tooltip />
-      <Line type="monotone" dataKey="valor" stroke="#8884d8" />
-    </LineChart>
+    <Card className="max-w-[400px] shadow-lg">
+      <CardHeader className="font-bold text-lg">🌡️ Sensor de Temperatura</CardHeader>
+      <Divider />
+      <CardBody>
+        <p className="text-lg font-semibold">Temperatura: {temperatura}°C</p>
+        {alerta && <p className="text-red-500 font-medium">{alerta}</p>}
+      </CardBody>
+      <Divider />
+      <CardFooter className="text-gray-500 text-sm">⚡ Datos en tiempo real</CardFooter>
+    </Card>
   );
-};
-
-export default SensorChart;
+}

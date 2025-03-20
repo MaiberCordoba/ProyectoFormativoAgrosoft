@@ -37,7 +37,7 @@ function App() {
             <Route path="/" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/iot" element={<IoTPage />} />
-          <Route path="/iot/sensor/:id" element={<SensorDetail />} />
+            <Route path="/sensores/:sensorId" element={<SensorDetail />} />
           </Route>
         </Route>
       </Routes>

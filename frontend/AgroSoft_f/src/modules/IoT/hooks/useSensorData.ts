@@ -1,45 +1,25 @@
 import { useEffect, useState } from "react";
 
-const SOCKET_URL = "ws://127.0.0.1:8000/ws/sensores/";
+export default function useSensorData(sensorId: string) {
+  const [sensorData, setSensorData] = useState({ valor: 0, alerta: "" });
 
-const useSensorData = () => {
-    const [data, setData] = useState<any[]>([]);
-    const [socket, setSocket] = useState<WebSocket | null>(null);
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${sensorId}/`);
 
-    useEffect(() => {
-        const connectWebSocket = () => {
-            const ws = new WebSocket(SOCKET_URL);
-            setSocket(ws);
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        setSensorData({ valor: data.valor, alerta: data.alerta || "" });
+      } catch (error) {
+        console.error("❌ Error al recibir datos:", error);
+      }
+    };
 
-            ws.onopen = () => console.log("✅ WebSocket conectado");
+    ws.onerror = () => console.warn("⚠️ WebSocket error");
+    ws.onclose = () => console.warn("⚠️ WebSocket cerrado");
 
-            ws.onmessage = (event) => {
-                console.log("📡 Datos recibidos:", event.data);
-                try {
-                    setData(JSON.parse(event.data));
-                } catch (error) {
-                    console.error("❌ Error al parsear JSON:", error);
-                }
-            };
+    return () => ws.close();
+  }, [sensorId]);
 
-            ws.onerror = (error) => console.error("❌ Error en WebSocket:", error);
-
-            ws.onclose = () => {
-                console.warn("⚠️ WebSocket cerrado, reintentando en 5 segundos...");
-                setTimeout(connectWebSocket, 5000); // Reintento automático
-            };
-        };
-
-        connectWebSocket();
-
-        return () => {
-            if (socket) {
-                socket.close();
-            }
-        };
-    }, []);
-
-    return { data };
-};
-
-export default useSensorData;
+  return sensorData;
+}

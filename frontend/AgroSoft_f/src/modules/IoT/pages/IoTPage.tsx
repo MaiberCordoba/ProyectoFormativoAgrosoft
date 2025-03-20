@@ -1,55 +1,81 @@
-import { useEffect, useState } from "react";
-import useSensorData from "../hooks/useSensorData";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  WiStrongWind,
+  WiThermometer,
+  WiDayCloudy,
+  WiRaindrop,
+  WiHumidity,
+  WiRain,
+} from "react-icons/wi";
+import SensorCard from "../components/SensorCard";
 
-const IoTPage = () => {
-    const { data } = useSensorData();
-    const [chartData, setChartData] = useState<any[]>([]);
+export default function IoTPages() {
+  const navigate = useNavigate();
+  const [sensoresData, setSensoresData] = useState({
+    viento: "Cargando...",
+    temperatura: "Cargando...",
+    luzSolar: "Cargando...",
+    humedad: "Cargando...",
+    humedadAmbiente: "Cargando...",
+    lluvia: "Cargando...",
+  });
 
-    useEffect(() => {
-        if (data && data.temperatura !== undefined) {
-            setChartData((prev) => [...prev.slice(-20), data]);
+  useEffect(() => {
+    const sensores = ["viento", "temperatura", "luz-solar", "humedad", "humedad-ambiente", "lluvia"];
+    const websockets: { [key: string]: WebSocket } = {};
+
+    sensores.forEach((sensor) => {
+      const url = `ws://localhost:8000/ws/sensor/${sensor}/`;
+      const ws = new WebSocket(url);
+
+      ws.onopen = () => console.log(`✅ Conectado al WebSocket de ${sensor}`);
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setSensoresData((prevData) => ({
+            ...prevData,
+            [sensor]: data.valor || "-",
+          }));
+        } catch (error) {
+          console.error(`❌ Error en ${sensor}:`, error);
         }
-    }, [data]);
+      };
 
-    return (
-        <div>
-            <h1>📡 Sensores IoT</h1>
-            
-            <h2>📊 Temperatura</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                    <XAxis dataKey="timestamp" tick={false} />
-                    <YAxis domain={[0, 50]} />
-                    <Tooltip />
-                    <CartesianGrid stroke="#ccc" />
-                    <Line type="monotone" dataKey="temperatura" stroke="#FF0000" dot={false} />
-                </LineChart>
-            </ResponsiveContainer>
+      ws.onclose = () => console.warn(`⚠️ WebSocket cerrado en ${sensor}`);
+      websockets[sensor] = ws;
+    });
 
-            <h2>💧 Humedad</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                    <XAxis dataKey="timestamp" tick={false} />
-                    <YAxis domain={[0, 100]} />
-                    <Tooltip />
-                    <CartesianGrid stroke="#ccc" />
-                    <Line type="monotone" dataKey="humedad" stroke="#0000FF" dot={false} />
-                </LineChart>
-            </ResponsiveContainer>
+    return () => {
+      Object.values(websockets).forEach((ws) => ws.close());
+    };
+  }, []);
 
-            <h2>☀️ Luz</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                    <XAxis dataKey="timestamp" tick={false} />
-                    <YAxis />
-                    <Tooltip />
-                    <CartesianGrid stroke="#ccc" />
-                    <Line type="monotone" dataKey="luz" stroke="#FFA500" dot={false} />
-                </LineChart>
-            </ResponsiveContainer>
-        </div>
-    );
-};
+  const sensoresList = [
+    { id: "viento", title: "Viento", icon: <WiStrongWind size={32} /> },
+    { id: "temperatura", title: "Temperatura", icon: <WiThermometer size={32} /> },
+    { id: "luz-solar", title: "Luz Solar", icon: <WiDayCloudy size={32} /> },
+    { id: "humedad", title: "Humedad", icon: <WiRaindrop size={32} /> },
+    { id: "humedad-ambiente", title: "H. Ambiente", icon: <WiHumidity size={32} /> },
+    { id: "lluvia", title: "Lluvia", icon: <WiRain size={32} /> },
+  ];
 
-export default IoTPage;
+  return (
+    <div className="flex flex-wrap gap-4 p-4 justify-center">
+      {sensoresList.map((sensor) => (
+        <SensorCard
+        key={sensor.id}
+        icon={sensor.icon}
+        title={sensor.title}
+        value={sensoresData[sensor.id] || "Cargando..."}
+        onClick={() => {
+          console.log(`Navegando a /sensores/${sensor.id}`); // Esto debe imprimirse en la consola
+          navigate(`/sensores/${sensor.id}`);
+        }}
+      />
+      
+      ))}
+    </div>
+  );
+}
