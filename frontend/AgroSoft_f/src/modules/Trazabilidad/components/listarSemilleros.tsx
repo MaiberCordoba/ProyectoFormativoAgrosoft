@@ -1,4 +1,5 @@
 import { useState } from "react"; 
+
 import { useSemilleros } from "../hooks/useSemillero";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
@@ -17,10 +18,12 @@ export function SemilleroList() {
 
   const semilleroColumns: { key: keyof Semillero | "acciones"; label: string }[] = [
     { key: "id", label: "ID" },
+
     { key: "fk_especie", label: "Especie" }, // Se cambió a minúsculas
     { key: "unidades", label: "Unidades" },
     { key: "fechasiembra", label: "Fecha de Siembra" }, // Se cambió a minúsculas
     { key: "fechaestimada", label: "Fecha Estimada" }, // Se cambió a minúsculas
+
     { key: "acciones", label: "Acciones" },
   ];
 
@@ -32,6 +35,7 @@ export function SemilleroList() {
   return (
     <div className="p-4">
 
+
       {/* Botón corregido para redirigir a /crearSemilleros */}
       <div className="mb-4">
         <Link to="/crearSemilleros">
@@ -39,6 +43,7 @@ export function SemilleroList() {
         </Link>
       </div>
     <br />
+
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
       <TableComponent<Semillero>
         columns={semilleroColumns}
@@ -58,7 +63,9 @@ export function SemilleroList() {
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         title="Detalles del Semillero"
+
         footerButtons={[{ label: "Cerrar", color: "danger", onClick: () => setModalOpen(false) }]}
+
       >
         {selectedSemillero && (
           <div>
@@ -67,6 +74,7 @@ export function SemilleroList() {
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
             <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechasiembra}</p>
             <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaestimada}</p>
+
           </div>
         )}
       </ModalComponent>
