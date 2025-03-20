@@ -9,6 +9,7 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
+import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
 import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
@@ -36,8 +37,9 @@ function App() {
         <Route path="/registro" element={<UserRegister />} />
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Inicio />} />
+            <Route path="/home" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/afectaciones" element={<AfeccionesList />} />
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />

@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       )}
 
       <nav className={`flex flex-col gap-2 ${isOpen ? "block" : "hidden"}`}>
-        <Link to="/" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        <Link to="/home" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
           <Home size={20} /> Home
         </Link>
         <Link to="/usuarios" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
