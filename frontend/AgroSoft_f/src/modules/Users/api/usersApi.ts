@@ -13,7 +13,7 @@ export const registerUser = async (userData: Partial<User>): Promise<User> => {
 
 export const updateUser = async (id: number, userData: Partial<User>): Promise<User> => {
   console.log("Enviando datos al backend para actualizar usuario:", id, userData); // 🔍 Verifica datos antes de enviar
-  const response = await apiClient.put(`usuarios/${id}/`, userData);
+  const response = await apiClient.patch(`usuarios/${id}/`, userData);
   console.log("Respuesta del backend:", response.data); // 🔍 Verifica la respuesta del servidor
   return response.data;
 };
