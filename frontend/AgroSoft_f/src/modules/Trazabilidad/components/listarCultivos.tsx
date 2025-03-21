@@ -1,5 +1,5 @@
 import { useState } from "react"; 
-import { useCultivos } from "../hooks/useCultivo";
+import { useCultivos } from "../hooks/useHooks";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
 import { Cultivos } from "@/modules/Trazabilidad/types";
@@ -37,7 +37,7 @@ export function CultivoList() {
         <TableComponent<Cultivos>
           columns={[
             { key: "id", label: "ID" },
-            { key: "fk_especie", label: "Especie" },
+            { key: "fk_Especie", label: "Especie" },
             { key: "nombre", label: "Nombre" },
             { key: "unidades", label: "Unidades" },
             { key: "activo", label: "Activo" },
@@ -67,7 +67,7 @@ export function CultivoList() {
         {selectedCultivo && (
           <div>
             <p><strong>ID:</strong> {selectedCultivo.id}</p>
-            <p><strong>Especie:</strong> {selectedCultivo.fk_especie}</p>
+            <p><strong>Especie:</strong> {selectedCultivo.fk_Especie}</p>
             <p><strong>Nombre:</strong> {selectedCultivo.nombre}</p>
             <p><strong>Unidades:</strong> {selectedCultivo.unidades}</p>
             <p><strong>Activo:</strong> {selectedCultivo.activo ? "Sí" : "No"}</p>
