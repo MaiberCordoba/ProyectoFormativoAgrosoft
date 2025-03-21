@@ -11,6 +11,8 @@ import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
+import { Actividades } from "./modules/Finanzas/pages/pageActividades";
+import RegistrarActividad from "./modules/Finanzas/components/registrarActividades";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,8 @@ function App() {
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/afectaciones" element={<AfeccionesList />} />
             <Route path="/cosechas" element={<Cosechas />} />
+            <Route path="/actividades" element={<Actividades />} />
+            <Route path="/registro-actividad" element={<RegistrarActividad />} />
           </Route>
         </Route>
       </Routes>
