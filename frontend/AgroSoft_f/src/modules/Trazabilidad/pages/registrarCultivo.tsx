@@ -1,26 +1,31 @@
-import { useState } from "react"; 
-import { useRegisterCultivo } from "@/modules/Trazabilidad/hooks/useRegisterCultivo";
+import { useState } from "react";
+import { useRegisterCultivo } from "@/modules/Trazabilidad/hooks/useHooks";
 import { Link } from "@heroui/react";
-import { useNavigate } from "react-router-dom";  // <-- Importa useNavigate
+import { useNavigate } from "react-router-dom";  
 import FormComponent from "@/components/Form";
 
 const CultivoRegister = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const mutation = useRegisterCultivo();
-  const navigate = useNavigate();  // <-- Hook para navegación
+  const navigate = useNavigate();  
 
   const handleSubmit = async (data: Record<string, any>) => {
     setErrorMessage("");
+
+    const cultivoData = {
+      fk_Especie: Number(data.fk_Especie),
+      nombre: data.nombre.trim(),
+      unidades: Number(data.unidades),
+      activo: Boolean(data.activo),
+      fechaSiembra: data.fechaSiembra || null,
+    };
+
+    console.log("Datos enviados:", cultivoData); // Para depuración
+
     try {
-      await mutation.mutateAsync({
-        fk_especie: data.fk_especie,
-        nombre: data.nombre,
-        unidades: data.unidades,
-        activo: data.activo,
-        fechaSiembra: data.fechasiembra,
-      });
+      await mutation.mutateAsync(cultivoData);
       alert("Cultivo registrado con éxito");
-      navigate("/cultivos");  // <-- Redirigir a la lista de cultivos
+      navigate("/cultivos");
     } catch (error) {
       console.error("Error al registrar cultivo:", error);
       setErrorMessage("Hubo un error al registrar el cultivo.");
@@ -33,7 +38,7 @@ const CultivoRegister = () => {
         <h2 className="text-xl font-semibold text-center mb-4">Registro de Cultivo</h2>
         <FormComponent
           fields={[
-            { name: "fk_especie", label: "Especie", required: true },
+            { name: "fk_Especie", label: "Especie", type: "number", required: true },
             { name: "nombre", label: "Nombre", required: true },
             { name: "unidades", label: "Unidades", type: "number", required: true },
             { name: "activo", label: "Activo", type: "checkbox" },
@@ -43,7 +48,6 @@ const CultivoRegister = () => {
           submitLabel="Registrar Cultivo"
         />
 
-        {/* Enlace a la lista de cultivos */}
         <div className="mt-4 text-center">
           <Link 
             href="/cultivos" 
