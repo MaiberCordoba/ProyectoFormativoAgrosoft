@@ -15,6 +15,10 @@ import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
 import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
 import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
+//cultivo
+import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
+import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
+import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
 
 
 const queryClient = new QueryClient();
@@ -44,6 +48,9 @@ function App() {
             <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
             <Route path="/semilleros" element={<SemilleroList />}/>
             <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
+            <Route path="/crearCultivos" element={<CultivoRegister />}/>
+            <Route path="/Cultivos" element={<CultivoList />}/>
+            <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
           </Route>
         </Route>
       </Routes>
