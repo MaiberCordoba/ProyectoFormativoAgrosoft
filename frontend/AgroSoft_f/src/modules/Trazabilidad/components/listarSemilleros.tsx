@@ -13,16 +13,6 @@ export function SemilleroList() {
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los semilleros</p>;
-  if (!semilleros || semilleros.length === 0) return <p>No se encontraron semilleros.</p>;
-
-  const semilleroColumns: { key: keyof Semillero | "acciones"; label: string }[] = [
-    { key: "id", label: "ID" },
-    { key: "fk_especie", label: "Especie" },
-    { key: "unidades", label: "Unidades" },
-    { key: "fechasiembra", label: "Fecha de Siembra" },
-    { key: "fechaestimada", label: "Fecha Estimada" },
-    { key: "acciones", label: "Acciones" },
-  ];
 
   const handleDetailsClick = (semillero: Semillero) => {
     setSelectedSemillero(semillero);
@@ -31,32 +21,44 @@ export function SemilleroList() {
 
   return (
     <div className="p-4">
-      {/* Botón para crear semillero */}
+      {/* Botón para crear semillero SIEMPRE visible */}
       <div className="mb-4">
         <Link to="/crearSemilleros">
           <Button color="success" size="md">Crear Semillero</Button>
         </Link>
       </div>
-      <br />
-      <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
-      <br />
-      <TableComponent<Semillero>
-        columns={semilleroColumns}
-        data={semilleros}
-        renderActions={(semillero) => (
-          <div className="flex gap-2">
-            {/* Botón de Detalles */}
-            <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
-              Detalles
-            </Button>
 
-            {/* Botón de Editar */}
-            <Link to={`/editarSemillero/${semillero.id}`}>
-              <Button color="warning" size="sm">Editar</Button>
-            </Link>
-          </div>
-        )}
-      />
+      <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
+
+      {/* Mensaje si no hay semilleros */}
+      {(!semilleros || semilleros.length === 0) ? (
+        <p>No se encontraron semilleros.</p>
+      ) : (
+        <TableComponent<Semillero>
+          columns={[
+            { key: "id", label: "ID" },
+            { key: "fk_especie", label: "Especie" },
+            { key: "unidades", label: "Unidades" },
+            { key: "fechasiembra", label: "Fecha de Siembra" },
+            { key: "fechaestimada", label: "Fecha Estimada" },
+            { key: "acciones", label: "Acciones" },
+          ]}
+          data={semilleros}
+          renderActions={(semillero) => (
+            <div className="flex gap-2">
+              {/* Botón de Detalles */}
+              <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
+                Detalles
+              </Button>
+
+              {/* Botón de Editar */}
+              <Link to={`/editarSemillero/${semillero.id}`}>
+                <Button color="warning" size="sm">Editar</Button>
+              </Link>
+            </div>
+          )}
+        />
+      )}
 
       <ModalComponent
         isOpen={isModalOpen}
