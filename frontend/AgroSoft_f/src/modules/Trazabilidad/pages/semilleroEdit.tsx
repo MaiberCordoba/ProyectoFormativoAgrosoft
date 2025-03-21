@@ -1,6 +1,8 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Semilleros } from "@/modules/Trazabilidad/types";
+
 import { Button, Input } from "@heroui/react";
 
 export function SemilleroEdit() {
@@ -59,6 +61,7 @@ export function SemilleroEdit() {
 
       alert("Semillero actualizado correctamente");
       navigate("/semilleros");
+
     } catch (error) {
       console.error("Error en la actualización:", error);
       alert("Hubo un error al actualizar el semillero");
@@ -75,16 +78,20 @@ export function SemilleroEdit() {
       <Input type="number" name="id" value={formData.id?.toString() ?? ""} disabled />
 
       <label>Especie:</label>
+
       <Input type="number" name="fk_especie" value={formData.fk_Especie?.toString() ?? ""} onChange={handleChange} />
+
 
       <label>Unidades:</label>
       <Input type="number" name="unidades" value={formData.unidades ?? ""} onChange={handleChange} />
 
       <label>Fecha de Siembra:</label>
+
       <Input type="date" name="fechaSiembra" value={formData.fechaSiembra ?? ""} onChange={handleChange} />
 
       <label>Fecha Estimada:</label>
       <Input type="date" name="fechaEstimada" value={formData.fechaEstimada ?? ""} onChange={handleChange} />
+
 
       <br />
       <Button color="success" size="md" onClick={handleSave}>Guardar Cambios</Button>
