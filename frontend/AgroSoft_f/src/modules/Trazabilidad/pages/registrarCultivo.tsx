@@ -1,7 +1,7 @@
-import { useState } from "react"; 
-import { useRegisterCultivo } from "@/modules/Trazabilidad/hooks/useRegisterCultivo";
+import { useState } from "react";
+import { useRegisterCultivo } from "@/modules/Trazabilidad/hooks/useHooks";
 import { Link } from "@heroui/react";
-import { useNavigate } from "react-router-dom";  // <-- Importa useNavigate
+import { useNavigate } from "react-router-dom";  
 import FormComponent from "@/components/Form";
 
 const CultivoRegister = () => {

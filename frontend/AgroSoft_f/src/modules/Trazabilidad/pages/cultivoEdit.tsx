@@ -41,7 +41,9 @@ export function CultivoEdit() {
         nombre: formData.nombre,
         unidades: Number(formData.unidades),
         activo: formData.activo,
-        fechasiembra: formData.fechaSiembra ? new Date(formData.fechaSiembra).toISOString().split("T")[0] : "",
+        fechaSiembra: formData.fechaSiembra 
+          ? new Date(formData.fechaSiembra).toISOString().split("T")[0] 
+          : "",
       };
 
       console.log("Datos enviados al servidor:", sanitizedData);
