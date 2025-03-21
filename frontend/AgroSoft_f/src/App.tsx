@@ -14,6 +14,7 @@ import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 //semillero
 import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
 import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
+import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/afectaciones" element={<AfeccionesList />} />
             <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
             <Route path="/semilleros" element={<SemilleroList />}/>
+            <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
           </Route>
         </Route>
       </Routes>
