@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "@heroui/react";
+import { Button, Input, addToast } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -67,26 +67,41 @@ export default function IoTPages() {
   ];
 
   const verificarSensor = async () => {
-    if (!searchId) return;
+    if (!searchId) {
+      addToast({
+        title: "⚠️ Advertencia",
+        description: "Ingresa un ID de sensor",
+        color: "warning",
+        variant: "solid",
+        radius: "full",
+        timeout: 2000,
+      });
+      return;
+    }
 
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/sensor/${searchId}`);
-      if (!res.ok) {
-        setSensorExiste(false);
-        return;
-      }
+      if (!res.ok) throw new Error("Sensor no encontrado");
       setSensorExiste(true);
       navigate(`/sensores/${searchId}`);
-    } catch (error) {
+    } catch {
       setSensorExiste(false);
+      addToast({
+        title: "Error",
+        description: "No existe el sensor que buscas",
+        color: "danger",
+        variant: "solid",
+        radius: "full",
+        timeout: 20,
+      });
     }
   };
 
   return (
     <div className="flex flex-col items-center gap-6 p-4">
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full max-w-md">
         <Input
-          label="Buscar Sensor por ID"
+          placeholder="Buscar Sensor por ID"
           type="text"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
@@ -95,9 +110,9 @@ export default function IoTPages() {
           Buscar
         </Button>
       </div>
+      {!sensorExiste && <p className="text-red-500"> El sensor no existe</p>}
 
-      {!sensorExiste && <p className="text-red-500">❌ El sensor no existe</p>}
-
+      <br/><br/>
       <div className="flex flex-wrap gap-4 justify-center">
         {sensoresList.map((sensor) => (
           <SensorCard
@@ -109,7 +124,7 @@ export default function IoTPages() {
           />
         ))}
       </div>
-
+      <br />
       <Button color="primary" variant="faded" onClick={() => navigate("/sensores/registrar")}>
         Registrar Nuevo Sensor
       </Button>

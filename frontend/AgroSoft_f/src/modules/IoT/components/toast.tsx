@@ -4,7 +4,7 @@ import React from "react";
 interface ToastProps {
   isOpen: boolean;
   message: string;
-  color?: "success" | "danger";
+  color?: "success" | "default";
   onClose: () => void;
 }
 
