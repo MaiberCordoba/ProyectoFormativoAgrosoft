@@ -13,12 +13,20 @@ import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 
 //semillero
 import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
-import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
+import { SemilleroList, } from "./modules/Trazabilidad/components/listarSemilleros";
 import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
 //cultivo
 import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
 import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
 import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
+//especie
+import { EspecieEdit } from "./modules/Trazabilidad/pages/especieEdit";
+import EspecieRegister from "./modules/Trazabilidad/pages/registrarEspecie";
+import { EspecieList } from "./modules/Trazabilidad/components/listarEspecies";
+//lote
+import LoteRegister from "./modules/Trazabilidad/pages/registrarLote";
+import { LoteList } from "./modules/Trazabilidad/components/listarLotes";
+import { LoteEdit } from "./modules/Trazabilidad/pages/loteEdit";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +58,12 @@ function App() {
             <Route path="/crearCultivos" element={<CultivoRegister />}/>
             <Route path="/Cultivos" element={<CultivoList />}/>
             <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
+            <Route path="/crearEspecies" element={<EspecieRegister />}/>
+            <Route path="/Especies" element={<EspecieList />}/>
+            <Route path="/editarEspecie/:id" element={<EspecieEdit/>} />
+            <Route path="/crearLote" element={<LoteRegister />}/>
+            <Route path="/lote" element={<LoteList />}/>
+            <Route path="/editarLote/:id" element={<LoteEdit/>} />
           </Route>
         </Route>
       </Routes>
