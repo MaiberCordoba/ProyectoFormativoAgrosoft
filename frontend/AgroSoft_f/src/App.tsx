@@ -13,6 +13,7 @@ import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
 import { Actividades } from "./modules/Finanzas/pages/pageActividades";
 import RegistrarActividad from "./modules/Finanzas/components/registrarActividades";
+import RegistrarCosecha from "./modules/Finanzas/components/registrarCosechas";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/cosechas" element={<Cosechas />} />
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/registro-actividad" element={<RegistrarActividad />} />
+            <Route path="/registro-cosecha" element={<RegistrarCosecha />} />
           </Route>
         </Route>
       </Routes>
