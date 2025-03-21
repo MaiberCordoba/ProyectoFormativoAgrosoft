@@ -37,9 +37,9 @@ export function SemilleroList() {
           <Button color="success" size="md">Crear Semillero</Button>
         </Link>
       </div>
-
+<br />
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
-
+<br />
       {/* Mensaje si no hay semilleros */}
       {(!semilleros || semilleros.length === 0) ? (
         <p>No se encontraron semilleros.</p>
