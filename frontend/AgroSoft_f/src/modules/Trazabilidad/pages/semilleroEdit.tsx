@@ -1,13 +1,13 @@
-import { useParams, useNavigate } from "react-router-dom"; // ← ✅ Importamos useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Semillero } from "@/modules/Trazabilidad/types";
+import { Semilleros } from "@/modules/Trazabilidad/types";
 import { Button, Input } from "@heroui/react";
 
 export function SemilleroEdit() {
   const { id } = useParams();
-  const navigate = useNavigate(); // ← ✅ Hook para redirigir
-  const [semillero, setSemillero] = useState<Semillero | null>(null);
-  const [formData, setFormData] = useState<Partial<Semillero>>({});
+  const navigate = useNavigate();
+  const [semillero, setSemillero] = useState<Semilleros | null>(null);
+  const [formData, setFormData] = useState<Partial<Semilleros>>({});
 
   useEffect(() => {
     const fetchSemillero = async () => {
@@ -38,10 +38,10 @@ export function SemilleroEdit() {
   const handleSave = async () => {
     try {
       const sanitizedData = {
-        fk_especie: Number(formData.fk_especie),
+        fk_especie: Number(formData.fk_Especie),
         unidades: Number(formData.unidades),
-        fechasiembra: formData.fechasiembra ? new Date(formData.fechasiembra).toISOString().split("T")[0] : "",
-        fechaestimada: formData.fechaestimada ? new Date(formData.fechaestimada).toISOString().split("T")[0] : "",
+        fechaSiembra: formData.fechaSiembra ? new Date(formData.fechaSiembra).toISOString().split("T")[0] : "",
+        fechaEstimada: formData.fechaEstimada ? new Date(formData.fechaEstimada).toISOString().split("T")[0] : "",
       };
 
       console.log("Datos enviados al servidor:", sanitizedData);
@@ -58,7 +58,7 @@ export function SemilleroEdit() {
       }
 
       alert("Semillero actualizado correctamente");
-      navigate("/semilleros"); // ← ✅ Redirige a la lista de semilleros
+      navigate("/semilleros");
     } catch (error) {
       console.error("Error en la actualización:", error);
       alert("Hubo un error al actualizar el semillero");
@@ -75,16 +75,16 @@ export function SemilleroEdit() {
       <Input type="number" name="id" value={formData.id?.toString() ?? ""} disabled />
 
       <label>Especie:</label>
-      <Input type="number" name="fk_especie" value={formData.fk_especie?.toString() ?? ""} onChange={handleChange} />
+      <Input type="number" name="fk_especie" value={formData.fk_Especie?.toString() ?? ""} onChange={handleChange} />
 
       <label>Unidades:</label>
       <Input type="number" name="unidades" value={formData.unidades ?? ""} onChange={handleChange} />
 
       <label>Fecha de Siembra:</label>
-      <Input type="date" name="fechasiembra" value={formData.fechasiembra ?? ""} onChange={handleChange} />
+      <Input type="date" name="fechaSiembra" value={formData.fechaSiembra ?? ""} onChange={handleChange} />
 
       <label>Fecha Estimada:</label>
-      <Input type="date" name="fechaestimada" value={formData.fechaestimada ?? ""} onChange={handleChange} />
+      <Input type="date" name="fechaEstimada" value={formData.fechaEstimada ?? ""} onChange={handleChange} />
 
       <br />
       <Button color="success" size="md" onClick={handleSave}>Guardar Cambios</Button>
