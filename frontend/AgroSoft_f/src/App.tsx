@@ -15,6 +15,16 @@ import SensorDetail from "./modules/IoT/pages/SensorDetail";
 import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
 
 
+//semillero
+import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
+import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
+import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
+//cultivo
+import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
+import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
+import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
+
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -43,6 +53,12 @@ function App() {
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
+            <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
+            <Route path="/semilleros" element={<SemilleroList />}/>
+            <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
+            <Route path="/crearCultivos" element={<CultivoRegister />}/>
+            <Route path="/Cultivos" element={<CultivoList />}/>
+            <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
           </Route>
         </Route>
       </Routes>
