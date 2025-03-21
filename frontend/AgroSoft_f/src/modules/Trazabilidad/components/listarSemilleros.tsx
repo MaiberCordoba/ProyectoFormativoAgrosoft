@@ -32,36 +32,34 @@ export function SemilleroList() {
 
   return (
     <div className="p-4">
-      {/* Botón para crear semillero SIEMPRE visible */}
+
+      {/* Botón corregido para redirigir a /crearSemilleros */}
       <div className="mb-4">
         <Link to="/crearSemilleros">
           <Button color="success" size="md">Crear Semillero</Button>
         </Link>
       </div>
-
+      <br />
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
+      <br />
+      <TableComponent<Semillero>
+        columns={semilleroColumns}
+        data={semilleros}
+        renderActions={(semillero) => (
+          <div className="flex gap-2">
+            {/* Botón de Detalles */}
+            <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
+              Detalles
+            </Button>
 
-      {/* Mensaje si no hay semilleros */}
-      {(!semilleros || semilleros.length === 0) ? (
-        <p>No se encontraron semilleros.</p>
-      ) : (
-        <TableComponent<Semillero>
-          columns={semilleroColumns}
-          data={semilleros}
-          renderActions={(semillero) => (
-            <div className="flex gap-2">
-              {/* Botón de Detalles */}              <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
-                Detalles
-              </Button>
+            {/* Botón de Editar */}
+            <Link to={`/editarSemillero/${semillero.id}`}>
+              <Button color="warning" size="sm">Editar</Button>
+            </Link>
+          </div>
+        )}
+      />
 
-              {/* Botón de Editar */}
-              <Link to={`/editarSemillero/${semillero.id}`}>
-                <Button color="warning" size="sm">Editar</Button>
-              </Link>
-            </div>
-          )}
-        />
-      )}
 
       <ModalComponent
         isOpen={isModalOpen}
@@ -76,7 +74,6 @@ export function SemilleroList() {
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
             <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechaSiembra}</p>
             <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaEstimada}</p>
-
           </div>
         )}
       </ModalComponent>
