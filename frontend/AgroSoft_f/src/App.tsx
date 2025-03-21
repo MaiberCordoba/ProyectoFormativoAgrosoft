@@ -35,6 +35,7 @@ import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
 import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
 import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
 import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
+
 //especie
 import { EspecieEdit } from "./modules/Trazabilidad/pages/especieEdit";
 import EspecieRegister from "./modules/Trazabilidad/pages/registrarEspecie";
