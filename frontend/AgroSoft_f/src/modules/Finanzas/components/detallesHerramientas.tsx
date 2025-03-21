@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
 import ModalComponent from "@/components/Modal";
-import { Cosechas } from "../types";
+import { Herramientas } from "../types";
 import { Input, Button } from "@heroui/react";
-import { putCosechas } from "../api/cosechasApi"; // Asegúrate de importar la función PUT
+import { putHerramientas } from "../api/herramientasApi"; // Asegúrate de importar la función PUT
 
-interface CosechasModalProps {
+interface HerramientasModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cosechas: Cosechas | null;
+  herramientas: Herramientas | null;
   isEditMode?: boolean;
   onSaveSuccess?: () => void; // Nuevo: para actualizar la lista al guardar
 }
 
-export default function DetallesCosechas({ isOpen, onClose, cosechas, isEditMode = false, onSaveSuccess }: CosechasModalProps) {
-  const [formData, setFormData] = useState<Cosechas | null>(cosechas);
+export default function DetallesHerramientas({ isOpen, onClose, herramientas, isEditMode = false, onSaveSuccess }: HerramientasModalProps) {
+  const [formData, setFormData] = useState<Herramientas | null>(herramientas);
   const [isSaving, setIsSaving] = useState(false); // Estado para deshabilitar botón mientras guarda
 
   // Sincronizar estado cuando cambia la actividad seleccionada
   useEffect(() => {
-    setFormData(cosechas);
-  }, [cosechas]);
+    setFormData(herramientas);
+  }, [herramientas]);
 
   if (!formData) return null;
 
@@ -33,12 +33,12 @@ export default function DetallesCosechas({ isOpen, onClose, cosechas, isEditMode
     if (!formData) return;
     setIsSaving(true);
     try {
-      await putCosechas(formData.id, formData); // Enviar datos al backend
-      alert("Cosecha actualizada correctamente"); // Mensaje de éxito
-      onSaveSuccess?.(); // Actualizar lista en `ActividadesList.tsx`
+      await putHerramientas(formData.id, formData); // Enviar datos al backend
+      alert("Herramienta actualizada correctamente"); // Mensaje de éxito
+      onSaveSuccess?.(); // Actualizar lista en `eputDesechosList.tsx`
       onClose(); // Cerrar modal
     } catch (error) {
-      alert("Error al actualizar la Cosecha");
+      alert("Error al actualizar la herramienta");
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -46,22 +46,24 @@ export default function DetallesCosechas({ isOpen, onClose, cosechas, isEditMode
   };
 
   return (
-    <ModalComponent isOpen={isOpen} onClose={onClose} title={isEditMode ? "Editar Cosecha" : "Detalles de la Cosecha"}>
+    <ModalComponent isOpen={isOpen} onClose={onClose} title={isEditMode ? "Editar Herramienta" : "Detalles de la Herramienta"}>
       <div>
         {isEditMode ? (
           // Modo edición: Inputs editables
           <>
-            <Input label="fk_Cultivo" name="fk_Cultivo" value={formData.fk_Cultivo} onChange={handleChange} />
+            <Input label="Fk_Lote" name="fk_Lote" value={formData.fk_Lote} onChange={handleChange} />
+            <Input label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} />
+            <Input label="Descripcion" name="descripcion" value={formData.descripcion} onChange={handleChange} />
             <Input label="Unidades" name="unidades" value={formData.unidades} onChange={handleChange} />
-            <Input label="Fecha" name="fecha" value={formData.fecha} onChange={handleChange} />
           </>
         ) : (
           // Modo lectura: Solo muestra datos
           <>
             <p><strong>ID:</strong> {formData.id}</p>
-            <p><strong>FK_CULTIVO:</strong> {formData.fk_Cultivo}</p>
+            <p><strong>FK_LOTE:</strong> {formData.fk_Lote}</p>
+            <p><strong>NOMBRE:</strong> {formData.nombre}</p>
+            <p><strong>DESCRIPCION:</strong> {formData.descripcion}</p>
             <p><strong>UNIDADES:</strong> {formData.unidades}</p>
-            <p><strong>FECHA:</strong> {formData.fecha}</p>
           </>
         )}
 
