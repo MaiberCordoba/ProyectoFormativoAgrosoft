@@ -1,5 +1,4 @@
 import { useState } from "react"; 
-
 import { useSemilleros } from "../hooks/useSemillero";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
@@ -18,12 +17,10 @@ export function SemilleroList() {
 
   const semilleroColumns: { key: keyof Semillero | "acciones"; label: string }[] = [
     { key: "id", label: "ID" },
-
-    { key: "fk_especie", label: "Especie" }, // Se cambió a minúsculas
+    { key: "fk_especie", label: "Especie" },
     { key: "unidades", label: "Unidades" },
-    { key: "fechasiembra", label: "Fecha de Siembra" }, // Se cambió a minúsculas
-    { key: "fechaestimada", label: "Fecha Estimada" }, // Se cambió a minúsculas
-
+    { key: "fechasiembra", label: "Fecha de Siembra" },
+    { key: "fechaestimada", label: "Fecha Estimada" },
     { key: "acciones", label: "Acciones" },
   ];
 
@@ -34,28 +31,30 @@ export function SemilleroList() {
 
   return (
     <div className="p-4">
-
-
-      {/* Botón corregido para redirigir a /crearSemilleros */}
+      {/* Botón para crear semillero */}
       <div className="mb-4">
         <Link to="/crearSemilleros">
-          <Button color="primary" size="md">Crear Semillero</Button>
+          <Button color="success" size="md">Crear Semillero</Button>
         </Link>
       </div>
-    <br />
-
+      <br />
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
+      <br />
       <TableComponent<Semillero>
         columns={semilleroColumns}
         data={semilleros}
         renderActions={(semillero) => (
-          <Button 
-            color="primary" 
-            size="sm" 
-            onClick={() => handleDetailsClick(semillero)}
-          >
-            Detalles
-          </Button>
+          <div className="flex gap-2">
+            {/* Botón de Detalles */}
+            <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
+              Detalles
+            </Button>
+
+            {/* Botón de Editar */}
+            <Link to={`/editarSemillero/${semillero.id}`}>
+              <Button color="warning" size="sm">Editar</Button>
+            </Link>
+          </div>
         )}
       />
 
@@ -63,9 +62,7 @@ export function SemilleroList() {
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         title="Detalles del Semillero"
-
         footerButtons={[{ label: "Cerrar", color: "danger", onClick: () => setModalOpen(false) }]}
-
       >
         {selectedSemillero && (
           <div>
@@ -74,7 +71,6 @@ export function SemilleroList() {
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
             <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechasiembra}</p>
             <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaestimada}</p>
-
           </div>
         )}
       </ModalComponent>
