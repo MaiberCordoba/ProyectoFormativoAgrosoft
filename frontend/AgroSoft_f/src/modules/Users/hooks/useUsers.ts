@@ -5,5 +5,5 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ["users"], 
     queryFn: getUsers,
-  });
+  });
 };

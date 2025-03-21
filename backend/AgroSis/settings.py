@@ -92,8 +92,10 @@ CHANNEL_LAYERS = {
     },
 }
 
+
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Permitir conexión desde Vite (React)
+    "http://localhost:5173",
 ]
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -103,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'AgroSisDjango',
         'USER': 'postgres',
-        'PASSWORD': 'adso2024',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }

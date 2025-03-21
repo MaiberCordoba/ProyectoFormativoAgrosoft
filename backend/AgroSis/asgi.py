@@ -25,5 +25,5 @@ application = ProtocolTypeRouter({
     "websocket": AuthMiddlewareStack(
         URLRouter(routing.websocket_urlpatterns)  
     ),
+
 }) 
-#cambiar

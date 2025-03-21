@@ -11,7 +11,7 @@ async def connect_to_websocket(sensor_id, value):
         sensor_id (int): ID del sensor.
         value (float): Valor a enviar del sensor.
     """
-    uri = "ws://127.0.0.1:8000/ws/sensor/"
+    uri = "ws://127.0.0.1:8000/ws/sensores/"
 
     try:
         async with websockets.connect(uri) as websocket:
@@ -21,20 +21,20 @@ async def connect_to_websocket(sensor_id, value):
             }
 
             await websocket.send(json.dumps(message))
-            print(f"Mensaje enviado: {message}")
+            print(f"📤 Mensaje enviado: {message}")
 
             # Espera la respuesta del servidor WebSocket
             response = await websocket.recv()
-            print(f"Respuesta del servidor: {response}")
+            print(f"📡 Respuesta del servidor: {response}")
 
     except websockets.exceptions.ConnectionClosed as e:
-        print(f"Conexión cerrada inesperadamente: {e}")
+        print(f"❌ Conexión cerrada inesperadamente: {e}")
     except websockets.exceptions.InvalidURI as e:
-        print(f"URI no válida: {e}")
+        print(f"❌ URI no válida: {e}")
     except websockets.exceptions.InvalidStatusCode as e:
-        print(f"Código de estado no esperado: {e}")
+        print(f"❌ Código de estado no esperado: {e}")
     except Exception as e:
-        print(f"Ocurrió un error inesperado: {e}")
+        print(f"❌ Error inesperado: {e}")
 
 def run_websocket_client(sensor_id, value):
     """

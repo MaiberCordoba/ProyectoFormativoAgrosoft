@@ -17,9 +17,7 @@ class Lote(models.Model):
     
     def calcular_evapotranspiracion(self):
         """Calcula la evapotranspiración basándose en los datos de sensores."""
-        from django.apps import apps  # Evita la importación circular
-        Sensor = apps.get_model('electronica', 'Sensor')  # Obtiene el modelo dinámicamente
-
+        from apps.electronica.api.models.sensor import Sensor
         try:
             temperatura = Decimal(self.sensores.filter(tipo='TEM').latest('fecha').valor)
             humedad_relativa = Decimal(self.sensores.filter(tipo='HUM_A').latest('fecha').valor)
@@ -45,3 +43,4 @@ class Lote(models.Model):
             return round(ET0, 2)
         except Sensor.DoesNotExist:
             return "No hay datos suficientes para calcular la evapotranspiración."
+
