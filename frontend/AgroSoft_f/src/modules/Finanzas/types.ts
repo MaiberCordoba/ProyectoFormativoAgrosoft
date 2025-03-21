@@ -25,24 +25,27 @@ export interface Herramientas {
 }
 
 export interface UsosProductos {
+    id : number,
     fk_Insumo : number,
     fk_Actividad : number,
     cantidadProducto : number
 }
 
-export interface Ventas {
-    fk_Cosecha : number,
-    precioUnitario : number,
-    fecha : string
-}
-
 export interface Cosechas {
+    id : number,
     fk_Cultivo : number,
     unidades : number,
     fecha : string
 }
 
+export interface Ventas {
+    id : number,
+    fk_Cosecha : number,
+    precioUnitario : number,
+    fecha : string
+}
 export interface Desechos {
+    id : number,
     fk_Cultivo : number,
     fk_TipoDesecho : number,
     nombre : string,
@@ -50,6 +53,7 @@ export interface Desechos {
 }
 
 export interface TiposDesechos {
+    id : number,
     nombre : string,
     descripcion : string
 }
