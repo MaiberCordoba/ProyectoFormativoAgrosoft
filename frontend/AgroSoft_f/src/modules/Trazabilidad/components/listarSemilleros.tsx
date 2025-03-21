@@ -38,7 +38,6 @@ export function SemilleroList() {
         </Link>
       </div>
       <br />
-
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
       <br />
       {(!semilleros || semilleros.length === 0) ? (
