@@ -1,5 +1,6 @@
 import { useState } from "react"; 
 import { useRegisterSemillero } from "@/modules/Trazabilidad/hooks/useHooks";
+
 import { Link } from "@heroui/react";
 import { useNavigate } from "react-router-dom";  // <-- Importa useNavigate
 import FormComponent from "@/components/Form";
@@ -17,6 +18,7 @@ const SemilleroRegister = () => {
         unidades: data.unidades,
         fechaSiembra: data.fechasiembra,
         fechaEstimada: data.fechaestimada,
+
       });
       alert("Semillero registrado con éxito");
       navigate("/semilleros");  // <-- Redirigir a la lista de semilleros
