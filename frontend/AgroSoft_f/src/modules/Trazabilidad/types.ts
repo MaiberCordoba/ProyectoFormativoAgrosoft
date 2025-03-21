@@ -16,3 +16,4 @@ export interface Cultivos {
   activo: boolean; // Para indicar si el cultivo está activo o no
 }
 
+
