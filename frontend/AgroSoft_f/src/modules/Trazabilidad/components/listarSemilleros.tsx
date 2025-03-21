@@ -31,28 +31,30 @@ export function SemilleroList() {
 
   return (
     <div className="p-4">
-
       {/* Botón corregido para redirigir a /crearSemilleros */}
       <div className="mb-4">
         <Link to="/crearSemilleros">
-          <Button color="primary" size="md">Crear Semillero</Button>
+          <Button color="success" size="md">Crear Semillero</Button>
         </Link>
       </div>
-    <br />
-
-
+      <br />
       <h1 className="text-xl font-bold mb-4">Lista de Semilleros</h1>
+      <br />
       <TableComponent<Semillero>
         columns={semilleroColumns}
         data={semilleros}
         renderActions={(semillero) => (
-          <Button 
-            color="primary" 
-            size="sm" 
-            onClick={() => handleDetailsClick(semillero)}
-          >
-            Detalles
-          </Button>
+          <div className="flex gap-2">
+            {/* Botón de Detalles */}
+            <Button color="primary" size="sm" onClick={() => handleDetailsClick(semillero)}>
+              Detalles
+            </Button>
+
+            {/* Botón de Editar */}
+            <Link to={`/editarSemillero/${semillero.id}`}>
+              <Button color="warning" size="sm">Editar</Button>
+            </Link>
+          </div>
         )}
       />
 
@@ -69,7 +71,6 @@ export function SemilleroList() {
             <p><strong>Unidades:</strong> {selectedSemillero.unidades}</p>
             <p><strong>Fecha de Siembra:</strong> {selectedSemillero.fechaSiembra}</p>
             <p><strong>Fecha Estimada:</strong> {selectedSemillero.fechaEstimada}</p>
-
           </div>
         )}
       </ModalComponent>
