@@ -15,6 +15,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { SENSOR_TYPES } from "../types/sensorTypes";
 import { Toast } from "../components/toast";
 
+// Definir tipos
 interface Lote {
   id: number;
   nombre: string;
@@ -42,12 +43,12 @@ export function SensorFormPage() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "default" | undefined>();
 
-  const [formData, setFormData] = useState({
-    tipo: "",
-    fk_lote_id: "",
-    fk_eras_id: "",
-    valor: ""
-  });
+  const [formData, setFormData] = useState<{ 
+    tipo: string; 
+    fk_lote_id: string; 
+    fk_eras_id: string; 
+    valor: string; 
+  }>({ tipo: "", fk_lote_id: "", fk_eras_id: "", valor: "" });
 
   const { data: lotes = [] } = useQuery<Lote[]>({ queryKey: ["lotes"], queryFn: fetchLotes });
   const { data: eras = [] } = useQuery<Era[]>({ queryKey: ["eras"], queryFn: fetchEras });
@@ -59,11 +60,7 @@ export function SensorFormPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSensor),
       });
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Error en la respuesta:", errorData);
-        throw new Error("Error al registrar el sensor");
-      }
+      if (!res.ok) throw new Error("Error al registrar el sensor");
       return res.json();
     },
     onSuccess: (data) => {
@@ -85,7 +82,6 @@ export function SensorFormPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Datos enviados:", formData);
 
     if (!formData.tipo || !formData.fk_lote_id || !formData.fk_eras_id || !formData.valor) {
       showToast("Todos los campos son obligatorios", "default");
@@ -96,34 +92,43 @@ export function SensorFormPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-default-100 p-4">
-      <Card className="w-full max-w-[400px]" shadow="sm">
-        <CardHeader className="flex flex-col gap-1 px-4 pb-2 pt-4">
-          <div className="flex items-center gap-2">
-            <Icon className="text-primary" icon="lucide:cpu" width={20} />
-            <h1 className="text-xl font-bold">Registrar Sensor</h1>
-          </div>
+      <Card className="w-full max-w-[350px] shadow-lg">
+        <CardHeader className="flex flex-col items-center px-4 pb-2 pt-4">
+          <Icon className="text-primary" icon="lucide:cpu" width={24} />
+          <h1 className="text-xl font-bold">Registrar Sensor</h1>
         </CardHeader>
         <CardBody className="px-4 pb-4">
-          <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-            <Select label="Tipo de Sensor" onSelectionChange={(keys) => handleChange("tipo", String(Array.from(keys)[0] || ""))}>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <Select 
+              label="Tipo de Sensor" 
+              onSelectionChange={(keys) => handleChange("tipo", String(Array.from(keys)[0] || ""))}
+            >
               {SENSOR_TYPES.map((type) => (
                 <SelectItem key={type.key}>{type.label}</SelectItem>
               ))}
             </Select>
 
-            <Select label="Lote" onSelectionChange={(keys) => handleChange("fk_lote_id", String(Array.from(keys)[0] || ""))}>
-              {lotes.map((lote) => (
-                <SelectItem key={String(lote.id)}>{lote.nombre}</SelectItem>
-              ))}
-            </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <Select 
+                label="Lote" 
+                onSelectionChange={(keys) => handleChange("fk_lote_id", String(Array.from(keys)[0] || ""))}
+              >
+                {lotes.map((lote) => (
+                  <SelectItem key={String(lote.id)}>{lote.nombre}</SelectItem>
+                ))}
+              </Select>
 
-            <Select label="Era" onSelectionChange={(keys) => handleChange("fk_eras_id", String(Array.from(keys)[0] || ""))}>
-              {eras.map((era) => (
-                <SelectItem key={String(era.id)}>{`Era ${era.id}`}</SelectItem>
-              ))}
-            </Select>
+              <Select 
+                label="Era" 
+                onSelectionChange={(keys) => handleChange("fk_eras_id", String(Array.from(keys)[0] || ""))}
+              >
+                {eras.map((era) => (
+                  <SelectItem key={String(era.id)}>{`Era ${era.id}`}</SelectItem>
+                ))}
+              </Select>
+            </div>
 
-            <Input label="Valor inical recomendado 0" type="number" onChange={(e) => handleChange("valor", e.target.value)} />
+            <Input label="Valor" type="number" onChange={(e) => handleChange("valor", e.target.value)} />
 
             <div className="flex justify-end gap-2 pt-2">
               <Button color="default" variant="light" onPress={() => navigate(-1)}>Cancelar</Button>
