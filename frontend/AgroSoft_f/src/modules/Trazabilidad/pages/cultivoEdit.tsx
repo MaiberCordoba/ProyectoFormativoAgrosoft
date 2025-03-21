@@ -1,11 +1,11 @@
-import { useParams, useNavigate } from "react-router-dom"; // ← ✅ Importamos useNavigate
+import { useParams, useNavigate } from "react-router-dom"; // Hook para navegación
 import { useEffect, useState } from "react";
 import { Cultivos } from "@/modules/Trazabilidad/types";
 import { Button, Input } from "@heroui/react";
 
 export function CultivoEdit() {
   const { id } = useParams();
-  const navigate = useNavigate(); // ← ✅ Hook para redirigir
+  const navigate = useNavigate();
   const [cultivo, setCultivo] = useState<Cultivos | null>(null);
   const [formData, setFormData] = useState<Partial<Cultivos>>({});
 
@@ -38,11 +38,13 @@ export function CultivoEdit() {
   const handleSave = async () => {
     try {
       const sanitizedData = {
-        fk_especie: Number(formData.fk_especie),
+        fk_especie: Number(formData.fk_Especie),
         nombre: formData.nombre,
         unidades: Number(formData.unidades),
         activo: formData.activo,
-        fechasiembra: formData.fechaSiembra ? new Date(formData.fechaSiembra).toISOString().split("T")[0] : "",
+        fechaSiembra: formData.fechaSiembra 
+          ? new Date(formData.fechaSiembra).toISOString().split("T")[0] 
+          : "",
       };
 
       console.log("Datos enviados al servidor:", sanitizedData);
@@ -59,10 +61,15 @@ export function CultivoEdit() {
       }
 
       alert("Cultivo actualizado correctamente");
-      navigate("/cultivos"); // ← ✅ Redirige a la lista de cultivos
+      navigate("/cultivos"); // Redirige a la lista de cultivos
     } catch (error) {
-      console.error("Error en la actualización:", error);
-      alert("Hubo un error al actualizar el cultivo");
+      if (error instanceof Error) {
+        console.error(`Hubo un error al actualizar el cultivo: ${error.message}`);
+        alert(`Hubo un error al actualizar el cultivo: ${error.message}`);
+      } else {
+        console.error("Error desconocido:", error);
+        alert("Hubo un error inesperado.");
+      }
     }
   };
 
@@ -76,13 +83,13 @@ export function CultivoEdit() {
       <Input type="number" name="id" value={formData.id?.toString() ?? ""} disabled />
 
       <label>Especie:</label>
-      <Input type="number" name="fk_especie" value={formData.fk_especie?.toString() ?? ""} onChange={handleChange} />
+      <Input type="number" name="fk_especie" value={formData.fk_Especie?.toString() ?? ""} onChange={handleChange} />
 
       <label>Nombre:</label>
       <Input type="text" name="nombre" value={formData.nombre ?? ""} onChange={handleChange} />
 
       <label>Unidades:</label>
-      <Input type="number" name="unidades" value={formData.unidades ?? ""} onChange={handleChange} />
+      <Input type="number" name="unidades" value={formData.unidades?.toString() ?? ""} onChange={handleChange} />
 
       <label>Activo:</label>
       <Input type="checkbox" name="activo" checked={formData.activo ?? false} onChange={(e) => setFormData({ ...formData, activo: e.target.checked })} />
