@@ -31,6 +31,10 @@ import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
 import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
 import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
 import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
+//cultivo
+import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
+import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
+import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
 
 //cultivo
 import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
@@ -90,7 +94,6 @@ function App() {
             <Route path="/herramientas" element={<Herramientas />} />
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/testeo" element={<Testeo/>}></Route>
-
           </Route>
         </Route>
       </Routes>
