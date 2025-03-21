@@ -1,5 +1,5 @@
 import { useState } from "react"; 
-import { useCultivos } from "../hooks/useHooks";
+import { useCultivos } from "../hooks/useCultivo";
 import TableComponent from "@/components/Table";
 import ModalComponent from "@/components/Modal";
 import { Cultivos } from "@/modules/Trazabilidad/types";

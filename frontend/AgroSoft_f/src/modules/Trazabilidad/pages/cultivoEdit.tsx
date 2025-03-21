@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom"; // Hook para navegaci
 import { useEffect, useState } from "react";
 import { Cultivos } from "@/modules/Trazabilidad/types";
 import { Button, Input } from "@heroui/react";
-
 export function CultivoEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -42,9 +41,7 @@ export function CultivoEdit() {
         nombre: formData.nombre,
         unidades: Number(formData.unidades),
         activo: formData.activo,
-        fechaSiembra: formData.fechaSiembra 
-          ? new Date(formData.fechaSiembra).toISOString().split("T")[0] 
-          : "",
+        fechasiembra: formData.fechaSiembra ? new Date(formData.fechaSiembra).toISOString().split("T")[0] : "",
       };
 
       console.log("Datos enviados al servidor:", sanitizedData);
@@ -84,13 +81,11 @@ export function CultivoEdit() {
 
       <label>Especie:</label>
       <Input type="number" name="fk_especie" value={formData.fk_Especie?.toString() ?? ""} onChange={handleChange} />
-
       <label>Nombre:</label>
       <Input type="text" name="nombre" value={formData.nombre ?? ""} onChange={handleChange} />
 
       <label>Unidades:</label>
       <Input type="number" name="unidades" value={formData.unidades?.toString() ?? ""} onChange={handleChange} />
-
       <label>Activo:</label>
       <Input type="checkbox" name="activo" checked={formData.activo ?? false} onChange={(e) => setFormData({ ...formData, activo: e.target.checked })} />
 

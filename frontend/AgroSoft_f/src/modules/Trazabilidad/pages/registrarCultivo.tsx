@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useRegisterCultivo } from "@/modules/Trazabilidad/hooks/useHooks";
+import { useState } from "react"; 
+import { useRegisterCultivo } from "@/modules/Trazabilidad/hooks/useRegisterCultivo";
 import { Link } from "@heroui/react";
-import { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";  // <-- Importa useNavigate
 import FormComponent from "@/components/Form";
 
 const CultivoRegister = () => {
@@ -47,7 +47,6 @@ const CultivoRegister = () => {
           onSubmit={handleSubmit}
           submitLabel="Registrar Cultivo"
         />
-
         <div className="mt-4 text-center">
           <Link 
             href="/cultivos" 
