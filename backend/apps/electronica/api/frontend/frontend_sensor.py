@@ -4,7 +4,7 @@ import json
 import random
 import datetime
 
-URI = "ws://127.0.0.1:8000/ws/sensor/1/"
+URI = "ws://127.0.0.1:8000/ws/sensores/"  # 🔹 Cambiado de "sensor" a "sensores"
 
 async def send_sensor_data(websocket):
     """Envía datos simulados de sensores periódicamente al WebSocket"""
@@ -58,6 +58,5 @@ async def connect():
         except Exception as e:
             print(f'❌ Error de conexión: {e}, reintentando en 5 segundos...')
             await asyncio.sleep(5) 
-
 
 asyncio.run(connect())

@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRegisterUser } from "@/modules/Users/hooks/useRegisterUsers";
-import { Link, Card } from "@heroui/react";
+import { Link, Card, Alert } from "@heroui/react";
 import FormComponent from "@/components/Form";
 
 const UserRegister = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const mutation = useRegisterUser();
+  const alertRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (formData: Record<string, any>) => {
-    setErrorMessage("");
+    setMessage(null); // Limpia cualquier mensaje anterior
 
-    const adminValue = formData.admin === "true"; // Convierte string a booleano
+    const adminValue = formData.admin === "true";
 
     const payload = {
       nombre: formData.nombre,
@@ -22,20 +23,38 @@ const UserRegister = () => {
       password: formData.password,
       admin: adminValue,
     };
-    console.log("Datos del formulario:", payload);
 
     try {
       await mutation.mutateAsync(payload);
-      alert("Usuario registrado con éxito");
+      setMessage({ type: "success", text: "Usuario registrado con éxito" });
     } catch (error) {
-      setErrorMessage("Hubo un error al registrar el usuario.");
+      setMessage({ type: "error", text: "Hubo un error al registrar el usuario." });
     }
   };
+
+  // Hace scroll automático cuando hay un mensaje
+  useEffect(() => {
+    if (message) {
+      alertRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [message]);
 
   return (
     <div className="flex items-center justify-center min-h-screen px-5">
       <Card className="w-full max-w-md p-6">
         <h2 className="text-xl font-semibold text-center mb-4">Registro de Usuario</h2>
+
+        {/* Contenedor de alertas con referencia */}
+        <div ref={alertRef}>
+          {message && (
+            <Alert
+              title={message.type === "success" ? "Éxito" : "Error"}
+              description={message.text}
+              className={message.type === "error" ? "text-red-500" : ""}
+            />
+          )}
+        </div>
+
         <FormComponent
           fields={[
             { name: "nombre", label: "Nombre", required: true },
@@ -64,8 +83,6 @@ const UserRegister = () => {
             Volver al login
           </Link>
         </div>
-
-        {errorMessage && <p className="text-red-500 mt-3">{errorMessage}</p>}
       </Card>
     </div>
   );

@@ -10,10 +10,26 @@ import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
+
 import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
 import { Actividades } from "./modules/Finanzas/pages/pageActividades";
 import RegistrarActividad from "./modules/Finanzas/components/registrarActividades";
 import RegistrarCosecha from "./modules/Finanzas/components/registrarCosechas";
+
+import IoTPage from "./modules/IoT/pages/IoTPage";
+import SensorDetail from "./modules/IoT/pages/SensorDetail";
+import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
+
+//semillero
+import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
+import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
+import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
+//cultivo
+import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
+import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
+import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
+
+
 
 const queryClient = new QueryClient();
 
@@ -30,6 +46,7 @@ function App() {
   }, [token, navigate]);
 
   return (
+
     <QueryClientProvider client={queryClient}>
       <Routes>
         <Route path="login" element={<Login />} />
@@ -43,6 +60,15 @@ function App() {
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/registro-actividad" element={<RegistrarActividad />} />
             <Route path="/registro-cosecha" element={<RegistrarCosecha />} />
+            <Route path="/iot" element={<IoTPage />} />
+            <Route path="/sensores/registrar" element={<SensorFormPage />} />
+            <Route path="/sensores/:id" element={<SensorDetail />} />
+            <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
+            <Route path="/semilleros" element={<SemilleroList />}/>
+            <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
+            <Route path="/crearCultivos" element={<CultivoRegister />}/>
+            <Route path="/Cultivos" element={<CultivoList />}/>
+            <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
           </Route>
         </Route>
       </Routes>

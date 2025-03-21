@@ -9,3 +9,11 @@ export interface User {
   admin: boolean;
   password?: string;
 }
+
+export interface SensorData {
+  id: number;
+  name: string;
+  value: number;
+  unit: string;
+  timestamp: string;
+}
