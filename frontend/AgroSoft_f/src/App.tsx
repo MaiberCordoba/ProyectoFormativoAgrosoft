@@ -31,6 +31,7 @@ import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
 import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
 import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
 import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
+
 //cultivo
 import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
 import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
@@ -41,6 +42,7 @@ import Providers from "./context/ToastProvider";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
+
 
 
 const queryClient = new QueryClient();
@@ -88,6 +90,7 @@ function App() {
             <Route path="/herramientas" element={<Herramientas />} />
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/testeo" element={<Testeo/>}></Route>
+
           </Route>
         </Route>
       </Routes>
