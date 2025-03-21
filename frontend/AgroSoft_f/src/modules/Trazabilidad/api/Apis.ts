@@ -4,7 +4,6 @@ import { Especies } from "../types";
 import {Lotes} from "../types"
 import apiClient from "@/api/apiClient";
 
-
 // Obtener lista de semilleros
 export const getSemilleros = async (): Promise<Semilleros[]> => {
   const response = await apiClient.get("semilleros/"); // Ajustamos la ruta a tu backend
