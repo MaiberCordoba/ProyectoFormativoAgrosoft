@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -22,6 +22,9 @@ export default function IoTPages() {
     humedadAmbiente: "Cargando...",
     lluvia: "Cargando...",
   });
+
+  const [searchId, setSearchId] = useState("");
+  const [sensorExiste, setSensorExiste] = useState(true);
 
   useEffect(() => {
     const sensores = ["viento", "temperatura", "luzSolar", "humedad", "humedadAmbiente", "lluvia"];
@@ -63,31 +66,53 @@ export default function IoTPages() {
     { id: "lluvia", title: "Lluvia", icon: <WiRain size={32} /> },
   ];
 
+  const verificarSensor = async () => {
+    if (!searchId) return;
+
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/sensor/${searchId}`);
+      if (!res.ok) {
+        setSensorExiste(false);
+        return;
+      }
+      setSensorExiste(true);
+      navigate(`/sensores/${searchId}`);
+    } catch (error) {
+      setSensorExiste(false);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-6 p-4">
+      <div className="flex gap-2">
+        <Input
+          label="Buscar Sensor por ID"
+          type="text"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+        />
+        <Button color="primary" onClick={verificarSensor}>
+          Buscar
+        </Button>
+      </div>
 
-      {/* 📌 Tarjetas de sensores */}
+      {!sensorExiste && <p className="text-red-500">❌ El sensor no existe</p>}
+
       <div className="flex flex-wrap gap-4 justify-center">
         {sensoresList.map((sensor) => (
           <SensorCard
             key={sensor.id}
             icon={sensor.icon}
             title={sensor.title}
-            value={sensoresData[sensor.id] ?? "Cargando..."} 
+            value={sensoresData[sensor.id] ?? "Cargando..."}
             onClick={() => navigate(`/sensores/${sensor.id}`)}
           />
         ))}
-
       </div>
 
-      <div>
-        {/* 📌 Botón para registrar un nuevo sensor */}
       <Button color="primary" variant="faded" onClick={() => navigate("/sensores/registrar")}>
         Registrar Nuevo Sensor
       </Button>
-      </div>
-
-    
     </div>
   );
 }

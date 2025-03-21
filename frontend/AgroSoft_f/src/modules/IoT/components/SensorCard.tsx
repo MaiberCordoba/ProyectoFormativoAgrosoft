@@ -15,7 +15,7 @@ export default function SensorCard({ icon, title, value, onClick }: SensorCardPr
         <div
           className="cursor-pointer p-2 rounded-full hover:bg-gray-200 transition"
           onClick={(e) => {
-            e.stopPropagation(); // Evita que el click afecte a otros elementos
+            e.stopPropagation(); 
             onClick();
           }}
         >
@@ -26,3 +26,5 @@ export default function SensorCard({ icon, title, value, onClick }: SensorCardPr
     </Card>
   );
 }
+
+
