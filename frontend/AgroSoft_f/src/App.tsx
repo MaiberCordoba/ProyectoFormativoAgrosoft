@@ -36,6 +36,9 @@ import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
 import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
 import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
 
+import { Testeo } from "./pages/testeo";
+import Providers from "./context/ToastProvider";
+
 
 
 const queryClient = new QueryClient();
@@ -53,7 +56,7 @@ function App() {
   }, [token, navigate]);
 
   return (
-
+    <Providers>
     <QueryClientProvider client={queryClient}>
       <Routes>
         <Route path="login" element={<Login />} />
@@ -82,10 +85,12 @@ function App() {
             <Route path="/desechos" element={<Desechos />} />
             <Route path="/herramientas" element={<Herramientas />} />
             <Route path="/ventas" element={<Ventas />} />
+            <Route path="/testeo" element={<Testeo/>}></Route>
           </Route>
         </Route>
       </Routes>
     </QueryClientProvider>
+    </Providers>
   );
 }
 
