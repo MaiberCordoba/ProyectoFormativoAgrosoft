@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
 import { usePatchAfecciones } from '../../hooks/afecciones/usePatchAfecciones';
 import { Afecciones } from '../../types';
-import { Input, Select, SelectItem } from '@heroui/react';
+import { Input,Textarea,Select, SelectItem } from '@heroui/react';
 import { useGetTipoAfecciones } from '../../hooks/tiposAfecciones/useGetTipoAfecciones'; 
 
 interface EditarAfeccionModalProps {
@@ -56,7 +56,7 @@ const EditarAfeccionModal: React.FC<EditarAfeccionModalProps> = ({ afeccion, onC
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
-      <Input
+      <Textarea
         value={descripcion}
         label="Descripción"
         type="text"
