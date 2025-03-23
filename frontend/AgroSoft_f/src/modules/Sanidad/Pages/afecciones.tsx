@@ -1,4 +1,4 @@
-import { AfeccionesList } from "../components/../components/afecciones/listAfecciones";
+import { AfeccionesList } from "../components/afecciones/AfeccionesList";
 
 export function Afecciones(){
     return(
