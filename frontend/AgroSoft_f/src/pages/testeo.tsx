@@ -1,118 +1,191 @@
-import { useDisclosure, addToast } from "@heroui/react";
-import ModalGlobal from "@/components/ui/modal";
-import ButtonGlobal from "@/components/ui/boton";
-import { Input, Select, SelectItem, Checkbox } from "@heroui/react";
-import { useState } from "react";
+import React from "react";
+import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
+import { Chip, User } from "@heroui/react";
+import { AccionesTabla } from "@/components/ui/table/AccionesTabla"; // Importa AccionesTabla aquí
 
-export function Testeo() {
-    const { isOpen: isOpenTexto, onOpen: onOpenTexto, onClose: onCloseTexto } = useDisclosure();
-    const { isOpen: isOpenFormulario, onOpen: onOpenFormulario, onClose: onCloseFormulario } = useDisclosure();
+const App = () => {
+  // Datos de ejemplo
+  const datos = [
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "inactivo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "inactivo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "inactivo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "inactivo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    {
+      id: 1,
+      nombre: "Tony Reichert",
+      rol: "CEO",
+      equipo: "Management",
+      estado: "activo",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+      email: "tony.reichert@example.com",
+    },
+    
+    // Más datos...
+  ];
 
-    // Estados para los inputs
-    const [nombre, setNombre] = useState("");
-    const [correo, setCorreo] = useState("");
-    const [password, setPassword] = useState("");
-    const [pais, setPais] = useState("");
-    const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  // Columnas de la tabla
+  const columnas = [
+    { name: "ID", uid: "id", sortable: true },
+    { name: "Nombre", uid: "nombre", sortable: true },
+    { name: "Rol", uid: "rol", sortable: true },
+    { name: "Equipo", uid: "equipo" },
+    { name: "Estado", uid: "estado", sortable: true },
+    { name: "Acciones", uid: "acciones" },
+  ];
 
-    const handleSubmit = () => {
-        // Validaciones
-        if (!nombre || !correo || !password || !pais) {
-            addToast({
-                title: "Error",
-                description: "Todos los campos son obligatorios.",
-                variant: "solid", // Cambia el estilo del toast
-                timeout: 3000,
-                shouldShowTimeoutProgress: true,
-            });
-            return;
-        }
+  // Opciones de estado para el dropdown
+  const opcionesEstado = [
+    { uid: "activo", nombre: "Activo" },
+    { uid: "inactivo", nombre: "Inactivo" },
+  ];
 
-        if (!aceptaTerminos) {
-            addToast({
-                title: "Error",
-                description: "Debes aceptar los términos y condiciones.",
-                variant: "solid",
-                timeout: 3000,
-                shouldShowTimeoutProgress: true,
-            });
-            return;
-        }
+  // Función para renderizar las celdas
+  const renderCell = (item: any, columnKey: React.Key) => {
+    switch (columnKey) {
+      case "nombre":
+        return (
+          <User
+            avatarProps={{ radius: "lg", src: item.avatar }}
+            description={item.email}
+            name={item.nombre}
+          >
+            {item.email}
+          </User>
+        );
+      case "estado":
+        return (
+          <Chip
+            className="capitalize"
+            color={item.estado === "activo" ? "success" : "danger"}
+            size="sm"
+            variant="flat"
+          >
+            {item.estado}
+          </Chip>
+        );
+      case "acciones":
+        return (
+          <AccionesTabla
+            onEditar={() => console.log("Editar", item)}
+            onEliminar={() => console.log("Eliminar", item)}
+          />
+        );
+      default:
+        return item[columnKey];
+    }
+  };
 
-        // Si pasa las validaciones, mostrar éxito
-        addToast({
-            title: "Formulario enviado",
-            description: "Los datos se han guardado correctamente.",
-            timeout: 3000,
-            shouldShowTimeoutProgress: true,
-        });
+  const handleCrearNuevo = () => {
+    console.log("Crear otro elemento");
+    // Aquí puedes agregar la lógica para crear un nuevo elemento
+    // Por ejemplo, abrir un modal, hacer una petición API, etc.
+  };
 
-        onCloseFormulario(); // Cierra el modal
-    };
+  return (
+    <TablaReutilizable
+      datos={datos}
+      columnas={columnas}
+      claveBusqueda="nombre"
+      opcionesEstado={opcionesEstado}
+      renderCell={renderCell}
+      onCrearNuevo={handleCrearNuevo}
+    />
+  );
+};
 
-    return (
-        <div className="flex flex-col gap-4">
-            
-            {/* Botón para abrir modal con texto simple */}
-            <ButtonGlobal onClick={onOpenTexto}>Abrir Modal de Texto</ButtonGlobal>
-            <ModalGlobal isOpen={isOpenTexto} onClose={onCloseTexto} title="Información">
-                <p className="text-gray-700">Este es un modal con solo texto dentro.</p>
-            </ModalGlobal>
-
-            {/* Botón para abrir modal con formulario */}
-            <ButtonGlobal onClick={onOpenFormulario}>Abrir Modal con Formulario</ButtonGlobal>
-            <ModalGlobal
-                isOpen={isOpenFormulario}
-                onClose={onCloseFormulario}
-                title="Formulario de Registro"
-                footerActions={
-                    <>
-                        <ButtonGlobal color="danger" onClick={onCloseFormulario}>
-                            Cancelar
-                        </ButtonGlobal>
-                        <ButtonGlobal color="primary" onClick={handleSubmit}>
-                            Guardar
-                        </ButtonGlobal>
-                    </>
-                }
-            >
-                <form className="grid grid-cols-2 gap-4">
-                    <Input
-                        type="text"
-                        label="Nombre"
-                        labelPlacement="inside"
-                        className="w-full"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                    />
-                    <Input
-                        type="email"
-                        label="Correo"
-                        labelPlacement="inside"
-                        className="w-full"
-                        value={correo}
-                        onChange={(e) => setCorreo(e.target.value)}
-                    />
-                    <Input
-                        type="password"
-                        label="Contraseña"
-                        labelPlacement="inside"
-                        className="w-full"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <Select label="País" className="w-full" selectedKey={pais} onSelectionChange={setPais}>
-                        <SelectItem key="col" value="col">Colombia</SelectItem>
-                        <SelectItem key="mex" value="mex">México</SelectItem>
-                        <SelectItem key="arg" value="arg">Argentina</SelectItem>
-                    </Select>
-                    <div className="col-span-2">
-                        <Checkbox isSelected={aceptaTerminos} onValueChange={setAceptaTerminos}>
-                            Acepto los términos y condiciones
-                        </Checkbox>
-                    </div>
-                </form>
-            </ModalGlobal>
-        </div>
-    );
-}
+export default App;
