@@ -1,10 +1,10 @@
-import { useAfecciones } from "../../hooks/afecciones/useAfecciones";
+import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones"; 
 import { AfeccionesTabla } from "./AfeccionesTabla"; // Importa el componente de tabla
 import { useEditarAfeccion } from "../../hooks/afecciones/useEditarAfeccion"; // Importa el hook de edición
 import EditarAfeccionModal from "./EditarAfeccionModal"; // Importa el modal de edición
 
 export function AfeccionesList() {
-  const { data, isLoading, error } = useAfecciones();
+  const { data, isLoading, error } = useGetAfecciones();
   const { isOpen, closeModal, afeccionEditada, handleEditar } = useEditarAfeccion();
 
   // Función para manejar la acción de "crearOtro"

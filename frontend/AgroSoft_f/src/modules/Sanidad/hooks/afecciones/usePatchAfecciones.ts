@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchAfecciones } from '../../api/afeccionesApi';
 import { Afecciones } from '../../types';
 
-export const useActualizarAfeccion = () => {
+export const usePatchAfecciones = () => {
   const queryClient = useQueryClient();
 
   return useMutation<Afecciones, Error, { id: number; data: Partial<Afecciones> }>({

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { useActualizarAfeccion } from '../../hooks/afecciones/useActualizarAfecciones';
+import { usePatchAfecciones } from '../../hooks/afecciones/usePatchAfecciones';
 import { Afecciones } from '../../types';
 import { Input, Select, SelectItem } from '@heroui/react';
-import { useTiposAfecciones } from '../../hooks/tiposAfecciones/useTipoAfecciones';
+import { useGetTipoAfecciones } from '../../hooks/tiposAfecciones/useGetTipoAfecciones'; 
 
 interface EditarAfeccionModalProps {
   afeccion: Afecciones; // La afección que se está editando
@@ -15,8 +15,8 @@ const EditarAfeccionModal: React.FC<EditarAfeccionModalProps> = ({ afeccion, onC
   const [descripcion, setDescripcion] = useState<string>(afeccion.descripcion);
   const [fk_Tipo, setFk_Tipo] = useState<number>(afeccion.tipoPlaga.id); // Estado para el ID del tipo de plaga
 
-  const { data: tiposPlaga, isLoading: isLoadingTiposPlaga } = useTiposAfecciones(); // Obtener los tipos de plaga
-  const { mutate, isPending } = useActualizarAfeccion();
+  const { data: tiposPlaga, isLoading: isLoadingTiposPlaga } = useGetTipoAfecciones(); // Obtener los tipos de plaga
+  const { mutate, isPending } = usePatchAfecciones();
 
   const handleSubmit = () => {
     // Llama a la mutación para actualizar la afección
