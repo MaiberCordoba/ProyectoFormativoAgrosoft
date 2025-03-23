@@ -7,4 +7,4 @@ class PlagaModelSerializer(ModelSerializer):
     tipoPlaga = TipoPlagaModelSerializer(source='fk_Tipo',read_only=True)
     class Meta:
         model = Plaga
-        fields = ["nombre","descripcion","img","tipoPlaga"]
+        fields = "__all__"

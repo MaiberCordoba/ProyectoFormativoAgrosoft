@@ -8,4 +8,4 @@ class UsoProductosControlModelSerializer(ModelSerializer):
     control = ControlesModelSerializer(source='fk_Control',read_only=True)
     class Meta:
         model = UsoProductosControl
-        fields = ['cantidadProducto','productoControl','control']
+        fields = "__all__"

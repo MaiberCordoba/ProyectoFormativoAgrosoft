@@ -9,4 +9,4 @@ class ControlesModelSerializer(ModelSerializer):
     tipoControl = TiposControlModelSerializer(source='fk_TipoControl',read_only=True)
     class Meta:
         model = Controles
-        fields = ['descripcion','fechaControl','afeccion','tipoControl']
+        fields = "__all__"
