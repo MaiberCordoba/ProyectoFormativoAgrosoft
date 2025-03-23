@@ -1,7 +1,7 @@
 export interface TiposAfecciones{
     id: number;
     nombre: string;
-    descripcion: Text;
+    descripcion: string;
 }
 
 export interface Afecciones{
@@ -10,4 +10,5 @@ export interface Afecciones{
     descripcion: string;
     img: string;
     tipoPlaga: TiposAfecciones;
+    fk_Tipo?: number;
 }
