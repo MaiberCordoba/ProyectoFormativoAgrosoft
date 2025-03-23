@@ -9,7 +9,6 @@ import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
-import { AfeccionesList } from "./modules/Sanidad/components/listAfecciones";
 
 //Finanzas
 import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
@@ -36,8 +35,11 @@ import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
 import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
 import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
 
-import { Testeo } from "./pages/testeo";
+import Testeo  from "./pages/testeo";
 import Providers from "./context/ToastProvider";
+
+//sanidad
+import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 
 
 
@@ -65,7 +67,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
-            <Route path="/afectaciones" element={<AfeccionesList />} />
+            <Route path="/afectaciones" element={<Afecciones />} />
             <Route path="/cosechas" element={<Cosechas />} />
             <Route path="/actividades" element={<Actividades />} />
             <Route path="/registro-actividad" element={<RegistrarActividad />} />
