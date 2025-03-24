@@ -50,7 +50,8 @@ export function AfeccionesTabla({ data, onEditar, onCrearNuevo, onEliminar }: Af
     <TablaReutilizable
       datos={data} // Pasa los datos de las afecciones
       columnas={columnas} // Pasa las columnas definidas
-      claveBusqueda="nombre" // Define la clave de búsqueda
+      claveBusqueda="nombre"  // Define la clave de búsqueda
+      placeholderBusqueda="buscar por nombre" //placeholder de busqueda
       renderCell={renderCell} // Pasa la función para renderizar las celdas
       onCrearNuevo={onCrearNuevo} // Pasa la función para crear una nueva afección
     />

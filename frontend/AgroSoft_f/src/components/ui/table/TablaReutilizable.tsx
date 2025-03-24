@@ -15,6 +15,7 @@ interface TablaReutilizableProps<T extends { [key: string]: any }> {
   opcionesEstado?: { uid: string; nombre: string }[];
   renderCell: (item: T, columnKey: React.Key) => React.ReactNode;
   onCrearNuevo: () => void;
+  placeholderBusqueda?: string;
 }
 
 export const TablaReutilizable = <T extends { [key: string]: any }>({
@@ -24,6 +25,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   opcionesEstado, // Ahora es opcional
   renderCell,
   onCrearNuevo,
+  placeholderBusqueda = "Buscar por nombre...",
 }: TablaReutilizableProps<T>) => {
   // Hook de filtrado
   const {
@@ -43,9 +45,9 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
 
   return (
     <div className="flex flex-col gap-4 max-w-4xl mx-auto">
-      {/* Contenedor flexible para FiltrosTabla y el botón "crearOtro" */}
+      
       <div className="flex justify-between items-center gap-4">
-        {/* Filtros de la tabla */}
+        
         <FiltrosTabla
           valorFiltro={valorFiltro}
           onCambiarBusqueda={setValorFiltro}
@@ -53,21 +55,22 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           opcionesEstado={opcionesEstado} // Opcional
           filtroEstado={filtroEstado}
           onCambiarFiltroEstado={setFiltroEstado}
+          placeholderBusqueda={placeholderBusqueda}
         />
 
-        {/* Botón "crearOtro" al lado de los filtros */}
+   
         <ButtonGlobal color="success" variant="flat" onPress={onCrearNuevo}>
           Agregar
         </ButtonGlobal>
       </div>
 
-      {/* Componente para cambiar filas por página */}
+     
       <FilasPorPagina
         filasPorPagina={filasPorPagina}
         onChange={handleChangeFilasPorPagina}
       />
 
-      {/* Tabla */}
+  
       <Table aria-label="Tabla reutilizable">
         <TableHeader columns={columnas}>
           {(column) => (
@@ -89,7 +92,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
         </TableBody>
       </Table>
 
-      {/* Componente de paginación */}
+   
       <PaginacionTabla
         paginaActual={paginaActual}
         totalPaginas={totalPaginas}

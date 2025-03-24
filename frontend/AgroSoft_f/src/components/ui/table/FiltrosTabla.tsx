@@ -14,6 +14,7 @@ interface FiltrosTablaProps {
   opcionesEstado?: OpcionEstado[]; // Ahora es opcional
   filtroEstado: Set<string>;
   onCambiarFiltroEstado: (filtro: Set<string>) => void;
+  placeholderBusqueda?: string;
 }
 
 export const FiltrosTabla: React.FC<FiltrosTablaProps> = ({
@@ -23,6 +24,7 @@ export const FiltrosTabla: React.FC<FiltrosTablaProps> = ({
   opcionesEstado, // Ahora es opcional
   filtroEstado,
   onCambiarFiltroEstado,
+  placeholderBusqueda = "Buscar por nombre...",
 }) => {
   return (
     <div className="flex items-center gap-3">
@@ -30,7 +32,7 @@ export const FiltrosTabla: React.FC<FiltrosTablaProps> = ({
       <Input
         isClearable
         className="w-64"
-        placeholder="Buscar por nombre..."
+        placeholder={placeholderBusqueda}
         startContent={<SearchIcon className="text-gray-400" />}
         value={valorFiltro}
         onClear={onLimpiarBusqueda}
