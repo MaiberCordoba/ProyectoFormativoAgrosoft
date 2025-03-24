@@ -22,12 +22,12 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   datos,
   columnas,
   claveBusqueda,
-  opcionesEstado, // Ahora es opcional
+  opcionesEstado,
   renderCell,
   onCrearNuevo,
-  placeholderBusqueda = "Buscar por nombre...",
+  placeholderBusqueda = "Buscar...",
 }: TablaReutilizableProps<T>) => {
-  // Hook de filtrado
+  // Hooks existentes...
   const {
     valorFiltro,
     setValorFiltro,
@@ -36,68 +36,78 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
     datosFiltrados,
   } = useFiltrado(datos, claveBusqueda);
 
-  // Hook de filas por página
   const { filasPorPagina, handleChangeFilasPorPagina } = useFilasPorPagina(5);
-
-  // Hook de paginación
   const { paginaActual, setPaginaActual, totalPaginas, datosPaginados } =
     usePaginacion(datosFiltrados, filasPorPagina);
 
   return (
-    <div className="flex flex-col gap-4 max-w-4xl mx-auto">
-      
-      <div className="flex justify-between items-center gap-4">
-        
-        <FiltrosTabla
-          valorFiltro={valorFiltro}
-          onCambiarBusqueda={setValorFiltro}
-          onLimpiarBusqueda={() => setValorFiltro("")}
-          opcionesEstado={opcionesEstado} // Opcional
-          filtroEstado={filtroEstado}
-          onCambiarFiltroEstado={setFiltroEstado}
-          placeholderBusqueda={placeholderBusqueda}
-        />
+    <div className="flex flex-col gap-2 max-w-4xl mx-auto -mt-4"> {/* Reducido gap-4 a gap-2 */}
+      {/* Contenedor superior compacto */}
+      <div className="flex justify-between items-center gap-2 mb-1"> {/* Reducido gap y añadido mb-1 */}
+        <div className="flex items-center gap-2 flex-1"> {/* Contenedor flexible para alinear filtros */}
+          <FiltrosTabla
+            valorFiltro={valorFiltro}
+            onCambiarBusqueda={setValorFiltro}
+            onLimpiarBusqueda={() => setValorFiltro("")}
+            opcionesEstado={opcionesEstado}
+            filtroEstado={filtroEstado}
+            onCambiarFiltroEstado={setFiltroEstado}
+            placeholderBusqueda={placeholderBusqueda}
+          />
+          
+          <FilasPorPagina
+            filasPorPagina={filasPorPagina}
+            onChange={handleChangeFilasPorPagina}
+          />
+        </div>
 
-   
-        <ButtonGlobal color="success" variant="flat" onPress={onCrearNuevo}>
+        <ButtonGlobal 
+          color="success" 
+          variant="flat" 
+          onPress={onCrearNuevo}
+          className="shrink-0" /* Evita que el botón se encoja */
+        >
           Agregar
         </ButtonGlobal>
       </div>
 
-     
-      <FilasPorPagina
-        filasPorPagina={filasPorPagina}
-        onChange={handleChangeFilasPorPagina}
-      />
+      {/* Tabla con margen superior reducido */}
+      <div className="mt-1"> {/* Reducido espacio superior */}
+        <Table aria-label="Tabla reutilizable" className="border-separate border-spacing-0">
+          <TableHeader columns={columnas}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+                className="py-2" /* Reduce padding en headers */
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody emptyContent={"No se encontraron datos"}>
+            {datosPaginados.map((item) => (
+              <TableRow key={item.id} className="hover:bg-gray-50">
+                {(columnKey) => (
+                  <TableCell className="py-2"> {/* Reduce padding en celdas */}
+                    {renderCell(item, columnKey)}
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-  
-      <Table aria-label="Tabla reutilizable">
-        <TableHeader columns={columnas}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody emptyContent={"No se encontraron datos"}>
-          {datosPaginados.map((item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-   
-      <PaginacionTabla
-        paginaActual={paginaActual}
-        totalPaginas={totalPaginas}
-        onCambiarPagina={setPaginaActual}
-      />
+      {/* Paginación con margen superior reducido */}
+      <div className="mt-1"> {/* Reducido espacio superior */}
+        <PaginacionTabla
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          onCambiarPagina={setPaginaActual}
+        />
+      </div>
     </div>
   );
 };
