@@ -16,7 +16,8 @@ import {
       label: string;
       color?: "primary" | "danger" | "secondary" | "success";
       variant?: "light" | "solid";
-      onClick?: any;
+      onClick?: () => void;
+    
     }[];
   }
   

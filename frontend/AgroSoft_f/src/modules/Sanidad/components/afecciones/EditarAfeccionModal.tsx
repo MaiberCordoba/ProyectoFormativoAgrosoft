@@ -45,7 +45,8 @@ const EditarAfeccionModal: React.FC<EditarAfeccionModalProps> = ({ afeccion, onC
       footerButtons={[
         {
           label: isPending ? 'Guardando...' : 'Guardar',
-          color: 'primary',
+          color: 'success',
+          variant: 'light',
           onClick: handleSubmit,
         },
       ]}

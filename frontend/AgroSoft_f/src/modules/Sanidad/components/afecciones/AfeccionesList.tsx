@@ -1,16 +1,18 @@
-import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones"; 
+import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
 import { AfeccionesTabla } from "./AfeccionesTabla"; // Importa el componente de tabla
 import { useEditarAfeccion } from "../../hooks/afecciones/useEditarAfeccion"; // Importa el hook de edición
+import { useCrearAfeccion } from "../../hooks/afecciones/useCrearAfeccion"; // Importa el hook de creación
 import EditarAfeccionModal from "./EditarAfeccionModal"; // Importa el modal de edición
+import { CrearAfeccionModal } from "./CrearAfeccionModal";
 
 export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
-  const { isOpen, closeModal, afeccionEditada, handleEditar } = useEditarAfeccion();
+  const { isOpen: isEditModalOpen, closeModal: closeEditModal, afeccionEditada, handleEditar } = useEditarAfeccion();
+  const { isOpen: isCreateModalOpen, closeModal: closeCreateModal, handleCrear } = useCrearAfeccion(); // Usa el hook de creación
 
   // Función para manejar la acción de "crearOtro"
   const handleCrearNuevo = () => {
-    console.log("Crear nueva afección");
-    // Aquí puedes abrir un modal, hacer una petición API, etc.
+    handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo:0, img:"" }); // Abre el modal de creación con una afección vacía
   };
 
   // Manejo de estados de carga y error
@@ -28,10 +30,17 @@ export function AfeccionesList() {
       />
 
       {/* Modal de edición */}
-      {isOpen && afeccionEditada && (
+      {isEditModalOpen && afeccionEditada && (
         <EditarAfeccionModal
           afeccion={afeccionEditada} // Pasa la afección que se está editando
-          onClose={closeModal} // Pasa la función para cerrar el modal
+          onClose={closeEditModal} // Pasa la función para cerrar el modal
+        />
+      )}
+
+      {/* Modal de creación */}
+      {isCreateModalOpen && (
+        <CrearAfeccionModal
+          onClose={closeCreateModal} // Pasa la función para cerrar el modal
         />
       )}
     </div>

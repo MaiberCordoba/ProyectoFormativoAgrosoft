@@ -1,6 +1,7 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { UsersPage } from "./modules/Users/pages/userPage";
 import Principal from "@/layouts/principal";
@@ -91,6 +92,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
     </Providers>
   );

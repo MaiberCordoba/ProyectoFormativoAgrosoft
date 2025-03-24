@@ -4,7 +4,7 @@ import { Afecciones } from "../../types";
 
 export const useGetTipoAfecciones = () => {
   return useQuery<Afecciones[]>({
-    queryKey: ["tiposAfecciones"], 
+    queryKey: ["TiposAfecciones"], 
     queryFn: getTipoAfecciones,
   });
 };
