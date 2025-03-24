@@ -23,7 +23,7 @@ export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
       return;
     }
     mutate(
-      { nombre, descripcion, fk_Tipo, img }, // Envía el ID del tipo de plaga
+      {nombre, descripcion, fk_Tipo, img }, // Envía el ID del tipo de plaga
       {
         onSuccess: () => {
           onClose();
@@ -45,7 +45,8 @@ export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
       footerButtons={[
         {
           label: isPending ? "Guardando..." : "Guardar",
-          color: "primary",
+          color: "success",
+          variant:"light",
           onClick: handleSubmit
         },
       ]}
