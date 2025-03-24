@@ -14,8 +14,9 @@ import {
     children: React.ReactNode;
     footerButtons?: {
       label: string;
-      color?: "primary" | "danger" | "secondary";
-      onClick: () => void;
+      color?: "primary" | "danger" | "secondary" | "success";
+      variant?: "light" | "solid";
+      onClick?: any;
     }[];
   }
   
@@ -28,7 +29,7 @@ import {
             <ModalBody>{children}</ModalBody>
             <ModalFooter>
               {footerButtons?.map((button, index) => (
-                <Button key={index} color={button.color || "primary"} onPress={button.onClick}>
+                <Button key={index} color={button.color || "success"} variant={button.variant} onPress={button.onClick}>
                   {button.label}
                 </Button>
               ))}
