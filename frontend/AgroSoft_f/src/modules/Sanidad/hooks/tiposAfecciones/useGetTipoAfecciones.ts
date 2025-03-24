@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import {getTipoAfecciones} from "../../api/tipoAfecciones";
 import { Afecciones } from "../../types";
+import { getTipoAfecciones } from "../../api/tipoAfecciones";
 
 export const useGetTipoAfecciones = () => {
   return useQuery<Afecciones[]>({
