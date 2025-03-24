@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
   Home,
@@ -19,9 +19,15 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const location = useLocation();
 
   const toggleMenu = (menu: string) => {
     setOpenMenu(openMenu === menu ? null : menu);
+  };
+
+  // Función para verificar si una ruta está activa
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -37,15 +43,38 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       )}
 
       <nav className={`flex flex-col gap-2 ${isOpen ? "block" : "hidden"}`}>
-        <Link to="/home" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        <NavLink 
+          to="/home" 
+          className={({ isActive }) => 
+            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+              isActive ? "bg-gray-200 font-medium" : ""
+            }`
+          }
+        >
           <Home size={20} /> Home
-        </Link>
-        <Link to="/usuarios" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        </NavLink>
+        
+        <NavLink 
+          to="/usuarios" 
+          className={({ isActive }) => 
+            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+              isActive ? "bg-gray-200 font-medium" : ""
+            }`
+          }
+        >
           <Users size={20} /> Usuarios
-        </Link>
-        <Link to="/iot" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        </NavLink>
+        
+        <NavLink 
+          to="/iot" 
+          className={({ isActive }) => 
+            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+              isActive ? "bg-gray-200 font-medium" : ""
+            }`
+          }
+        >
           <Monitor size={20} /> IoT
-        </Link>
+        </NavLink>
 
         {/* Menús con Submenús */}
         {[
@@ -68,13 +97,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
             title: "Gestión Fitosanitaria",
             icon: ShieldCheck,
             submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "Controles", "Productos para el control"],
-            className: "text-left", // Asegura que no quede centrado
+            className: "text-left",
           },
         ].map((menu) => (
           <div key={menu.title}>
             <button
               className={`flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-200 focus:outline-none ${
                 menu.className || ""
+              } ${
+                menu.submenus.some(sub => 
+                  location.pathname.includes(sub.toLowerCase().replace(/\s+/g, "-"))
+                ) ? "bg-gray-200 font-medium" : ""
               }`}
               onClick={() => toggleMenu(menu.title)}
             >
@@ -93,26 +126,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                 openMenu === menu.title ? "max-h-40" : "max-h-0"
               }`}
             >
-              {menu.submenus.map((submenu) => (
-                <Link
-                  key={submenu}
-                  to={`/${submenu.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="block pl-10 py-1 text-gray-700 hover:bg-gray-100 rounded-lg"
-                >
-                  {submenu}
-                </Link>
-              ))}
+              {menu.submenus.map((submenu) => {
+                const path = `/${submenu.toLowerCase().replace(/\s+/g, "-")}`;
+                return (
+                  <NavLink
+                    key={submenu}
+                    to={path}
+                    className={({ isActive }) => 
+                      `block pl-10 py-1 text-gray-800 hover:bg-gray-100 rounded-lg ${
+                        isActive ? "bg-gray-200 font-medium" : ""
+                      }`
+                    }
+                  >
+                    {submenu}
+                  </NavLink>
+                );
+              })}
             </div>
           </div>
         ))}
 
         {/* Calendario y Mapa al final */}
-        <Link to="/calendario" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        <NavLink 
+          to="/calendario" 
+          className={({ isActive }) => 
+            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+              isActive ? "bg-gray-200 font-medium" : ""
+            }`
+          }
+        >
           <Calendar size={20} /> Calendario
-        </Link>
-        <Link to="/mapa" className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200">
+        </NavLink>
+        <NavLink 
+          to="/mapa" 
+          className={({ isActive }) => 
+            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+              isActive ? "bg-gray-200 font-medium" : ""
+            }`
+          }
+        >
           <MapPin size={20} /> Mapa
-        </Link>
+        </NavLink>
       </nav>
 
       {isOpen && (

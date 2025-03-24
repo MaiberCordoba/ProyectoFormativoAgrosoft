@@ -1,3 +1,62 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Scrollbar minimalista y elegante */
+.sidebar-scroll {
+    scrollbar-width: none; /* Firefox */
+    overflow-y: overlay; /* Scroll overlay (no ocupa espacio) */
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar {
+    display: none; /* Ocultar por defecto */
+    width: 6px; /* Ancho del scroll */
+  }
+  
+  .sidebar-scroll:hover::-webkit-scrollbar {
+    display: block; /* Mostrar solo al hover */
+  }
+  
+  /* Track (fondo del scroll) */
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent; 
+    margin-top: 80px; /* Evita que cubra el logo */
+    margin-bottom: 80px; /* Evita que cubra el logo SENA */
+    border-radius: 10px;
+  }
+  
+  /* Thumb (barra deslizante) */
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3); /* Gris claro con transparencia */
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil */
+    transition: all 0.3s ease;
+  }
+  
+  /* Efecto hover sobre el thumb */
+  .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.5); /* Gris más visible al hover */
+  }
+  
+  /* Fade effect en los extremos */
+  .sidebar-scroll::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 6px;
+    height: 30px;
+    background: linear-gradient(to bottom, white, transparent);
+    pointer-events: none;
+  }
+  
+  .sidebar-scroll::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 6px;
+    height: 30px;
+    background: linear-gradient(to top, white, transparent);
+    pointer-events: none;
+  }
