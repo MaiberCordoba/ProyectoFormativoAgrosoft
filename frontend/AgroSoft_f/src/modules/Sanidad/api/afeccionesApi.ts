@@ -15,3 +15,9 @@ export const patchAfecciones = async ( id: number, data: Partial<Afecciones>): P
     const response = await apiClient.patch<Afecciones>(`plaga/${id}/`, data);
     return response.data;
   };
+
+
+export const deleteAfecciones = async (id: number): Promise<Afecciones> => {
+    const response = await apiClient.delete<Afecciones>(`plaga/${id}/`);
+    return response.data
+}
