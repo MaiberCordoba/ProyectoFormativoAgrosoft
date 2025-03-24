@@ -2,45 +2,83 @@ import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
 import { AfeccionesTabla } from "./AfeccionesTabla";
 import { useEditarAfeccion } from "../../hooks/afecciones/useEditarAfeccion";
 import { useCrearAfeccion } from "../../hooks/afecciones/useCrearAfeccion";
+import { useEliminarAfeccion } from "../../hooks/afecciones/useEliminarAfeccion";
 import EditarAfeccionModal from "./EditarAfeccionModal";
 import { CrearAfeccionModal } from "./CrearAfeccionModal";
+import EliminarAfeccionModal from "./EliminarAfeccion";
 
 export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
-  const { isOpen: isEditModalOpen, closeModal: closeEditModal, afeccionEditada, handleEditar } = useEditarAfeccion();
-  const { isOpen: isCreateModalOpen, closeModal: closeCreateModal, handleCrear } = useCrearAfeccion();
+  const { 
+    isOpen: isEditModalOpen, 
+    closeModal: closeEditModal, 
+    afeccionEditada, 
+    handleEditar 
+  } = useEditarAfeccion();
+  
+  const { 
+    isOpen: isCreateModalOpen, 
+    closeModal: closeCreateModal, 
+    handleCrear 
+  } = useCrearAfeccion();
+  
+  const {
+    isOpen: isDeleteModalOpen,
+    closeModal: closeDeleteModal,
+    afeccionEliminada,
+    handleEliminar
+  } = useEliminarAfeccion(); // Sin parámetro refetch
 
-  // Función para manejar la acción de "crearOtro"
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo: 0, img: "" }); // Abre el modal de creación con una afección vacía
+    handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo: 0, img: "" });
   };
 
-  // Manejo de estados de carga y error
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las afecciones</p>;
-  if (!data || data.length === 0) return <p>No se encontraron afecciones.</p>;
+  if (!data || data.length === 0) return (
+    <div className="p-4">
+      <AfeccionesTabla
+        data={[]}
+        onEditar={handleEditar}
+        onEliminar={handleEliminar}
+        onCrearNuevo={handleCrearNuevo}
+      />
+      <CrearAfeccionModal
+        onClose={closeCreateModal}
+      />
+    </div>
+  );
 
   return (
     <div className="p-4">
-      {/* Tabla reutilizable */}
       <AfeccionesTabla
-        data={data} // Pasa los datos de las afecciones
-        onEditar={handleEditar} // Pasa la función para editar
-        onCrearNuevo={handleCrearNuevo} // Pasa la función para crear una nueva afección
+        data={data}
+        onEditar={handleEditar}
+        onEliminar={handleEliminar}
+        onCrearNuevo={handleCrearNuevo}
       />
 
       {/* Modal de edición */}
       {isEditModalOpen && afeccionEditada && (
         <EditarAfeccionModal
-          afeccion={afeccionEditada} // Pasa la afección que se está editando
-          onClose={closeEditModal} // Pasa la función para cerrar el modal
+          afeccion={afeccionEditada}
+          onClose={closeEditModal}
         />
       )}
 
       {/* Modal de creación */}
       {isCreateModalOpen && (
         <CrearAfeccionModal
-          onClose={closeCreateModal} // Pasa la función para cerrar el modal
+          onClose={closeCreateModal}
+        />
+      )}
+
+      {/* Modal de eliminación */}
+      {isDeleteModalOpen && afeccionEliminada && (
+        <EliminarAfeccionModal
+          afeccion={afeccionEliminada}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
         />
       )}
     </div>
