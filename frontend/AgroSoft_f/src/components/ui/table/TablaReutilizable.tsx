@@ -56,8 +56,8 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
         />
 
         {/* Botón "crearOtro" al lado de los filtros */}
-        <ButtonGlobal color="primary" variant="solid" onPress={onCrearNuevo}>
-          crearOtro
+        <ButtonGlobal color="success" variant="flat" onPress={onCrearNuevo}>
+          Agregar
         </ButtonGlobal>
       </div>
 
