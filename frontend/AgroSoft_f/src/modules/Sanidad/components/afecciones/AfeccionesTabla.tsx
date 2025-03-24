@@ -6,9 +6,10 @@ interface AfeccionesTablaProps {
   data: Afecciones[];
   onEditar: (afeccion: Afecciones) => void;
   onCrearNuevo: () => void;
+  onEliminar: (afeccion: Afecciones) => void;
 }
 
-export function AfeccionesTabla({ data, onEditar, onCrearNuevo }: AfeccionesTablaProps) {
+export function AfeccionesTabla({ data, onEditar, onCrearNuevo, onEliminar }: AfeccionesTablaProps) {
   // Definir las columnas de la tabla
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
@@ -31,7 +32,7 @@ export function AfeccionesTabla({ data, onEditar, onCrearNuevo }: AfeccionesTabl
         return (
           <AccionesTabla
             onEditar={() => onEditar(item)} // Pasa la función handleEditar
-            onEliminar={() => console.log("Eliminar", item)}
+            onEliminar={() => onEliminar(item)}
           />
         );
       default:
