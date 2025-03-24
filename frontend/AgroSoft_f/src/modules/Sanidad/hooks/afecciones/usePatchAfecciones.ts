@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchAfecciones } from '../../api/afeccionesApi';
 import { Afecciones } from '../../types';
+import { addToast } from "@heroui/react";
 
 export const usePatchAfecciones = () => {
   const queryClient = useQueryClient();
@@ -15,6 +16,23 @@ export const usePatchAfecciones = () => {
           afeccion.id === variables.id ? { ...afeccion, ...updatedAfeccion } : afeccion
         );
       });
+
+      // Toast de éxito
+      addToast({
+        title: "Actualización exitosa",
+        description: "La afección se actualizó correctamente",
+        color: "success",
+     
+      });
     },
+    onError: (error) => {
+      console.error(error)
+      addToast({
+        title: "Error al actualizar",
+        description: "No se pudo actualizar la afección",
+        color: "danger",
+       
+      });
+    }
   });
 };
