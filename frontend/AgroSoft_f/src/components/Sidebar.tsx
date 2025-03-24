@@ -25,55 +25,50 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     setOpenMenu(openMenu === menu ? null : menu);
   };
 
-  // Función para verificar si una ruta está activa
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-
   return (
     <aside
-      className={`bg-white p-4 shadow-lg min-h-screen flex flex-col gap-3 transition-all duration-300 rounded-xl overflow-hidden ${
-        isOpen ? "w-56" : "w-0 hidden"
+      className={`bg-white p-2 shadow-lg min-h-screen flex flex-col gap-1 transition-all duration-300 ${
+        isOpen ? "w-48" : "w-0 hidden"
       }`}
     >
       {isOpen && (
-        <div className="flex justify-center mb-2">
-          <img src="/logoAgrosoft.png" alt="Logo" className="w-32" />
+        <div className="flex justify-center mb-1 sticky top-0 bg-white z-10 py-2">
+          <img src="/logoAgrosoft.png" alt="Logo" className="w-24" />
         </div>
       )}
 
-      <nav className={`flex flex-col gap-2 ${isOpen ? "block" : "hidden"}`}>
+      <nav className={`flex flex-col gap-1 ${isOpen ? "block" : "hidden"}`}>
         <NavLink 
           to="/home" 
           className={({ isActive }) => 
-            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+            `flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-200 text-sm ${
               isActive ? "bg-gray-200 font-medium" : ""
             }`
           }
         >
-          <Home size={20} /> Home
+          <Home size={18} /> Home
         </NavLink>
         
         <NavLink 
           to="/usuarios" 
           className={({ isActive }) => 
-            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+            `flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-200 text-sm ${
               isActive ? "bg-gray-200 font-medium" : ""
             }`
           }
         >
-          <Users size={20} /> Usuarios
+          <Users size={18} /> Usuarios
         </NavLink>
         
         <NavLink 
           to="/iot" 
           className={({ isActive }) => 
-            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+            `flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-200 text-sm ${
               isActive ? "bg-gray-200 font-medium" : ""
             }`
           }
         >
-          <Monitor size={20} /> IoT
+          <Monitor size={18} /> IoT
         </NavLink>
 
         {/* Menús con Submenús */}
@@ -102,7 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         ].map((menu) => (
           <div key={menu.title}>
             <button
-              className={`flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-200 focus:outline-none ${
+              className={`flex items-center justify-between w-full p-1.5 rounded-lg hover:bg-gray-200 focus:outline-none text-sm ${
                 menu.className || ""
               } ${
                 menu.submenus.some(sub => 
@@ -111,11 +106,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               }`}
               onClick={() => toggleMenu(menu.title)}
             >
-              <div className="flex items-center gap-3">
-                <menu.icon size={20} /> {menu.title}
+              <div className="flex items-center gap-2">
+                <menu.icon size={18} /> {menu.title}
               </div>
               <ChevronDown
-                size={18}
+                size={16}
                 className={`transition-transform ${
                   openMenu === menu.title ? "rotate-180" : "rotate-0"
                 }`}
@@ -133,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                     key={submenu}
                     to={path}
                     className={({ isActive }) => 
-                      `block pl-10 py-1 text-gray-800 hover:bg-gray-100 rounded-lg ${
+                      `block pl-8 py-1 text-xs text-gray-800 hover:bg-gray-100 rounded-lg ${
                         isActive ? "bg-gray-200 font-medium" : ""
                       }`
                     }
@@ -150,28 +145,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         <NavLink 
           to="/calendario" 
           className={({ isActive }) => 
-            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+            `flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-200 text-sm ${
               isActive ? "bg-gray-200 font-medium" : ""
             }`
           }
         >
-          <Calendar size={20} /> Calendario
+          <Calendar size={18} /> Calendario
         </NavLink>
         <NavLink 
           to="/mapa" 
           className={({ isActive }) => 
-            `flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 ${
+            `flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-200 text-sm ${
               isActive ? "bg-gray-200 font-medium" : ""
             }`
           }
         >
-          <MapPin size={20} /> Mapa
+          <MapPin size={18} /> Mapa
         </NavLink>
       </nav>
 
       {isOpen && (
-        <div className="mt-auto flex flex-col items-center">
-          <img src="/sena.png" alt="SENA" className="w-16" />
+        <div className="mt-auto flex flex-col items-center  bottom-0 bg-white py-2">
+          <img src="/sena.png" alt="SENA" className="w-14" />
         </div>
       )}
     </aside>
