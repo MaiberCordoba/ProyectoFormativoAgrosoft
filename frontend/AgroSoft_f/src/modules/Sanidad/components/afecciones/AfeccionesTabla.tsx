@@ -20,14 +20,13 @@ export function AfeccionesTabla({ data, onEditar, onCrearNuevo }: AfeccionesTabl
   // Función para renderizar las celdas
   const renderCell = (item: Afecciones, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
       case "tipoPlaga":
-        return <span>{item.tipoPlaga.nombre}</span>;
+        // Verifica si tipoPlaga está definido y tiene la propiedad nombre
+        return <span>{item.tipoPlaga?.nombre || "No definido"}</span>;
       case "acciones":
         return (
           <AccionesTabla

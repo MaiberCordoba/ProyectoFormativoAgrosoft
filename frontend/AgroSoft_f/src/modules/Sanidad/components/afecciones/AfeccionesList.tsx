@@ -1,18 +1,18 @@
 import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
-import { AfeccionesTabla } from "./AfeccionesTabla"; // Importa el componente de tabla
-import { useEditarAfeccion } from "../../hooks/afecciones/useEditarAfeccion"; // Importa el hook de edición
-import { useCrearAfeccion } from "../../hooks/afecciones/useCrearAfeccion"; // Importa el hook de creación
-import EditarAfeccionModal from "./EditarAfeccionModal"; // Importa el modal de edición
+import { AfeccionesTabla } from "./AfeccionesTabla";
+import { useEditarAfeccion } from "../../hooks/afecciones/useEditarAfeccion";
+import { useCrearAfeccion } from "../../hooks/afecciones/useCrearAfeccion";
+import EditarAfeccionModal from "./EditarAfeccionModal";
 import { CrearAfeccionModal } from "./CrearAfeccionModal";
 
 export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
   const { isOpen: isEditModalOpen, closeModal: closeEditModal, afeccionEditada, handleEditar } = useEditarAfeccion();
-  const { isOpen: isCreateModalOpen, closeModal: closeCreateModal, handleCrear } = useCrearAfeccion(); // Usa el hook de creación
+  const { isOpen: isCreateModalOpen, closeModal: closeCreateModal, handleCrear } = useCrearAfeccion();
 
   // Función para manejar la acción de "crearOtro"
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo:0, img:"" }); // Abre el modal de creación con una afección vacía
+    handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo: 0, img: "" }); // Abre el modal de creación con una afección vacía
   };
 
   // Manejo de estados de carga y error
