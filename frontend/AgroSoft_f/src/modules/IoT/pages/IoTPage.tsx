@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, addToast } from "@heroui/react";
+import { Button, Input} from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -24,7 +24,6 @@ export default function IoTPages() {
   });
 
   const [searchId, setSearchId] = useState("");
-  const [sensorExiste, setSensorExiste] = useState(true);
 
   useEffect(() => {
     const sensores = ["viento", "temperatura", "luzSolar", "humedad", "humedadAmbiente", "lluvia"];
@@ -66,63 +65,37 @@ export default function IoTPages() {
     { id: "lluvia", title: "Lluvia", icon: <WiRain size={32} /> },
   ];
 
-  const verificarSensor = async () => {
-    if (!searchId) {
-      addToast({
-        title: "⚠️ Advertencia",
-        description: "Ingresa un ID de sensor",
-        color: "warning",
-        variant: "solid",
-        radius: "full",
-        timeout: 2000,
-      });
-      return;
-    }
-
-    try {
-      const res = await fetch(`http://127.0.0.1:8000/api/sensor/${searchId}`);
-      if (!res.ok) throw new Error("Sensor no encontrado");
-      setSensorExiste(true);
-      navigate(`/sensores/${searchId}`);
-    } catch {
-      setSensorExiste(false);
-      addToast({
-        title: "Error",
-        description: "No existe el sensor que buscas",
-        color: "danger",
-        variant: "solid",
-        radius: "full",
-        timeout: 20,
-      });
-    }
-  };
+  // 🔍 Filtrar sensores según la búsqueda
+  const sensoresFiltrados = sensoresList.filter((sensor) =>
+    sensor.title.toLowerCase().includes(searchId.toLowerCase())
+  );
 
   return (
-    <div className="gap-2 grid grid-cols-2 sm:grid-cols-3">
-      <div className="flex gap-2 w-full max-w-md">
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-12 justify-center items-center w-full max-w-6xl mx-auto">
+<div className="flex gap-2 w-full max-w-md">
         <Input
-          placeholder="Buscar Sensor por ID"
+          placeholder="Filtrar Sensores..."
           type="text"
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
         />
-        <Button color="primary" onClick={verificarSensor}>
-          Buscar
-        </Button>
       </div>
-      {!sensorExiste && <p className="text-red-500"> El sensor no existe</p>}
 
-      <br/><br/>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {sensoresList.map((sensor) => (
-          <SensorCard
-            key={sensor.id}
-            icon={sensor.icon}
-            title={sensor.title}
-            value={sensoresData[sensor.id] ?? "Cargando..."}
-            onClick={() => navigate(`/sensores/${sensor.id}`)}
-          />
-        ))}
+      <br /><br />
+      <div className="grid grid-cols-3 gap-10 justify-center items-center w-full max-w-6xl mx-auto">
+        {sensoresFiltrados.length > 0 ? (
+          sensoresFiltrados.map((sensor) => (
+            <SensorCard
+              key={sensor.id}
+              icon={sensor.icon}
+              title={sensor.title}
+              value={sensoresData[sensor.id] ?? "Cargando..."}
+              onClick={() => navigate(`/sensores/${sensor.id}`)}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500">No se encontraron sensores</p>
+        )}
       </div>
       <br />
       <Button color="primary" variant="faded" onClick={() => navigate("/sensores/registrar")}>
