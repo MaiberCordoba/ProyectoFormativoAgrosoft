@@ -76,6 +76,7 @@ export function SemilleroEdit() {
 
       <label>Especie:</label>
       <Input type="number" name="fk_especie" value={formData.fk_Especie?.toString() ?? ""} onChange={handleChange} />
+
       <label>Unidades:</label>
       <Input type="number" name="unidades" value={formData.unidades ?? ""} onChange={handleChange} />
 

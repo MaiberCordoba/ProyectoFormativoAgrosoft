@@ -51,6 +51,7 @@ import Providers from "./context/ToastProvider";
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 
 
+
 const queryClient = new QueryClient();
 
 function App() {

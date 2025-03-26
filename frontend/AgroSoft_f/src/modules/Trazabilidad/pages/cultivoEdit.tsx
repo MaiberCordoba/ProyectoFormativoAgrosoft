@@ -83,11 +83,13 @@ export function CultivoEdit() {
 
       <label>Especie:</label>
       <Input type="number" name="fk_especie" value={formData.fk_Especie?.toString() ?? ""} onChange={handleChange} />
+
       <label>Nombre:</label>
       <Input type="text" name="nombre" value={formData.nombre ?? ""} onChange={handleChange} />
 
       <label>Unidades:</label>
       <Input type="number" name="unidades" value={formData.unidades?.toString() ?? ""} onChange={handleChange} />
+
       <label>Activo:</label>
       <Input type="checkbox" name="activo" checked={formData.activo ?? false} onChange={(e) => setFormData({ ...formData, activo: e.target.checked })} />
 

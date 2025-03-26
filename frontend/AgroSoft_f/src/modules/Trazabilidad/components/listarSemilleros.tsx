@@ -14,6 +14,7 @@ export function SemilleroList() {
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los semilleros</p>;
 
+
   if (!semilleros || semilleros.length === 0) return <p>No se encontraron semilleros.</p>;
 
   const handleDetailsClick = (semillero: Semilleros) => {

@@ -47,6 +47,7 @@ const CultivoRegister = () => {
           onSubmit={handleSubmit}
           submitLabel="Registrar Cultivo"
         />
+
         <div className="mt-4 text-center">
           <Link 
             href="/cultivos" 
