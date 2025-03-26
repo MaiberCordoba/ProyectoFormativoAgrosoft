@@ -2,12 +2,8 @@ import { Semilleros } from "../types";
 import { Cultivos } from "../types";
 import { Especies } from "../types";
 import {Lotes} from "../types"
-import axios from "axios";
+import apiClient from "@/api/apiClient";
 
-export const apiClient = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/", // Asegúrate de que la URL es correcta
-  headers: { "Content-Type": "application/json" },
-});
 
 // Obtener lista de semilleros
 export const getSemilleros = async (): Promise<Semilleros[]> => {
@@ -76,13 +72,13 @@ export const getLotes = async (): Promise<Lotes[]> => {
 };
 
 export const registerLotes = async (loteData: Partial<Lotes>): Promise<Lotes> => {
-  const response = await apiClient.post("lotes/", loteData);
+  const response = await apiClient.post("lote/", loteData);
   return response.data;
 };
 
 export const updateLotes = async (loteData: Partial<Lotes> & { id: number }): Promise<Lotes> => {
   const { id, ...data } = loteData;
-  const response = await apiClient.put(`lotes/${id}/`, data);
+  const response = await apiClient.put(`lote/${id}/`, data);
   return response.data;
 };
 

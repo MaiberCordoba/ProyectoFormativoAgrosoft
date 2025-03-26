@@ -1,13 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom"; 
 import { useEffect, useState } from "react";
-import { Lote } from "@/modules/Trazabilidad/types";
+import { Lotes } from "@/modules/Trazabilidad/types";
 import { Button, Input } from "@heroui/react";
 
 export function LoteEdit() {
   const { id } = useParams();
   const navigate = useNavigate(); 
-  const [lote, setLote] = useState<Lote | null>(null);
-  const [formData, setFormData] = useState<Partial<Lote>>({});
+  const [lote, setLote] = useState<Lotes | null>(null);
+  const [formData, setFormData] = useState<Partial<Lotes>>({});
 
   useEffect(() => {
     const fetchLote = async () => {
@@ -88,9 +88,6 @@ export function LoteEdit() {
 
       <label>Tamaño Y:</label>
       <Input type="number" name="tamY" value={formData.tamY?.toString() ?? ""} onChange={handleChange} />
-
-      <label>Estado:</label>
-      <Input type="checkbox" name="estado" checked={formData.estado ?? false} onChange={handleChange} />
 
       <label>Posición X:</label>
       <Input type="number" name="posX" step="0.01" value={formData.posX?.toString() ?? ""} onChange={handleChange} />

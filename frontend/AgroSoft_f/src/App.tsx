@@ -101,7 +101,7 @@ function App() {
             <Route path="/Especies" element={<EspecieList />}/>
             <Route path="/editarEspecie/:id" element={<EspecieEdit/>} />
             <Route path="/crearLote" element={<LoteRegister />}/>
-            <Route path="/lote" element={<LoteList />}/>
+            <Route path="/lotes" element={<LoteList />}/>
             <Route path="/editarLote/:id" element={<LoteEdit/>} />
           </Route>
         </Route>
