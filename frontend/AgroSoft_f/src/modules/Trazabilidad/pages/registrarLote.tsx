@@ -22,7 +22,7 @@ const LoteRegister = () => {
         posY: data.posY,
       });
       alert("Lote registrado con éxito");
-      navigate("/lote");  
+      navigate("/lotes");  
     } catch (error) {
       console.error("Error al registrar lote:", error);
       setErrorMessage("Hubo un error al registrar el lote.");
@@ -39,7 +39,6 @@ const LoteRegister = () => {
             { name: "descripcion", label: "Descripción", type: "textarea", required: true },
             { name: "tamX", label: "Tamaño X", type: "number", required: true },
             { name: "tamY", label: "Tamaño Y", type: "number", required: true },
-            { name: "estado", label: "Estado", type: "checkbox" },
             { name: "posX", label: "Posición X", type: "number", required: true },
             { name: "posY", label: "Posición Y", type: "number", required: true }
           ]}
