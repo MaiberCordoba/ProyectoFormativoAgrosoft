@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSemilleros } from "../../api/SemillerosApi";
+import { getSemilleros } from "../../api/semillerosApi";
 import { Semilleros } from "../../types";
 
 export const useGetSemilleros = () => {

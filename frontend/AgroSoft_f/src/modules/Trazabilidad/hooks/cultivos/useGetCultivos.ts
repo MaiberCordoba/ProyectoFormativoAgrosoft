@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCultivos } from "../../api/CultivosApi";
+import { getCultivos } from "../../api/cultivosApi";
 import { Cultivos } from "../../types";
 
 export const useGetCultivos = () => {
