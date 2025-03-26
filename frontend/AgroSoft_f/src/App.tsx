@@ -41,6 +41,7 @@ import Providers from "./context/ToastProvider";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
+import { TipoAfecciones } from "./modules/Sanidad/Pages/tipoafecciones";
 
 
 
@@ -89,6 +90,7 @@ function App() {
             <Route path="/herramientas" element={<Herramientas />} />
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/testeo" element={<Testeo/>}></Route>
+            <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>
           </Route>
         </Route>
       </Routes>
