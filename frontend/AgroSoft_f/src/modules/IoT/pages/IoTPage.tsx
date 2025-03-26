@@ -98,7 +98,7 @@ export default function IoTPages() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 p-4">
+    <div className="gap-2 grid grid-cols-2 sm:grid-cols-3">
       <div className="flex gap-2 w-full max-w-md">
         <Input
           placeholder="Buscar Sensor por ID"
