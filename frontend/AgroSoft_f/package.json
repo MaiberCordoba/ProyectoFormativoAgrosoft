@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@heroui/alert": "^2.2.15",
+    "@heroui/card": "^2.2.15",
     "@heroui/react": "^2.7.5",
     "@heroui/system": "2.4.10",
     "@heroui/theme": "2.4.9",
