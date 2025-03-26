@@ -2,6 +2,7 @@ export interface TiposAfecciones{
     id: number;
     nombre: string;
     descripcion: string;
+    img: string;
 }
 
 export interface Afecciones{
