@@ -19,6 +19,7 @@ export const updateUser = async (id: number, userData: Partial<User>): Promise<U
 };
 
 
-export const deleteUser = async (id: number): Promise<void> => {
-  await apiClient.delete(`usuarios/${id}/`);
-};
+export const deleteUser = async (id: number): Promise<User> => {
+  const response = await apiClient.delete<User>(`usuarios/${id}/`);
+  return response.data
+}
