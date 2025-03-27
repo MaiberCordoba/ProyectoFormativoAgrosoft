@@ -12,16 +12,7 @@ import UserRegister from "./modules/Users/pages/registrarUsuario";
 import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 
 //Finanzas
-import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
-import { Actividades } from "./modules/Finanzas/pages/pageActividades";
-import { Desechos } from "./modules/Finanzas/pages/pageDesechos";
-import { Herramientas } from "./modules/Finanzas/pages/pageHerramientas";
-import { Ventas } from "./modules/Finanzas/pages/pageVentas";
-import RegistrarActividad from "./modules/Finanzas/components/registrarActividades";
-import RegistrarCosecha from "./modules/Finanzas/components/registrarCosechas";
-import RegistrarDesechos from "./modules/Finanzas/components/registrarDesechos";
-import RegistrarHerramientas from "./modules/Finanzas/components/registrarHerramientas";
-import RegistrarVentas from "./modules/Finanzas/components/registrarVentas";
+import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
 
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
@@ -69,13 +60,8 @@ function App() {
             <Route path="/home" element={<Inicio />} />
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/afectaciones" element={<Afecciones />} />
-            <Route path="/cosechas" element={<Cosechas />} />
-            <Route path="/actividades" element={<Actividades />} />
-            <Route path="/registro-actividad" element={<RegistrarActividad />} />
-            <Route path="/registro-desecho" element={<RegistrarDesechos />} />
-            <Route path="/registro-cosecha" element={<RegistrarCosecha />} />
-            <Route path="/registro-herramienta" element={<RegistrarHerramientas />} />
-            <Route path="/registro-venta" element={<RegistrarVentas />} />
+            <Route path="/cosechas"  />
+            <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
@@ -85,9 +71,9 @@ function App() {
             <Route path="/crearCultivos" element={<CultivoRegister />}/>
             <Route path="/Cultivos" element={<CultivoList />}/>
             <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
-            <Route path="/desechos" element={<Desechos />} />
-            <Route path="/herramientas" element={<Herramientas />} />
-            <Route path="/ventas" element={<Ventas />} />
+            <Route path="/desechos" />
+            <Route path="/herramientas"  />
+            <Route path="/ventas" />
             <Route path="/testeo" element={<Testeo/>}></Route>
           </Route>
         </Route>
