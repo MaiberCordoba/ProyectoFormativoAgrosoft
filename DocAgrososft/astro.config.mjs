@@ -31,7 +31,15 @@ export default defineConfig({
 				},
 				{
 					label: 'Sanidad',
-					items:[],
+					items:[
+						{ label: 'Tipo Plaga', slug: 'sanidad/tipoplaga' },
+						{ label: 'Plagas', slug: 'sanidad/plagas' },
+						{ label: 'Afecciones', slug: 'sanidad/afecciones' },
+						{ label: 'Tipo Control', slug: 'sanidad/tipocontrol' },
+						{ label: 'Controles', slug: 'sanidad/controles' },
+						{ label: 'Productos para el Control', slug: 'sanidad/productoscontrol' },
+						{ label: 'Uso Productos para el Control', slug: 'sanidad/usoproductoscontrol' },
+					],
 				},
 				{
 					label: 'Sensores IoT',
