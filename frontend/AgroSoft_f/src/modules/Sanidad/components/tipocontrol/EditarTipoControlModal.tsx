@@ -1,30 +1,29 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
-import { usePatchTipoAfecciones } from "../../hooks/tiposAfecciones/usePatchTipoAfecciones";
+import { usePatchTipoControl } from "../../hooks/tipoControl/usePatchTipoControl";
 import { Input, Textarea } from "@heroui/react";
-import { TiposAfecciones } from "../../types";
+import { TipoControl } from "../../types";
 
-interface EditarTipoAfeccionesModalProps {
-  tipoAfeccion: TiposAfecciones;
+interface EditarTipoControlModalProps {
+  tipoControl: TipoControl;
   onClose: () => void;
 }
 
+const EditarTipoControlModal: React.FC<EditarTipoControlModalProps> = ({ tipoControl, onClose }) => {
+  const [nombre, setNombre] = useState<string>(tipoControl.nombre);
+  const [descripcion, setDescripcion] = useState<string>(tipoControl.descripcion);
+  
 
-const EditarTipoAfeccionModal: React.FC<EditarTipoAfeccionesModalProps> = ({ tipoAfeccion, onClose }) => {
-  const [nombre, setNombre] = useState<string>(tipoAfeccion.nombre);
-  const [descripcion, setDescripcion] = useState<string>(tipoAfeccion.descripcion);
-  const [imagen, setImagen] = useState<string>(tipoAfeccion.img);
-
-  const { mutate, isPending } = usePatchTipoAfecciones();
+  const { mutate, isPending } = usePatchTipoControl();
 
   const handleSubmit = () => {
     mutate(
       {
-        id: tipoAfeccion.id,
+        id: tipoControl.id,
         data: {
           nombre,
           descripcion,
-          
+         
         },
       },
       {
@@ -39,7 +38,7 @@ const EditarTipoAfeccionModal: React.FC<EditarTipoAfeccionesModalProps> = ({ tip
     <ModalComponent
       isOpen={true}
       onClose={onClose}
-      title="Editar Tipo de Afección"
+      title="Editar Tipo de Control"
       footerButtons={[
         {
           label: isPending ? "Guardando..." : "Guardar",
@@ -51,9 +50,9 @@ const EditarTipoAfeccionModal: React.FC<EditarTipoAfeccionesModalProps> = ({ tip
     >
       <Input label="Nombre" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
       <Textarea label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-      <Input label="Imagen" type="text" value={imagen} onChange={(e) => setImagen(e.target.value)} />
+     
     </ModalComponent>
   );
 };
 
-export default EditarTipoAfeccionModal;
+export default EditarTipoControlModal;
