@@ -10,8 +10,9 @@ export interface Especies{
     nombre: string;
     descripcion: string;
     img?: string;
+    tiempocrecimiento: number;
     TiposEspecie?: TiposEspecie;
-    fk_TipoEspecie?: number;
+    fk_TiposEspecie?: number;
 }
 
 export interface Semilleros{
