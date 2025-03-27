@@ -1,0 +1,209 @@
+---
+title:  Lotes
+description: Endpoint para obtener lotes en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/lote/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtencion de lotes
+
+Este endpoint permite llamar todos los lotes existentes en AgroSoft Api 
+para traerlos y en listarlos
+
+
+## Respuestas Getlotes
+
+✅ 201 - Éxito
+```json
+
+    {
+        "id": 1,
+        "nombre": "lote de papaya",
+        "descripcion": "papaya en lote",
+        "tamX": 1,
+        "tamY": 2,
+        "estado": false,
+        "posX": "3.00",
+        "posY": "4.00"
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se encontraron lotes"
+}
+
+```
+
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/lote/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creacion de lotes
+
+Este endpoint permite crear nuevos lotes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "nombre": "lote de papaya",
+        "descripcion": "papaya en lote",
+        "tamX": 1,
+        "tamY": 2,
+        "estado": false,
+        "posX": "3.00",
+        "posY": "4.00"
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`nombre`          | string    | Sí        | nombre del lote | lote de papaya |
+| `descripcion`     | string    | Sí        | descripcion del lote         | papaya en lote |
+| `tamX`    | number    | Sí        | tamaño en X        | 1 |
+| `tamY`       | number    | Sí        | tamaño en Y        | 2 |
+| `estado`       | boolean    | Sí        | estado del lote        | true or false |
+| `posX`       | number    | Sí        | posX        | 2 |
+| `posY`       | number    | Sí        | psoY       | 2 |
+
+
+## Respuestas Postlotes
+
+✅ 201 - Éxito al crear el lote
+```json
+
+    {
+        "id": 1,
+        "nombre": "lote de papaya",
+        "descripcion": "papaya en lote",
+        "tamX": 1,
+        "tamY": 2,
+        "estado": false,
+        "posX": "3.00",
+        "posY": "4.00"
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo crear el lote"
+}
+
+```
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/lote/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edicion de lotes
+
+Este endpoint permite editar los lotes existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+        "descripcion": "papaya en lote",
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id del lote | 1
+| `descripcion`     | string    | Sí        | nombre del lote        | papaya en lote dos |
+
+## Respuestas Patchlotes
+
+✅ 201 - Éxito al editar el lote
+```json
+
+    {
+        "id": 1,
+        "nombre": "lote de papaya",
+        "descripcion": "papaya en lote dos",
+        "tamX": 1,
+        "tamY": 2,
+        "estado": false,
+        "posX": "3.00",
+        "posY": "4.00"
+    }
+
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar el lote"
+}
+
+```
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/lote/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminacion de lotes
+
+Este endpoint permite eliminar los lotes existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`                | number    | Sí        | id del lote                     | 1
+
+## Respuestas Deletelotes
+
+✅ 201 - Éxito al eliminar el lote
+```json
+
+{
+  "detail": "lote eliminado correctamente"
+}
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar el lote"
+}
+
+```

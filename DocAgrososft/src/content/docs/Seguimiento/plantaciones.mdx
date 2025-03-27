@@ -1,0 +1,186 @@
+---
+title:  Plantaciones
+description: Endpoint para obtener plantaciones en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/plantaciones/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtencion de plantaciones
+
+Este endpoint permite llamar todos los plantaciones existentes en AgroSoft Api 
+para traerlos y en listarlos
+
+
+## Respuestas Getplantaciones
+
+✅ 201 - Éxito
+```json
+
+    {
+        "id": 1,
+        "creado": "2025-03-27T05:52:28.309702Z",
+        "fk_Cultivo": 1,
+        "fk_Era": 2
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se encontraron plantaciones"
+}
+
+```
+
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/plantaciones/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creacion de plantaciones
+
+Este endpoint permite crear nuevos plantaciones en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "fk_Cultivo": 1,
+        "fk_Era": 2
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`fk_Cultivo`          | number    | Sí        | cultivo al que pertenece | 38 |
+| `fk_Era`       | number    | Sí        | era a la q pertenece        | 2 |
+
+
+## Respuestas Postplantaciones
+
+✅ 201 - Éxito al crear la plantacion
+```json
+
+    {
+        "id": 1,
+        "creado": "2025-03-27T05:52:28.309702Z",
+        "fk_Cultivo": 1,
+        "fk_Era": 2
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo crear la plantacion"
+}
+
+```
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/plantaciones/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edicion de plantaciones
+
+Este endpoint permite editar las plantaciones existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "id": 1,
+        "fk_Era": 2
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id dla plantacion | 38 | 1
+| `fk_Era`     | number    | Sí        | era a la que pertenece        | 3 |
+
+## Respuestas Patchplantaciones
+
+✅ 201 - Éxito al editar la plantacion
+```json
+
+    {
+        "id": 1,
+        "creado": "2025-03-27T05:52:28.309702Z",
+        "fk_Cultivo": 1,
+        "fk_Era": 3
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar la plantacion"
+}
+
+```
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/plantaciones/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminacion de plantaciones
+
+Este endpoint permite eliminar los plantaciones existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id de la plantacion | 1
+
+## Respuestas Deleteplantaciones
+
+✅ 201 - Éxito al eliminar la plantacion
+```json
+
+{
+  "detail": "plantacion eliminada correctamente"
+}
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar la plantacion"
+}
+
+```
