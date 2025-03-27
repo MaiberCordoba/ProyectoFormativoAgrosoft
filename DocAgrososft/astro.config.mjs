@@ -12,17 +12,7 @@ export default defineConfig({
 			},
 			sidebar: [
 				
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
-				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
+				
 				{
 					label: 'Autenticacion',
 					items: [
@@ -31,10 +21,7 @@ export default defineConfig({
 						{ label: 'refrescar token', slug: 'autenticacion/refrescar-token' },
 					],
 				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
+				
 				{
 					label: 'Sanidad',
 					autogenerate: { directory: 'Sanidad' },
