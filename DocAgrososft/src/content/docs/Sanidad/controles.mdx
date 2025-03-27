@@ -1,0 +1,185 @@
+---
+title: Controles
+description: Endpoint para obtener y gestionar controles en AgroSoft Api
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner
+  method="GET"
+  path="/controles/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtención de Controles
+
+Este endpoint permite obtener todos los controles registrados en AgroSoft Api.
+
+### Respuesta Exitosa
+
+✅ 201 - Éxito
+```json
+[
+  {
+    "id": 1,
+    "fk_Afeccion": 5,
+    "fk_TipoControl": 2,
+    "descripcion": "Control biológico aplicado",
+    "fechaControl": "2025-03-27"
+  },
+  {
+    "id": 2,
+    "fk_Afeccion": 3,
+    "fk_TipoControl": 1,
+    "descripcion": "Control químico realizado",
+    "fechaControl": "2025-03-28"
+  }
+]
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se encontraron controles"
+}
+```
+
+<ApiBaseBanner
+  method="POST"
+  path="/controles/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creación de Control
+
+Este endpoint permite crear un nuevo control.
+
+### Campos requeridos
+
+```json
+{
+  "fk_Afeccion": 5,
+  "fk_TipoControl": 2,
+  "descripcion": "Aplicación de control biológico",
+  "fechaControl": "2025-03-27"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción                 | Ejemplo                  |
+|----------------|--------|-----------|---------------------------|--------------------------|
+| `fk_Afeccion` | number | Sí       | ID de la afección asociada | 5                        |
+| `fk_TipoControl` | number | Sí       | ID del tipo de control     | 2                        |
+| `descripcion` | string | Sí       | Descripción del control    | "Aplicación de biológico" |
+| `fechaControl` | date   | Sí       | Fecha de aplicación       | "2025-03-27"             |
+
+### Respuesta Exitosa
+
+✅ 201 - Control creado exitosamente
+```json
+{
+  "id": 3,
+  "fk_Afeccion": 6,
+  "fk_TipoControl": 1,
+  "descripcion": "Aplicación de control mecánico",
+  "fechaControl": "2025-03-29"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo crear el control"
+}
+```
+
+<ApiBaseBanner
+  method="PATCH"
+  path="/controles/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edición de Control
+
+Este endpoint permite actualizar un control existente.
+
+### Campos requeridos
+
+```json
+{
+  "id": 1,
+  "descripcion": "Control biológico mejorado"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción                 | Ejemplo                        |
+|----------------|--------|-----------|---------------------------|------------------------------|
+| `id`          | number | Sí       | ID del control            | 1                            |
+| `fk_Afeccion` | number | No        | ID de la afección        | 5                            |
+| `fk_TipoControl` | number | No        | ID del tipo de control    | 2                            |
+| `descripcion` | string | No        | Nueva descripción        | "Control biológico mejorado" |
+| `fechaControl` | date   | No        | Nueva fecha de control    | "2025-03-30"                 |
+
+### Respuesta Exitosa
+
+✅ 201 - Éxito al editar el control
+```json
+{
+  "id": 1,
+  "fk_Afeccion": 5,
+  "fk_TipoControl": 2,
+  "descripcion": "Control biológico mejorado",
+  "fechaControl": "2025-03-30"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo editar el control"
+}
+```
+
+<ApiBaseBanner
+  method="DELETE"
+  path="/api/controles/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminación de Control
+
+Este endpoint permite eliminar un control existente.
+
+### Campos requeridos
+
+```json
+{
+  "id": 1
+}
+```
+
+### Parámetros del Request
+
+| Parámetro | Tipo   | Requerido | Descripción              | Ejemplo |
+|----------|--------|-----------|--------------------------|---------|
+| `id`     | number | Sí       | ID del control a eliminar | 1       |
+
+### Respuesta Exitosa
+
+✅ 201 - Control eliminado correctamente
+```json
+{
+  "detail": "Control eliminado correctamente"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo eliminar el control"
+}
+```
+

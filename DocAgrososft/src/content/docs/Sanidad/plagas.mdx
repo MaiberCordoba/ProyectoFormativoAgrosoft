@@ -1,0 +1,183 @@
+---
+title:  Plagas
+description: Endpoint para obtener plagas en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/plaga/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtención de Plagas
+
+Este endpoint permite llamar todas las plagas existentes en AgroSoft Api.
+
+## Respuestas GetPlaga
+
+✅ 201 - Éxito
+```json
+{
+  "id": 1,
+  "tipoPlaga": {
+    "id": 2,
+    "nombre": "maiber",
+    "descripcion": "adso",
+    "img": "asd"
+  },
+  "nombre": "manuel",
+  "descripcion": "manuelillo pillo",
+  "img": "nas",
+  "fk_Tipo": 2
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se encontraron plagas"
+}
+```
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/plaga/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creación de Plaga
+
+Este endpoint permite crear nuevas plagas en AgroSoft Api.
+
+### Campos requeridos
+
+```json
+{
+  "nombre": "nueva plaga",
+  "descripcion": "descripción de la plaga",
+  "img": "imagen.png",
+  "fk_Tipo": 2
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción            | Ejemplo          |
+|----------------|--------|-----------|------------------------|------------------|
+| `nombre`      | string | Sí        | Nombre de la plaga     | "nueva plaga"   |
+| `descripcion` | string | Sí        | Descripción de la plaga | "descripción"   |
+| `img`         | string | No        | URL de imagen opcional | "imagen.png"   |
+| `fk_Tipo`     | number | Sí        | ID del tipo de plaga   | 2                |
+
+## Respuestas PostPlaga
+
+✅ 201 - Éxito al crear la plaga
+```json
+{
+  "id": 3,
+  "nombre": "plaga creada",
+  "descripcion": "descripción",
+  "img": "imagen.png",
+  "fk_Tipo": 2
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo crear la plaga"
+}
+```
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/plaga/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edición de Plaga
+
+Este endpoint permite editar las plagas existentes en AgroSoft Api.
+
+### Campos requeridos
+
+```json
+{
+  "id": 1,
+  "nombre": "plaga actualizada"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción               | Ejemplo                  |
+|----------------|--------|-----------|---------------------------|--------------------------|
+| `id`          | number | Sí        | ID de la plaga            | 1                        |
+| `nombre`      | string | No        | Nombre actualizado        | "plaga actualizada"     |
+| `descripcion` | string | No        | Descripción actualizada   | "nueva descripción"     |
+| `img`         | string | No        | URL de imagen actualizada | "nueva-imagen.png"      |
+| `fk_Tipo`     | number | No        | ID del tipo de plaga      | 2                        |
+
+## Respuestas PatchPlaga
+
+✅ 201 - Éxito al editar la plaga
+```json
+{
+  "id": 1,
+  "nombre": "plaga actualizada",
+  "descripcion": "modificada",
+  "img": "imagen_modificada.png",
+  "fk_Tipo": 2
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo editar la plaga"
+}
+```
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/plaga/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminación de Plaga
+
+Este endpoint permite eliminar las plagas existentes en AgroSoft Api.
+
+### Campos requeridos
+
+```json
+{
+  "id": 1
+}
+```
+
+### Parámetros del Request
+
+| Parámetro | Tipo   | Requerido | Descripción            | Ejemplo |
+|----------|--------|-----------|------------------------|---------|
+| `id`     | number | Sí        | ID de la plaga        | 1       |
+
+## Respuestas DeletePlaga
+
+✅ 201 - Éxito al eliminar la plaga
+```json
+{
+  "detail": "Plaga eliminada correctamente"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo eliminar la plaga"
+}
+```
+
