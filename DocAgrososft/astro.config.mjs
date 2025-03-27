@@ -39,7 +39,8 @@ export default defineConfig({
 					label: 'Sensores IoT',
 					items:[
 						{ label: 'introduccion', slug: 'sensores/introduccion' },
-						{ label: 'acciones', slug: 'sensores/acciones' }
+						{ label: 'acciones', slug: 'sensores/acciones' },
+						{ label: 'webSocket', slug: 'sensores/websocket' },
 					],
 				},
 				{
