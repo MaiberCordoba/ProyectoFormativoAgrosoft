@@ -1,0 +1,52 @@
+---
+title: Datos en Tiempo Real (WebSocket)
+description: Endpoint WebSocket para recibir datos en tiempo real de los sensores en AgroSoft API
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="WebSocket" 
+  path="/ws/sensor/{sensor_name}/" 
+  path="/ws/sensor/:id/"
+  baseUrl="ws://127.0.0.1:8000" 
+/>
+
+## Conexión al WebSocket
+
+Este endpoint permite recibir datos en tiempo real de los sensores 
+registrados en AgroSoft API. Los datos incluyen el tipo de sensor, 
+el valor registrado y la fecha de la medición.
+
+### Formato del Mensaje Recibido
+
+```json
+{
+  "sensor": "TEM",
+  "valor": 24.7,
+  "fecha": "2025-03-27T12:10:00Z"
+}
+```
+
+### Ejemplo de Conexión con JavaScript
+
+```javascript
+const socket = new WebSocket("ws://127.0.0.1:8000/ws/sensor/TEM/");
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    console.log("Datos recibidos:", data);
+};
+
+socket.onopen = function() {
+    console.log("Conectado al WebSocket");
+};
+
+socket.onclose = function() {
+    console.log("Conexión cerrada");
+};
+```
+
+### Notas
+- `{sensor_name}` debe ser reemplazado por el tipo de sensor que deseas monitorear (ejemplo: `TEM`, `LUM`, `HUM_A`).
+- El WebSocket envía datos en formato JSON cada vez que hay una nueva medición disponible.
