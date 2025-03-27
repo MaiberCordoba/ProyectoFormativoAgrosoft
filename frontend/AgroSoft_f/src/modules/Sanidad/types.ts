@@ -48,7 +48,20 @@ export interface Controles{
     descripcion: string;
 }
 
+export enum EstadoAfeccion {
+    Detectado = "Detectado",
+    EnTratamiento = "EnTratamiento",
+    Erradicado = "Erradicado"
+}
 
+
+export interface AfeccionesCultivo {
+    id: number;
+    fk_Plantacion: number;
+    fk_Plaga: number;
+    fechaEncuentro: string;
+    estado: EstadoAfeccion;
+}
 
 
 
