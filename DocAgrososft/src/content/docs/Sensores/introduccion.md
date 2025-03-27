@@ -38,7 +38,7 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
 
 <div class="card-grid">
   <a href="/sensores/acciones" class="card">
-    <div class="card-icon">📡</div>
+    <div class="card-icon">📲</div>
     <h3>Acciones</h3>
     <p>EndPoint que puedes utilizar</p>
   </a>
