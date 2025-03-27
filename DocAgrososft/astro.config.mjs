@@ -23,7 +23,9 @@ export default defineConfig({
 				},
 				{
 					label: 'Manejo de usuarios',
-					items:[]
+					items:[
+						{ label: 'introduccion', slug: 'autenticacion/introduccion' },
+					]
 				},
 				{
 					label: 'Seguimiento cultivos',
@@ -35,7 +37,10 @@ export default defineConfig({
 				},
 				{
 					label: 'Sensores IoT',
-					items:[],
+					items:[
+						{ label: 'introduccion', slug: 'sensores/introduccion' },
+						{ label: 'acciones', slug: 'sensores/acciones' }
+					],
 				},
 				{
 					label: 'Finanzas',
