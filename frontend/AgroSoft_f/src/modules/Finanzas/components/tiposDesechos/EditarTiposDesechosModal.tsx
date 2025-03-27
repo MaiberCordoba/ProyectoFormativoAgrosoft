@@ -37,7 +37,7 @@ const EditarTiposDesechosModal: React.FC<EditarTiposDesechosModalProps> = ({ tip
     <ModalComponent
       isOpen={true}
       onClose={onClose}
-      title="Editar Afección"
+      title="Editar Tipo de desecho"
       footerButtons={[
         {
           label: isPending ? 'Guardando...' : 'Guardar',
