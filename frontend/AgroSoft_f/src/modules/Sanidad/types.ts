@@ -13,3 +13,10 @@ export interface Afecciones{
     tipoPlaga?: TiposAfecciones;
     fk_Tipo?: number;
 }
+
+export interface TipoControl{
+    id: number;
+    nombre: string;
+    descripcion: string;
+    
+}
