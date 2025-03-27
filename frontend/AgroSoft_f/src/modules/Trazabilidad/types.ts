@@ -18,14 +18,14 @@ export interface Especies{
 export interface Semilleros{
   id: number;
   unidades: number;
-  fechaSiembra: string;
-  fechaEstimada: string;
+  fechasiembra: string;
+  fechaestimada: string;
   Especies?: Especies;
-  fk_Especie: number;
+  fk_especie: number;
 }
 
 export interface Cultivos{
-  id: number;
+  id?: number;
   nombre: string;
   unidades: number;
   activo: boolean;
@@ -35,7 +35,7 @@ export interface Cultivos{
 }
 
 export interface Lotes{
-  id: number;
+  id?: number;
   nombre: string;
   descripcion: string;
   tamX: number;
@@ -46,20 +46,20 @@ export interface Lotes{
 }
 
 export interface Eras{
-  id: number;
+  id?: number;
   tamX: number;
   tamY: number;
   posX: number;
   posY: number;
-  estado: boolean;
+  tipo: string;
   Lotes?: Lotes;
-  fk_Lote?: number; 
+  fk_lote_id: number; 
 }
 
 export interface Plantaciones{
   id: number;
-  Cultivos: Cultivos;
+  Cultivos?: Cultivos;
   fk_Cultivo: number;
-  Eras: Eras;
+  Eras?: Eras;
   fk_Era: number;
 }
