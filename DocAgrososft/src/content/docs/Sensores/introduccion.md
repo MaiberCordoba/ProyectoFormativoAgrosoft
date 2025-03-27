@@ -42,4 +42,11 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
     <h3>Acciones</h3>
     <p>EndPoint que puedes utilizar</p>
   </a>
+
+  <a href="/sensores/websocket" class="card">
+  <div class="card-icon">📡</div>
+    <h3>Web Socket</h3>
+    <p>Datos en tiempo real</p>
+  </a>
+
 </div>
