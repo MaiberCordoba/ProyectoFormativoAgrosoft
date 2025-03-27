@@ -10,6 +10,8 @@ import {
   WiRain,
 } from "react-icons/wi";
 import SensorCard from "../components/SensorCard";
+import { SensorLista } from "../components/sensor/SensorListar";
+
 
 export default function IoTPages() {
   const navigate = useNavigate();
@@ -98,9 +100,10 @@ export default function IoTPages() {
         )}
       </div>
       <br />
-      <Button color="primary" variant="faded" onClick={() => navigate("/sensores/registrar")}>
-        Registrar Nuevo Sensor
-      </Button>
+      <div>
+      <SensorLista/>
+      </div>
+
     </div>
   );
 }
