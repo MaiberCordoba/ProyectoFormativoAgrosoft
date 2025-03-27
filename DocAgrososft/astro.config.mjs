@@ -21,11 +21,27 @@ export default defineConfig({
 						{ label: 'refrescar token', slug: 'autenticacion/refrescar-token' },
 					],
 				},
-				
+				{
+					label: 'Manejo de usuarios',
+					items:[]
+				},
+				{
+					label: 'Seguimiento cultivos',
+					items:[],
+				},
 				{
 					label: 'Sanidad',
-					autogenerate: { directory: 'Sanidad' },
+					items:[],
 				},
+				{
+					label: 'Sensores IoT',
+					items:[],
+				},
+				{
+					label: 'Finanzas',
+					items:[],
+				},
+
 			],
 		}),
 	],

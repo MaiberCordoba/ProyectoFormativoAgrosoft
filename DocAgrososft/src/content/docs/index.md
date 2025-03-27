@@ -69,7 +69,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
 
 <div class="modules-grid">
   <!-- Tarjeta de usuarios -->
-  <a href="/modulos/cultivos" class="module-card">
+  <a href="/usuarios" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Usuarios</h3>
     <p>Control de usuarios.</p>
@@ -78,7 +78,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
 
 <div class="modules-grid">
   <!-- Tarjeta de Cultivos -->
-  <a href="/modulos/cultivos" class="module-card">
+  <a href="/cultivos" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Cultivos</h3>
     <p>Monitoreo de siembras.</p>
@@ -86,7 +86,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Sanidad -->
-  <a href="/modulos/sanidad" class="module-card">
+  <a href="/sanidad" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Sanidad</h3>
     <p>Control de plagas y tratamientos fitosanitarios</p>
@@ -94,7 +94,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Sensores -->
-  <a href="/modulos/iot" class="module-card">
+  <a href="/iot" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Sensores IoT</h3>
     <p>Datos en tiempo real de tu cultivo</p>
@@ -102,7 +102,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Finanzas -->
-  <a href="/modulos/finanzas" class="module-card">
+  <a href="/finanzas" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Finanzas</h3>
     <p>Gestión de costos y reportes económicos</p>
@@ -112,10 +112,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
 
 ## Primeros Pasos
 
-1. Configura tus credenciales en [Autenticación](/autenticacion)
-2. Explora nuestros [endpoints clave](/guias/quickstart)
+1. Configura tus credenciales en [Autenticación](/autenticacion/obtener-token/)
 
 
-<div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border-left: 4px solid #4CAF50; margin: 2rem 0;">
-  <strong>¿Necesitas ayuda?</strong> Visita nuestro <a href="#">centro de soporte</a> o únete a la <a href="#">comunidad</a>.
-</div>
+
