@@ -6,7 +6,6 @@ import { Input, Select, SelectItem } from "@heroui/react";
 import { addToast } from "@heroui/toast"; // Importamos las alertas
 import { SENSOR_TYPES, SensorData } from "../../types/sensorTypes";
 
-// Definir los tipos para los datos de Lote y Era
 interface Lote {
   id: number;
   nombre: string;
@@ -16,21 +15,18 @@ interface Era {
   id: number;
 }
 
-// Definir un tipo para la creación de sensores sin `id`
 type SensorCreateData = Omit<SensorData, "id">;
 
 interface CrearSensorModalProps {
   onClose: () => void;
 }
 
-// Función para obtener los lotes con tipado correcto
 const fetchLotes = async (): Promise<Lote[]> => {
   const res = await fetch("http://127.0.0.1:8000/api/lote/");
   if (!res.ok) throw new Error("Error al obtener los lotes");
   return res.json();
 };
 
-// Función para obtener las eras con tipado correcto
 const fetchEras = async (): Promise<Era[]> => {
   const res = await fetch("http://127.0.0.1:8000/api/eras/");
   if (!res.ok) throw new Error("Error al obtener las eras");
