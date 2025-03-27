@@ -35,6 +35,11 @@ import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 //trazabilidad
 import { TiposEspecie } from "./modules/Trazabilidad/pages/tiposEspecies";
 import { EspeciesList } from "./modules/Trazabilidad/pages/especies";
+import { Semillero } from "./modules/Trazabilidad/pages/semilleros";
+import { Plantaciones } from "./modules/Trazabilidad/pages/plantaciones";
+import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
+import { ErasList } from "./modules/Trazabilidad/pages/eras";
+import { LotesList } from "./modules/Trazabilidad/pages/lotes";
 
 
 
@@ -79,6 +84,11 @@ function App() {
             <Route path="/testeo" element={<Testeo/>}></Route>
             <Route path="/tipos-especie" element={<TiposEspecie />} />
             <Route path="/especies" element={<EspeciesList />} />
+            <Route path="/semilleros" element={<Semillero />} />
+            <Route path="/plantaciones" element={<Plantaciones />} />
+            <Route path="/cultivos" element={<CultivoList />} />
+            <Route path="/eras" element={<ErasList />} />
+            <Route path="/lotes" element={<LotesList />} />
           </Route>
         </Route>
       </Routes>
