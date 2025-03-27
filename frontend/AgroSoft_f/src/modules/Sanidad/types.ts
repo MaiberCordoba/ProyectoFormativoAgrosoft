@@ -20,3 +20,15 @@ export interface TipoControl{
     descripcion: string;
     
 }
+
+
+export interface ProductosControl {
+    id: number;
+    nombre: string;
+    precio: number;  
+    compuestoActivo: string;  
+    fichaTecnica: string;  
+    contenido: number;
+    tipoContenido: string; 
+    unidades: number;
+}
