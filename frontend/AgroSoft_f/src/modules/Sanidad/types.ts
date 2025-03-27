@@ -32,3 +32,15 @@ export interface ProductosControl {
     tipoContenido: string; 
     unidades: number;
 }
+
+export interface UsoProductosControl {
+    id: number;
+    fk_ProductoControl?: number;
+    fk_Control?: number; 
+    cantidadProducto: number;
+}
+
+
+
+
+
