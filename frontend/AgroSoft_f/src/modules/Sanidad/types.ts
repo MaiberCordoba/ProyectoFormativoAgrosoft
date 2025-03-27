@@ -40,6 +40,15 @@ export interface UsoProductosControl {
     cantidadProducto: number;
 }
 
+export interface Controles{
+    id: number;
+    fk_Afeccion?: number;
+    fk_TipoControl?: number;
+    fecha: string;
+    descripcion: string;
+}
+
+
 
 
 
