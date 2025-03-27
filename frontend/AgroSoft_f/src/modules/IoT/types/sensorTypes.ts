@@ -1,8 +1,10 @@
 export interface SensorData {
-  sensor_id: number;
-  tipo: string;
-  valor: number;
-  timestamp: string;
+  id: number;
+  fk_lote: number | null;
+  fk_eras: number | null;
+  fecha: string; 
+  tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH";
+  valor: number; 
 }
 
 export const SENSOR_TYPES = [
@@ -13,4 +15,3 @@ export const SENSOR_TYPES = [
   { key: "HUM_T", label: "Humedad del Terreno" },
   { key: "PH", label: "Nivel de PH" },
 ];
-
