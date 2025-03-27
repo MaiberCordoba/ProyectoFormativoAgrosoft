@@ -25,7 +25,7 @@ class SensorConsumer(AsyncWebsocketConsumer):
             if action == "update_sensor":
                 await self.update_sensor(data)
             elif action == "get_sensor":
-                await self.get_sensor_by_name(data)  # ✅ Cambio en la función
+                await self.send_sensor_info(data)
             else:
                 await self.send(json.dumps({"error": "❌ Acción no válida"}))
         except json.JSONDecodeError:
@@ -35,7 +35,7 @@ class SensorConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps({"error": f"❌ Error interno: {str(e)}"}))
 
     async def update_sensor(self, data):
-        sensor_name = data.get("sensor_name")  # ✅ Cambio de sensor_id a sensor_name
+        sensor_name = data.get("sensor_name")
         valor = data.get("valor")
 
         if not sensor_name or valor is None:
@@ -43,7 +43,7 @@ class SensorConsumer(AsyncWebsocketConsumer):
             return
 
         try:
-            valor = float(valor)  # Convertimos a float antes de compararlo
+            valor = float(valor)
         except ValueError:
             await self.send(json.dumps({"error": "❌ Valor no válido"}))
             return
@@ -53,7 +53,7 @@ class SensorConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps({"error": f"❌ Sensor {sensor_name} no encontrado"}))
             return
 
-        await self.save_sensor(sensor.id, valor)  # Guardamos usando el ID real
+        await self.save_sensor(sensor.id, valor)
         timestamp = datetime.utcnow().isoformat()
 
         alerta = None
@@ -74,22 +74,15 @@ class SensorConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_send(
             f"sensor_{sensor_name}",
-            {
-                "type": "sensor_update",
-                "mensaje_sensor": mensaje_sensor,
-            }
+            {"type": "sensor_update", "mensaje_sensor": mensaje_sensor},
         )
 
         if alerta:
             await self.channel_layer.group_send(
-                "sensors_global",
-                {
-                    "type": "sensor_alert",
-                    "alerta": alerta,
-                }
+                "sensors_global", {"type": "sensor_alert", "alerta": alerta}
             )
 
-    async def get_sensor_by_name(self, data):
+    async def send_sensor_info(self, data):
         sensor_name = data.get("sensor_name")
         if not sensor_name:
             await self.send(json.dumps({"error": "❌ Se requiere un nombre de sensor"}))
