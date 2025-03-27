@@ -11,11 +11,12 @@ export const postUsoHerramienta = async (UsosHerramientasData: Partial<UsosHerra
   return response.data;
 };
 
-export const putUsosHerramientas = async (id: number, data: UsosHerramientas): Promise<UsosHerramientas> => {
-  const response = await apiClient.put(`usosherramientas/${id}/`, data);
-  return response.data;
-}
+export const patchUsosHerramientas = async ( id: number, data: Partial<UsosHerramientas>): Promise<UsosHerramientas> => {
+    const response = await apiClient.patch<UsosHerramientas>(`usosherramientas/${id}/`, data);
+    return response.data;
+  };
 
-export const deleteUsosHerramientas = async (id: number): Promise<void> => {
-  await apiClient.delete(`usosherramientas/${id}/`)
+  export const deleteUsosHerramientas = async (id: number): Promise<UsosHerramientas> => {
+    const response = await apiClient.delete<UsosHerramientas>(`usosherramientas/${id}/`);
+    return response.data
 }
