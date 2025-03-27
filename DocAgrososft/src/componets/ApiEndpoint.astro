@@ -1,0 +1,18 @@
+---
+const { method, path } = Astro.props;
+const baseURL = 'http://127.0.0.1:8000/api';
+---
+<div class="endpoint">
+  <span class="method">{method}</span> 
+  <code>{baseURL}{path}</code>
+</div>
+
+<style>
+  .method {
+    color: white;
+    background: var(--sl-color-purple);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+</style>

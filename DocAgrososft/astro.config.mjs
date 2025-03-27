@@ -6,11 +6,16 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: 'My Docs',
+			title: 'Documentacion AgroSoft',
 			social: {
-				github: 'https://github.com/withastro/starlight',
+				github: 'https://github.com/MaiberCordoba/ProyectoFormativoAgrosoft',
 			},
 			sidebar: [
+				
+				{
+					label: 'Reference',
+					autogenerate: { directory: 'reference' },
+				},
 				{
 					label: 'Guides',
 					items: [
@@ -19,8 +24,20 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'Autenticacion',
+					items: [
+						{ label: 'introduccion', slug: 'autenticacion/introduccion' },
+						{ label: 'obtener token', slug: 'autenticacion/obtener-token' },
+						{ label: 'refrescar token', slug: 'autenticacion/refrescar-token' },
+					],
+				},
+				{
 					label: 'Reference',
 					autogenerate: { directory: 'reference' },
+				},
+				{
+					label: 'Sanidad',
+					autogenerate: { directory: 'Sanidad' },
 				},
 			],
 		}),

@@ -1,0 +1,43 @@
+---
+title: Refrescar Token de Acceso
+description: Endpoint para renovar el access token
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/token/refresh/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Autenticación con credenciales
+
+Renueva el token de acceso usando el refresh token.
+
+
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     |
+|--------------------|---------- |-----------|---------------------------------|
+|`refresh`           | string    | Sí        | token obtenido previamente |
+
+
+
+## Respuestas
+
+✅ 201 - Éxito
+```json
+
+{
+  "access": "eyJhbGciOiJIUz...",
+  "refresh": "eyJhbGciOiJIUz..."
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "Token inválido o expirado"
+}
+```

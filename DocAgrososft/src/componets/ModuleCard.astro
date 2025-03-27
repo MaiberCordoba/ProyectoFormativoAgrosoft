@@ -1,0 +1,28 @@
+---
+const { title, icon, link, description } = Astro.props;
+---
+<a href={link} class="module-card">
+  <div class="icon-container">
+    <span class="icon">{icon}</span>
+  </div>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  <span class="link">Ver módulo →</span>
+</a>
+
+<style>
+  .module-card {
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  .module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  .icon-container {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+</style>
