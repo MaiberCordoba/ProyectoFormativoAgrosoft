@@ -44,7 +44,7 @@ import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 import { TipoAfecciones } from "./modules/Sanidad/Pages/tipoafecciones";
 import { TipoControl } from "./modules/Sanidad/Pages/tipocontrol";
 import { ProductosControl } from "./modules/Sanidad/Pages/productoscontrol";
-
+import { UsoProductosControl } from "./modules/Sanidad/Pages/usoproductoscontrol";
 
 
 const queryClient = new QueryClient();
@@ -95,6 +95,8 @@ function App() {
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>
             <Route path="/tipos-de-control" element={<TipoControl/>}></Route>
             <Route path="/productos-para-el-control" element={<ProductosControl/>}></Route>
+            <Route path="/usos-de-productos-para-el-control" element={<UsoProductosControl/>}></Route>
+
           </Route>
         </Route>
       </Routes>
