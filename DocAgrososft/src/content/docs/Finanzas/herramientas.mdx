@@ -1,0 +1,123 @@
+---
+title: herramientas
+description: Endpoint para gestionar las herramientas dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de herramientas de uso agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada herramienta está asociada a un lote, y contiene información clave como nombre, descripción, unidades.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/herramientas/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todas las herramientas registradas.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+    {
+        "id": 1,
+        "fk_Lote": 1,
+        "nombre": "pala",
+        "descripcion": "para recoger popo",
+        "unidades": 5
+    }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/herramientas/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar una nueva herramienta
+
+## **Campos Requeridos**
+```json
+{
+  "id": integer,
+  "fk_Lote": integer,
+  "nombre": string,
+  "descripcion": string,
+  "unidades": integer
+}
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `fk_Lote`         | integer   | Si       |  ID del lote asociado                              | 1               |
+| `nombre`         | string   | Si       |  Título de la herramienta                              | "pala"                |
+| `descripcion`    | string   | Si       |  Descripción de la herramienta                         | "para recoger popo"       |
+| `unidades`    | integer   | Si       |  Cantidad de herramientas                        | 5      |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+    {
+        "id": 1,
+        "fk_Lote": 1,
+        "nombre": "pala",
+        "descripcion": "para recoger popo",
+        "unidades": 5
+    }
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/herramientas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una herramienta
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `fk_Lote`         | integer   | Si       |Nuevo   ID del lote asociado                              | 1               |
+| `nombre`         | string   | Si       |  Nuevo Título de la herramienta                              | "azaada"                |
+| `descripcion`    | string   | Si       |  Nuevo Descripción de la herramienta                         | "para cortar"       |
+| `unidades`    | integer   | Si       |  Nueva Cantidad de herramientas                        | 10     |
+
+---
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+    {
+        "id": 1,
+        "fk_Lote": 1,
+        "nombre": "azaada",
+        "descripcion": "para cortar",
+        "unidades": 10
+    }
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/herramientas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)
