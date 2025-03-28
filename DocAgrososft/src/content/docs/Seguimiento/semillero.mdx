@@ -1,0 +1,193 @@
+---
+title:  Semilleros
+description: Endpoint para obtener semilleros en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/semilleros/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtencion de Semilleros
+
+Este endpoint permite llamar todos los semilleros existentes en AgroSoft Api 
+para traerlos y en listarlos
+
+
+## Respuestas GetSemillero
+
+✅ 201 - Éxito
+```json
+
+{
+        "id": 1,
+        "unidades": 38,
+        "fechasiembra": "2025-03-26",
+        "fechaestimada": "2025-03-31",
+        "fk_especie": 2
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se encontraron semilleros"
+}
+
+```
+
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/semilleros/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creacion de Semilleros
+
+Este endpoint permite crear nuevos semilleros en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "unidades": 38,
+        "fechasiembra": "2025-03-26",
+        "fechaestimada": "2025-03-31",
+        "fk_especie": 2
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`unidades`          | number    | Sí        | Cantidades de semillas | 38 |
+| `fechasiembra`     | date    | Sí        | fecha de la siembra         | "2025-03-26" |
+| `fechaestimada`    | date    | Sí        | fecha estimada de la cosecha        | "2025-03-31" |
+| `fk_especie`       | number    | Sí        | especie a la q pertenece        | 2 |
+
+
+## Respuestas PostSemillero
+
+✅ 201 - Éxito al crear el semillero
+```json
+
+{
+        "id": 1,
+        "unidades": 38,
+        "fechasiembra": "2025-03-26",
+        "fechaestimada": "2025-03-31",
+        "fk_especie": 2
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo crear el semillero"
+}
+
+```
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/semilleros/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edicion de Semilleros
+
+Este endpoint permite editar los semilleros existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+        "fechasiembra": "2024-03-28",
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id del semillero | 38 | 1
+| `fechasiembra`     | "date"    | Sí        | fecha de la siembra         | "2024-03-28" |
+
+## Respuestas PatchSemillero
+
+✅ 201 - Éxito al editar el semillero
+```json
+
+{
+        "id": 1,
+        "unidades": 38,
+        "fechasiembra": "2024-03-28",
+        "fechaestimada": "2025-03-31",
+        "fk_especie": 2
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar el semillero"
+}
+
+```
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/semilleros/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminacion de Semilleros
+
+Este endpoint permite eliminar los semilleros existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id del semillero | 38 | 1
+
+## Respuestas DeleteSemillero
+
+✅ 201 - Éxito al eliminar el semillero
+```json
+
+{
+  "detail": "semillero eliminado correctamente"
+}
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo eliminar el semillero"
+}
+
+```

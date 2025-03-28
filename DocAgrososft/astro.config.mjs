@@ -23,19 +23,47 @@ export default defineConfig({
 				},
 				{
 					label: 'Manejo de usuarios',
-					items:[]
+					items: [
+						{ label: 'introduccion', slug: 'usuarios/introduccion' },
+						{ label: "crear-usuario", slug: "usuarios/crear-usuario" },
+						{ label: 'actualizar-usuario', slug: 'usuarios/actualizar-usuario' },
+						{ label: 'eliminar-usuario', slug: 'usuarios/eliminar-usuario' },
+						{ label: 'obtener-lista-usuarios', slug: 'usuarios/obtener-lista-usuarios' },
+						{ label: 'obtener-usuario-autenticado', slug: 'usuarios/obtener-usuario-autenticado' },
+						{ label: 'obtener-usuario-por-id', slug: 'usuarios/obtener-usuario-por-id' },
+					]
 				},
 				{
 					label: 'Seguimiento cultivos',
-					items:[],
+					items:[
+						{ label: 'semillero', slug: 'seguimiento/semillero' },
+						{ label: 'cultivo', slug: 'seguimiento/cultivo' },
+						{ label: 'lotes', slug: 'seguimiento/lotes' },
+						{ label: 'eras', slug: 'seguimiento/eras' },
+						{ label: 'especies', slug: 'seguimiento/especies' },
+						{ label: 'tiposespecie', slug: 'seguimiento/tiposespecie' },
+						{ label: 'plantaciones', slug: 'seguimiento/plantaciones' }
+					],
 				},
 				{
 					label: 'Sanidad',
-					items:[],
+					items:[
+						{ label: 'Tipo Plaga', slug: 'sanidad/tipoplaga' },
+						{ label: 'Plagas', slug: 'sanidad/plagas' },
+						{ label: 'Afecciones', slug: 'sanidad/afecciones' },
+						{ label: 'Tipo Control', slug: 'sanidad/tipocontrol' },
+						{ label: 'Controles', slug: 'sanidad/controles' },
+						{ label: 'Productos para el Control', slug: 'sanidad/productoscontrol' },
+						{ label: 'Uso Productos para el Control', slug: 'sanidad/usoproductoscontrol' },
+					],
 				},
 				{
 					label: 'Sensores IoT',
-					items:[],
+					items:[
+						{ label: 'introduccion', slug: 'sensores/introduccion' },
+						{ label: 'acciones', slug: 'sensores/acciones' },
+						{ label: 'webSocket', slug: 'sensores/websocket' },
+					],
 				},
 				{
 					label: 'Finanzas',

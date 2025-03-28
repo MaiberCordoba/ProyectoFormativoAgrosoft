@@ -1,0 +1,230 @@
+---
+title:  Eras
+description: Endpoint para obtener eras en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/eras/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtencion de eras
+
+Este endpoint permite llamar todos los eras existentes en AgroSoft Api 
+para traerlos y en listarlos
+
+
+## Respuestas Getera
+
+✅ 201 - Éxito
+```json
+
+{
+        "id": 3,
+        "fk_lote": {
+            "id": 1,
+            "nombre": "lote de papaya",
+            "descripcion": "papaya en lote",
+            "tamX": 1,
+            "tamY": 2,
+            "estado": false,
+            "posX": "3.00",
+            "posY": "4.00"
+        },
+        "tipo": "disponible",
+        "tamX": "1.00",
+        "tamY": "1.00",
+        "posX": "1.00",
+        "posY": "1.00"
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se encontraron eras"
+}
+
+```
+
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/eras/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creacion de eras
+
+Este endpoint permite crear nuevos eras en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "fk_lote": 1,
+        "tamX": 1,
+        "tamY": 2,
+        "posX": "3.00",
+        "posY": "4.00",
+        "tipo": disponible,
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`fk_lote`          | number    | Sí        | lote al que pertenece| 1|
+| `tamX`     | number    | Sí        | tamaño en X        | 1 |
+| `tamY`    | number    | Sí        | tamaño en Y       | 1 |
+| `posX`       | number    | Sí        | posicion en X       | 1 |
+| `posY`       | number    | Sí        | posicion en Y        | 1 |
+| `tipo`       | string    | Sí        | estado de la era       | disponible |
+
+
+## Respuestas Postera
+
+✅ 201 - Éxito al crear la era
+```json
+
+{
+        "id": 3,
+        "fk_lote": {
+            "id": 1,
+            "nombre": "lote de papaya",
+            "descripcion": "papaya en lote",
+            "tamX": 1,
+            "tamY": 2,
+            "estado": false,
+            "posX": "3.00",
+            "posY": "4.00"
+        },
+        "tipo": "disponible",
+        "tamX": "1.00",
+        "tamY": "1.00",
+        "posX": "1.00",
+        "posY": "1.00"
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo crear la era"
+}
+
+```
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/eras/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edicion de eras
+
+Este endpoint permite editar los eras existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+        "tipo": "ocupada",
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id dla era | 1
+| `tipo`     | string    | Sí        | estado de la era       | ocupada |
+
+## Respuestas Patchera
+
+✅ 201 - Éxito al editar la era
+```json
+
+{
+        "id": 3,
+        "fk_lote": {
+            "id": 1,
+            "nombre": "lote de papaya",
+            "descripcion": "papaya en lote",
+            "tamX": 1,
+            "tamY": 2,
+            "estado": false,
+            "posX": "3.00",
+            "posY": "4.00"
+        },
+        "tipo": "ocupada",
+        "tamX": "1.00",
+        "tamY": "1.00",
+        "posX": "1.00",
+        "posY": "1.00"
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar la era"
+}
+
+```
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/eras/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminacion de eras
+
+Este endpoint permite eliminar los eras existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 1,
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id dla era | 1
+
+## Respuestas Deleteera
+
+✅ 201 - Éxito al eliminar la era
+```json
+
+{
+  "detail": "era eliminada correctamente"
+}
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar la era"
+}
+
+```

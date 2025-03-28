@@ -2,8 +2,9 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import Providers from "./context/ToastProvider";
 
-import { UsersPage } from "./modules/Users/pages/userPage";
+//import { UsersPage } from "./modules/Users/pages/userPage";
 import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -14,25 +15,34 @@ import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 //Finanzas
 import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
 
+//Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
 import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
 
-//semillero
-import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
-import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
-import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
-//cultivo
-import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
-import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
-import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
-
-import Testeo  from "./pages/testeo";
-import Providers from "./context/ToastProvider";
+//trazabilidad
+import { TiposEspecie } from "./modules/Trazabilidad/pages/tiposEspecies";
+import { EspeciesList } from "./modules/Trazabilidad/pages/especies";
+import { Semillero } from "./modules/Trazabilidad/pages/semilleros";
+import { Plantaciones } from "./modules/Trazabilidad/pages/plantaciones";
+import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
+import { ErasList } from "./modules/Trazabilidad/pages/eras";
+import { LotesList } from "./modules/Trazabilidad/pages/lotes";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
+import { TipoAfecciones } from "./modules/Sanidad/Pages/tipoafecciones";
+import { TipoControl } from "./modules/Sanidad/Pages/tipocontrol";
+import { ProductosControl } from "./modules/Sanidad/Pages/productoscontrol";
+import { UsoProductosControl } from "./modules/Sanidad/Pages/usoproductoscontrol";
+import { Controles } from "./modules/Sanidad/Pages/controles";
+import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
+        
+//usuarios
+import { Usuarios } from "./modules/Users/pages/pageUsers";
 
+//testeo
+import Testeo  from "./pages/testeo";
 
 
 const queryClient = new QueryClient();
@@ -58,13 +68,14 @@ function App() {
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
-            <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/afectaciones" element={<Afecciones />} />
             <Route path="/cosechas"  />
             <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
+             {/* antiguas manuel */}
             <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
             <Route path="/semilleros" element={<SemilleroList />}/>
             <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
@@ -74,7 +85,23 @@ function App() {
             <Route path="/desechos" />
             <Route path="/herramientas"  />
             <Route path="/ventas" />
+
             <Route path="/testeo" element={<Testeo/>}></Route>
+            {/* nuevas manuel*/}
+            <Route path="/tipos-especie" element={<TiposEspecie />} />
+            <Route path="/especies" element={<EspeciesList />} />
+            <Route path="/semilleros" element={<Semillero />} />
+            <Route path="/plantaciones" element={<Plantaciones />} />
+            <Route path="/cultivos" element={<CultivoList />} />
+            <Route path="/eras" element={<ErasList />} />
+            <Route path="/lotes" element={<LotesList />} />
+            {/* nuevas nicolas*/}
+            <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>
+            <Route path="/tipos-de-control" element={<TipoControl/>}></Route>
+            <Route path="/productos-para-el-control" element={<ProductosControl/>}></Route>
+            <Route path="/usos-de-productos-para-el-control" element={<UsoProductosControl/>}></Route>
+            <Route path="/controles" element={<Controles/>}></Route>
+            <Route path="/afectaciones-en-cultivos" element={<AfeccionesCultivo/>}></Route>
           </Route>
         </Route>
       </Routes>

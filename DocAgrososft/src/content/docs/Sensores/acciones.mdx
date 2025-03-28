@@ -1,0 +1,230 @@
+---
+title: Interacciones o acciones en sensores
+description: Endpoint para sensores en AgroSoft API
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/sensor/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Listar los sensores
+
+El endpoint GET en sensores/ te permite obtener una lista de todos los sensores 
+registrados en la base de datos. También, dependiendo de cómo esté configurado 
+en tu API, podrías filtrar sensores por parámetros como fk_lote, fk_eras, tipo, entre otros.
+
+## Resultado consulta
+```json	
+[
+  {
+    "id": 1,
+    "fk_lote": 2,
+    "fk_eras": null,
+    "fecha": "2025-03-27T12:05:00Z",
+    "tipo": "TEM",
+    "valor": 25.8
+  },
+  {
+    "id": 2,
+    "fk_lote": 3,
+    "fk_eras": 1,
+    "fecha": "2025-03-27T12:10:00Z",
+    "tipo": "HUM_A",
+    "valor": 78.2
+  }
+]
+```
+
+### Respuesta Exitosa (200)
+```json
+
+{
+  "status": "OK",
+}
+```
+
+---
+
+### Posibles Errore
+| Código | Descripción                                     |
+|--------|-----------------------------------------------|
+| 400    | Error en la solicitud (datos inválidos)      |
+| 404    | Sensor no encontrado                         |
+| 500    | Error interno del servidor                   |
+
+---
+
+-------------------------------------------------------------------
+<br /><br />
+<ApiBaseBanner 
+  method="POST" 
+  path="/sensor/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Registrar sensores
+Este endpoint permite registrar un nuevo sensor en el sistema. 
+Se utiliza cuando se quiere agregar un nuevo dispositivo de medición 
+3a un lote o era específica dentro de la plataforma.
+
+### Campos requeridos
+- SENSOR_TYPES son los tipos de senosres que se pueden registrar.
+
+```json
+
+{
+  "fk_lote": int,
+  "fk_eras": Int,
+  "tipo": SENSOR_TYPES,
+  "valor": decimal
+}
+```
+
+
+### Parámetros del Request
+
+| Parámetro   | Tipo       | Requerido | Descripción                                      | Ejemplo           |
+|------------|-----------|-----------|--------------------------------------------------|-------------------|
+| `fk_lote`  | int       | ✅ Sí      | ID del lote donde se encuentra el sensor        | `2`               |
+| `fk_eras`  | int       | ✅ Sí      | ID de la era donde está ubicado el sensor       | `5`               |
+| `tipo`     | string    | ✅ Sí      | Tipo de sensor (Debe estar en `SENSOR_TYPES`)   | `"TEM"`           |
+| `valor`    | decimal   | ✅ Sí      | Valor capturado por el sensor                   | `25.8`            |
+
+### Posibles valores para `tipo` (SENSOR_TYPES) 
+
+| Código  | Descripción          |
+|---------|----------------------|
+| `TEM`   | Temperatura          |
+| `LUM`   | Iluminación          |
+| `HUM_A` | Humedad Ambiental    |
+| `VIE`   | Velocidad del Viento |
+| `HUM_T` | Humedad del Terreno  |
+| `PH`    | Nivel de PH          |
+
+
+
+### Respuesta Exitosa (200)
+
+```json
+
+{
+  "status": "Registro exitoso",
+}
+```
+
+---
+
+### Posibles Errore
+| Código | Descripción                                     |
+|--------|-----------------------------------------------|
+| 400    | Error en la solicitud (datos inválidos)      |                        |
+| 500    | Error interno del servidor                   |
+
+---
+
+--------------------------------------------------------
+<br /><br />
+<ApiBaseBanner 
+  method="PUT" 
+  path="/sensor/:id/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Actualizar sensores
+
+El endpoint PUT permite actualizar los valores de un sensor específico 
+en el sistema. Se debe proporcionar el id del sensor que se desea 
+modificar y los datos que vas a actualizar.
+
+### Parámetros del Request (PUT - Actualizar Sensor)
+
+| Parámetro   | Tipo     | Requerido | Descripción                                      | Ejemplo   |
+|------------|---------|-------------|--------------------------------------------------|-----------|
+| `fk_lote`  | int       | ✅ Sí    | ID del lote donde se va a cambiar el sensor        | `2`               |
+| `fk_eras`  | int       | ✅ Sí    | ID de la era donde se va a cambiar el sensor       | `5`               |
+| `valor`    | decimal   | ✅ Sí      | Nuevo valor capturado por el sensor             | `26.0`    |
+
+
+---
+
+### Ejemplo de Request (PUT)
+**Endpoint:** `/sensores/:id/`  
+**Método:** `PUT`  
+**Cuerpo de la solicitud (JSON):**  
+```json
+{
+  "fk_lote": 2,
+  "fk_eras": 2,
+  "valor": 26.0
+}
+```
+---
+
+### Respuesta Exitosa (200)
+```json
+{
+  "id": 2,
+  "fk_lote": 2,
+  "fk_eras": null,
+  "fecha": "2025-03-27T12:05:00Z",
+  "tipo": "TEM",
+  "valor": 26.0
+}
+```
+
+---
+
+### Posibles Errore
+| Código | Descripción                                     |
+|--------|-----------------------------------------------|
+| 400    | Error en la solicitud (datos inválidos)      |
+| 404    | Sensor no encontrado                         |
+| 500    | Error interno del servidor                   |
+
+---
+--------------------------------------------------------------
+
+<br /><br />
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/sensor/:id/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+ ## Elimar sensores
+El endpoint DELETE permite eliminar un sensor específico del sistema usando su id.
+
+---
+
+### **Parámetros del Request (DELETE - Eliminar Sensor)**  
+
+| Parámetro | Tipo  | Requerido | Descripción                              | Ejemplo |
+|-----------|------|-----------|------------------------------------------|---------|
+| `id`      | int  | ✅ Sí      | Identificador único del sensor a eliminar | `2` |
+
+---
+
+### Ejemplo de Request (DELETE)
+**Endpoint:** `/sensores/:id/`  
+**Método:** `DELETE`  
+**No se requiere cuerpo en la solicitud**  
+
+---
+
+### Respuesta Exitosa (204 - Sin Contenido)
+**El sensor se ha eliminado correctamente.**  
+*(No se devuelve ningún contenido en la respuesta.)*  
+
+---
+
+### Posibles Errores
+| Código | Descripción                                      |
+|--------|------------------------------------------------|
+| 400    | Error en la solicitud (ID inválido)            |
+| 404    | Sensor no encontrado (ID inexistente)         |
+| 500    | Error interno del servidor                     |
+
+---
