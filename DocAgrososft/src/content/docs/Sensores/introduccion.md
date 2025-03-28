@@ -40,13 +40,6 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
     
   }
   
-  .note-header {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-  }
-
   .icon {
     margin-right: 0.5rem;
   }
@@ -58,16 +51,13 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
 
   code {
     background: #374151;
-    color: #f3f4f6;
+    color:rgb(0, 0, 0);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-size: 0.9rem;
+
   }
 
-  a {
-    color: #7aa2f7;
-    text-decoration: underline;
-  }
 
   strong {
     font-weight: bold;
@@ -146,6 +136,3 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
     <p>Datos en tiempo real</p>
   </a>
 </div>
-
-
-  
