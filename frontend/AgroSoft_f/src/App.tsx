@@ -63,31 +63,29 @@ function App() {
     <Providers>
     <QueryClientProvider client={queryClient}>
       <Routes>
+        {/* login */}
         <Route path="login" element={<Login />} />
         <Route path="/registro" element={<UserRegister />} />
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
+
+            {/* Usuarios */}
             <Route path="/usuarios" element={<Usuarios />} />
-            <Route path="/afectaciones" element={<Afecciones />} />
-            <Route path="/cosechas"  />
+
+            {/* Finanzas */}
             <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
-            <Route path="/iot" element={<IoTPage />} />
-            <Route path="/sensores/registrar" element={<SensorFormPage />} />
-            <Route path="/sensores/:id" element={<SensorDetail />} />
-             {/* antiguas manuel */}
-            <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
-            <Route path="/semilleros" element={<SemilleroList />}/>
-            <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
-            <Route path="/crearCultivos" element={<CultivoRegister />}/>
-            <Route path="/Cultivos" element={<CultivoList />}/>
-            <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
             <Route path="/desechos" />
             <Route path="/herramientas"  />
             <Route path="/ventas" />
+            <Route path="/cosechas"  />
+          
+            {/*Electronica */}
+            <Route path="/iot" element={<IoTPage />} />
+            <Route path="/sensores/registrar" element={<SensorFormPage />} />
+            <Route path="/sensores/:id" element={<SensorDetail />} />
 
-            <Route path="/testeo" element={<Testeo/>}></Route>
-            {/* nuevas manuel*/}
+            {/*Trazabilidad*/}
             <Route path="/tipos-especie" element={<TiposEspecie />} />
             <Route path="/especies" element={<EspeciesList />} />
             <Route path="/semilleros" element={<Semillero />} />
@@ -95,13 +93,18 @@ function App() {
             <Route path="/cultivos" element={<CultivoList />} />
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
-            {/* nuevas nicolas*/}
+
+            {/*Sanidad*/}
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>
+            <Route path="/afectaciones" element={<Afecciones />} />
             <Route path="/tipos-de-control" element={<TipoControl/>}></Route>
             <Route path="/productos-para-el-control" element={<ProductosControl/>}></Route>
             <Route path="/usos-de-productos-para-el-control" element={<UsoProductosControl/>}></Route>
             <Route path="/controles" element={<Controles/>}></Route>
             <Route path="/afectaciones-en-cultivos" element={<AfeccionesCultivo/>}></Route>
+
+            {/*test*/}
+            <Route path="/testeo" element={<Testeo/>}></Route>
           </Route>
         </Route>
       </Routes>
