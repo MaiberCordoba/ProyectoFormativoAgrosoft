@@ -12,6 +12,7 @@ export const postUsoProducto = async (UsosProductosData: Partial<UsosProductos>)
 };
 
 export const patchUsosProductos = async ( id: number, data: Partial<UsosProductos>): Promise<UsosProductos> => {
+
     const response = await apiClient.patch<UsosProductos>(`usos-productos/${id}/`, data);
     return response.data;
   };
