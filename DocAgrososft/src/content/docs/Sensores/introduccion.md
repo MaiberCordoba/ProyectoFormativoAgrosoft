@@ -29,7 +29,7 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
   }
 
   /* Estilos para la nota */
-  .note {
+  .nota {
     background-color: #131a4c;
     color: white;
     padding: 1rem;
@@ -37,6 +37,7 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
     border-left: 4px solid #4263eb;
     max-width: 800px;
     margin-top: 1.5rem;
+    
   }
   
   .note-header {
@@ -71,9 +72,24 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
   strong {
     font-weight: bold;
   }
+  .note {
+    
+
+  }
 </style>
 
 Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, permitiendo la recopilación, visualización y gestión eficiente de datos.
+
+#### Flujo de Datos en Tiempo Real
+1. **Captura de datos**: Sensores de temperatura, humedad y otros parámetros transmiten información en tiempo real.
+2. **Comunicación WebSocket**: Los datos se envían a través de WebSocket para una actualización instantánea.
+3. **Almacenamiento y Alertas**: Se procesan los valores, se almacenan y se generan alertas en caso de valores críticos.
+  :::note
+    Es necesario incluir un <code>access_token</code> válido al enviar solicitudes a cualquier EndPoint. 
+    Para aprender cómo generar el token, utilice el endpoint de autenticación: 
+    <a href="/autenticacion/obtener-token">Auth Endpoint</a>. <br /><strong>Importante:</strong> 
+    El token de acceso tiene una duración de <strong>1 hora</strong>.
+  :::
 
 #### Configuración de la Solicitud
 ##### Parámetros necesarios para realizar una solicitud a la API
@@ -116,22 +132,6 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
 
 ---
 
-<div class="note">
-  <div class="note-header">
-    <span class="icon">ℹ️</span> <strong>Nota</strong>
-  </div>
-  <p>
-    Es necesario incluir un <code>access_token</code> válido al enviar la factura. 
-    Para aprender cómo generar el token, utilice el endpoint de autenticación: 
-    <a href="../autenticacion/obtener-token/  ">Auth Endpoint</a>. <strong>Importante:</strong> 
-    El token de acceso tiene una duración de <strong>1 hora</strong>.
-  </p>
-</div>
-
-#### Flujo de Datos en Tiempo Real
-1. **Captura de datos**: Sensores de temperatura, humedad y otros parámetros transmiten información en tiempo real.
-2. **Comunicación WebSocket**: Los datos se envían a través de WebSocket para una actualización instantánea.
-3. **Almacenamiento y Alertas**: Se procesan los valores, se almacenan y se generan alertas en caso de valores críticos.
 
 <div class="card-grid">
   <a href="/sensores/acciones" class="card">
@@ -146,3 +146,6 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
     <p>Datos en tiempo real</p>
   </a>
 </div>
+
+
+  
