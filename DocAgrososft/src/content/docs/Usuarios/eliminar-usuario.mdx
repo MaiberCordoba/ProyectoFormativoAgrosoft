@@ -1,0 +1,19 @@
+---
+title: Eliminar usuario
+description: Endpoint para eliminar un usuario en AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+## Eliminar usuario
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/usuarios/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Elimina un usuario por su ID.
+
+### Respuesta
+✅ 204 - No Content

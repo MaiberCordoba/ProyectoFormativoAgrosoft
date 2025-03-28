@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { UsersPage } from "./modules/Users/pages/userPage";
+//import { UsersPage } from "./modules/Users/pages/userPage";
 import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -47,6 +47,10 @@ import { ProductosControl } from "./modules/Sanidad/Pages/productoscontrol";
 import { UsoProductosControl } from "./modules/Sanidad/Pages/usoproductoscontrol";
 import { Controles } from "./modules/Sanidad/Pages/controles";
 import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
+        
+//usuarios
+import { Usuarios } from "./modules/Users/pages/pageUsers";
+
 
 const queryClient = new QueryClient();
 
@@ -71,7 +75,7 @@ function App() {
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
-            <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/afectaciones" element={<Afecciones />} />
             <Route path="/cosechas" element={<Cosechas />} />
             <Route path="/actividades" element={<Actividades />} />
