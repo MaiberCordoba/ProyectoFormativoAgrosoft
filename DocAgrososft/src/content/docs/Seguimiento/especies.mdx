@@ -1,0 +1,198 @@
+---
+title:  Especies
+description: Endpoint para obtener especies en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/especies/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtencion de especies
+
+Este endpoint permite llamar todos los especies existentes en AgroSoft Api 
+para traerlos y en listarlos
+
+
+## Respuestas Getespecie
+
+✅ 201 - Éxito
+```json
+
+    {
+        "id": 2,
+        "nombre": "Mamuel",
+        "descripcion": "illo pillo",
+        "img": "xd",
+        "tiempocrecimiento": 19,
+        "fk_tipoespecie": 1
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se encontraron especies"
+}
+
+```
+
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/especies/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creacion de especies
+
+Este endpoint permite crear nuevos especies en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "nombre": "Mamuel",
+        "descripcion": "illo pillo",
+        "img": "xd",
+        "tiempocrecimiento": 19,
+        "fk_tipoespecie": 1
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`nombre`          | string    | Sí        | nombre de la especie | Mamuel|
+| `descripcion`     | string   | Sí        | descripcion de la especie        | papita rara |
+| `img`    | string    | Sí        | imagen de la especie        | imganeXD.png |
+| `tiempocrecimiento`       | number    | Sí        | tiempo de crecimiento en dias       | 19 |
+| `fk_tipoespecie`       | number    | Sí        | tipo de especie a la q pertenece        | 1 |
+
+
+## Respuestas Postespecie
+
+✅ 201 - Éxito al crear la especie
+```json
+
+    {
+        "id": 2,
+        "nombre": "Mamuel",
+        "descripcion": "illo pillo",
+        "img": "xd",
+        "tiempocrecimiento": 19,
+        "fk_tipoespecie": 1
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo crear la especie"
+}
+
+```
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/especies/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edicion de especies
+
+Este endpoint permite editar los especies existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+    {
+        "id": 2,
+        "nombre": "Papa",
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id de la especie | 2
+| `nombre`     | string   | Sí        | nombre de la especie         | Papa |
+
+## Respuestas Patchespecie
+
+✅ 201 - Éxito al editar la especie
+```json
+
+    {
+        "id": 2,
+        "nombre": "Papa",
+        "descripcion": "illo pillo",
+        "img": "xd",
+        "tiempocrecimiento": 19,
+        "fk_tipoespecie": 1
+    }
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar la especie"
+}
+
+```
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/especies/:id" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminacion de especies
+
+Este endpoint permite eliminar los especies existentes en AgroSoft Api 
+
+### Campos requeridos
+
+```json
+{
+        "id": 2,
+    }
+
+```
+### Parámetros del Request
+
+| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
+|--------------------|---------- |-----------|---------------------------------|-----------------|
+|`id`          | number    | Sí        | id de la especie | 2
+
+## Respuestas Deleteespecie
+
+✅ 201 - Éxito al eliminar la especie
+```json
+
+{
+  "detail": "especie eliminada correctamente"
+}
+
+```
+
+❌ 400 - Error
+```json
+Copy
+{
+  "detail": "No se pudo editar la especie"
+}
+
+```

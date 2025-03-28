@@ -1,0 +1,196 @@
+---
+title: ProductosControl
+description: Endpoint para obtener y gestionar productos con control en AgroSoft Api
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner
+  method="GET"
+  path="/productosControl"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtención de ProductosControl
+
+Este endpoint permite obtener todos los productos con control registrados en AgroSoft Api.
+
+### Respuesta Exitosa
+
+✅ 200 - Éxito
+```json
+[
+  {
+    "id": 2,
+    "nombre": "Manuel",
+    "precio": 40000,
+    "compuestoActivo": "H2O",
+    "fichaTecnica": "2846103",
+    "contenido": 100,
+    "tipoContenido": "m",
+    "unidades": 1
+  }
+]
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se encontraron productos con control"
+}
+```
+
+<ApiBaseBanner
+  method="POST"
+  path="/productosControl"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creación de ProductoControl
+
+Este endpoint permite crear un nuevo producto con control.
+
+### Campos requeridos
+
+```json
+{
+  "nombre": "Manuel",
+  "precio": 40000,
+  "compuestoActivo": "H2O",
+  "fichaTecnica": "2846103",
+  "contenido": 100,
+  "tipoContenido": "m",
+  "unidades": 1
+}
+```
+
+### Parámetros del Request
+
+| Parámetro         | Tipo    | Requerido | Descripción                          | Ejemplo    |
+|-------------------|---------|-----------|--------------------------------------|------------|
+| `nombre`          | string  | Sí        | Nombre del producto                  | "Manuel"   |
+| `precio`          | number  | Sí        | Precio del producto                  | 40000      |
+| `compuestoActivo` | string  | Sí        | Compuesto activo del producto        | "H2O"      |
+| `fichaTecnica`    | string  | Sí        | Número de la ficha técnica           | "2846103"  |
+| `contenido`       | number  | Sí        | Contenido del producto               | 100        |
+| `tipoContenido`   | string  | Sí        | Tipo de contenido (m=mililitros, g=gramos) | "m"   |
+| `unidades`        | number  | Sí        | Número de unidades                   | 1          |
+
+### Respuesta Exitosa
+
+✅ 201 - ProductoControl creado exitosamente
+```json
+{
+  "id": 3,
+  "nombre": "Herbicida",
+  "precio": 25000,
+  "compuestoActivo": "C4H8O2",
+  "fichaTecnica": "2846104",
+  "contenido": 200,
+  "tipoContenido": "m",
+  "unidades": 2
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo crear el producto con control"
+}
+```
+
+<ApiBaseBanner
+  method="PATCH"
+  path="/productosControl/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edición de ProductoControl
+
+Este endpoint permite actualizar un producto con control existente.
+
+### Campos requeridos
+
+```json
+{
+  "id": 2,
+  "nombre": "Manuel Mejorado",
+  "precio": 42000
+}
+```
+
+### Parámetros del Request
+
+| Parámetro         | Tipo    | Requerido | Descripción                          | Ejemplo          |
+|-------------------|---------|-----------|--------------------------------------|------------------|
+| `id`              | number  | Sí        | ID del producto con control          | 2                |
+| `nombre`          | string  | No        | Nuevo nombre del producto            | "Manuel Mejorado"|
+| `precio`          | number  | No        | Nuevo precio del producto            | 42000            |
+| `compuestoActivo` | string  | No        | Nuevo compuesto activo               | "H2O"            |
+| `fichaTecnica`    | string  | No        | Nueva ficha técnica                  | "2846103"        |
+| `contenido`       | number  | No        | Nuevo contenido del producto         | 150              |
+| `tipoContenido`   | string  | No        | Nuevo tipo de contenido              | "m"              |
+| `unidades`        | number  | No        | Nuevas unidades                      | 1                |
+
+### Respuesta Exitosa
+
+✅ 200 - ProductoControl actualizado exitosamente
+```json
+{
+  "id": 2,
+  "nombre": "Manuel Mejorado",
+  "precio": 42000,
+  "compuestoActivo": "H2O",
+  "fichaTecnica": "2846103",
+  "contenido": 150,
+  "tipoContenido": "m",
+  "unidades": 1
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo editar el producto con control"
+}
+```
+
+<ApiBaseBanner
+  method="DELETE"
+  path="/productosControl/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminación de ProductoControl
+
+Este endpoint permite eliminar un producto con control existente.
+
+### Campos requeridos
+
+```json
+{
+  "id": 2
+}
+```
+
+### Parámetros del Request
+
+| Parámetro | Tipo    | Requerido | Descripción                    | Ejemplo |
+|-----------|---------|-----------|--------------------------------|---------|
+| `id`      | number  | Sí        | ID del producto con control    | 2       |
+
+### Respuesta Exitosa
+
+✅ 200 - ProductoControl eliminado correctamente
+```json
+{
+  "detail": "ProductoControl eliminado correctamente"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo eliminar el producto con control"
+}
+```
