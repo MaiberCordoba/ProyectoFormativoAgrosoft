@@ -51,11 +51,11 @@ socket.onclose = function() {
 };
 ```
 
-## Explicación de los Paths
+### Explicación de los Paths
 
 Los dos **paths** en los endpoints WebSocket permiten diferentes formas de recibir datos en tiempo real:
 
-### 1. `/ws/sensor/{sensor_name}/`
+##### 1. `/ws/sensor/{sensor_name}/`
 - `{sensor_name}` representa el **tipo de sensor** que deseas monitorear.
 - Te suscribes a **todos los sensores** de un tipo específico (ejemplo: `TEM` para temperatura).
 - **Ejemplo de uso:**
@@ -63,7 +63,7 @@ Los dos **paths** en los endpoints WebSocket permiten diferentes formas de recib
   const socket = new WebSocket("ws://127.0.0.1:8000/ws/sensor/TEM/");
   ```
 
-### 2. `/ws/sensor/:id/`
+##### 2. `/ws/sensor/:id/`
 - `:id` es el **identificador único** de un sensor específico en la base de datos.
 - Permite recibir datos en tiempo real de **un solo sensor en particular**.
 - **Ejemplo de uso:**
@@ -79,7 +79,8 @@ Los dos **paths** en los endpoints WebSocket permiten diferentes formas de recib
 | `/ws/sensor/{sensor_name}/` | Escucha todos los sensores de un **tipo específico** (ej. temperatura) | `"ws://127.0.0.1:8000/ws/sensor/TEM/"` |
 | `/ws/sensor/:id/` | Escucha **un sensor específico** por su ID único | `"ws://127.0.0.1:8000/ws/sensor/5/"` |
 
-### Notas
+ :::caution
 - `{sensor_name}` debe ser reemplazado por el tipo de sensor que deseas monitorear (ejemplo: `TEM`, `LUM`, `HUM_A`).
 - `:id` debe ser reemplazado por el identificador del sensor específico.
 - El WebSocket envía datos en formato JSON cada vez que hay una nueva medición disponible.
+:::

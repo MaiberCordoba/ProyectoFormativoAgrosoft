@@ -40,13 +40,6 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
     
   }
   
-  .note-header {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-  }
-
   .icon {
     margin-right: 0.5rem;
   }
@@ -56,25 +49,8 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
     font-size: 0.95rem;
   }
 
-  code {
-    background: #374151;
-    color: #f3f4f6;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-
-  a {
-    color: #7aa2f7;
-    text-decoration: underline;
-  }
-
   strong {
     font-weight: bold;
-  }
-  .note {
-    
-
   }
 </style>
 
@@ -93,45 +69,12 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
 
 #### Configuración de la Solicitud
 ##### Parámetros necesarios para realizar una solicitud a la API
----
 
-#### Configuración de la solicitud
-
-##### Encabezados (Headers)
-
-<table>
-  <thead>
-    <tr>
-      <th>Parámetro</th>
-      <th>Tipo</th>
-      <th>Descripción</th>
-      <th>Requerido</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>access_token</code></td>
-      <td><code>string</code></td>
-      <td>Token de acceso generado previamente</td>
-      <td>✅</td>
-    </tr>
-    <tr>
-      <td><code>Content-Type</code></td>
-      <td><code>string</code></td>
-      <td>Tipo de contenido: <code>application/json</code></td>
-      <td>✅</td>
-    </tr>
-    <tr>
-      <td><code>Accept</code></td>
-      <td><code>string</code></td>
-      <td>Tipo de respuesta: <code>application/json</code></td>
-      <td>✅</td>
-    </tr>
-  </tbody>
-</table>
-
----
-
+| Parámetro         | Tipo    | Descripción                                | Requerido |
+|------------------|--------|--------------------------------------------|-----------|
+| `access_token`   | string | Token de acceso generado previamente      | ✅         |
+| `Content-Type`   | string | Tipo de contenido: `application/json`     | ✅         |
+| `Accept`        | string | Tipo de respuesta: `application/json`      | ✅         |
 
 <div class="card-grid">
   <a href="/sensores/acciones" class="card">
@@ -146,6 +89,3 @@ Sistema de monitoreo en tiempo real para sensores ambientales y agrícolas, perm
     <p>Datos en tiempo real</p>
   </a>
 </div>
-
-
-  
