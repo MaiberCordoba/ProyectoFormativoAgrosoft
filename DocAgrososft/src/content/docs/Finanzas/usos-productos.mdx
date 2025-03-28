@@ -1,0 +1,116 @@
+---
+title: Usos productos
+description: Endpoint para gestionar el uso de los productos dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión del uso de productos agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada uso producto está asociado a un insumo y una actividad, y contiene información clave como cantidadProducto.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/usos-productos/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todos los usos productos registradas.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "cantidadProducto": 10,
+    "fk_Insumo": 1,
+    "fk_Actividad": 1
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/usos-productos/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar una nueva uso producto
+
+## **Campos Requeridos**
+```json
+  {
+    "cantidadProducto": integer,
+    "fk_Insumo": integer,
+    "fk_Actividad": integer
+  }
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `cantidadProducto`         | integer   | Si       |  Cantidad del uso producto                              | 10               |
+| `fk_Insumo`     | integer  | Si       |  ID del insumo asociado                             | 1                     |
+| `fk_Actividad`     | integer  | Si       |  ID de la actividad asociada                         | 1                     |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+  {
+    "id": 1,
+    "cantidadProducto": 10,
+    "fk_Insumo": 1,
+    "fk_Actividad": 1
+  }
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/usos-productos/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una uso producto
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `cantidadProducto`         | integer   |No      |  Nueva Cantidad del uso producto                              | 15               |
+| `fk_Insumo`     | integer  |No      |  Nuevo ID del insumo asociado                             | 2                     |
+| `fk_Actividad`     | integer  |No      |  Nuevo ID de la actividad asociada                         | 2                     |
+
+---
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+  {
+    "id": 1,
+    "cantidadProducto": 15,
+    "fk_Insumo": 2,
+    "fk_Actividad": 2
+  }
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/usos-productos/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)

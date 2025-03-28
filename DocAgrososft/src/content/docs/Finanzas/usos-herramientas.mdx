@@ -1,0 +1,110 @@
+---
+title: Usos Herramientas
+description: Endpoint para gestionar el uso de las herramientas dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de los usos de las herramientas agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada uso herramienta está asociada a una herramienta y una actividad.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/usosherramientas/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todos los usos de herramientas registradas.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "fk_Herramienta": 1,
+    "fk_Actividad": 1
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/usosherramientas/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar una nueva uso herramienta
+
+## **Campos Requeridos**
+```json
+  {
+    "fk_Herramienta": integer,
+    "fk_Actividad": integer
+  }
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `fk_Herramienta`     | integer  | Si       |  ID de la herramienta asociada                             | 1                     |
+| `fk_Actividad`     | integer  | Si       |  ID de la actividad en la que se uso                          | 1                     |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+  {
+    "id": 1,
+    "fk_Herramienta": 1,
+    "fk_Actividad": 1
+  }
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/usosherramientas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una uso herramienta
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `fk_Herramienta`     | integer  | No      |Nuevo ID de la herramienta asociada                             | 2                     |
+| `fk_Actividad`     | integer  | No      |  Nuevo ID de la actividad en la que se uso                          | 2                     |
+
+---
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+  {
+    "id": 1,
+    "fk_Herramienta": 2,
+    "fk_Actividad": 2
+  }
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/usosherramientas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)

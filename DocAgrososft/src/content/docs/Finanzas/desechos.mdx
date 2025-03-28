@@ -1,0 +1,124 @@
+---
+title: Desechos
+description: Endpoint para gestionar las desechos dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de desechos agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada desecho está asociado a un cultivo y un tipo de desecho, y contiene información clave como nombre y descripcion.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/desechos/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todas las desechos registrados.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+    {
+        "id": 2,
+        "nombre": "Para las plantas",
+        "descripcion": "desecho de frijol y tomate",
+        "fk_Cultivo": 1,
+        "fk_TipoDesecho": 1
+    }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/desechos/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar un nuevo desecho
+
+## **Campos Requeridos**
+```json
+{
+  "nombre": string,
+  "descripcion": string,
+  "fk_Cultivo": integer,
+  "fk_TipoDesecho": integer
+}
+
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `nombre`         | string   | Si       |  Nombre del desecho                            | Para las plantas                |
+| `descripcion`          | string   | Si       |  Descripcion del desecho                  | Desecho de frijol y tomate          |
+| `fk_Cultivo`     | integer  | Si       |  ID del cultivo asociado                             | 1                     |
+| `fk_TipoDesecho`     | integer  | Si       |  ID del tipo de desecho asociado                             | 1                     |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": 2,
+  "nombre": "Para las plantas",
+  "descripcion": "desecho de frijol y tomate",
+  "fk_Cultivo": 1,
+  "fk_TipoDesecho": 1
+}
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/desechos/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una desecho
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `nombre`         | string   | No       |  Nuevo nombre del desecho                            | Para las plantas                |
+| `descripcion`          | string   | No       | Nuevo Descripcion del desecho                  | Desecho de cebolla          |
+| `fk_Cultivo`     | integer  | No       |  Nuevo ID del cultivo asociado                             | 1                     |
+| `fk_TipoDesecho`     | integer  | No       |  Nuevo ID del tipo de desecho asociado                             | 1                     |
+
+---
+
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+{
+  "id": 2,
+  "nombre": "Para las plantas",
+  "descripcion": "desecho de cebolla ",
+  "fk_Cultivo": 1,
+  "fk_TipoDesecho": 1
+}
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/desechos/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)

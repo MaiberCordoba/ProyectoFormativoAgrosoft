@@ -1,0 +1,116 @@
+---
+title: Ventas
+description: Endpoint para gestionar las ventas dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de ventas de producto agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada venta está asociada a una cosecha, y contiene información clave como precio unitario y fecha.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/ventas/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todas las ventas registradas.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "precioUnitario": 20000,
+    "fecha": "2025-03-27",
+    "fk_Cosecha": 1,
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/ventas/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar una nueva venta
+
+## **Campos Requeridos**
+```json
+  {
+    "id": integer,
+    "precioUnitario": integer,
+    "fecha": string(date),
+    "fk_Cosecha": integer,
+  }
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `precioUnitario`         | integer   | Si       |  Precio de la venta                              | 20000              |
+| `fecha`          | string   | Si       |  Fecha de la venta (YYYY-MM-DD)                  | "2025-02-27"          |
+| `fk_Cosecha`     | integer  | Si       |  ID de la cosecha asociada                             | 1                     |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+  {
+    "id": 1,
+    "precioUnitario": 20000,
+    "fecha": "2025-03-27",
+    "fk_Cosecha": 1,
+  }
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/ventas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una venta
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `precioUnitario`         | integer   | No       | Nuevo Precio de la venta                              | 25000              |
+| `fecha`          | string   | No       |  Nuevo Fecha de la venta (YYYY-MM-DD)                  | "2025-02-02"          |
+| `fk_Cosecha`     | integer  | No       |  Nuevo ID de la cosecha asociada                             | 1                     |
+
+---
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+  {
+    "id": 1,
+    "precioUnitario": 25000,
+    "fecha": "2025-02-02",
+    "fk_Cosecha": 1,
+  }
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/ventas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)

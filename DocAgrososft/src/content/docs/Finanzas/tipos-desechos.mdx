@@ -1,0 +1,111 @@
+---
+title: Tipos Desechos
+description: Endpoint para gestionar los tipos-desechos dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de tipos de desechos agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada tipo desecho contiene información clave como nombre, descripción.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/tipos-desechos/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todos las tipos-desechos registrados.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+    {
+        "id": 1,
+        "nombre": "organico",
+        "descripcion": "desechos de papa y cebolla"
+    }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/tipos-desechos/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar un nuevo tipo desecho
+
+## **Campos Requeridos**
+```json
+{
+    "id": integer,
+    "nombre": string,
+    "descripcion": string
+}
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `nombre`         | string   | Si       |  Nombre del tipo desecho                              | "organico"                |
+| `descripcion`    | string   | Si       |  Descripción del tipo desecho                         | "desechos de papa y cebolla"       |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+    "id": 1,
+    "nombre": "organico",
+    "descripcion": "desechos de papa y cebolla"
+}
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/tipos-desechos/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una tipo desecho
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `nombre`         | string   | No       |  Nuevo Nombre del tipo desecho                              | "No organico"                |
+| `descripcion`    | string   | No       |  Nuevo Descripción del tipo desecho                         | "desechos de plastico"       |
+
+---
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+{
+    "id": 1,
+    "nombre": "No organico",
+    "descripcion": "desechos de plastico"
+}
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/tipos-desechos/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)
