@@ -71,18 +71,6 @@ Este endpoint permite registrar un nuevo sensor en el sistema.
 Se utiliza cuando se quiere agregar un nuevo dispositivo de medición 
 3a un lote o era específica dentro de la plataforma.
 
-### Campos requeridos
-- SENSOR_TYPES son los tipos de senosres que se pueden registrar.
-
-```json
-
-{
-  "fk_lote": int,
-  "fk_eras": Int,
-  "tipo": SENSOR_TYPES,
-  "valor": decimal
-}
-```
 
 
 ### Parámetros del Request
@@ -105,7 +93,18 @@ Se utiliza cuando se quiere agregar un nuevo dispositivo de medición
 | `HUM_T` | Humedad del Terreno  |
 | `PH`    | Nivel de PH          |
 
+### Campos requeridos
+- SENSOR_TYPES son los tipos de senosres que se pueden registrar.
 
+```json
+
+{
+  "fk_lote": int,
+  "fk_eras": Int,
+  "tipo": SENSOR_TYPES,
+  "valor": decimal
+}
+```
 
 ### Respuesta Exitosa (200)
 
