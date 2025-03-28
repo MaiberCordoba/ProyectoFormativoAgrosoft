@@ -1,0 +1,133 @@
+---
+title: Actividades
+description: Endpoint para gestionar las actividades dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de actividades agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada actividad está asociada a un cultivo y un usuario, y contiene información clave como título, descripción, fecha y estado.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/actividades/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todas las actividades registradas.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "titulo": "Siembra de maíz",
+    "descripcion": "Inicio de la siembra del cultivo de maíz.",
+    "fecha": "2025-03-27",
+    "estado": "Asignada",
+    "fk_Cultivo": 3,
+    "fk_Usuario": 1
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/actividades/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar una nueva Actividad
+
+## **Campos Requeridos**
+```json
+{
+  "titulo": "string",
+  "descripcion": "string",
+  "fecha": "AA-MM-DD",
+  "estado": "enum",
+  "fk_Cultivo": Integer,
+  "fk_Usuario": Integer
+}
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `titulo`         | string   | Si       |  Título de la actividad                              | "titulo test"                |
+| `descripcion`    | string   | Si       |  Descripción de la actividad                         | "descripcion test"       |
+| `fecha`          | string   | Si       |  Fecha de la actividad (YYYY-MM-DD)                  | "2005-02-12"          |
+| `estado`         | string   | Si       |  Estado de la actividad (`Asignada`, `Cancelada`, `Completada`) | "Asignada" |
+| `fk_Cultivo`     | integer  | Si       |  ID del cultivo asociado                             | 2                     |
+| `fk_Usuario`     | integer  | Si       |  ID del usuario responsable                          | 1                     |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": id,
+  "titulo": "titulo test",
+  "descripcion": "descripcion test",
+  "fecha": "2005-02-12",
+  "estado": "AS",
+  "fk_Cultivo": 2,
+  "fk_Usuario": 1
+}
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/actividades/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una actividad
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `titulo`         | string   | No      | Nuevo título de la actividad                              | "hola test"                |
+| `descripcion`    | string   | No      | Nueva descripción de la actividad                         | "recoger hojas test"       |
+| `fecha`          | string   | No      | Nueva fecha de la actividad (YYYY-MM-DD)                  | "2000-12-12"          |
+| `estado`         | string   | No      | Nuevo estado de la actividad (`Asignada`, `Cancelada`, `Completada`) | "Completada" |
+| `fk_Cultivo`     | integer  | No      | Nuevo ID del cultivo asociado                             | 2                     |
+| `fk_Usuario`     | integer  | No      | Nuevo ID del usuario responsable                          | 1                     |
+
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+{
+  "id": id,
+  "titulo": "hola test",
+  "descripcion": "recoger hojas test",
+  "fecha": "2000-12-12",
+  "estado": "CO",
+  "fk_Cultivo": 2,
+  "fk_Usuario": 1
+}
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/actividades/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)
