@@ -50,7 +50,7 @@ description: Gestión y monitoreo en tiempo real de sensores ambientales y agrí
   }
 
   code {
-    background: #374151;
+    background:rgb(255, 255, 255);
     color:rgb(0, 0, 0);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
