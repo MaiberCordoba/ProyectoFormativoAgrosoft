@@ -2,6 +2,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import Providers from "./context/ToastProvider";
 
 //import { UsersPage } from "./modules/Users/pages/userPage";
 import Principal from "@/layouts/principal";
@@ -23,21 +24,19 @@ import RegistrarDesechos from "./modules/Finanzas/components/registrarDesechos";
 import RegistrarHerramientas from "./modules/Finanzas/components/registrarHerramientas";
 import RegistrarVentas from "./modules/Finanzas/components/registrarVentas";
 
+//Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
 import { SensorFormPage } from "./modules/IoT/pages/FormularioSensor";
 
-//semillero
-import SemilleroRegister from "./modules/Trazabilidad/pages/registrarSemillero";
-import { SemilleroList } from "./modules/Trazabilidad/components/listarSemilleros";
-import { SemilleroEdit } from "./modules/Trazabilidad/pages/semilleroEdit";
-//cultivo
-import { CultivoEdit } from "./modules/Trazabilidad/pages/cultivoEdit";
-import CultivoRegister from "./modules/Trazabilidad/pages/registrarCultivo";
-import { CultivoList } from "./modules/Trazabilidad/components/listarCultivos";
-
-import Testeo  from "./pages/testeo";
-import Providers from "./context/ToastProvider";
+//trazabilidad
+import { TiposEspecie } from "./modules/Trazabilidad/pages/tiposEspecies";
+import { EspeciesList } from "./modules/Trazabilidad/pages/especies";
+import { Semillero } from "./modules/Trazabilidad/pages/semilleros";
+import { Plantaciones } from "./modules/Trazabilidad/pages/plantaciones";
+import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
+import { ErasList } from "./modules/Trazabilidad/pages/eras";
+import { LotesList } from "./modules/Trazabilidad/pages/lotes";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
@@ -50,6 +49,9 @@ import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
         
 //usuarios
 import { Usuarios } from "./modules/Users/pages/pageUsers";
+
+//testeo
+import Testeo  from "./pages/testeo";
 
 
 const queryClient = new QueryClient();
@@ -87,16 +89,19 @@ function App() {
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
-            <Route path="/crearSemilleros" element={<SemilleroRegister />}/>
-            <Route path="/semilleros" element={<SemilleroList />}/>
-            <Route path="/editarSemillero/:id" element={<SemilleroEdit />} />
-            <Route path="/crearCultivos" element={<CultivoRegister />}/>
-            <Route path="/Cultivos" element={<CultivoList />}/>
-            <Route path="/editarCultivo/:id" element={<CultivoEdit />} />
             <Route path="/desechos" element={<Desechos />} />
             <Route path="/herramientas" element={<Herramientas />} />
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/testeo" element={<Testeo/>}></Route>
+            {/* nuevas manuel*/}
+            <Route path="/tipos-especie" element={<TiposEspecie />} />
+            <Route path="/especies" element={<EspeciesList />} />
+            <Route path="/semilleros" element={<Semillero />} />
+            <Route path="/plantaciones" element={<Plantaciones />} />
+            <Route path="/cultivos" element={<CultivoList />} />
+            <Route path="/eras" element={<ErasList />} />
+            <Route path="/lotes" element={<LotesList />} />
+            {/* nuevas nicolas*/}
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>
             <Route path="/tipos-de-control" element={<TipoControl/>}></Route>
             <Route path="/productos-para-el-control" element={<ProductosControl/>}></Route>

@@ -35,7 +35,15 @@ export default defineConfig({
 				},
 				{
 					label: 'Seguimiento cultivos',
-					items:[],
+					items:[
+						{ label: 'semillero', slug: 'seguimiento/semillero' },
+						{ label: 'cultivo', slug: 'seguimiento/cultivo' },
+						{ label: 'lotes', slug: 'seguimiento/lotes' },
+						{ label: 'eras', slug: 'seguimiento/eras' },
+						{ label: 'especies', slug: 'seguimiento/especies' },
+						{ label: 'tiposespecie', slug: 'seguimiento/tiposespecie' },
+						{ label: 'plantaciones', slug: 'seguimiento/plantaciones' }
+					],
 				},
 				{
 					label: 'Sanidad',
