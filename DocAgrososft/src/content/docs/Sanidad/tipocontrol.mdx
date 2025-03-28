@@ -1,0 +1,171 @@
+---
+title: Tipos de Control
+description: Endpoint para obtener y gestionar tipos de control en AgroSoft Api
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner
+  method="GET"
+  path="/tiposControl/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtención de Tipos de Control
+
+Este endpoint permite obtener todos los tipos de control registrados en AgroSoft Api.
+
+### Respuesta Exitosa
+
+✅ 201 - Éxito
+```json
+[
+  {
+    "id": 2,
+    "nombre": "nicolas",
+    "descripcion": "es muy bueno"
+  },
+  {
+    "id": 3,
+    "nombre": "manuel",
+    "descripcion": "es muy malo"
+  }
+]
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se encontraron tipos de control"
+}
+```
+
+<ApiBaseBanner
+  method="POST"
+  path="/tiposControl/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creación de Tipo de Control
+
+Este endpoint permite crear un nuevo tipo de control.
+
+### Campos requeridos
+
+```json
+{
+  "nombre": "nuevo tipo",
+  "descripcion": "descripción del tipo"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción                      | Ejemplo          |
+|----------------|--------|-----------|----------------------------------|------------------|
+| `nombre`      | string | Sí        | Nombre del tipo de control      | "Biológico"     |
+| `descripcion` | string | Sí        | Descripción del tipo de control | "Uso de métodos naturales" |
+
+### Respuesta Exitosa
+
+✅ 201 - Tipo de control creado exitosamente
+```json
+{
+  "id": 4,
+  "nombre": "Químico",
+  "descripcion": "Uso de pesticidas"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo crear el tipo de control"
+}
+```
+
+<ApiBaseBanner
+  method="PATCH"
+  path="/tiposControl/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edición de Tipo de Control
+
+Este endpoint permite actualizar un tipo de control existente.
+
+### Campos requeridos
+
+```json
+{
+  "id": 2,
+  "nombre": "nicolas actualizado"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción                    | Ejemplo                  |
+|----------------|--------|-----------|--------------------------------|--------------------------|
+| `id`          | number | Sí        | ID del tipo de control        | 2                        |
+| `nombre`      | string | No        | Nombre actualizado            | "nicolas actualizado"   |
+| `descripcion` | string | No        | Descripción actualizada       | "Descripción modificada" |
+
+### Respuesta Exitosa
+
+✅ 201 - Éxito al editar el tipo de control
+```json
+{
+  "id": 2,
+  "nombre": "nicolas actualizado",
+  "descripcion": "es excelente"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo editar el tipo de control"
+}
+```
+
+<ApiBaseBanner
+  method="DELETE"
+  path="/tiposControl/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminación de Tipo de Control
+
+Este endpoint permite eliminar un tipo de control existente.
+
+### Campos requeridos
+
+```json
+{
+  "id": 3
+}
+```
+
+### Parámetros del Request
+
+| Parámetro | Tipo   | Requerido | Descripción               | Ejemplo |
+|----------|--------|-----------|---------------------------|---------|
+| `id`     | number | Sí        | ID del tipo de control    | 3       |
+
+### Respuesta Exitosa
+
+✅ 201 - Tipo de control eliminado correctamente
+```json
+{
+  "detail": "Tipo de control eliminado correctamente"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo eliminar el tipo de control"
+}
+```
+
