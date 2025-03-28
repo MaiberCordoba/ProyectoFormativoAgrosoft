@@ -23,7 +23,15 @@ export default defineConfig({
 				},
 				{
 					label: 'Manejo de usuarios',
-					items:[]
+					items: [
+						{ label: 'introduccion', slug: 'usuarios/introduccion' },
+						{ label: "crear-usuario", slug: "usuarios/crear-usuario" },
+						{ label: 'actualizar-usuario', slug: 'usuarios/actualizar-usuario' },
+						{ label: 'eliminar-usuario', slug: 'usuarios/eliminar-usuario' },
+						{ label: 'obtener-lista-usuarios', slug: 'usuarios/obtener-lista-usuarios' },
+						{ label: 'obtener-usuario-autenticado', slug: 'usuarios/obtener-usuario-autenticado' },
+						{ label: 'obtener-usuario-por-id', slug: 'usuarios/obtener-usuario-por-id' },
+					]
 				},
 				{
 					label: 'Seguimiento cultivos',

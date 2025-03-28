@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { UsersPage } from "./modules/Users/pages/userPage";
+//import { UsersPage } from "./modules/Users/pages/userPage";
 import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -41,6 +41,7 @@ import Providers from "./context/ToastProvider";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
+import { Usuarios } from "./modules/Users/pages/pageUsers";
 
 
 
@@ -67,7 +68,7 @@ function App() {
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
-            <Route path="/usuarios" element={<UsersPage />} />
+            <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/afectaciones" element={<Afecciones />} />
             <Route path="/cosechas" element={<Cosechas />} />
             <Route path="/actividades" element={<Actividades />} />
