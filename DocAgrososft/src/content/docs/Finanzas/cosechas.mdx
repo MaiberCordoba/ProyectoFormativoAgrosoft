@@ -1,0 +1,117 @@
+---
+title: Cosechas
+description: Endpoint para gestionar las cosechas dentro del sistema AgroSoft.
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de cosechas agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+
+Cada cosecha está asociada a un cultivo, y contiene información clave como unidades y fecha.
+
+## Metodos
+
+### Metodo GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/cosechas/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todas las cosechas registradas.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "unidades": 25,
+    "fecha": "2025-03-27",
+    "fk_Cultivo": 3
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/cosechas/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este metodo permite registrar una nueva cosecha
+
+## **Campos Requeridos**
+```json
+{
+  "unidades": Integer,
+  "fecha": "AA-MM-DD",
+  "fk_Cultivo": Integer
+}
+
+```
+#### **Parametros del Request** 
+
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `unidades`         | integer   | Si       |  Numero de unidades cosechadas                            | 20                |
+| `fecha`          | string   | Si       |  Fecha de la cosecha (YYYY-MM-DD)                  | "2005-02-12"          |
+| `fk_Cultivo`     | integer  | Si       |  ID del cultivo asociado                             | 2                     |
+
+---
+
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": 1,
+  "unidades": 20,
+  "fecha": "2005-02-12",
+  "fk_Cultivo": 2
+}
+
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
+
+
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/cosechas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+Este metodo permite actualizar/editar una cosecha
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+| `unidades`         | integer   | No       |  Numero de unidades cosechadas                            | 30               |
+| `fecha`          | string   | No       |  Fecha de la cosecha (YYYY-MM-DD)                  | "2006-12-12"          |
+| `fk_Cultivo`     | integer  | No       |  ID del cultivo asociado                             | 1                     |
+
+---
+
+###### ✅ Respuesta Exitosa (200 - Ok)
+```json
+{
+  "id": 1,
+  "unidades": 30,
+  "fecha": "2006-12-12",
+  "fk_Cultivo": 1
+}
+
+```
+
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo DELETE
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/cosechas/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)
