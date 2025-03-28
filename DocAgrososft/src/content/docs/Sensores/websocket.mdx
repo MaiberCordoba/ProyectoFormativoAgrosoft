@@ -6,12 +6,12 @@ description: Endpoint WebSocket para recibir datos en tiempo real de los sensore
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 <ApiBaseBanner 
-  method="WebSocket" 
+  method="Ws" 
   path="/ws/sensor/{sensor_name}/" 
   baseUrl="ws://127.0.0.1:8000" 
 />
 <ApiBaseBanner 
-  method="WebSocket" 
+  method="Ws" 
   path="/ws/sensor/:id/" 
   baseUrl="ws://127.0.0.1:8000" 
 />
