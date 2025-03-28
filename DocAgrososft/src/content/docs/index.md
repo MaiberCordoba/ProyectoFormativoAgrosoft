@@ -69,7 +69,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
 
 <div class="modules-grid">
   <!-- Tarjeta de usuarios -->
-  <a href="/usuarios" class="module-card">
+  <a href="/usuarios/introduccion" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Usuarios</h3>
     <p>Control de usuarios.</p>
@@ -78,7 +78,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
 
 <div class="modules-grid">
   <!-- Tarjeta de Cultivos -->
-  <a href="/cultivos" class="module-card">
+  <a href="/seguimiento/cultivo" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Cultivos</h3>
     <p>Monitoreo de siembras.</p>
@@ -86,7 +86,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Sanidad -->
-  <a href="/sanidad" class="module-card">
+  <a href="/sanidad/tipoplaga" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Sanidad</h3>
     <p>Control de plagas y tratamientos fitosanitarios</p>
@@ -94,7 +94,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Sensores -->
-  <a href="/iot" class="module-card">
+  <a href="/sensores/introduccion" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Sensores IoT</h3>
     <p>Datos en tiempo real de tu cultivo</p>
@@ -102,7 +102,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Finanzas -->
-  <a href="/finanzas" class="module-card">
+  <a href="/finanzas/introduccion" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Finanzas</h3>
     <p>Gestión de costos y reportes económicos</p>
