@@ -79,7 +79,8 @@ Los dos **paths** en los endpoints WebSocket permiten diferentes formas de recib
 | `/ws/sensor/{sensor_name}/` | Escucha todos los sensores de un **tipo específico** (ej. temperatura) | `"ws://127.0.0.1:8000/ws/sensor/TEM/"` |
 | `/ws/sensor/:id/` | Escucha **un sensor específico** por su ID único | `"ws://127.0.0.1:8000/ws/sensor/5/"` |
 
-### Notas
+ :::caution
 - `{sensor_name}` debe ser reemplazado por el tipo de sensor que deseas monitorear (ejemplo: `TEM`, `LUM`, `HUM_A`).
 - `:id` debe ser reemplazado por el identificador del sensor específico.
 - El WebSocket envía datos en formato JSON cada vez que hay una nueva medición disponible.
+:::
