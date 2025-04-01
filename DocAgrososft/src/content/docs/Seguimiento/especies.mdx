@@ -1,198 +1,114 @@
 ---
-title:  Especies
-description: Endpoint para obtener especies en AgroSoft Api
-
+title: Especies
+description: Endpoint para gestionar las especies dentro del sistema AgroSoft.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de especies, incluyendo su creación, consulta, actualización y eliminación.
+
+Cada especie contiene información clave como nombre, descripción, imagen, tiempo de crecimiento y tipo de especie asociado.
+
+## Metodos
+
+### Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
   path="/especies/" 
   baseUrl="http://127.0.0.1:8000"
-/>
-
-## Obtencion de especies
-
-Este endpoint permite llamar todos los especies existentes en AgroSoft Api 
-para traerlos y en listarlos
-
-
-## Respuestas Getespecie
-
-✅ 201 - Éxito
+/> 
+Este método devuelve la lista de todas las especies registradas.  
+###### ✅ **Respuesta exitosa (200)**
 ```json
-
-    {
-        "id": 2,
-        "nombre": "Mamuel",
-        "descripcion": "illo pillo",
-        "img": "xd",
-        "tiempocrecimiento": 19,
-        "fk_tipoespecie": 1
-    }
-
+[
+  {
+    "id": 2,
+    "nombre": "Mamuel",
+    "descripcion": "illo pillo",
+    "img": "xd",
+    "tiempocrecimiento": 19,
+    "fk_tipoespecie": 1
+  }
+]
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se encontraron especies"
-}
-
-```
-
+### Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
   path="/especies/" 
   baseUrl="http://127.0.0.1:8000"
 />
+Este metodo permite registrar una nueva Especie
 
-## Creacion de especies
-
-Este endpoint permite crear nuevos especies en AgroSoft Api 
-
-### Campos requeridos
-
+## **Campos Requeridos**
 ```json
-    {
-        "nombre": "Mamuel",
-        "descripcion": "illo pillo",
-        "img": "xd",
-        "tiempocrecimiento": 19,
-        "fk_tipoespecie": 1
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`nombre`          | string    | Sí        | nombre de la especie | Mamuel|
-| `descripcion`     | string   | Sí        | descripcion de la especie        | papita rara |
-| `img`    | string    | Sí        | imagen de la especie        | imganeXD.png |
-| `tiempocrecimiento`       | number    | Sí        | tiempo de crecimiento en dias       | 19 |
-| `fk_tipoespecie`       | number    | Sí        | tipo de especie a la q pertenece        | 1 |
-
-
-## Respuestas Postespecie
-
-✅ 201 - Éxito al crear la especie
-```json
-
-    {
-        "id": 2,
-        "nombre": "Mamuel",
-        "descripcion": "illo pillo",
-        "img": "xd",
-        "tiempocrecimiento": 19,
-        "fk_tipoespecie": 1
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se pudo crear la especie"
+  "nombre": "string",
+  "descripcion": "string",
+  "img": "string",
+  "tiempocrecimiento": integer,
+  "fk_tipoespecie": integer
 }
-
 ```
+#### **Parametros del Request** 
+
+| Parámetro          | Tipo     | Requerido | Descripción                     | Ejemplo        |
+|--------------------|---------|-----------|---------------------------------|---------------|
+| `nombre`          | string  | Si        | Nombre de la especie            | "Mamuel"     |
+| `descripcion`     | string  | Si        | Descripción de la especie       | "illo pillo" |
+| `img`             | string  | Si        | URL de la imagen de la especie  | "img.png"    |
+| `tiempocrecimiento` | integer | Si      | Tiempo de crecimiento en días  | 19            |
+| `fk_tipoespecie`  | integer | Si        | ID del tipo de especie          | 1             |
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": 2,
+  "nombre": "Mamuel",
+  "descripcion": "illo pillo",
+  "img": "xd",
+  "tiempocrecimiento": 19,
+  "fk_tipoespecie": 1
+}
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Metodo PATCH
 
 <ApiBaseBanner 
   method="PATCH" 
-  path="/especies/:id" 
+  path="/especies/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Edicion de especies
+Este metodo permite actualizar/editar una especie
+#### **Parametros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                        | Ejemplo  |
+|------------------|---------|-----------|------------------------------------|----------|
+| `nombre`        | string  | No        | Nuevo nombre de la especie        | "Papa"  |
 
-Este endpoint permite editar los especies existentes en AgroSoft Api 
-
-### Campos requeridos
-
+###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
-    {
-        "id": 2,
-        "nombre": "Papa",
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id de la especie | 2
-| `nombre`     | string   | Sí        | nombre de la especie         | Papa |
-
-## Respuestas Patchespecie
-
-✅ 201 - Éxito al editar la especie
-```json
-
-    {
-        "id": 2,
-        "nombre": "Papa",
-        "descripcion": "illo pillo",
-        "img": "xd",
-        "tiempocrecimiento": 19,
-        "fk_tipoespecie": 1
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se pudo editar la especie"
+  "id": 2,
+  "nombre": "Papa",
+  "descripcion": "illo pillo",
+  "img": "xd",
+  "tiempocrecimiento": 19,
+  "fk_tipoespecie": 1
 }
-
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
+### Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
-  path="/especies/:id" 
+  path="/especies/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Eliminacion de especies
-
-Este endpoint permite eliminar los especies existentes en AgroSoft Api 
-
-### Campos requeridos
-
-```json
-{
-        "id": 2,
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id de la especie | 2
-
-## Respuestas Deleteespecie
-
-✅ 201 - Éxito al eliminar la especie
-```json
-
-{
-  "detail": "especie eliminada correctamente"
-}
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo editar la especie"
-}
-
-```
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)

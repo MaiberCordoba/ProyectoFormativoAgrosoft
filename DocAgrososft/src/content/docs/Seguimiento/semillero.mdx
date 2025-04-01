@@ -1,193 +1,111 @@
 ---
-title:  Semilleros
-description: Endpoint para obtener semilleros en AgroSoft Api
-
+title: Tipos Especie
+description: Endpoint para obtener tipos de especie en AgroSoft Api
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
+## 🔹 **Descripción**
+Este endpoint permite la gestión de los tipos de especie en el sistema AgroSoft, incluyendo su creación, consulta, actualización y eliminación.
+
+Cada tipo de especie contiene información clave como nombre, descripción e imagen.
+
+## Métodos
+
+### Método GET
+
 <ApiBaseBanner 
   method="GET" 
-  path="/semilleros/" 
+  path="/tiposespecie/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Obtencion de Semilleros
-
-Este endpoint permite llamar todos los semilleros existentes en AgroSoft Api 
-para traerlos y en listarlos
-
-
-## Respuestas GetSemillero
-
-✅ 201 - Éxito
+Este método devuelve la lista de todos los tipos de especie registrados.  
+###### ✅ **Respuesta exitosa (200)**
 ```json
-
-{
-        "id": 1,
-        "unidades": 38,
-        "fechasiembra": "2025-03-26",
-        "fechaestimada": "2025-03-31",
-        "fk_especie": 2
-    }
-
+[
+  {
+    "id": 4,
+    "nombre": "Papa",
+    "descripcion": "Es papa",
+    "img": "png"
+  }
+]
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se encontraron semilleros"
-}
-
-```
-
+### Método POST
 
 <ApiBaseBanner 
   method="POST" 
-  path="/semilleros/" 
+  path="/tiposespecie/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Creacion de Semilleros
+Este método permite registrar un nuevo tipo de especie.
 
-Este endpoint permite crear nuevos semilleros en AgroSoft Api 
-
-### Campos requeridos
-
+## **Campos Requeridos**
 ```json
-    {
-        "unidades": 38,
-        "fechasiembra": "2025-03-26",
-        "fechaestimada": "2025-03-31",
-        "fk_especie": 2
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`unidades`          | number    | Sí        | Cantidades de semillas | 38 |
-| `fechasiembra`     | date    | Sí        | fecha de la siembra         | "2025-03-26" |
-| `fechaestimada`    | date    | Sí        | fecha estimada de la cosecha        | "2025-03-31" |
-| `fk_especie`       | number    | Sí        | especie a la q pertenece        | 2 |
-
-
-## Respuestas PostSemillero
-
-✅ 201 - Éxito al crear el semillero
-```json
-
 {
-        "id": 1,
-        "unidades": 38,
-        "fechasiembra": "2025-03-26",
-        "fechaestimada": "2025-03-31",
-        "fk_especie": 2
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo crear el semillero"
+  "nombre": "string",
+  "descripcion": "string",
+  "img": "string"
 }
-
 ```
+#### **Parámetros del Request** 
+
+| Parámetro     | Tipo   | Requerido | Descripción                  | Ejemplo         |
+|--------------|--------|-----------|------------------------------|-----------------|
+| `nombre`     | string | Sí        | Nombre del tipo de especie   | "Papa"          |
+| `descripcion`| string | Sí        | Descripción del tipo de especie | "Es papa" |
+| `img`        | string | Sí        | Imagen del tipo de especie   | "imagen.png"    |
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": 4,
+  "nombre": "Papa",
+  "descripcion": "Es papa",
+  "img": "png"
+}
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Método PATCH
 
 <ApiBaseBanner 
   method="PATCH" 
-  path="/semilleros/:id" 
+  path="/tiposespecie/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Edicion de Semilleros
+Este método permite actualizar/editar un tipo de especie.
 
-Este endpoint permite editar los semilleros existentes en AgroSoft Api 
+#### **Parámetros del Request**
+| Parámetro | Tipo   | Requerido | Descripción                  | Ejemplo |
+|----------|--------|-----------|------------------------------|---------|
+| `nombre` | string | No        | Nuevo nombre del tipo de especie   | "Yuca" |
+| `descripcion` | string | No | Nueva descripción del tipo de especie | "Raíz comestible" |
+| `img` | string | No | Nueva imagen del tipo de especie | "imagen_yuca.png" |
 
-### Campos requeridos
-
+###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
 {
-        "id": 1,
-        "fechasiembra": "2024-03-28",
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del semillero | 38 | 1
-| `fechasiembra`     | "date"    | Sí        | fecha de la siembra         | "2024-03-28" |
-
-## Respuestas PatchSemillero
-
-✅ 201 - Éxito al editar el semillero
-```json
-
-{
-        "id": 1,
-        "unidades": 38,
-        "fechasiembra": "2024-03-28",
-        "fechaestimada": "2025-03-31",
-        "fk_especie": 2
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo editar el semillero"
+  "id": 4,
+  "nombre": "Yuca",
+  "descripcion": "Raíz comestible",
+  "img": "imagen_yuca.png"
 }
-
 ```
 
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Método DELETE
 <ApiBaseBanner 
   method="DELETE" 
-  path="/semilleros/:id" 
+  path="/tiposespecie/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Eliminacion de Semilleros
-
-Este endpoint permite eliminar los semilleros existentes en AgroSoft Api 
-
-### Campos requeridos
-
-```json
-{
-        "id": 1,
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del semillero | 38 | 1
-
-## Respuestas DeleteSemillero
-
-✅ 201 - Éxito al eliminar el semillero
-```json
-
-{
-  "detail": "semillero eliminado correctamente"
-}
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo eliminar el semillero"
-}
-
-```
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)

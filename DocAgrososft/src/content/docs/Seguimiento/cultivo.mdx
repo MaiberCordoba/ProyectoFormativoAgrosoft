@@ -1,198 +1,119 @@
 ---
-title:  Cultivo
-description: Endpoint para obtener cultivo en AgroSoft Api
-
+title: Cultivo
+description: Endpoint para gestionar los cultivos dentro del sistema AgroSoft.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de cultivos, incluyendo su creación, consulta, actualización y eliminación.  
+Cada cultivo está asociado a una especie y contiene información clave como nombre, unidades, fecha de siembra y estado.
+
+## Métodos
+
+### Método GET
 
 <ApiBaseBanner 
   method="GET" 
   path="/cultivos/" 
   baseUrl="http://127.0.0.1:8000"
-/>
-
-## Obtencion de cultivo
-
-Este endpoint permite llamar todos los cultivo existentes en AgroSoft Api 
-para traerlos y en listarlos
-
-
-## Respuestas Getcultivo
-
-✅ 201 - Éxito
+/> 
+Este método devuelve la lista de todos los cultivos registrados.  
+###### ✅ **Respuesta exitosa (200)**
 ```json
-
-    {
-        "id": 1,
-        "nombre": "papa",
-        "unidades": 25,
-        "activo": true,
-        "fechaSiembra": "2025-03-26",
-        "fk_Especie": 2
-    }
-
+[
+  {
+    "id": 1,
+    "nombre": "papa",
+    "unidades": 25,
+    "activo": true,
+    "fechaSiembra": "2025-03-26",
+    "fk_Especie": 2
+  }
+]
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se encontraron cultivo"
-}
-
-```
-
+### Método POST
 
 <ApiBaseBanner 
   method="POST" 
   path="/cultivos/" 
   baseUrl="http://127.0.0.1:8000"
 />
+Este método permite registrar un nuevo cultivo.
 
-## Creacion de cultivo
-
-Este endpoint permite crear nuevos cultivo en AgroSoft Api 
-
-### Campos requeridos
-
+## **Campos Requeridos**
 ```json
-    {
-        "nombre": "papa",
-        "unidades": 25,
-        "activo": true,
-        "fechaSiembra": "2025-03-26",
-        "fk_Especie": 2
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`nombre`          | string    | Sí        | nombre del cultivo | papa |
-| `unidades`     | number    | Sí        | cantidad de cultivo         | 25 |
-| `activo`    | boolean    | Sí        |    si esta activo o no    | true or false |
-| `fechaSiembra`       | date    | Sí        | fecha estimada de la cosecha        | 2025-03-26 |
-| `fk_Especie`       | number    | Sí        | especie a la q pertenece        | 2 |
-
-
-## Respuestas Postcultivo
-
-✅ 201 - Éxito al crear el cultivo
-```json
-
-    {
-        "id": 1,
-        "nombre": "papa",
-        "unidades": 25,
-        "activo": true,
-        "fechaSiembra": "2025-03-26",
-        "fk_Especie": 2
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se pudo crear el cultivo"
+  "nombre": "string",
+  "unidades": Integer,
+  "activo": Boolean,
+  "fechaSiembra": "YYYY-MM-DD",
+  "fk_Especie": Integer
 }
-
 ```
+#### **Parámetros del Request**
+
+| Parámetro        | Tipo     | Requerido | Descripción                                    | Ejemplo         |
+|------------------|----------|-----------|------------------------------------------------|-----------------|
+| `nombre`        | string   | Sí       | Nombre del cultivo                            | "papa"         |
+| `unidades`      | integer  | Sí       | Cantidad de unidades del cultivo              | 25              |
+| `activo`        | boolean  | Sí       | Indica si el cultivo está activo o no         | true / false    |
+| `fechaSiembra`  | string   | Sí       | Fecha estimada de la siembra (YYYY-MM-DD)     | "2025-03-26"   |
+| `fk_Especie`    | integer  | Sí       | ID de la especie a la que pertenece           | 2               |
+
+---
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": 1,
+  "nombre": "papa",
+  "unidades": 25,
+  "activo": true,
+  "fechaSiembra": "2025-03-26",
+  "fk_Especie": 2
+}
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Método PATCH
 
 <ApiBaseBanner 
   method="PATCH" 
-  path="/cultivos/:id" 
+  path="/cultivos/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Edicion de cultivo
+Este método permite actualizar/editar un cultivo existente.
+#### **Parámetros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                    | Ejemplo         |
+|------------------|----------|-----------|------------------------------------------------|-----------------|
+| `nombre`        | string   | No       | Nuevo nombre del cultivo                      | "maíz"         |
+| `unidades`      | integer  | No       | Nueva cantidad de unidades del cultivo        | 30              |
+| `activo`        | boolean  | No       | Nuevo estado del cultivo                      | false           |
+| `fechaSiembra`  | string   | No       | Nueva fecha estimada de la siembra (YYYY-MM-DD) | "2025-04-10"   |
+| `fk_Especie`    | integer  | No       | Nuevo ID de la especie a la que pertenece     | 3               |
 
-Este endpoint permite editar los cultivo existentes en AgroSoft Api 
-
-### Campos requeridos
-
+###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
 {
-        "id": 1,
-        "fechasiembra": "2024-03-28",
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del cultivo | 1
-| `fechasiembra`     | "date"    | Sí        | fecha de la siembra         | "2024-03-28" |
-
-## Respuestas Patchcultivo
-
-✅ 201 - Éxito al editar el cultivo
-```json
-
-    {
-        "id": 1,
-        "nombre": "papa",
-        "unidades": 25,
-        "activo": true,
-        "fechaSiembra": "2024-03-28",
-        "fk_Especie": 2
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo editar el cultivo"
+  "id": 1,
+  "nombre": "maíz",
+  "unidades": 30,
+  "activo": false,
+  "fechaSiembra": "2025-04-10",
+  "fk_Especie": 3
 }
-
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
+### Método DELETE
 <ApiBaseBanner 
   method="DELETE" 
-  path="/cultivos/:id" 
+  path="/cultivos/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Eliminacion de cultivo
-
-Este endpoint permite eliminar los cultivo existentes en AgroSoft Api 
-
-### Campos requeridos
-
-```json
-{
-        "id": 1,
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del cultivo |  1
-
-## Respuestas Deletecultivo
-
-✅ 201 - Éxito al eliminar el cultivo
-```json
-
-{
-  "detail": "cultivo eliminado correctamente"
-}
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo eliminar el cultivo"
-}
-
-```
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)
