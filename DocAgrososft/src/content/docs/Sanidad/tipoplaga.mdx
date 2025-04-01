@@ -1,0 +1,171 @@
+---
+title:  Tipo de Plaga
+description: Endpoint para obtener tipos de plaga en AgroSoft Api
+
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+<ApiBaseBanner
+  method="GET"
+  path="/tipoPlaga/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtención de Tipos de Plaga
+
+Este endpoint permite llamar todos los tipos de plaga existentes en AgroSoft Api.
+
+## Respuestas GetTipoPlaga
+
+✅ 201 - Éxito
+```json
+{
+  "id": 2,
+  "nombre": "maiber",
+  "descripcion": "adso",
+  "img": "asd"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se encontraron tipos de plaga"
+}
+```
+
+<ApiBaseBanner
+  method="POST"
+  path="/tipoPlaga/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Creación de Tipo de Plaga
+
+Este endpoint permite crear nuevos tipos de plaga en AgroSoft Api.
+
+### Campos requeridos
+
+```json
+{
+  "nombre": "maiber",
+  "descripcion": "adso",
+  "img": "asd"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción            | Ejemplo    |
+|----------------|--------|-----------|------------------------|------------|
+| `nombre`      | string | Sí        | Nombre de la plaga     | "maiber"  |
+| `descripcion` | string | Sí        | Descripción de la plaga | "adso"    |
+| `img`         | string | No        | URL de imagen opcional | "asd"     |
+
+## Respuestas PostTipoPlaga
+
+✅ 201 - Éxito al crear el tipo de plaga
+```json
+{
+  "id": 3,
+  "nombre": "nuevo",
+  "descripcion": "plaga nueva",
+  "img": "imagen.png"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo crear el tipo de plaga"
+}
+```
+
+<ApiBaseBanner
+  method="PATCH"
+  path="/tipoPlaga/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Edición de Tipo de Plaga
+
+Este endpoint permite editar los tipos de plaga existentes en AgroSoft Api.
+
+### Campos requeridos
+
+```json
+{
+  "id": 2,
+  "nombre": "maiber actualizado"
+}
+```
+
+### Parámetros del Request
+
+| Parámetro       | Tipo   | Requerido | Descripción               | Ejemplo                  |
+|----------------|--------|-----------|---------------------------|--------------------------|
+| `id`          | number | Sí        | ID del tipo de plaga      | 2                        |
+| `nombre`      | string | No        | Nombre actualizado        | "maiber actualizado"    |
+| `descripcion` | string | No        | Descripción actualizada   | "Nueva descripción"     |
+| `img`         | string | No        | URL de imagen actualizada | "nueva-imagen.png"      |
+
+## Respuestas PatchTipoPlaga
+
+✅ 201 - Éxito al editar el tipo de plaga
+```json
+{
+  "id": 2,
+  "nombre": "maiber actualizado",
+  "descripcion": "adso modificado",
+  "img": "asd_modificado"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo editar el tipo de plaga"
+}
+```
+
+<ApiBaseBanner
+  method="DELETE"
+  path="/tipoPlaga/:id"
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminación de Tipo de Plaga
+
+Este endpoint permite eliminar los tipos de plaga existentes en AgroSoft Api.
+
+### Campos requeridos
+
+```json
+{
+  "id": 2
+}
+```
+
+### Parámetros del Request
+
+| Parámetro | Tipo   | Requerido | Descripción            | Ejemplo |
+|----------|--------|-----------|------------------------|---------|
+| `id`     | number | Sí        | ID del tipo de plaga  | 2       |
+
+## Respuestas DeleteTipoPlaga
+
+✅ 201 - Éxito al eliminar el tipo de plaga
+```json
+{
+  "detail": "Tipo de plaga eliminado correctamente"
+}
+```
+
+❌ 400 - Error
+```json
+{
+  "detail": "No se pudo eliminar el tipo de plaga"
+}
+```
+
