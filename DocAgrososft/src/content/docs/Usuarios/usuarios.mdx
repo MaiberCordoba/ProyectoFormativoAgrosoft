@@ -1,0 +1,213 @@
+---
+title: Usuarios API
+
+description: Documentación de la API de usuarios en Astro
+---
+
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/usuarios/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Listar usuarios
+
+El endpoint `GET /usuarios/` devuelve una lista de todos los usuarios registrados en la base de datos.
+
+### Resultado de la consulta
+```json
+[
+  {
+    "id": 1,
+    "identificacion": 12345678,
+    "nombre": "Juan",
+    "apellidos": "Pérez",
+    "fechaNacimiento": "1990-05-15",
+    "telefono": "3001234567",
+    "correoElectronico": "juan@example.com",
+    "admin": false
+  }
+]
+```
+
+### Respuesta Exitosa (200)
+```json
+{
+  "status": "OK"
+}
+```
+
+---
+
+### Posibles Errores
+| Código | Descripción |
+|--------|-------------|
+| 400    | Error en la solicitud (datos inválidos) |
+| 404    | Usuario no encontrado |
+| 500    | Error interno del servidor |
+
+---
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/usuarios/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Crear un usuario
+
+Este endpoint permite registrar un nuevo usuario en el sistema.
+
+### Parámetros del Request
+| Parámetro | Tipo | Requerido | Descripción |
+|-----------|------|-----------|-------------|
+| `identificacion` | integer | ✅ Sí | Identificación única del usuario |
+| `nombre` | string | ✅ Sí | Nombre del usuario |
+| `apellidos` | string | ✅ Sí | Apellidos del usuario |
+| `fechaNacimiento` | string | ✅ Sí | Fecha de nacimiento del usuario (formato ISO) |
+| `telefono` | string | ✅ Sí | Número de teléfono del usuario |
+| `correoElectronico` | string | ✅ Sí | Correo electrónico del usuario |
+| `password` | string | ✅ Sí | Contraseña del usuario |
+| `admin` | boolean | No | Indica si el usuario es administrador (por defecto `false`) |
+
+### Ejemplo de Request
+```json
+{
+  "identificacion": 98765432,
+  "nombre": "Maria",
+  "apellidos": "González",
+  "fechaNacimiento": "1995-07-20",
+  "telefono": "3109876543",
+  "correoElectronico": "maria@example.com",
+  "password": "securepassword",
+  "admin": false
+}
+```
+
+### Respuesta Exitosa (201)
+```json
+{
+  "status": "Usuario registrado exitosamente"
+}
+```
+
+---
+
+### Posibles Errores
+| Código | Descripción |
+|--------|-------------|
+| 400    | Datos inválidos en la solicitud |
+| 500    | Error interno del servidor |
+
+---
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/usuarios/me/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtener usuario autenticado
+
+El endpoint `GET /usuarios/me/` devuelve la información del usuario autenticado.
+
+### Respuesta Exitosa (200)
+```json
+{
+  "id": 1,
+  "identificacion": 12345678,
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "fechaNacimiento": "1990-05-15",
+  "telefono": "3001234567",
+  "correoElectronico": "juan@example.com",
+  "admin": false
+}
+```
+
+---
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/usuarios/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Obtener usuario por ID
+
+El endpoint `GET /usuarios/{id}/` devuelve los datos de un usuario específico.
+
+### Parámetros
+| Parámetro | Tipo | Requerido | Descripción |
+|-----------|------|-----------|-------------|
+| `id` | integer | ✅ Sí | Identificador único del usuario |
+
+### Respuesta Exitosa (200)
+```json
+{
+  "id": 1,
+  "identificacion": 12345678,
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "fechaNacimiento": "1990-05-15",
+  "telefono": "3001234567",
+  "correoElectronico": "juan@example.com",
+  "admin": false
+}
+```
+
+---
+
+<ApiBaseBanner 
+  method="PUT" 
+  path="/usuarios/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Actualizar usuario
+
+El endpoint `PUT /usuarios/{id}/` permite actualizar la información de un usuario.
+
+### Parámetros del Request
+(Similares a los de creación de usuario)
+
+### Respuesta Exitosa (200)
+```json
+{
+  "status": "Usuario actualizado exitosamente"
+}
+```
+
+---
+
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/usuarios/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
+
+## Eliminar usuario
+
+El endpoint `DELETE /usuarios/{id}/` permite eliminar un usuario del sistema.
+
+### Parámetros
+| Parámetro | Tipo | Requerido | Descripción |
+|-----------|------|-----------|-------------|
+| `id` | integer | ✅ Sí | Identificador único del usuario |
+
+### Respuesta Exitosa (204)
+(Sin contenido)
+
+---
+
+### Posibles Errores
+| Código | Descripción |
+|--------|-------------|
+| 400    | ID inválido |
+| 404    | Usuario no encontrado |
+| 500    | Error interno del servidor |
+
+---
