@@ -2,17 +2,41 @@
 const { method, path } = Astro.props;
 const baseURL = 'http://127.0.0.1:8000/api';
 ---
+
 <div class="endpoint">
-  <span class="method">{method}</span> 
+  <span class={`method ${method}`}>{method}</span> 
   <code>{baseURL}{path}</code>
 </div>
 
 <style>
   .method {
     color: white;
-    background: var(--sl-color-purple);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    margin-right: 10px;
+    font-weight: bold;
+  }
+
+  .GET {
+    background-color: #2d8c33; 
+  }
+
+  .POST {
+    background-color:rgb(30, 96, 166); 
+  }
+
+  .PUT {
+    background-color:rgb(179, 0, 255); 
+  }
+
+  .PATCH {
+    background-color:rgb(179, 0, 255); 
+  }
+
+  .DELETE {
+    background-color: #d32f2f; 
+  }
+
+  .Ws {
+    background-color: #ff9800 ; 
   }
 </style>
