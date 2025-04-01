@@ -38,6 +38,23 @@ El módulo **Finanzas** gestiona y registra las actividades económicas y operat
 4. **Gestión de herramientas y productos**: Control de insumos y materiales utilizados.
 5. **Registro de ventas**: Seguimiento de comercialización de productos.
 
+  :::note
+    Es necesario incluir un <code>access_token</code> válido al enviar solicitudes a cualquier EndPoint. 
+    Para aprender cómo generar el token, utilice el endpoint de autenticación: 
+    <a href="/autenticacion/obtener-token">Auth Endpoint</a>. <br /><strong>Importante:</strong> 
+    El token de acceso tiene una duración de <strong>1 hora</strong>.
+  :::
+
+  #### Configuración de la Solicitud
+##### Parámetros necesarios para realizar una solicitud a la API
+
+| Parámetro         | Tipo    | Descripción                                | Requerido |
+|------------------|--------|--------------------------------------------|-----------|
+| `access_token`   | string | Token de acceso generado previamente      | ✅         |
+| `Content-Type`   | string | Tipo de contenido: `application/json`     | ✅         |
+| `Accept`        | string | Tipo de respuesta: `application/json`      | ✅         |
+
+
 <div class="card-grid">
   <a href="/finanzas/actividades" class="card">
     <div class="card-icon"></div>
