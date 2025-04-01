@@ -6,14 +6,14 @@ description: Endpoint para gestionar las cosechas dentro del sistema AgroSoft.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
-## 🔹 **Descripción**
+###  Descripción
 Este endpoint permite la gestión de cosechas agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
 
 Cada cosecha está asociada a un cultivo, y contiene información clave como unidades y fecha.
 
 ## Metodos
 
-### Metodo GET
+### 🔹Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -34,7 +34,7 @@ Este método devuelve la lista de todas las cosechas registradas.
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo POST
+### 🔹Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -43,7 +43,17 @@ Este método devuelve la lista de todas las cosechas registradas.
 />
 Este metodo permite registrar una nueva cosecha
 
-## **Campos Requeridos**
+ ### **Parametros del Request**
+  
+  | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+  |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+  | `unidades`         | integer   | Si       |  Numero de unidades cosechadas                            | 20                |
+  | `fecha`          | string   | Si       |  Fecha de la cosecha (YYYY-MM-DD)                  | "2005-02-12"          |
+  | `fk_Cultivo`     | integer  | Si       |  ID del cultivo asociado                             | 2                     |
+  
+  ---
+
+### **Campos Requeridos**
 ```json
 {
   "unidades": Integer,
@@ -52,15 +62,6 @@ Este metodo permite registrar una nueva cosecha
 }
 
 ```
-#### **Parametros del Request** 
-
-| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
-|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `unidades`         | integer   | Si       |  Numero de unidades cosechadas                            | 20                |
-| `fecha`          | string   | Si       |  Fecha de la cosecha (YYYY-MM-DD)                  | "2005-02-12"          |
-| `fk_Cultivo`     | integer  | Si       |  ID del cultivo asociado                             | 2                     |
-
----
 
 
 ###### ✅ Respuesta Exitosa (201 - Created)
@@ -75,7 +76,7 @@ Este metodo permite registrar una nueva cosecha
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo PATCH
+### 🔹Metodo PATCH
 
 
 <ApiBaseBanner 
@@ -85,12 +86,12 @@ Este metodo permite registrar una nueva cosecha
 />
 
 Este metodo permite actualizar/editar una cosecha
-#### **Parametros del Request**
+ ### **Parametros del Request**
 | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
 |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `unidades`         | integer   | No       |  Numero de unidades cosechadas                            | 30               |
-| `fecha`          | string   | No       |  Fecha de la cosecha (YYYY-MM-DD)                  | "2006-12-12"          |
-| `fk_Cultivo`     | integer  | No       |  ID del cultivo asociado                             | 1                     |
+| `unidades`         | integer   | No       |Nuevo Numero de unidades cosechadas                            | 30               |
+| `fecha`          | string   | No       |  Nueva Fecha de la cosecha (YYYY-MM-DD)                  | "2006-12-12"          |
+| `fk_Cultivo`     | integer  | No       |  Nuevo ID del cultivo asociado                             | 1                     |
 
 ---
 
@@ -104,14 +105,15 @@ Este metodo permite actualizar/editar una cosecha
 }
 
 ```
-
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
+### 🔹Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
   path="/cosechas/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 ###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)

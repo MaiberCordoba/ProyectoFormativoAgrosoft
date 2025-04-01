@@ -6,14 +6,14 @@ description: Endpoint para gestionar el uso de los productos dentro del sistema 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
-## 🔹 **Descripción**
+###  Descripción
 Este endpoint permite la gestión del uso de productos agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
 
 Cada uso producto está asociado a un insumo y una actividad, y contiene información clave como cantidadProducto.
 
 ## Metodos
 
-### Metodo GET
+### 🔹Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -34,7 +34,7 @@ Este método devuelve la lista de todos los usos productos registradas.
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo POST
+### 🔹Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -43,7 +43,17 @@ Este método devuelve la lista de todos los usos productos registradas.
 />
 Este metodo permite registrar una nueva uso producto
 
-## **Campos Requeridos**
+    ### **Parametros del Request**
+   
+   | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+   |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+   | `cantidadProducto`         | integer   | Si       |  Cantidad del uso producto                              | 10               |
+   | `fk_Insumo`     | integer  | Si       |  ID del insumo asociado                             | 1                     |
+   | `fk_Actividad`     | integer  | Si       |  ID de la actividad asociada                         | 1                     |
+   
+   ---
+
+### **Campos Requeridos**
 ```json
   {
     "cantidadProducto": integer,
@@ -52,15 +62,6 @@ Este metodo permite registrar una nueva uso producto
   }
 
 ```
-#### **Parametros del Request** 
-
-| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
-|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `cantidadProducto`         | integer   | Si       |  Cantidad del uso producto                              | 10               |
-| `fk_Insumo`     | integer  | Si       |  ID del insumo asociado                             | 1                     |
-| `fk_Actividad`     | integer  | Si       |  ID de la actividad asociada                         | 1                     |
-
----
 
 
 ###### ✅ Respuesta Exitosa (201 - Created)
@@ -75,7 +76,7 @@ Este metodo permite registrar una nueva uso producto
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo PATCH
+### 🔹Metodo PATCH
 
 
 <ApiBaseBanner 
@@ -85,7 +86,7 @@ Este metodo permite registrar una nueva uso producto
 />
 
 Este metodo permite actualizar/editar una uso producto
-#### **Parametros del Request**
+ ### **Parametros del Request**
 | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
 |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
 | `cantidadProducto`         | integer   |No      |  Nueva Cantidad del uso producto                              | 15               |
@@ -103,14 +104,15 @@ Este metodo permite actualizar/editar una uso producto
   }
 
 ```
-
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
+### 🔹Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
   path="/usos-productos/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 ###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)

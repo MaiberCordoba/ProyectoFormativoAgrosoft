@@ -6,14 +6,14 @@ description: Endpoint para gestionar los tipos-desechos dentro del sistema AgroS
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
-## 🔹 **Descripción**
+###  Descripción
 Este endpoint permite la gestión de tipos de desechos agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
 
 Cada tipo desecho contiene información clave como nombre, descripción.
 
 ## Metodos
 
-### Metodo GET
+### 🔹Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -33,7 +33,7 @@ Este método devuelve la lista de todos las tipos-desechos registrados.
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo POST
+### 🔹Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -42,7 +42,16 @@ Este método devuelve la lista de todos las tipos-desechos registrados.
 />
 Este metodo permite registrar un nuevo tipo desecho
 
-## **Campos Requeridos**
+  ### **Parametros del Request**
+ 
+ | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+ |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+ | `nombre`         | string   | Si       |  Nombre del tipo desecho                              | "organico"                |
+ | `descripcion`    | string   | Si       |  Descripción del tipo desecho                         | "desechos de papa y cebolla"       |
+ 
+ ---
+
+### **Campos Requeridos**
 ```json
 {
     "id": integer,
@@ -51,14 +60,6 @@ Este metodo permite registrar un nuevo tipo desecho
 }
 
 ```
-#### **Parametros del Request** 
-
-| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
-|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `nombre`         | string   | Si       |  Nombre del tipo desecho                              | "organico"                |
-| `descripcion`    | string   | Si       |  Descripción del tipo desecho                         | "desechos de papa y cebolla"       |
-
----
 
 
 ###### ✅ Respuesta Exitosa (201 - Created)
@@ -72,7 +73,7 @@ Este metodo permite registrar un nuevo tipo desecho
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo PATCH
+### 🔹Metodo PATCH
 
 
 <ApiBaseBanner 
@@ -82,7 +83,7 @@ Este metodo permite registrar un nuevo tipo desecho
 />
 
 Este metodo permite actualizar/editar una tipo desecho
-#### **Parametros del Request**
+ ### **Parametros del Request**
 | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
 |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
 | `nombre`         | string   | No       |  Nuevo Nombre del tipo desecho                              | "No organico"                |
@@ -98,14 +99,15 @@ Este metodo permite actualizar/editar una tipo desecho
 }
 
 ```
-
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
+### 🔹Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
   path="/tipos-desechos/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 ###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)

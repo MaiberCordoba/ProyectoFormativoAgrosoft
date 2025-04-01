@@ -6,14 +6,14 @@ description: Endpoint para gestionar las herramientas dentro del sistema AgroSof
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
-## 🔹 **Descripción**
+###  Descripción
 Este endpoint permite la gestión de herramientas de uso agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
 
 Cada herramienta está asociada a un lote, y contiene información clave como nombre, descripción, unidades.
 
 ## Metodos
 
-### Metodo GET
+### 🔹Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -35,7 +35,7 @@ Este método devuelve la lista de todas las herramientas registradas.
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo POST
+### 🔹Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -44,7 +44,18 @@ Este método devuelve la lista de todas las herramientas registradas.
 />
 Este metodo permite registrar una nueva herramienta
 
-## **Campos Requeridos**
+  ### **Parametros del Request**
+ 
+ | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+ |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+ | `fk_Lote`         | integer   | Si       |  ID del lote asociado                              | 1               |
+ | `nombre`         | string   | Si       |  Título de la herramienta                              | "pala"                |
+ | `descripcion`    | string   | Si       |  Descripción de la herramienta                         | "para recoger popo"       |
+ | `unidades`    | integer   | Si       |  Cantidad de herramientas                        | 5      |
+ 
+ ---
+
+### **Campos Requeridos**
 ```json
 {
   "id": integer,
@@ -55,16 +66,6 @@ Este metodo permite registrar una nueva herramienta
 }
 
 ```
-#### **Parametros del Request** 
-
-| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
-|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `fk_Lote`         | integer   | Si       |  ID del lote asociado                              | 1               |
-| `nombre`         | string   | Si       |  Título de la herramienta                              | "pala"                |
-| `descripcion`    | string   | Si       |  Descripción de la herramienta                         | "para recoger popo"       |
-| `unidades`    | integer   | Si       |  Cantidad de herramientas                        | 5      |
-
----
 
 
 ###### ✅ Respuesta Exitosa (201 - Created)
@@ -80,7 +81,7 @@ Este metodo permite registrar una nueva herramienta
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo PATCH
+### 🔹Metodo PATCH
 
 
 <ApiBaseBanner 
@@ -90,13 +91,13 @@ Este metodo permite registrar una nueva herramienta
 />
 
 Este metodo permite actualizar/editar una herramienta
-#### **Parametros del Request**
+ ### **Parametros del Request**
 | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
 |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `fk_Lote`         | integer   | Si       |Nuevo   ID del lote asociado                              | 1               |
-| `nombre`         | string   | Si       |  Nuevo Título de la herramienta                              | "azaada"                |
-| `descripcion`    | string   | Si       |  Nuevo Descripción de la herramienta                         | "para cortar"       |
-| `unidades`    | integer   | Si       |  Nueva Cantidad de herramientas                        | 10     |
+| `fk_Lote`         | integer   | No       |Nuevo ID del lote asociado                              | 1               |
+| `nombre`         | string   | No       |  Nuevo Título de la herramienta                              | "azaada"                |
+| `descripcion`    | string   | No       |  Nuevo Descripción de la herramienta                         | "para cortar"       |
+| `unidades`    | integer   | No       |  Nueva Cantidad de herramientas                        | 10     |
 
 ---
 ###### ✅ Respuesta Exitosa (200 - Ok)
@@ -110,14 +111,15 @@ Este metodo permite actualizar/editar una herramienta
     }
 
 ```
-
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
+### 🔹Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
   path="/herramientas/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 ###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
