@@ -14,6 +14,7 @@ import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 
 //Finanzas
 import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
+import { Desechos } from "./modules/Finanzas/pages/pageDesechos";
 
 //Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
@@ -75,7 +76,7 @@ function App() {
 
             {/* Finanzas */}
             <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
-            <Route path="/desechos" />
+            <Route path="/desechos" element={<Desechos/>} />
             <Route path="/herramientas"  />
             <Route path="/ventas" />
             <Route path="/cosechas"  />
