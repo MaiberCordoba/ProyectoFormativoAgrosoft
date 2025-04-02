@@ -16,15 +16,15 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 Este endpoint permite generar tokens JWT para acceder a los recursos protegidos de AgroSoft API.
 el cual debera estar en los Headers de las solicitudes
 
-### Campos requeridos
+## Headers
 
-```json
-{
-  "correoElectronico": "string",
-  "password": "string"
-}
+| Parámetro         | Tipo    | Descripción                                | Requerido |
+|------------------|--------|--------------------------------------------|-----------|
+| `access_token`   | string | Token de acceso generado previamente      | ✅         |
+| `Content-Type`   | string | Tipo de contenido: `application/json`     | ✅         |
+| `Accept`        | string | Tipo de respuesta: `application/json`      | ✅         |
 
-```
+
 ### Parámetros del Request
 
 | Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
