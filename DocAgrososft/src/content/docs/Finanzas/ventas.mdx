@@ -6,14 +6,14 @@ description: Endpoint para gestionar las ventas dentro del sistema AgroSoft.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
-## 🔹 **Descripción**
+###  Descripción
 Este endpoint permite la gestión de ventas de producto agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
 
 Cada venta está asociada a una cosecha, y contiene información clave como precio unitario y fecha.
 
 ## Metodos
 
-### Metodo GET
+### 🔹Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -34,7 +34,7 @@ Este método devuelve la lista de todas las ventas registradas.
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo POST
+### 🔹Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -43,7 +43,17 @@ Este método devuelve la lista de todas las ventas registradas.
 />
 Este metodo permite registrar una nueva venta
 
-## **Campos Requeridos**
+    ### **Parametros del Request**
+   
+   | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+   |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+   | `precioUnitario`         | integer   | Si       |  Precio de la venta                              | 20000              |
+   | `fecha`          | string   | Si       |  Fecha de la venta (YYYY-MM-DD)                  | "2025-02-27"          |
+   | `fk_Cosecha`     | integer  | Si       |  ID de la cosecha asociada                             | 1                     |
+   
+   ---
+
+### **Campos Requeridos**
 ```json
   {
     "id": integer,
@@ -52,15 +62,6 @@ Este metodo permite registrar una nueva venta
     "fk_Cosecha": integer,
   }
 ```
-#### **Parametros del Request** 
-
-| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
-|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `precioUnitario`         | integer   | Si       |  Precio de la venta                              | 20000              |
-| `fecha`          | string   | Si       |  Fecha de la venta (YYYY-MM-DD)                  | "2025-02-27"          |
-| `fk_Cosecha`     | integer  | Si       |  ID de la cosecha asociada                             | 1                     |
-
----
 
 
 ###### ✅ Respuesta Exitosa (201 - Created)
@@ -75,7 +76,7 @@ Este metodo permite registrar una nueva venta
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo PATCH
+### 🔹Metodo PATCH
 
 
 <ApiBaseBanner 
@@ -85,7 +86,7 @@ Este metodo permite registrar una nueva venta
 />
 
 Este metodo permite actualizar/editar una venta
-#### **Parametros del Request**
+ ### **Parametros del Request**
 | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
 |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
 | `precioUnitario`         | integer   | No       | Nuevo Precio de la venta                              | 25000              |
@@ -103,14 +104,15 @@ Este metodo permite actualizar/editar una venta
   }
 
 ```
-
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
+### 🔹Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
   path="/ventas/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 ###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)

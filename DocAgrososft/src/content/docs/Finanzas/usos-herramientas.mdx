@@ -6,14 +6,14 @@ description: Endpoint para gestionar el uso de las herramientas dentro del siste
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
-## 🔹 **Descripción**
+###  Descripción
 Este endpoint permite la gestión de los usos de las herramientas agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
 
 Cada uso herramienta está asociada a una herramienta y una actividad.
 
 ## Metodos
 
-### Metodo GET
+### 🔹Metodo GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -33,7 +33,7 @@ Este método devuelve la lista de todos los usos de herramientas registradas.
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo POST
+### 🔹Metodo POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -42,7 +42,16 @@ Este método devuelve la lista de todos los usos de herramientas registradas.
 />
 Este metodo permite registrar una nueva uso herramienta
 
-## **Campos Requeridos**
+    ### **Parametros del Request**
+   
+   | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
+   |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
+   | `fk_Herramienta`     | integer  | Si       |  ID de la herramienta asociada                             | 1                     |
+   | `fk_Actividad`     | integer  | Si       |  ID de la actividad en la que se uso                          | 1                     |
+   
+   ---
+
+### **Campos Requeridos**
 ```json
   {
     "fk_Herramienta": integer,
@@ -50,14 +59,6 @@ Este metodo permite registrar una nueva uso herramienta
   }
 
 ```
-#### **Parametros del Request** 
-
-| Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
-|------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
-| `fk_Herramienta`     | integer  | Si       |  ID de la herramienta asociada                             | 1                     |
-| `fk_Actividad`     | integer  | Si       |  ID de la actividad en la que se uso                          | 1                     |
-
----
 
 
 ###### ✅ Respuesta Exitosa (201 - Created)
@@ -71,7 +72,7 @@ Este metodo permite registrar una nueva uso herramienta
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo PATCH
+### 🔹Metodo PATCH
 
 
 <ApiBaseBanner 
@@ -81,7 +82,7 @@ Este metodo permite registrar una nueva uso herramienta
 />
 
 Este metodo permite actualizar/editar una uso herramienta
-#### **Parametros del Request**
+ ### **Parametros del Request**
 | Parámetro        | Tipo     | Requerido | Descripción                                               | Ejemplo               |
 |------------------|----------|-----------|-----------------------------------------------------------|-----------------------|
 | `fk_Herramienta`     | integer  | No      |Nuevo ID de la herramienta asociada                             | 2                     |
@@ -97,14 +98,15 @@ Este metodo permite actualizar/editar una uso herramienta
   }
 
 ```
-
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
+### 🔹Metodo DELETE
 <ApiBaseBanner 
   method="DELETE" 
   path="/usosherramientas/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 ###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
