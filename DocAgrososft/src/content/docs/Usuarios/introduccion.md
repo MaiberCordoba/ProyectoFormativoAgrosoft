@@ -1,6 +1,6 @@
 ---
 title: Gestión de Usuarios
-description: Administración de usuarios en AgroSoft
+description: Administración de usuarios en AgroSoft API
 ---
 
 <style>
@@ -29,50 +29,43 @@ description: Administración de usuarios en AgroSoft
   }
 </style>
 
-Administración de usuarios en AgroSoft, incluyendo registro, actualización, eliminación y autenticación.
+Gestión de usuarios en la API de AgroSoft, permitiendo crear, actualizar, consultar y eliminar usuarios del sistema.
 
 ## Funcionalidades Principales
-1. **Registrar usuarios**: Crea nuevos usuarios en el sistema.
-2. **Consultar usuarios**: Obtiene información detallada de los usuarios.
-3. **Obtener usuario autenticado**: Consulta los datos del usuario con sesión activa.
-4. **Obtener usuario por ID**: Busca un usuario específico por su identificador único.
-5. **Actualizar usuarios**: Modifica datos de un usuario existente.
-6. **Eliminar usuarios**: Remueve un usuario del sistema.
+1. **Listar usuarios**: Obtén un listado de los usuarios registrados.
+2. **Registrar usuario**: Crea nuevos usuarios en el sistema.
+3. **Consultar usuario**: Obtén información detallada de un usuario específico.
+4. **Actualizar usuario**: Modifica los datos de un usuario existente.
+5. **Eliminar usuario**: Elimina un usuario del sistema.
 
 <div class="card-grid">
-  <a href="/usuarios/crear-usuario" class="card">
-    <div class="card-icon"></div>
-    <h3>Crear Usuario</h3>
-    <p>Registrar un nuevo usuario en el sistema</p>
-  </a>
-
-  <a href="/usuarios/obtener-lista-usuarios" class="card">
+  <a href="/usuarios/usuarios" class="card">
     <div class="card-icon"></div>
     <h3>Listar Usuarios</h3>
-    <p>Obtener información de los usuarios registrados</p>
+    <p>Consulta todos los usuarios registrados</p>
   </a>
-
-  <a href="/usuarios/obtener-usuario-autenticado" class="card">
+  
+  <a href="/usuarios/usuarios" class="card">
     <div class="card-icon"></div>
-    <h3>Obtener Usuario Autenticado</h3>
-    <p>Consultar los datos del usuario actualmente autenticado</p>
+    <h3>Registrar Usuario</h3>
+    <p>Crea un nuevo usuario en la plataforma</p>
   </a>
 
-  <a href="/usuarios/obtener-usuario-por-id" class="card">
+  <a href="/usuarios/usuarios" class="card">
     <div class="card-icon"></div>
-    <h3>Obtener Usuario por ID</h3>
-    <p>Consultar un usuario específico por su ID</p>
+    <h3>Consultar Usuario</h3>
+    <p>Obtén información de un usuario en específico</p>
   </a>
 
-  <a href="/usuarios/actualizar-usuario" class="card">
+  <a href="/usuarios/usuarios" class="card">
     <div class="card-icon"></div>
     <h3>Actualizar Usuario</h3>
-    <p>Modificar los datos de un usuario existente</p>
+    <p>Modifica los datos de un usuario existente</p>
   </a>
 
-  <a href="/usuarios/eliminar-usuario" class="card">
+  <a href="/usuarios/usuarios" class="card">
     <div class="card-icon"></div>
     <h3>Eliminar Usuario</h3>
-    <p>Remover un usuario del sistema</p>
+    <p>Borra un usuario del sistema de forma permanente</p>
   </a>
 </div>
