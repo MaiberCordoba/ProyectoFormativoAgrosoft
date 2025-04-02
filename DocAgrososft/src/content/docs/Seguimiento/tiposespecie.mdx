@@ -1,10 +1,16 @@
 ---
-title:  Tipos especie
-description: Endpoint para obtener tipos especie en AgroSoft Api
-
+title: Tipos de Especie
+description: Endpoint para gestionar los tipos de especie en AgroSoft API.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+## 🔹 **Descripción**
+Este endpoint permite la gestión de los tipos de especie dentro del sistema AgroSoft, incluyendo su creación, consulta, actualización y eliminación.
+
+## Métodos
+
+### Método GET
 
 <ApiBaseBanner 
   method="GET" 
@@ -12,35 +18,25 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Obtencion de tipos especie
+Este método devuelve la lista de todos los tipos de especie registrados.
 
-Este endpoint permite llamar todos los tipos especie existentes en AgroSoft Api 
-para traerlos y en listarlos
-
-
-## Respuestas Gettiposespecie
-
-✅ 201 - Éxito
+###### ✅ **Respuesta exitosa (200)**
 ```json
-
-    {
-        "id": 4,
-        "nombre": "Papa",
-        "descripcion": "es papa",
-        "img": "png"
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se encontraron tipos especie"
+    "id": 4,
+    "nombre": "Papa",
+    "descripcion": "Es una papa",
+    "img": "imagen.png"
 }
-
+```
+###### ❌ **Respuesta Error (400 - Bad Request)**
+```json
+{
+  "detail": "No se encontraron tipos de especie"
+}
 ```
 
+### Método POST
 
 <ApiBaseBanner 
   method="POST" 
@@ -48,141 +44,98 @@ Copy
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Creacion de tipos especie
+Este método permite registrar un nuevo tipo de especie.
 
-Este endpoint permite crear nuevos tipos especie en AgroSoft Api 
-
-### Campos requeridos
-
+#### **Campos Requeridos**
 ```json
-    {
-        "nombre": "Papa",
-        "descripcion": "es papa",
-        "img": "string"
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`nombre`          | string    | Sí        | nombre del tipo de especie | Papa |
-| `descripcion`     | string    | Sí        | descripcion del tipo de especie         | es papa |
-| `img`    | date    | string    |Sí    | imagen del tipo de especie       | imganeXD.png |
-
-
-## Respuestas Posttiposespecie
-
-✅ 201 - Éxito al crear el tiposespecie
-```json
-
-    {
-        "id": 4,
-        "nombre": "Papa",
-        "descripcion": "es papa",
-        "img": "png"
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se pudo crear el tiposespecie"
+    "nombre": "Papa",
+    "descripcion": "Es una papa",
+    "img": "imagen.png"
 }
-
 ```
+
+#### **Parámetros del Request**
+
+| Parámetro     | Tipo   | Requerido | Descripción                     | Ejemplo       |
+|--------------|--------|-----------|---------------------------------|---------------|
+| `nombre`     | string | Sí        | Nombre del tipo de especie      | "Papa"        |
+| `descripcion`| string | Sí        | Descripción del tipo de especie | "Es una papa" |
+| `img`        | string | Sí        | Imagen del tipo de especie      | "imagen.png"  |
+
+###### ✅ **Respuesta exitosa (201 - Created)**
+```json
+{
+    "id": 4,
+    "nombre": "Papa",
+    "descripcion": "Es una papa",
+    "img": "imagen.png"
+}
+```
+###### ❌ **Respuesta Error (400 - Bad Request)**
+```json
+{
+  "detail": "No se pudo crear el tipo de especie"
+}
+```
+
+### Método PATCH
 
 <ApiBaseBanner 
   method="PATCH" 
-  path="/tiposespecie/:id" 
+  path="/tiposespecie/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Edicion de tipos especie
+Este método permite actualizar un tipo de especie.
 
-Este endpoint permite editar los tipos especie existentes en AgroSoft Api 
+#### **Parámetros del Request**
 
-### Campos requeridos
+| Parámetro | Tipo   | Requerido | Descripción                     | Ejemplo  |
+|----------|--------|-----------|---------------------------------|----------|
+| `id`     | number | Sí        | ID del tipo de especie          | 4        |
+| `nombre` | string | No        | Nuevo nombre del tipo de especie | "Yuca"   |
 
+###### ✅ **Respuesta exitosa (200 - Ok)**
 ```json
-    {
-        "id": 4,
-        "nombre": "Papa",
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del tiposespecie |   1
-| `nombre`     | string    | Sí        | nombre del tipo de especie         | Yuca |
-
-## Respuestas Patchtiposespecie
-
-✅ 201 - Éxito al editar el tiposespecie
-```json
-
-    {
-        "id": 4,
-        "nombre": "Yuca",
-        "descripcion": "es papa",
-        "img": "png"
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se pudo editar el tiposespecie"
+    "id": 4,
+    "nombre": "Yuca",
+    "descripcion": "Es una papa",
+    "img": "imagen.png"
 }
-
+```
+###### ❌ **Respuesta Error (400 - Bad Request)**
+```json
+{
+  "detail": "No se pudo actualizar el tipo de especie"
+}
 ```
 
+### Método DELETE
 <ApiBaseBanner 
   method="DELETE" 
-  path="/tiposespecie/:id" 
+  path="/tiposespecie/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Eliminacion de tipos especie
+Este método permite eliminar un tipo de especie.
 
-Este endpoint permite eliminar los tipos especie existentes en AgroSoft Api 
+#### **Parámetros del Request**
 
-### Campos requeridos
+| Parámetro | Tipo   | Requerido | Descripción                | Ejemplo |
+|----------|--------|-----------|----------------------------|---------|
+| `id`     | number | Sí        | ID del tipo de especie     | 4       |
 
+###### ✅ **Respuesta exitosa (204 - No Content)**
 ```json
 {
-        "id": 4,
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del tiposespecie | 4
-
-## Respuestas Deletetiposespecie
-
-✅ 201 - Éxito al eliminar el tiposespecie
-```json
-
-{
-  "detail": "tiposespecie eliminado correctamente"
+  "detail": "Tipo de especie eliminado correctamente"
 }
-
 ```
-
-❌ 400 - Error
+###### ❌ **Respuesta Error (400 - Bad Request)**
 ```json
-Copy
 {
-  "detail": "No se pudo editar el tiposespecie"
+  "detail": "No se pudo eliminar el tipo de especie"
 }
-
 ```

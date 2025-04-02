@@ -1,209 +1,126 @@
 ---
-title:  Lotes
-description: Endpoint para obtener lotes en AgroSoft Api
-
+title: Lotes
+description: Endpoint para gestionar los lotes dentro del sistema AgroSoft.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
-<ApiBaseBanner 
-  method="GET" 
-  path="/lote/" 
+## 🔹 **Descripción**
+Este endpoint permite la gestión de lotes, incluyendo su creación, consulta, actualización y eliminación.
+
+Cada lote contiene información clave como nombre, descripción, dimensiones, estado y coordenadas de ubicación.
+
+## Métodos
+
+### Método GET
+
+<ApiBaseBanner
+  method="GET"
+  path="/lotes/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este método devuelve la lista de todos los lotes registrados.  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Lote de papaya",
+    "descripcion": "Papaya en lote",
+    "tamX": 10,
+    "tamY": 20,
+    "estado": true,
+    "posX": "5.00",
+    "posY": "10.00"
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Método POST
+
+<ApiBaseBanner
+  method="POST"
+  path="/lotes/"
+  baseUrl="http://127.0.0.1:8000"
+/>
+Este método permite registrar un nuevo Lote
+
+## **Campos Requeridos**
+```json
+{
+  "nombre": "string",
+  "descripcion": "string",
+  "tamX": integer,
+  "tamY": integer,
+  "estado": boolean,
+  "posX": "string",
+  "posY": "string"
+}
+```
+#### **Parámetros del Request**
+
+| Parámetro          | Tipo     | Requerido | Descripción                     | Ejemplo        |
+|--------------------|---------|-----------|---------------------------------|---------------|
+| `nombre`          | string  | Sí        | Nombre del lote                 | "Lote de papaya" |
+| `descripcion`     | string  | Sí        | Descripción del lote            | "Cultivo de papayas" |
+| `tamX`            | integer | Sí        | Tamaño en X                      | 10 |
+| `tamY`            | integer | Sí        | Tamaño en Y                      | 20 |
+| `estado`          | boolean | Sí        | Estado del lote                 | true |
+| `posX`            | string  | Sí        | Posición en X                   | "5.00" |
+| `posY`            | string  | Sí        | Posición en Y                   | "10.00" |
+
+###### ✅ Respuesta Exitosa (201 - Created)
+```json
+{
+  "id": 2,
+  "nombre": "Lote de manzanas",
+  "descripcion": "Manzanas en lote",
+  "tamX": 15,
+  "tamY": 25,
+  "estado": false,
+  "posX": "8.00",
+  "posY": "12.00"
+}
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### Método PATCH
+
+<ApiBaseBanner
+  method="PATCH"
+  path="/lotes/{id}/"
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Obtencion de lotes
+Este método permite actualizar/editar un lote
+#### **Parámetros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                        | Ejemplo  |
+|------------------|---------|-----------|------------------------------------|----------|
+| `nombre`        | string  | No        | Nuevo nombre del lote              | "Lote de fresas"  |
+| `estado`        | boolean | No        | Nuevo estado del lote              | false |
 
-Este endpoint permite llamar todos los lotes existentes en AgroSoft Api 
-para traerlos y en listarlos
-
-
-## Respuestas Getlotes
-
-✅ 201 - Éxito
+###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
-
-    {
-        "id": 1,
-        "nombre": "lote de papaya",
-        "descripcion": "papaya en lote",
-        "tamX": 1,
-        "tamY": 2,
-        "estado": false,
-        "posX": "3.00",
-        "posY": "4.00"
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
 {
-  "detail": "No se encontraron lotes"
+  "id": 1,
+  "nombre": "Lote de fresas",
+  "descripcion": "Papaya en lote",
+  "tamX": 10,
+  "tamY": 20,
+  "estado": false,
+  "posX": "5.00",
+  "posY": "10.00"
 }
-
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-
-<ApiBaseBanner 
-  method="POST" 
-  path="/lote/" 
+### Método DELETE
+<ApiBaseBanner
+  method="DELETE"
+  path="/lotes/{id}/"
   baseUrl="http://127.0.0.1:8000"
 />
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-## Creacion de lotes
-
-Este endpoint permite crear nuevos lotes en AgroSoft Api 
-
-### Campos requeridos
-
-```json
-    {
-        "nombre": "lote de papaya",
-        "descripcion": "papaya en lote",
-        "tamX": 1,
-        "tamY": 2,
-        "estado": false,
-        "posX": "3.00",
-        "posY": "4.00"
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`nombre`          | string    | Sí        | nombre del lote | lote de papaya |
-| `descripcion`     | string    | Sí        | descripcion del lote         | papaya en lote |
-| `tamX`    | number    | Sí        | tamaño en X        | 1 |
-| `tamY`       | number    | Sí        | tamaño en Y        | 2 |
-| `estado`       | boolean    | Sí        | estado del lote        | true or false |
-| `posX`       | number    | Sí        | posX        | 2 |
-| `posY`       | number    | Sí        | psoY       | 2 |
-
-
-## Respuestas Postlotes
-
-✅ 201 - Éxito al crear el lote
-```json
-
-    {
-        "id": 1,
-        "nombre": "lote de papaya",
-        "descripcion": "papaya en lote",
-        "tamX": 1,
-        "tamY": 2,
-        "estado": false,
-        "posX": "3.00",
-        "posY": "4.00"
-    }
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo crear el lote"
-}
-
-```
-
-<ApiBaseBanner 
-  method="PATCH" 
-  path="/lote/:id" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-## Edicion de lotes
-
-Este endpoint permite editar los lotes existentes en AgroSoft Api 
-
-### Campos requeridos
-
-```json
-{
-        "id": 1,
-        "descripcion": "papaya en lote",
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`          | number    | Sí        | id del lote | 1
-| `descripcion`     | string    | Sí        | nombre del lote        | papaya en lote dos |
-
-## Respuestas Patchlotes
-
-✅ 201 - Éxito al editar el lote
-```json
-
-    {
-        "id": 1,
-        "nombre": "lote de papaya",
-        "descripcion": "papaya en lote dos",
-        "tamX": 1,
-        "tamY": 2,
-        "estado": false,
-        "posX": "3.00",
-        "posY": "4.00"
-    }
-
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo editar el lote"
-}
-
-```
-
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/lote/:id" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-## Eliminacion de lotes
-
-Este endpoint permite eliminar los lotes existentes en AgroSoft Api 
-
-### Campos requeridos
-
-```json
-{
-        "id": 1,
-    }
-
-```
-### Parámetros del Request
-
-| Parámetro          | Tipo      | Requerido | Descripción                     | Ejemplo         |
-|--------------------|---------- |-----------|---------------------------------|-----------------|
-|`id`                | number    | Sí        | id del lote                     | 1
-
-## Respuestas Deletelotes
-
-✅ 201 - Éxito al eliminar el lote
-```json
-
-{
-  "detail": "lote eliminado correctamente"
-}
-
-```
-
-❌ 400 - Error
-```json
-Copy
-{
-  "detail": "No se pudo editar el lote"
-}
-
-```

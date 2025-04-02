@@ -31,6 +31,7 @@ export default defineConfig({
 				{
 					label: 'Seguimiento cultivos',
 					items:[
+						{ label: 'introduccion', slug: 'seguimiento/introduccion' },
 						{ label: 'semillero', slug: 'seguimiento/semillero' },
 						{ label: 'cultivo', slug: 'seguimiento/cultivo' },
 						{ label: 'lotes', slug: 'seguimiento/lotes' },
