@@ -5,13 +5,13 @@ description: Endpoint para obtener y gestionar productos con control en AgroSoft
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
+## Obtención de ProductosControl
+
 <ApiBaseBanner
   method="GET"
   path="/productosControl"
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Obtención de ProductosControl
 
 Este endpoint permite obtener todos los productos con control registrados en AgroSoft Api.
 
@@ -40,13 +40,13 @@ Este endpoint permite obtener todos los productos con control registrados en Agr
 }
 ```
 
+## Creación de ProductoControl
+
 <ApiBaseBanner
   method="POST"
   path="/productosControl"
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Creación de ProductoControl
 
 Este endpoint permite crear un nuevo producto con control.
 
@@ -99,13 +99,13 @@ Este endpoint permite crear un nuevo producto con control.
 }
 ```
 
+## Edición de ProductoControl
+
 <ApiBaseBanner
   method="PATCH"
   path="/productosControl/:id"
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Edición de ProductoControl
 
 Este endpoint permite actualizar un producto con control existente.
 
@@ -155,13 +155,13 @@ Este endpoint permite actualizar un producto con control existente.
 }
 ```
 
+## Eliminación de ProductoControl
+
 <ApiBaseBanner
   method="DELETE"
   path="/productosControl/:id"
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Eliminación de ProductoControl
 
 Este endpoint permite eliminar un producto con control existente.
 
@@ -189,8 +189,3 @@ Este endpoint permite eliminar un producto con control existente.
 ```
 
 ❌ 400 - Error
-```json
-{
-  "detail": "No se pudo eliminar el producto con control"
-}
-```

@@ -1,23 +1,26 @@
 ---
 title: Controles
-description: Endpoint para obtener y gestionar controles en AgroSoft Api
+description: Endpoint para gestionar controles en AgroSoft.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
+
+### Descripción
+
+Este endpoint permite la gestión de controles aplicados a afecciones en los cultivos. Incluye operaciones de consulta, creación, actualización y eliminación.
+
+## Métodos
+
+### 🔹 Método GET
 
 <ApiBaseBanner
   method="GET"
   path="/controles/"
   baseUrl="http://127.0.0.1:8000"
 />
+Este método devuelve la lista de todos los controles registrados.
 
-## Obtención de Controles
-
-Este endpoint permite obtener todos los controles registrados en AgroSoft Api.
-
-### Respuesta Exitosa
-
-✅ 201 - Éxito
+###### ✅ **Respuesta exitosa (200)**
 ```json
 [
   {
@@ -26,36 +29,32 @@ Este endpoint permite obtener todos los controles registrados en AgroSoft Api.
     "fk_TipoControl": 2,
     "descripcion": "Control biológico aplicado",
     "fechaControl": "2025-03-27"
-  },
-  {
-    "id": 2,
-    "fk_Afeccion": 3,
-    "fk_TipoControl": 1,
-    "descripcion": "Control químico realizado",
-    "fechaControl": "2025-03-28"
   }
 ]
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-{
-  "detail": "No se encontraron controles"
-}
-```
+### 🔹 Método POST
 
 <ApiBaseBanner
   method="POST"
   path="/controles/"
   baseUrl="http://127.0.0.1:8000"
 />
+Este método permite registrar un nuevo control.
 
-## Creación de Control
+### **Parámetros del Request**
 
-Este endpoint permite crear un nuevo control.
+| Parámetro       | Tipo     | Requerido | Descripción                     | Ejemplo                    |
+|----------------|----------|-----------|---------------------------------|----------------------------|
+| `fk_Afeccion`  | integer  | Sí        | ID de la afección asociada      | 5                          |
+| `fk_TipoControl` | integer  | Sí      | ID del tipo de control aplicado | 2                          |
+| `descripcion`  | string   | Sí        | Descripción del control         | "Aplicación biológica"     |
+| `fechaControl` | string   | Sí        | Fecha de aplicación (YYYY-MM-DD)| "2025-03-27"              |
 
-### Campos requeridos
+---
 
+### **Campos Requeridos**
 ```json
 {
   "fk_Afeccion": 5,
@@ -65,18 +64,7 @@ Este endpoint permite crear un nuevo control.
 }
 ```
 
-### Parámetros del Request
-
-| Parámetro       | Tipo   | Requerido | Descripción                 | Ejemplo                  |
-|----------------|--------|-----------|---------------------------|--------------------------|
-| `fk_Afeccion` | number | Sí       | ID de la afección asociada | 5                        |
-| `fk_TipoControl` | number | Sí       | ID del tipo de control     | 2                        |
-| `descripcion` | string | Sí       | Descripción del control    | "Aplicación de biológico" |
-| `fechaControl` | date   | Sí       | Fecha de aplicación       | "2025-03-27"             |
-
-### Respuesta Exitosa
-
-✅ 201 - Control creado exitosamente
+###### ✅ Respuesta Exitosa (201 - Created)
 ```json
 {
   "id": 3,
@@ -86,46 +74,27 @@ Este endpoint permite crear un nuevo control.
   "fechaControl": "2025-03-29"
 }
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-{
-  "detail": "No se pudo crear el control"
-}
-```
+### 🔹 Método PATCH
 
 <ApiBaseBanner
   method="PATCH"
-  path="/controles/:id"
+  path="/controles/{id}/"
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Edición de Control
+Este método permite actualizar un control existente.
 
-Este endpoint permite actualizar un control existente.
+### **Parámetros del Request**
+| Parámetro       | Tipo     | Requerido | Descripción                     | Ejemplo                        |
+|----------------|----------|-----------|---------------------------------|--------------------------------|
+| `fk_Afeccion`  | integer  | No        | Nuevo ID de la afección        | 5                              |
+| `fk_TipoControl` | integer | No       | Nuevo ID del tipo de control   | 2                              |
+| `descripcion`  | string   | No        | Nueva descripción              | "Control biológico mejorado"  |
+| `fechaControl` | string   | No        | Nueva fecha de control         | "2025-03-30"                  |
 
-### Campos requeridos
-
-```json
-{
-  "id": 1,
-  "descripcion": "Control biológico mejorado"
-}
-```
-
-### Parámetros del Request
-
-| Parámetro       | Tipo   | Requerido | Descripción                 | Ejemplo                        |
-|----------------|--------|-----------|---------------------------|------------------------------|
-| `id`          | number | Sí       | ID del control            | 1                            |
-| `fk_Afeccion` | number | No        | ID de la afección        | 5                            |
-| `fk_TipoControl` | number | No        | ID del tipo de control    | 2                            |
-| `descripcion` | string | No        | Nueva descripción        | "Control biológico mejorado" |
-| `fechaControl` | date   | No        | Nueva fecha de control    | "2025-03-30"                 |
-
-### Respuesta Exitosa
-
-✅ 201 - Éxito al editar el control
+###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
 {
   "id": 1,
@@ -135,51 +104,17 @@ Este endpoint permite actualizar un control existente.
   "fechaControl": "2025-03-30"
 }
 ```
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-{
-  "detail": "No se pudo editar el control"
-}
-```
+### 🔹 Método DELETE
 
 <ApiBaseBanner
   method="DELETE"
-  path="/api/controles/:id"
+  path="/controles/{id}/"
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Eliminación de Control
-
-Este endpoint permite eliminar un control existente.
-
-### Campos requeridos
-
-```json
-{
-  "id": 1
-}
-```
-
-### Parámetros del Request
-
-| Parámetro | Tipo   | Requerido | Descripción              | Ejemplo |
-|----------|--------|-----------|--------------------------|---------|
-| `id`     | number | Sí       | ID del control a eliminar | 1       |
-
-### Respuesta Exitosa
-
-✅ 201 - Control eliminado correctamente
-```json
-{
-  "detail": "Control eliminado correctamente"
-}
-```
-
-❌ 400 - Error
-```json
-{
-  "detail": "No se pudo eliminar el control"
-}
-```
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
+###### ❌ Respuesta Error (500 - Internal Server Error)
 

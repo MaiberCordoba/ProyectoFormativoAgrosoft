@@ -1,214 +1,164 @@
 ---
+title: Uso de Productos con Control  
+description: Endpoint para gestionar el uso de productos con control en AgroSoft.  
+---
 
-title: Uso Productos Control  
-description: Endpoint para obtener y gestionar el uso de productos con control en AgroSoft Api  
----  
+import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
-import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";  
+### Descripción
 
-<ApiBaseBanner  
-  method="GET"  
-  path="/usoproductosControl"  
-  baseUrl="http://127.0.0.1:8000"  
-/>  
+Este endpoint permite la gestión de registros de uso de productos con control, incluyendo su creación, consulta, actualización y eliminación.  
+Cada registro está asociado a un producto con control y un control específico, e incluye la cantidad utilizada.
 
-## Obtención de Uso Productos Control  
+## Métodos
 
-Este endpoint permite obtener todos los registros de uso de productos con control en AgroSoft Api.  
+### 🔹 Método GET
 
-### Respuesta Exitosa  
+<ApiBaseBanner 
+  method="GET" 
+  path="/usoproductosControl/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
 
-✅ 200 - Éxito  
-```json  
-[  
-  {  
-    "id": 1,  
-    "fk_ProductoControl": {  
-      "id": 2,  
-      "nombre": "Manuel",  
-      "precio": 40000,  
-      "compuestoActivo": "H2O",  
-      "fichaTecnica": "2846103",  
-      "contenido": 100,  
-      "tipoContenido": "m",  
-      "unidades": 1  
-    },  
-    "fk_Control": {  
-      "id": 1,  
-      "descripcion": "Control biológico aplicado",  
-      "fechaControl": "2025-03-27"  
-    },  
-    "cantidadProducto": 50  
-  }  
-]  
-```  
+Este método devuelve la lista de todos los registros de uso de productos con control registrados.  
 
-❌ 400 - Error  
-```json  
-{  
-  "detail": "No se encontraron registros de uso de productos con control"  
-}  
-```  
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "fk_ProductoControl": {
+      "id": 2,
+      "nombre": "Manuel",
+      "precio": 40000,
+      "compuestoActivo": "H2O",
+      "fichaTecnica": "2846103",
+      "contenido": 100,
+      "tipoContenido": "m",
+      "unidades": 1
+    },
+    "fk_Control": {
+      "id": 1,
+      "descripcion": "Control biológico aplicado",
+      "fechaControl": "2025-03-27"
+    },
+    "cantidadProducto": 50
+  }
+]
+```
 
-<ApiBaseBanner  
-  method="POST"  
-  path="/usoproductosControl"  
-  baseUrl="http://127.0.0.1:8000"  
-/>  
+###### ❌ **Respuesta Error (500 - Internal Server Error)**
 
-## Creación de Uso Producto Control  
+---
 
-Este endpoint permite crear un nuevo registro de uso de producto con control.  
+### 🔹 Método POST
 
-### Campos requeridos  
+<ApiBaseBanner 
+  method="POST" 
+  path="/usoproductosControl/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
 
-```json  
-{  
-  "fk_ProductoControl": 2,  
-  "fk_Control": 1,  
-  "cantidadProducto": 50  
-}  
-```  
+Este método permite registrar un nuevo uso de producto con control.  
 
-### Parámetros del Request  
+### **Parámetros del Request**
 
-| Parámetro         | Tipo    | Requerido | Descripción                                  | Ejemplo   |  
-|-------------------|---------|-----------|----------------------------------------------|-----------|  
-| `fk_ProductoControl` | number  | Sí        | ID del producto con control                  | 2         |  
-| `fk_Control`         | number  | Sí        | ID del control relacionado con el producto   | 1         |  
-| `cantidadProducto`   | number  | Sí        | Cantidad de producto utilizada               | 50        |  
+| Parámetro           | Tipo    | Requerido | Descripción                                  | Ejemplo   |
+|---------------------|---------|-----------|----------------------------------------------|-----------|
+| `fk_ProductoControl` | number  | Sí        | ID del producto con control                  | 2         |
+| `fk_Control`         | number  | Sí        | ID del control relacionado con el producto   | 1         |
+| `cantidadProducto`   | number  | Sí        | Cantidad de producto utilizada               | 50        |
 
-### Respuesta Exitosa  
+---
 
-✅ 201 - Registro de uso de producto con control creado exitosamente  
-```json  
-{  
-  "id": 2,  
-  "fk_ProductoControl": {  
-    "id": 2,  
-    "nombre": "Manuel",  
-    "precio": 40000,  
-    "compuestoActivo": "H2O",  
-    "fichaTecnica": "2846103",  
-    "contenido": 100,  
-    "tipoContenido": "m",  
-    "unidades": 1  
-  },  
-  "fk_Control": {  
-    "id": 1,  
-    "descripcion": "Control biológico aplicado",  
-    "fechaControl": "2025-03-27"  
-  },  
-  "cantidadProducto": 50  
-}  
-```  
+### **Campos Requeridos**
+```json
+{
+  "fk_ProductoControl": 2,
+  "fk_Control": 1,
+  "cantidadProducto": 50
+}
+```
 
-❌ 400 - Error  
-```json  
-{  
-  "detail": "No se pudo crear el registro de uso de producto con control"  
-}  
-```  
+###### ✅ **Respuesta Exitosa (201 - Created)**
+```json
+{
+  "id": 2,
+  "fk_ProductoControl": {
+    "id": 2,
+    "nombre": "Manuel",
+    "precio": 40000,
+    "compuestoActivo": "H2O",
+    "fichaTecnica": "2846103",
+    "contenido": 100,
+    "tipoContenido": "m",
+    "unidades": 1
+  },
+  "fk_Control": {
+    "id": 1,
+    "descripcion": "Control biológico aplicado",
+    "fechaControl": "2025-03-27"
+  },
+  "cantidadProducto": 50
+}
+```
 
-<ApiBaseBanner  
-  method="PATCH"  
-  path="/usoproductosControl/:id"  
-  baseUrl="http://127.0.0.1:8000"  
-/>  
+###### ❌ **Respuesta Error (500 - Internal Server Error)**
 
-## Edición de Uso Producto Control  
+---
 
-Este endpoint permite actualizar un registro de uso de producto con control existente.  
+### 🔹 Método PATCH
 
-### Campos requeridos  
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/usoproductosControl/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
 
-```json  
-{  
-  "id": 1,  
-  "fk_ProductoControl": 2,  
-  "fk_Control": 1,  
-  "cantidadProducto": 60  
-}  
-```  
+Este método permite actualizar/editar un registro de uso de producto con control.  
 
-### Parámetros del Request  
+### **Parámetros del Request**
 
-| Parámetro         | Tipo    | Requerido | Descripción                                  | Ejemplo   |  
-|-------------------|---------|-----------|----------------------------------------------|-----------|  
-| `id`              | number  | Sí        | ID del registro de uso de producto con control | 1         |  
-| `fk_ProductoControl` | number  | No        | ID del producto con control                  | 2         |  
-| `fk_Control`         | number  | No        | ID del control relacionado con el producto   | 1         |  
-| `cantidadProducto`   | number  | No        | Nueva cantidad de producto utilizada         | 60        |  
+| Parámetro           | Tipo    | Requerido | Descripción                                  | Ejemplo   |
+|---------------------|---------|-----------|----------------------------------------------|-----------|
+| `cantidadProducto`   | number  | No        | Nueva cantidad de producto utilizada        | 60        |
 
-### Respuesta Exitosa  
+###### ✅ **Respuesta Exitosa (200 - OK)**
+```json
+{
+  "id": 1,
+  "fk_ProductoControl": {
+    "id": 2,
+    "nombre": "Manuel",
+    "precio": 40000,
+    "compuestoActivo": "H2O",
+    "fichaTecnica": "2846103",
+    "contenido": 100,
+    "tipoContenido": "m",
+    "unidades": 1
+  },
+  "fk_Control": {
+    "id": 1,
+    "descripcion": "Control biológico aplicado",
+    "fechaControl": "2025-03-27"
+  },
+  "cantidadProducto": 60
+}
+```
 
-✅ 200 - Registro de uso de producto con control actualizado exitosamente  
-```json  
-{  
-  "id": 1,  
-  "fk_ProductoControl": {  
-    "id": 2,  
-    "nombre": "Manuel",  
-    "precio": 40000,  
-    "compuestoActivo": "H2O",  
-    "fichaTecnica": "2846103",  
-    "contenido": 100,  
-    "tipoContenido": "m",  
-    "unidades": 1  
-  },  
-  "fk_Control": {  
-    "id": 1,  
-    "descripcion": "Control biológico aplicado",  
-    "fechaControl": "2025-03-27"  
-  },  
-  "cantidadProducto": 60  
-}  
-```  
+###### 🔍 **Respuesta ID No encontrado (404 - Not Found)**
+###### ❌ **Respuesta Error (500 - Internal Server Error)**
 
-❌ 400 - Error  
-```json  
-{  
-  "detail": "No se pudo editar el registro de uso de producto con control"  
-}  
-```  
+---
 
-<ApiBaseBanner  
-  method="DELETE"  
-  path="/usoproductosControl/:id"  
-  baseUrl="http://127.0.0.1:8000"  
-/>  
+### 🔹 Método DELETE
 
-## Eliminación de Uso Producto Control  
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/usoproductosControl/{id}/" 
+  baseUrl="http://127.0.0.1:8000"
+/>
 
-Este endpoint permite eliminar un registro de uso de producto con control existente.  
-
-### Campos requeridos  
-
-```json  
-{  
-  "id": 1  
-}  
-```  
-
-### Parámetros del Request  
-
-| Parámetro | Tipo    | Requerido | Descripción                         | Ejemplo |  
-|-----------|---------|-----------|-------------------------------------|---------|  
-| `id`      | number  | Sí        | ID del registro de uso a eliminar   | 1       |  
-
-### Respuesta Exitosa  
-
-✅ 200 - Registro de uso de producto con control eliminado correctamente  
-```json  
-{  
-  "detail": "Registro de uso de producto con control eliminado correctamente"  
-}  
-```  
-
-❌ 400 - Error  
-```json  
-{  
-  "detail": "No se pudo eliminar el registro de uso de producto con control"  
-}  
-```  
-
+###### ✅ **Respuesta Exitosa (204 - No Content)**
+###### 🔍 **Respuesta ID No encontrado (404 - Not Found)**
+###### ❌ **Respuesta Error (500 - Internal Server Error)**

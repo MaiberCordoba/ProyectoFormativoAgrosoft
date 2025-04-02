@@ -1,28 +1,63 @@
 ---
 title: Afecciones
-description: Endpoint para obtener afecciones en AgroSoft Api
----
-
+description: Endpoint para gestionar las afecciones dentro del sistema AgroSoft.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
-<ApiBaseBanner
-  method="GET"
-  path="/afecciones/"
+### Descripción
+
+Este endpoint permite la gestión de afecciones en los cultivos, incluyendo su creación, consulta, actualización y eliminación.  
+Cada afección está asociada a una plantación y una plaga, y contiene información clave como fecha de detección y estado.
+
+## Métodos
+
+### 🔹 Método GET
+
+<ApiBaseBanner 
+  method="GET" 
+  path="/afecciones/" 
+  baseUrl="http://127.0.0.1:8000"
+/> 
+Este método devuelve la lista de todas las afecciones registradas.  
+
+###### ✅ **Respuesta exitosa (200)**
+```json
+[
+  {
+    "id": 1,
+    "fk_Plantacion": 5,
+    "fk_Plaga": 2,
+    "fechaEncuentro": "2025-03-27",
+    "estado": "ST"
+  }
+]
+```
+###### ❌ Respuesta Error (500 - Internal Server Error)
+
+### 🔹 Método POST
+
+<ApiBaseBanner 
+  method="POST" 
+  path="/afecciones/" 
   baseUrl="http://127.0.0.1:8000"
 />
+Este método permite registrar una nueva afección.
 
-## Obtención de Afecciones
+### **Parámetros del Request** 
 
-Este endpoint permite llamar todas las afecciones existentes en AgroSoft Api.
+| Parámetro        | Tipo     | Requerido | Descripción                                         | Ejemplo         |
+|-----------------|----------|-----------|-----------------------------------------------------|----------------|
+| `fk_Plantacion` | integer  | Sí        | ID de la plantación afectada                        | 5              |
+| `fk_Plaga`      | integer  | Sí        | ID de la plaga encontrada                          | 2              |
+| `fechaEncuentro`| string   | Sí        | Fecha de detección de la afección (YYYY-MM-DD)      | "2025-03-27"   |
+| `estado`        | string   | Sí        | Estado de la afección (`ST`, `EC`, `EL`)           | "ST"           |
 
-## Respuestas GetAfecciones
+---
 
-✅ 201 - Éxito
+### **Campos Requeridos**
 ```json
 {
-  "id": 1,
   "fk_Plantacion": 5,
   "fk_Plaga": 2,
   "fechaEncuentro": "2025-03-27",
@@ -30,46 +65,7 @@ Este endpoint permite llamar todas las afecciones existentes en AgroSoft Api.
 }
 ```
 
-❌ 400 - Error
-```json
-{
-  "detail": "No se encontraron afecciones"
-}
-```
-
-<ApiBaseBanner
-  method="POST"
-  path="/afecciones/"
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-## Creación de Afección
-
-Este endpoint permite crear nuevas afecciones en AgroSoft Api.
-
-### Campos requeridos
-
-```json
-{
-  "fk_Plantacion": 5,
-  "fk_Plaga": 2,
-  "fechaEncuentro": "2025-03-27",
-  "estado": "ST"
-}
-```
-
-### Parámetros del Request
-
-| Parámetro       | Tipo   | Requerido | Descripción                       | Ejemplo          |
-|----------------|--------|-----------|--------------------------------|------------------|
-| `fk_Plantacion` | number | Sí       | ID de la plantación afectada   | 5                |
-| `fk_Plaga`     | number | Sí       | ID de la plaga encontrada      | 2                |
-| `fechaEncuentro` | date | Sí       | Fecha en que se detectó la plaga | "2025-03-27"   |
-| `estado`      | string | Sí       | Estado de la afección (ST, EC, EL) | "ST"           |
-
-## Respuestas PostAfeccion
-
-✅ 201 - Éxito al crear la afección
+###### ✅ Respuesta Exitosa (201 - Created)
 ```json
 {
   "id": 2,
@@ -79,43 +75,27 @@ Este endpoint permite crear nuevas afecciones en AgroSoft Api.
   "estado": "EC"
 }
 ```
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-{
-  "detail": "No se pudo crear la afección"
-}
-```
+### 🔹 Método PATCH
 
-<ApiBaseBanner
-  method="PATCH"
-  path="/afecciones/:id"
+<ApiBaseBanner 
+  method="PATCH" 
+  path="/afecciones/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-## Edición de Afección
+Este método permite actualizar/editar una afección.
 
-Este endpoint permite editar las afecciones existentes en AgroSoft Api.
+### **Parámetros del Request**
+| Parámetro        | Tipo     | Requerido | Descripción                                    | Ejemplo         |
+|-----------------|----------|-----------|------------------------------------------------|----------------|
+| `fk_Plantacion` | integer  | No        | Nuevo ID de la plantación afectada            | 5              |
+| `fk_Plaga`      | integer  | No        | Nuevo ID de la plaga encontrada               | 2              |
+| `fechaEncuentro`| string   | No        | Nueva fecha de detección (YYYY-MM-DD)         | "2025-03-27"   |
+| `estado`        | string   | No        | Nuevo estado de la afección (`ST`, `EC`, `EL`)| "EL"           |
 
-### Campos requeridos
-
-```json
-{
-  "id": 1,
-  "estado": "EL"
-}
-```
-
-### Parámetros del Request
-
-| Parámetro       | Tipo   | Requerido | Descripción                     | Ejemplo      |
-|----------------|--------|-----------|---------------------------------|--------------|
-| `id`          | number | Sí       | ID de la afección               | 1            |
-| `estado`      | string | No        | Estado actualizado (ST, EC, EL) | "EL"         |
-
-## Respuestas PatchAfeccion
-
-✅ 201 - Éxito al editar la afección
+###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
 {
   "id": 1,
@@ -125,51 +105,18 @@ Este endpoint permite editar las afecciones existentes en AgroSoft Api.
   "estado": "EL"
 }
 ```
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
+###### ❌ Respuesta Error (500 - Internal Server Error)
 
-❌ 400 - Error
-```json
-{
-  "detail": "No se pudo editar la afección"
-}
-```
+### 🔹 Método DELETE
 
-<ApiBaseBanner
-  method="DELETE"
-  path="/afecciones/:id"
+<ApiBaseBanner 
+  method="DELETE" 
+  path="/afecciones/{id}/" 
   baseUrl="http://127.0.0.1:8000"
 />
-
-## Eliminación de Afección
-
-Este endpoint permite eliminar las afecciones existentes en AgroSoft Api.
-
-### Campos requeridos
-
-```json
-{
-  "id": 1
-}
-```
-
-### Parámetros del Request
-
-| Parámetro | Tipo   | Requerido | Descripción         | Ejemplo |
-|----------|--------|-----------|-----------------|---------|
-| `id`     | number | Sí       | ID de la afección | 1       |
-
-## Respuestas DeleteAfeccion
-
-✅ 201 - Éxito al eliminar la afección
-```json
-{
-  "detail": "Afección eliminada correctamente"
-}
-```
-
-❌ 400 - Error
-```json
-{
-  "detail": "No se pudo eliminar la afección"
-}
+###### ✅ Respuesta Exitosa (204 - No Content)
+###### 🔍 Respuesta ID No encontrado (404 - Not Found)
+###### ❌ Respuesta Error (500 - Internal Server Error)
 ```
 
