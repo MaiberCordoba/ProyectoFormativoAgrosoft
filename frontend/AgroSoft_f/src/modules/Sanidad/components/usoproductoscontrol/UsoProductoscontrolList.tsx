@@ -36,7 +36,7 @@ export function UsoProductosControlList() {
   } = useEliminarUsoProductosControl();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_ProductoControl:0, fk_Control: 0, cantidadProducto: 0 });
+    handleCrear({ id: 0, fk_ProductoControl: 0, fk_Control: 0, cantidadProducto: 0 });
   };
 
   // Definición de columnas
@@ -59,8 +59,12 @@ export function UsoProductosControlList() {
             onEliminar={() => handleEliminar(item)}
           />
         );
+      case "productoControl":
+        return <span>{item.productoControl?.nombre || "Sin nombre"}</span>;
+      case "control":
+        return <span>{item.control?.descripcion || "Sin nombre"}</span>;
       default:
-        return <span>{String(item[columnKey as keyof UsoProductosControl])}</span>;
+        return <span>{String(item[columnKey as keyof UsoProductosControl] || "Sin datos")}</span>;
     }
   };
 
