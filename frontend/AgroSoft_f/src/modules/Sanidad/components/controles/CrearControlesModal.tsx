@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { postControles} from "../../hooks/controles/usePostControles";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem, toast } from "@heroui/react";
+import { Input, Select, SelectItem,  } from "@heroui/react";
 import { useGetAfeccionesCultivo } from "../../hooks/afeccionescultivo/useGetAfeccionescultivo";
 import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
 
@@ -10,7 +10,7 @@ interface CrearControlModalProps {
 }
 
 export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
-  const [fecha, setFecha] = useState("");
+  const [fechaControl, setFechaControl] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Afeccion, setFk_Afeccion] = useState<number | null>(null);
   const [fk_TipoControl, setFk_TipoControl] = useState<number | null>(null);
@@ -20,16 +20,16 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
   const { mutate, isPending } = postControles();
 
   const handleSubmit = () => {
-    if (!fecha || !descripcion || !fk_Afeccion || !fk_TipoControl) {
+    if (!fechaControl || !descripcion || !fk_Afeccion || !fk_TipoControl) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
     mutate(
-      { fecha, descripcion, fk_Afeccion, fk_TipoControl }, 
+      { fechaControl , descripcion, fk_Afeccion, fk_TipoControl }, 
       {
         onSuccess: () => {
           onClose();
-          setFecha("");
+          setFechaControl("");
           setDescripcion("");
           setFk_Afeccion(null);
           setFk_TipoControl(null);
@@ -55,8 +55,8 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
       <Input
         label="Fecha"
         type="date"
-        value={fecha}
-        onChange={(e) => setFecha(e.target.value)}
+        value={fechaControl}
+        onChange={(e) => setFechaControl(e.target.value)}
         required
       />
 
