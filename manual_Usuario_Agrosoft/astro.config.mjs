@@ -19,6 +19,13 @@ export default defineConfig({
 						{ label: 'Pagina de Inicio', slug: 'primerospasos/home' },
 					],
 				},
+				{
+					label: 'IoT',
+					items:[
+						{ label: 'introduccion', slug: 'iot/introduccion' },
+						{ label: 'sensores', slug: 'iot/sensores' },
+					],
+				},
 				
 			],
 		}),
