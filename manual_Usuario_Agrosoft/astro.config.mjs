@@ -25,6 +25,12 @@ export default defineConfig({
 					items: [
 						{ label: 'Introduccion', slug: 'seguimiento/introduccion' },
 						{ label: 'Semilleros', slug: 'seguimiento/semilleros' },
+						{ label: 'Cultivos', slug: 'seguimiento/cultivos' },
+						{ label: 'Lotes', slug: 'seguimiento/lotes' },
+						{ label: 'Eras', slug: 'seguimiento/eras' },
+						{ label: 'Especies', slug: 'seguimiento/especies' },
+						{ label: 'Tipos Especie', slug: 'seguimiento/tipos-especie' },
+						{ label: 'Plantaciones', slug: 'seguimiento/plantaciones' },
 					],
 				},
 				
