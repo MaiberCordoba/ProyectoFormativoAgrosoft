@@ -19,6 +19,14 @@ export default defineConfig({
 						{ label: 'Pagina de Inicio', slug: 'primerospasos/home' },
 					],
 				},
+
+				{
+					label: 'Cultivos',
+					items: [
+						{ label: 'Introduccion', slug: 'seguimiento/introduccion' },
+						{ label: 'Semilleros', slug: 'seguimiento/semilleros' },
+					],
+				},
 				
 			],
 		}),
