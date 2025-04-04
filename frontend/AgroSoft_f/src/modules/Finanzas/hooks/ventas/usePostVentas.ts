@@ -3,7 +3,7 @@ import { postVentas } from "../../api/ventasApi";
 import { Ventas } from "../../types";
 import { addToast } from "@heroui/toast";
 
-export const uses = () => {
+export const usePostVentas = () => {
   const queryClient = useQueryClient();
 
   return useMutation<Ventas, Error, Ventas>({
