@@ -13,9 +13,9 @@ interface EditarEspecieModalProps {
 const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClose }) => {
   const [nombre, setNombre] = useState<string>(especie.nombre);
   const [descripcion, setDescripcion] = useState<string>(especie.descripcion);
-  const [img, setImg] = useState("");
-  const [tiempocrecimiento, settiempocrecimiento] = useState(especie.tiempocrecimiento);
-  const [fk_TiposEspecie, setFk_TiposEspecie] = useState(0);
+  const [img, setImg] = useState(especie.img || "");
+  const [tiempocrecimiento, setTiempocrecimiento] = useState<number>(especie.tiempocrecimiento);
+  const [fk_tipoespecie, setFk_TipoEspecie] = useState<number>(especie.fk_tipoespecie ?? 0); // 🔥 Corregido nombre
 
   const { mutate, isPending } = usePatchEspecies();
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie } = useGetTiposEspecie();
@@ -29,7 +29,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
           descripcion,
           img,
           tiempocrecimiento,
-          fk_TiposEspecie,
+          fk_tipoespecie, // 🔥 Corregido para coincidir con el backend
         },
       },
       {
@@ -72,12 +72,11 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         onChange={(e) => setImg(e.target.value)}
       />
       <Input
-        label="Tiempo de Crecimiento"
+        label="Tiempo de Crecimiento (días)"
         type="number"
-        value={tiempocrecimiento.toString()} // Convierte el número a string
-        onChange={(e) => settiempocrecimiento(Number(e.target.value))} // Convierte de vuelta a número
+        value={tiempocrecimiento.toString()}
+        onChange={(e) => setTiempocrecimiento(Number(e.target.value))}
       />
-
 
       {isLoadingTiposEspecie ? (
         <p>Cargando tipos de especie...</p>
@@ -85,14 +84,16 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         <Select
           label="Tipo de Especie"
           placeholder="Selecciona un tipo"
-          selectedKeys={fk_TiposEspecie ? [fk_TiposEspecie.toString()] : []}
+          selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []} // 🔥 Se asegura de convertirlo a string
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_TiposEspecie(Number(selectedKey));
+            const selectedKey = Array.from(keys)[0]; // 🔥 Extrae el valor seleccionado
+            setFk_TipoEspecie(Number(selectedKey)); // 🔥 Convierte el valor seleccionado a número
           }}
         >
           {(tiposEspecie || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
+            <SelectItem key={tipo.id.toString()} value={tipo.id.toString()}> 
+              {tipo.nombre}
+            </SelectItem>
           ))}
         </Select>
       )}

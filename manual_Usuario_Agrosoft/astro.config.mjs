@@ -19,7 +19,28 @@ export default defineConfig({
 						{ label: 'Pagina de Inicio', slug: 'primerospasos/home' },
 					],
 				},
-				{
+        {
+				
+					label: 'Cultivos',
+					items: [
+						{ label: 'Introduccion', slug: 'seguimiento/introduccion' },
+						{ label: 'Semilleros', slug: 'seguimiento/semilleros' },
+						{ label: 'Cultivos', slug: 'seguimiento/cultivos' },
+						{ label: 'Lotes', slug: 'seguimiento/lotes' },
+						{ label: 'Eras', slug: 'seguimiento/eras' },
+						{ label: 'Especies', slug: 'seguimiento/especies' },
+						{ label: 'Tipos Especie', slug: 'seguimiento/tipos-especie' },
+						{ label: 'Plantaciones', slug: 'seguimiento/plantaciones' },
+				  	],
+				},
+        		{
+					label: 'IoT',
+					items:[
+						{ label: 'introduccion', slug: 'iot/introduccion' },
+						{ label: 'sensores', slug: 'iot/sensores' },
+					]
+           		},
+        {
 					label: 'Finanzas',
 					items: [
 						// Each item here is one entry in the navigation menu.
@@ -33,7 +54,6 @@ export default defineConfig({
 						{ label: 'Ventas', slug: 'finanzas/ventas' },
 					],
 				},
-				
 			],
 		}),
 	],

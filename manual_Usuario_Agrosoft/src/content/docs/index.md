@@ -72,7 +72,7 @@ Este manual te acompañará en tu primer contacto con **AgroSoft**, la plataform
   <a href="primerospasos/login" class="link-button">
      → Ir al primer paso
   </a>
-  <a href="/guias/quickstart" class="link-button" style="background: transparent; border: 1px solid #e2e8f0; color: inherit;">
+  <a href="http://localhost:4322/" class="link-button" style="background: transparent; border: 1px solid #e2e8f0; color: inherit;">
      Documentacion Tecnica
   </a>
 </div>

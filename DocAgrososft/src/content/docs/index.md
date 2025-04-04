@@ -60,7 +60,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   <a href="/autenticacion/introduccion" class="link-button">
      Comenzar con la API
   </a>
-  <a href="/guias/quickstart" class="link-button" style="background: transparent; border: 1px solid #e2e8f0; color: inherit;">
+  <a href="http://localhost:4321/" class="link-button" style="background: transparent; border: 1px solid #e2e8f0; color: inherit;">
      Guía Rápida
   </a>
 </div>

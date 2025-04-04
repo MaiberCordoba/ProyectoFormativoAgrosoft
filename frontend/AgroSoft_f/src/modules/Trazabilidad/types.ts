@@ -12,7 +12,8 @@ export interface Especies{
     img?: string;
     tiempocrecimiento: number;
     TiposEspecie?: TiposEspecie;
-    fk_TiposEspecie?: number;
+    fk_tipoespecie?: number | null;
+    tipo_especie_nombre?: string | null;
 }
 
 export interface Semilleros{
