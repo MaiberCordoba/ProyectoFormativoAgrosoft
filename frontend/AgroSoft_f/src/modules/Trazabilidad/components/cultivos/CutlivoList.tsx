@@ -88,8 +88,8 @@ export function CultivosList() {
       <TablaReutilizable
         datos={cultivos || []}
         columnas={columnas}
-        claveBusqueda="id"
-        placeholderBusqueda="Buscar por ID"
+        claveBusqueda="nombre"
+        placeholderBusqueda="Buscar por Nombre"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
