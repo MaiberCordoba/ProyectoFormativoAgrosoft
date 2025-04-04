@@ -2,6 +2,8 @@ import { useGetControles } from "../../hooks/controles/useGetControless";
 import { useEditarControl } from "../../hooks/controles/useEditarControles";
 import { useCrearControl } from "../../hooks/controles/useCrearControles";
 import { useEliminarControl } from "../../hooks/controles/useEliminarControles";
+import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
+
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarControlModal from "./EditarControlesModal";
@@ -11,6 +13,7 @@ import { Controles } from "../../types";
 
 export function ControlesList() {
   const { data, isLoading, error } = useGetControles();
+  const { data: tiposControl } = useGetTipoControl();
   
   const { 
     isOpen: isEditModalOpen, 
@@ -40,7 +43,7 @@ export function ControlesList() {
   const columnas = [
     { name: "FechaControl", uid: "fechacontrol" },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Afección", uid: "fk_Afeccion" },
+    { name: "Afección en el cultivo", uid: "fk_Afeccion" },
     { name: "Tipo de Control", uid: "fk_TipoControl" },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -54,8 +57,9 @@ export function ControlesList() {
         return <span>{item.descripcion}</span>;
       case "fk_Afeccion":
         return <span>{item.fk_Afeccion || "No definido"}</span>;
-      case "fk_TipoControl":
-        return <span>{item.fk_TipoControl || "No definido"}</span>;
+        case "fk_TipoControl":
+          const tipoControlNombre = tiposControl?.find(t => t.id === item.fk_TipoControl)?.nombre || "No definido";
+          return <span>{tipoControlNombre}</span>;
       case "acciones":
         return (
           <AccionesTabla
