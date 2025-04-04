@@ -86,7 +86,7 @@ Solución tecnológica para la gestión inteligente de fincas agrícolas
   </a>
   
   <!-- Tarjeta de Sanidad -->
-  <a href="/sanidad/tipoplaga" class="module-card">
+  <a href="/sanidad/introduccio" class="module-card">
     <div style="font-size: 2rem; margin-bottom: 1rem;"></div>
     <h3>Sanidad</h3>
     <p>Control de plagas y tratamientos fitosanitarios</p>
