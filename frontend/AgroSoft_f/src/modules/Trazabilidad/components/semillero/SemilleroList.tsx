@@ -1,4 +1,5 @@
 import { useGetSemilleros } from "../../hooks/semilleros/useGetSemilleros";
+import { useGetEspecies } from "../../hooks/especies/useGetEpecies"; // Importar el hook de especies
 import { useEditarSemilleros } from "../../hooks/semilleros/useEditarSemilleros";
 import { useCrearSemilleros } from "../../hooks/semilleros/useCrearSemilleros";
 import { useEliminarSemilleros } from "../../hooks/semilleros/useEliminarSemilleros";
@@ -10,7 +11,8 @@ import EliminarSemilleroModal from "./EliminarSemillero";
 import { Semilleros } from "../../types";
 
 export function SemilleroList() {
-  const { data, isLoading, error } = useGetSemilleros();
+  const { data: semilleros, isLoading, error } = useGetSemilleros();
+  const { data: especies } = useGetEspecies(); // Obtener la lista de especies
 
   const { 
     isOpen: isEditModalOpen, 
@@ -36,6 +38,12 @@ export function SemilleroList() {
     handleCrear({ id: 0, fk_especie: 0, unidades: 0, fechasiembra: "", fechaestimada: "" });
   };
 
+  // Crear un mapa de especies para obtener el nombre por ID
+  const especiesMap = especies?.reduce((map, especie) => {
+    map[especie.id] = especie.nombre;
+    return map;
+  }, {} as Record<number, string>) || {};
+
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
     { name: "Especie", uid: "fk_Especie", sortable: true },
@@ -50,7 +58,7 @@ export function SemilleroList() {
       case "id":
         return <span>{item.id}</span>;
       case "fk_Especie":
-        return <span>{item.fk_especie}</span>;
+        return <span>{especiesMap[item.fk_especie] || "Desconocido"}</span>; // Mostrar nombre de la especie
       case "unidades":
         return <span>{item.unidades}</span>;
       case "fechaSiembra":
@@ -75,7 +83,7 @@ export function SemilleroList() {
   return (
     <div className="p-4">
       <TablaReutilizable
-        datos={data || []}
+        datos={semilleros || []}
         columnas={columnas}
         claveBusqueda="id"
         placeholderBusqueda="Buscar por ID"

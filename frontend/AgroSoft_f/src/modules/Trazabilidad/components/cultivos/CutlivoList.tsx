@@ -1,4 +1,5 @@
 import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
+import { useGetEspecies } from "../../hooks/especies/useGetEpecies"; // Nuevo hook para obtener especies
 import { useEditarCultivos } from "../../hooks/cultivos/useEditarCultivos";
 import { useCrearCultivos } from "../../hooks/cultivos/useCrearCultivos";
 import { useEliminarCultivos } from "../../hooks/cultivos/useEliminarCultivos";
@@ -10,7 +11,8 @@ import EliminarCultivoModal from "./EliminarCultivo";
 import { Cultivos } from "../../types";
 
 export function CultivosList() {
-  const { data, isLoading, error } = useGetCultivos();
+  const { data: cultivos, isLoading, error } = useGetCultivos();
+  const { data: especies } = useGetEspecies(); // Obtener las especies
 
   const { 
     isOpen: isEditModalOpen, 
@@ -36,6 +38,12 @@ export function CultivosList() {
     handleCrear({ id: 0, nombre: "", fk_Especie: 0, unidades: 0, fechaSiembra: "", activo: true });
   };
 
+  // Crear un mapa de especies para obtener el nombre por ID
+  const especiesMap = especies?.reduce((map, especie) => {
+    map[especie.id] = especie.nombre;
+    return map;
+  }, {} as Record<number, string>) || {};
+
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
@@ -53,7 +61,7 @@ export function CultivosList() {
       case "nombre":
         return <span>{item.nombre}</span>;
       case "fk_especie":
-        return <span>{item.fk_Especie}</span>;
+        return <span>{especiesMap[item.fk_Especie] || "Desconocido"}</span>; // Muestra el nombre en lugar del ID
       case "unidades":
         return <span>{item.unidades}</span>;
       case "fechasiembra":
@@ -78,10 +86,10 @@ export function CultivosList() {
   return (
     <div className="p-4">
       <TablaReutilizable
-        datos={data || []}
+        datos={cultivos || []}
         columnas={columnas}
-        claveBusqueda="id"
-        placeholderBusqueda="Buscar por ID"
+        claveBusqueda="nombre"
+        placeholderBusqueda="Buscar por Nombre"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
