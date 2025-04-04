@@ -2,6 +2,7 @@ import { useGetPlantaciones } from "../../hooks/plantaciones/useGetPlantaciones"
 import { useEditarPlantaciones } from "../../hooks/plantaciones/useEditarPlantaciones";
 import { useCrearPlantaciones } from "../../hooks/plantaciones/useCrearPlantaciones";
 import { useEliminarPlantaciones } from "../../hooks/plantaciones/useEliminarPlantaciones";
+import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarPlantacionModal from "./EditarPlantacionesModal";
@@ -11,6 +12,7 @@ import { Plantaciones } from "../../types";
 
 export function PlantacionesList() {
   const { data, isLoading, error } = useGetPlantaciones();
+  const { data: cultivos, isLoading: loadingCultivos } = useGetCultivos();
 
   const { 
     isOpen: isEditModalOpen, 
@@ -47,9 +49,10 @@ export function PlantacionesList() {
     switch (columnKey) {
       case "id":
         return <span>{item.id}</span>;
-      case "fk_cultivo":
-        return <span>{item.fk_Cultivo}</span>;
-      case "fk_era":
+      case "fk_Cultivo":
+        const cultivo = cultivos?.find(c => c.id === item.fk_Cultivo);
+        return <span>{cultivo ? cultivo.nombre : "Desconocido"}</span>;
+      case "fk_Era":
         return <span>{item.fk_Era}</span>;
       case "acciones":
         return (
@@ -63,7 +66,7 @@ export function PlantacionesList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading || loadingCultivos) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las plantaciones</p>;
 
   return (
