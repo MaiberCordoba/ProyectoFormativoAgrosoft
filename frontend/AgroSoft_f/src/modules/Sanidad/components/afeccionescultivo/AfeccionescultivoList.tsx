@@ -2,6 +2,8 @@ import { useGetAfeccionesCultivo } from "../../hooks/afeccionescultivo/useGetAfe
 import { useEditarAfeccionCultivo } from "../../hooks/afeccionescultivo/useEditarAfeccionescultivo";
 import { useCrearAfeccionCultivo } from "../../hooks/afeccionescultivo/useCrearAfeccionescultivo";
 import { useEliminarAfeccionCultivo } from "../../hooks/afeccionescultivo/useEliminarAfeccionescultivo";
+import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
+
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarAfeccionCultivoModal from "./EditarAfeccionescultivoModal";
@@ -11,6 +13,8 @@ import { AfeccionesCultivo } from "../../types";
 
 export function AfeccionesCultivoList() {
   const { data, isLoading, error } = useGetAfeccionesCultivo();
+  const { data: afecciones } = useGetAfecciones();
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -37,7 +41,7 @@ export function AfeccionesCultivoList() {
 
   const columnas = [
     { name: "Plantación", uid: "fk_Plantacion", sortable: true },
-    { name: "Plaga", uid: "fk_Plaga" },
+    { name: "afecciones", uid: "fk_Plaga" },
     { name: "Fecha Encuentro", uid: "fechaEncuentro" },
     { name: "Estado", uid: "estado" },
     { name: "Acciones", uid: "acciones" },
@@ -48,7 +52,8 @@ export function AfeccionesCultivoList() {
       case "fk_Plantacion":
         return <span>{item.fk_Plantacion || "No definido"}</span>;
       case "fk_Plaga":
-        return <span>{item.fk_Plaga || "No definido"}</span>;
+        const afeccionesNombre = afecciones?.find(t => t.id === item.fk_Plaga)?.nombre || "No definido";
+        return <span>{afeccionesNombre}</span>;
       case "fechaEncuentro":
         return <span>{item.fechaEncuentro}</span>;
       case "estado":
@@ -102,3 +107,5 @@ export function AfeccionesCultivoList() {
     </div>
   );
 }
+
+

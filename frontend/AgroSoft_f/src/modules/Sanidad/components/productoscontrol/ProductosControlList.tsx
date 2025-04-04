@@ -11,6 +11,7 @@ import { ProductosControl } from "../../types";
 
 export function ProductosControlList() {
   const { data, isLoading, error } = useGetProductosControl();
+  
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -35,19 +36,19 @@ export function ProductosControlList() {
     handleCrear({ 
       id: 0, 
       nombre: "", 
-      precio: 0, 
-      compuestoactivo: "", 
-      fichatecnica: "", 
+      precio: 0,  // Aquí está bien escrito
+      compuestoActivo: "", 
+      fichaTecnica: "", 
       contenido: 0, 
-      tipocontenido: "", 
+      tipoContenido: "", 
       unidades: 0 
     });
   };
 
-  // Definición de columnas
+  // Definición de columnas con la corrección de "precio"
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
-    { name: "Precio", uid: "presio" },
+    { name: "Precio", uid: "precio" }, // ✅ Corrección aquí
     { name: "Compuesto Activo", uid: "compuestoactivo" },
     { name: "Ficha Técnica", uid: "fichatecnica" },
     { name: "Contenido", uid: "contenido" },
@@ -56,21 +57,21 @@ export function ProductosControlList() {
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Función de renderizado
+  // Función de renderizado corregida
   const renderCell = (item: ProductosControl, columnKey: React.Key) => {
     switch (columnKey) {
       case "nombre":
         return <span>{item.nombre}</span>;
-      case "presio":
+      case "precio": // ✅ Corrección aquí
         return <span>{item.precio}</span>;
       case "compuestoactivo":
-        return <span>{item.compuestoactivo}</span>;
+        return <span>{item.compuestoActivo}</span>;
       case "fichatecnica":
-        return <span>{item.fichatecnica}</span>;
+        return <span>{item.fichaTecnica}</span>;
       case "contenido":
         return <span>{item.contenido}</span>;
       case "tipocontenido":
-        return <span>{item.tipocontenido}</span>;
+        return <span>{item.tipoContenido}</span>;
       case "unidades":
         return <span>{item.unidades}</span>;
       case "acciones":
