@@ -19,6 +19,20 @@ export default defineConfig({
 						{ label: 'Pagina de Inicio', slug: 'primerospasos/home' },
 					],
 				},
+				{
+					label: 'Finanzas',
+					items: [
+						// Each item here is one entry in the navigation menu.
+						{ label: 'Introduccion Finanzas', slug: 'finanzas/introduccion' },
+						{ label: 'Actividades', slug: 'finanzas/actividades' },
+						{ label: 'Cosechas', slug: 'finanzas/cosechas' },
+						{ label: 'Desechos', slug: 'finanzas/desechos' },
+						{ label: 'Herramientas', slug: 'finanzas/herramientas' },
+						{ label: 'Tipos Desechos', slug: 'finanzas/tiposdesechos' },
+						{ label: 'Usos Herramientas', slug: 'finanzas/usosherramientas' },
+						{ label: 'Ventas', slug: 'finanzas/ventas' },
+					],
+				},
 				
 			],
 		}),
