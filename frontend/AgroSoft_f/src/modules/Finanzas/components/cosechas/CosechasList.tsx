@@ -8,9 +8,12 @@ import EditarCosechasModal from "./EditarCosechasModal";
 import { CrearCosechasModal } from "./CrearCosechasModal";
 import EliminarCosechasModal from "./EliminarCosechas";
 import { Cosechas } from "../../types";
+import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 
 export function CosechasList() {
   const { data, isLoading, error } = useGetCosechas();
+    const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
+  
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -47,7 +50,8 @@ export function CosechasList() {
   const renderCell = (item: Cosechas, columnKey: React.Key) => {
     switch (columnKey) {
       case "cultivo":
-        return <span>{item.fk_Cultivo || "No definido"}</span>;
+        const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
+        return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
       case "unidades":
         return <span>{item.unidades}</span>;
       case "fecha":
@@ -64,7 +68,7 @@ export function CosechasList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading || loadingCultivo) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las Cosechas</p>;
 
   return (

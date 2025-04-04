@@ -8,9 +8,12 @@ import EditarHerramientasModal from "./EditarHerramientasModal";
 import { CrearHerramientasModal } from "./CrearHerramientasModal";
 import EliminarHerramientaModal from "./EliminarHerramientas";
 import { Herramientas } from "../../types";
+import { useGetLotes } from "@/modules/Trazabilidad/hooks/lotes/useGetLotes";
 
 export function HerramientasList() {
   const { data, isLoading, error } = useGetHerramientas();
+  const { data : lotes, isLoading : loadingLotes } = useGetLotes();
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -48,7 +51,8 @@ export function HerramientasList() {
   const renderCell = (item: Herramientas, columnKey: React.Key) => {
     switch (columnKey) {
       case "lote":
-        return <span>{item.fk_Lote || "No definido"}</span>;
+        const lote = lotes?.find((c) => c.id === item.fk_Lote);
+        return <span>{lote ? lote.nombre : "No definido"}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
       case "descripcion":
@@ -67,7 +71,7 @@ export function HerramientasList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading || loadingLotes) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las herramientas</p>;
 
   return (

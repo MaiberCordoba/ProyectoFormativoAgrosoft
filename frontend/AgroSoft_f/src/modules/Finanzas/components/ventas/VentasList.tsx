@@ -8,9 +8,11 @@ import EditarVentasModal from "./EditarVentasModal";
 import { CrearVentasModal } from "./CrearVentasModal";
 import EliminarVentaModal from "./EliminarVentas";
 import { Ventas } from "../../types";
+import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 
 export function VentasList() {
   const { data, isLoading, error } = useGetVentas();
+  const { data : cosechas, isLoading : loadingCosechas } = useGetCosechas();
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -36,7 +38,7 @@ export function VentasList() {
   };
 
   const columnas = [
-    { name: "Cosecha", uid: "cosecha" },
+    { name: "fecha de Cosecha", uid: "cosecha" },
     { name: "Precio Unitario", uid: "precioUnitario" },
     { name: "Fecha Venta", uid: "fecha" },
     { name: "Acciones", uid: "acciones" },
@@ -45,7 +47,8 @@ export function VentasList() {
   const renderCell = (item: Ventas, columnKey: React.Key) => {
     switch (columnKey) {
       case "cosecha":
-        return <span>{item.fk_Cosecha || "No definido"}</span>;
+        const cosecha = cosechas?.find((c) => c.id === item.fk_Cosecha);
+        return <span>{cosecha ? cosecha.fecha : "No definido"}</span>;
       case "precioUnitario":
         return <span>{item.precioUnitario}</span>;
       case "fecha":
@@ -62,7 +65,7 @@ export function VentasList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading || loadingCosechas) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las Ventas</p>;
 
   return (

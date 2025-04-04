@@ -8,9 +8,13 @@ import EditarUsosHerramientasModal from "./EditarUsosHerramientasModal";
 import { CrearUsoHerramientaModal } from "./CrearUsosHerramientasModal";
 import EliminarUsosHerramientasModal from "./EliminarUsosHerramientas";
 import { UsosHerramientas } from "../../types";
+import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
+import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 
 export function UsosHerramientasList() {
   const { data, isLoading, error } = useGetUsosHerramientas();
+  const { data : herramientas, isLoading : loadingHerramientas } = useGetHerramientas();
+  const { data : actividades, isLoading : loadingActividades } = useGetActividades();
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -46,9 +50,11 @@ export function UsosHerramientasList() {
   const renderCell = (item: UsosHerramientas, columnKey: React.Key) => {
     switch (columnKey) {
       case "herramienta":
-        return <span>{item.herramienta?.nombre || "No definido"}</span>;
+        const herramienta = herramientas?.find((c) => c.id === item.fk_Herramientas);
+        return <span>{herramienta ? herramienta.nombre : "No definido"}</span>;
       case "actividad":
-        return <span>{item.actividad?.titulo || "No definido"}</span>;
+        const actividad = actividades?.find((c) => c.id === item.fk_Actividad);
+        return <span>{actividad ? actividad.titulo : "No definido"}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -61,7 +67,7 @@ export function UsosHerramientasList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading || loadingHerramientas || loadingActividades) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Usos de Herramientas</p>;
 
   return (

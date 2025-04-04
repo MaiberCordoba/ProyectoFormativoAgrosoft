@@ -7,10 +7,15 @@ import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarActividadesModal from "./EditarActividadesModal";
 import { CrearActividadesModal } from "./CrearActividadModal";
 import EliminarActividadesModal from "./EliminarActividades";
-import { Actividades} from "../../types";
+import { Actividades } from "../../types";
+import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
+import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 
 export function ActividadesList() {
   const { data, isLoading, error } = useGetActividades();
+  const { data: users, isLoading: loadingUser } = useGetUsers(); // Corregido
+  const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -32,12 +37,12 @@ export function ActividadesList() {
   } = useEliminarActividad();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0,fk_Usuario: 0,titulo: "", descripcion: "",fecha:"",estado:"AS"});
+    handleCrear({ id: 0, fk_Cultivo: 0, fk_Usuario: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
   };
 
-  // Definición de columnas movida aquí
+  // Definición de columnas
   const columnas = [
-    { name: "Cultivo", uid: "cultivo"  },
+    { name: "Cultivo", uid: "cultivo" },
     { name: "Usuario", uid: "usuario" },
     { name: "Titulo", uid: "titulo" },
     { name: "Descripcion", uid: "descripcion" },
@@ -46,13 +51,15 @@ export function ActividadesList() {
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Función de renderizado movida aquí
+  // Renderizado de celdas
   const renderCell = (item: Actividades, columnKey: React.Key) => {
     switch (columnKey) {
       case "cultivo":
-        return <span>{item.fk_Cultivo || "No definido"}</span>;
+        const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
+        return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
       case "usuario":
-        return <span>{item.fk_Usuario || "No definido"}</span>;
+        const usuario = users?.find((c) => c.id === item.fk_Usuario);
+        return <span>{usuario ? usuario.nombre : "No definido"}</span>;
       case "titulo":
         return <span>{item.titulo}</span>;
       case "descripcion":
@@ -73,41 +80,30 @@ export function ActividadesList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
-  if (error) return <p>Error al cargar los Actividades</p>;
+  if (isLoading || loadingUser || loadingCultivo) return <p>Cargando...</p>;
+  if (error) return <p>Error al cargar las actividades</p>;
 
   return (
     <div className="p-4">
-      {/* Tabla reutilizable directa */}
+      {/* Tabla reutilizable */}
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
         claveBusqueda="titulo"
-        placeholderBusqueda="Buscar por Titulo"
+        placeholderBusqueda="Buscar por Título"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
 
       {/* Modales */}
       {isEditModalOpen && actividadEditada && (
-        <EditarActividadesModal
-          actividad={actividadEditada}
-          onClose={closeEditModal}
-        />
+        <EditarActividadesModal actividad={actividadEditada} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && (
-        <CrearActividadesModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearActividadesModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && actividadEliminada && (
-        <EliminarActividadesModal
-          actividad={actividadEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <EliminarActividadesModal actividad={actividadEliminada} isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
       )}
     </div>
   );
