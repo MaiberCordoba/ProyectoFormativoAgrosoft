@@ -8,9 +8,14 @@ import EditarDesechosModal from "./EditarDesechosModal";
 import { CrearDesechosModal } from "./CrearDesechosModal";
 import EliminarDesechoModal from "./EliminarDesechos";
 import { Desechos } from "../../types";
+import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
+import { useGetTiposDesechos } from "../../hooks/tiposDesechos/useGetTiposDesechos";
 
 export function DesechosList() {
   const { data, isLoading, error } = useGetDesechos();
+  const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
+  const { data : tiposDesechos, isLoading: loadingTiposDesechos } = useGetTiposDesechos()
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -48,9 +53,11 @@ export function DesechosList() {
   const renderCell = (item: Desechos, columnKey: React.Key) => {
     switch (columnKey) {
       case "cultivo":
-        return <span>{item.fk_Cultivo || "No definido"}</span>;
+        const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
+        return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
       case "tipoDesecho":
-        return <span>{item.fk_TipoDesecho || "No definido"}</span>;
+        const tipoDesecho = tiposDesechos?.find((c) => c.id === item.fk_Cultivo);
+        return <span>{tipoDesecho ? tipoDesecho.nombre : "No definido"}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
       case "descripcion":
@@ -67,7 +74,7 @@ export function DesechosList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading || loadingCultivo || loadingTiposDesechos) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Desechos</p>;
 
   return (
