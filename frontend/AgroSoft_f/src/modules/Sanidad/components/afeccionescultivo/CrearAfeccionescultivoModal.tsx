@@ -1,23 +1,24 @@
 import { useState } from "react";
-import { Input, Select, SelectItem, toast } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import ModalComponent from "@/components/Modal";
-//import { useGetTipoAfecciones } from "../../hooks/tiposAfecciones/useGetTipoAfecciones";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
-import { EstadoAfeccion } from "../../types"; // Asegúrate de importar el enum EstadoAfeccion
-import { usePostAfeccionCultivo } from "../../hooks/afeccionescultivo/usePostAfeccionescultivo"; // Hook para manejar la creación de AfecciónCultivo
+import { EstadoAfeccion, AfeccionesCultivo } from "../../types"; 
+import { usePostAfeccionCultivo } from "../../hooks/afeccionescultivo/usePostAfeccionescultivo";
 
 interface CrearAfeccionCultivoModalProps {
   onClose: () => void;
 }
 
 export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModalProps) => {
-  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null); // Relación con la plantación
-  const [fk_Plaga, setFk_Plaga] = useState<number | null>(null); // Relación con la plaga
-  const [fechaEncuentro, setFechaEncuentro] = useState<string>(""); // Fecha del encuentro
-  const [estado, setEstado] = useState<EstadoAfeccion | "">(EstadoAfeccion.Detectado); // Estado de la afección
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
+  const [fk_Plaga, setFk_Plaga] = useState<number | null>(null);
+  const [fechaEncuentro, setFechaEncuentro] = useState<string>("");
+  const [estado, setEstado] = useState<keyof typeof EstadoAfeccion>("ST"); // Valores compatibles con backend
 
-  const { data: tiposPlaga, isLoading: isLoadingTiposPlaga } = useGetAfecciones(); // Obtener los tipos de plaga
-  const { mutate, isPending } = usePostAfeccionCultivo(); // Usar el hook adecuado para crear afección en cultivo
+  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();
+  const { data: tiposPlaga, isLoading: isLoadingTiposPlaga } = useGetAfecciones();
+  const { mutate, isPending } = usePostAfeccionCultivo();
 
   const handleSubmit = () => {
     if (!fk_Plantacion || !fk_Plaga || !estado || !fechaEncuentro) {
@@ -25,18 +26,23 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
       return;
     }
 
-    mutate(
-      { fk_Plantacion, fk_Plaga, estado, fechaEncuentro }, // Enviar los datos al backend
-      {
-        onSuccess: () => {
-          onClose();
-          setFk_Plantacion(null); // Limpiar la relación con plantación
-          setFk_Plaga(null); // Limpiar la relación con plaga
-          setEstado(EstadoAfeccion.Detectado); // Resetear el estado
-          setFechaEncuentro(""); // Limpiar la fecha
-        },
-      }
-    );
+    const data: AfeccionesCultivo = {
+      fk_Plantacion: Number(fk_Plantacion),
+      fk_Plaga: Number(fk_Plaga),
+      estado, // Se envía como "ST", "EC" o "EL"
+      fechaEncuentro,
+      id: 0, // Se generará en el backend
+    };
+
+    mutate(data, {
+      onSuccess: () => {
+        onClose();
+        setFk_Plantacion(null);
+        setFk_Plaga(null);
+        setEstado("ST"); // Resetear al valor por defecto
+        setFechaEncuentro("");
+      },
+    });
   };
 
   return (
@@ -53,15 +59,21 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
         },
       ]}
     >
-      {/* Selector de Plantación 
-      <Input
-        label="Plantación"
-        type="number"
-        value={fk_Plantacion || ""}
-        onChange={(e) => setFk_Plantacion(Number(e.target.value))}
-        required
-      />
-      */}
+      {/* Selector de Plantación */}
+      {isLoadingPlantaciones ? (
+        <p>Cargando plantaciones...</p>
+      ) : (
+        <Select
+          label="Plantación"
+          placeholder="Selecciona una plantación"
+          selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
+          onSelectionChange={(keys) => setFk_Plantacion(Number(Array.from(keys)[0]))}
+        >
+          {(plantaciones || []).map((plantacion) => (
+            <SelectItem key={plantacion.id.toString()}>{plantacion.id}</SelectItem>
+          ))}
+        </Select>
+      )}
 
       {/* Selector de Plaga */}
       {isLoadingTiposPlaga ? (
@@ -70,16 +82,11 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
         <Select
           label="Tipo de Plaga"
           placeholder="Selecciona un tipo de plaga"
-          selectedKeys={fk_Plaga ? [fk_Plaga.toString()] : []} // HeroUI espera un array de strings
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0]; // HeroUI devuelve un Set
-            setFk_Plaga(Number(selectedKey)); // Actualiza el estado con el nuevo ID
-          }}
+          selectedKeys={fk_Plaga ? [fk_Plaga.toString()] : []}
+          onSelectionChange={(keys) => setFk_Plaga(Number(Array.from(keys)[0]))}
         >
           {(tiposPlaga || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()}>
-              {tipo.nombre}
-            </SelectItem>
+            <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
           ))}
         </Select>
       )}
@@ -89,13 +96,10 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
         label="Estado de la Afección"
         placeholder="Selecciona el estado"
         selectedKeys={estado ? [estado] : []}
-        onSelectionChange={(keys) => {
-          const selectedState = Array.from(keys)[0];
-          setEstado(selectedState as EstadoAfeccion); // Actualiza el estado de la afección
-        }}
+        onSelectionChange={(keys) => setEstado(Array.from(keys)[0] as keyof typeof EstadoAfeccion)}
       >
-        {Object.values(EstadoAfeccion).map((estado) => (
-          <SelectItem key={estado}>{estado}</SelectItem>
+        {Object.entries(EstadoAfeccion).map(([key, label]) => (
+          <SelectItem key={key}>{label}</SelectItem>
         ))}
       </Select>
 

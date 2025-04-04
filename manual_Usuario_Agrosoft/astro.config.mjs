@@ -20,7 +20,6 @@ export default defineConfig({
 					],
 				},
         {
-				
 					label: 'Cultivos',
 					items: [
 						{ label: 'Introduccion', slug: 'seguimiento/introduccion' },
@@ -32,14 +31,27 @@ export default defineConfig({
 						{ label: 'Tipos Especie', slug: 'seguimiento/tipos-especie' },
 						{ label: 'Plantaciones', slug: 'seguimiento/plantaciones' },
 				  	],
-				},
-        		{
-					label: 'IoT',
-					items:[
-						{ label: 'introduccion', slug: 'iot/introduccion' },
-						{ label: 'sensores', slug: 'iot/sensores' },
+				 },
+         {
+					 label: 'IoT',
+					 items:[
+             { label: 'introduccion', slug: 'iot/introduccion' },
+						 { label: 'sensores', slug: 'iot/sensores' },
 					]
-           		},
+          },
+          {
+					label: 'Sanidad',
+					items:[
+						{ label: 'introduccion', slug: 'sanidad/introduccion' },
+						{ label: 'Afecciones en cultivo', slug: 'sanidad/afecciones' },
+						{ label: 'Controles', slug: 'sanidad/controles' },
+						{ label: 'afecciones', slug: 'sanidad/plagas' },	
+						{ label: 'Productos para el Control', slug: 'sanidad/productoscontrol' },
+						{ label: 'Tipo Control', slug: 'sanidad/tipocontrol' },
+						{ label: 'Tipo afeccion', slug: 'sanidad/tipoplaga' },
+						{ label: 'Uso Productos para el Control', slug: 'sanidad/usoproductoscontrol' },
+					],
+				},
         {
 					label: 'Finanzas',
 					items: [
@@ -53,7 +65,7 @@ export default defineConfig({
 						{ label: 'Usos Herramientas', slug: 'finanzas/usosherramientas' },
 						{ label: 'Ventas', slug: 'finanzas/ventas' },
 					],
-				},
+				 },
 			],
 		}),
 	],

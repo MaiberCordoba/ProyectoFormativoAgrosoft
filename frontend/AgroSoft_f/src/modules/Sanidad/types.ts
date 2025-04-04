@@ -44,23 +44,22 @@ export interface Controles{
     id: number;
     fk_Afeccion?: number;
     fk_TipoControl?: number;
-    fecha: string;
+    fechaControl: string;
     descripcion: string;
 }
 
 export enum EstadoAfeccion {
-    Detectado = "Detectado",
-    EnTratamiento = "EnTratamiento",
-    Erradicado = "Erradicado"
+    ST = "Detectado",
+    EC = "EnTratamiento",
+    EL = "Erradicado"
 }
-
 
 export interface AfeccionesCultivo {
     id: number;
     fk_Plantacion: number;
     fk_Plaga: number;
     fechaEncuentro: string;
-    estado: EstadoAfeccion;
+    estado: keyof typeof EstadoAfeccion; // Se usará "ST", "EC" o "EL"
 }
 
 

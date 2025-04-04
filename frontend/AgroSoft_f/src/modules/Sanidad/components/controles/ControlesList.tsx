@@ -33,12 +33,12 @@ export function ControlesList() {
   } = useEliminarControl();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Afeccion: 0, fk_TipoControl: 0, fecha: "", descripcion: "" });
+    handleCrear({ id: 0, fk_Afeccion: 0, fk_TipoControl: 0, fechaControl: "", descripcion: "" });
   };
 
   // Definición de columnas
   const columnas = [
-    { name: "Fecha", uid: "fecha", sortable: true },
+    { name: "FechaControl", uid: "fechacontrol" },
     { name: "Descripción", uid: "descripcion" },
     { name: "Afección", uid: "fk_Afeccion" },
     { name: "Tipo de Control", uid: "fk_TipoControl" },
@@ -48,8 +48,8 @@ export function ControlesList() {
   // Renderizado de celdas
   const renderCell = (item: Controles, columnKey: React.Key) => {
     switch (columnKey) {
-      case "fecha":
-        return <span>{item.fecha}</span>;
+      case "fechacontrol":
+        return <span>{item.fechaControl}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
       case "fk_Afeccion":
