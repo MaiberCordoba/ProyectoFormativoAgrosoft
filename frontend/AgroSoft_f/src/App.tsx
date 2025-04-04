@@ -15,6 +15,12 @@ import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 //Finanzas
 import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
 import { Desechos } from "./modules/Finanzas/pages/pageDesechos";
+import { Actividades } from "./modules/Finanzas/pages/pageActividades";
+import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
+import { Herramientas } from "./modules/Finanzas/pages/pageHerramientas";
+import { UsosHerramientas } from "./modules/Finanzas/pages/pageUsosHerramientas";
+//import { UsosProductos } from "./modules/Finanzas/pages/pageUsosProductos";
+import { Ventas } from "./modules/Finanzas/pages/pageVentas";
 
 //Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
@@ -77,10 +83,12 @@ function App() {
             {/* Finanzas */}
             <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
             <Route path="/desechos" element={<Desechos/>} />
-            <Route path="/herramientas"  />
-            <Route path="/ventas" />
-            <Route path="/cosechas"  />
-          
+            <Route path="/herramientas" element={<Herramientas/>}  />
+            <Route path="/actividades" element={<Actividades/>}  />
+            <Route path="/ventas" element={<Ventas/>}/>
+            <Route path="/cosechas" element={<Cosechas/>} />
+            <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
+         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}          
             {/*Electronica */}
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
