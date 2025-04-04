@@ -11,7 +11,7 @@ export default defineConfig({
 				github: 'https://github.com/MaiberCordoba/ProyectoFormativoAgrosoft',
 			},
 			sidebar: [
-				{
+			{
 					label: 'Primeros pasos',
 					items: [
 						// Each item here is one entry in the navigation menu.
@@ -19,7 +19,6 @@ export default defineConfig({
 						{ label: 'Pagina de Inicio', slug: 'primerospasos/home' },
 					],
 				},
-
 				{
 					label: 'Cultivos',
 					items: [
@@ -31,9 +30,14 @@ export default defineConfig({
 						{ label: 'Especies', slug: 'seguimiento/especies' },
 						{ label: 'Tipos Especie', slug: 'seguimiento/tipos-especie' },
 						{ label: 'Plantaciones', slug: 'seguimiento/plantaciones' },
-					],
-				},
-				
+				  	],
+				  },
+        	{
+					label: 'IoT',
+					items:[
+						{ label: 'introduccion', slug: 'iot/introduccion' },
+						{ label: 'sensores', slug: 'iot/sensores' },
+           },
 			],
 		}),
 	],
