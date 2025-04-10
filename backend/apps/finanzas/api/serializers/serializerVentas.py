@@ -5,3 +5,4 @@ class SerializerVentas(ModelSerializer):
     class Meta:
         model = Ventas
         fields = '__all__'
+        read_only_fields = ['valorTotal']

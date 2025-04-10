@@ -1,9 +1,15 @@
 from django.db import models
+#from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
+
 
 class Insumos(models.Model):
     nombre = models.CharField(max_length=30)
     descripcion = models.TextField(max_length=150)
     precio = models.IntegerField()
+    compuestoActivo = models.CharField(max_length=20)
+    contenido = models.IntegerField()
+    fichaTecnica = models.CharField(max_length=20)
     unidades = models.IntegerField()
+#    fk_UnidadMedida = models.ForeignKey(UnidadesMedida , on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return self.nombre
