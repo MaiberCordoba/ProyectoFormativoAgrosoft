@@ -14,8 +14,9 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
   const [nombre, setNombre] = useState<string>(especie.nombre);
   const [descripcion, setDescripcion] = useState<string>(especie.descripcion);
   const [img, setImg] = useState(especie.img || "");
+  const [variedad, setVariedad] = useState(especie.variedad || ""); // ✅ Nuevo estado
   const [tiempocrecimiento, setTiempocrecimiento] = useState<number>(especie.tiempocrecimiento);
-  const [fk_tipoespecie, setFk_TipoEspecie] = useState<number>(especie.fk_tipoespecie ?? 0); // 🔥 Corregido nombre
+  const [fk_tipoespecie, setFk_TipoEspecie] = useState<number>(especie.fk_tipoespecie ?? 0);
 
   const { mutate, isPending } = usePatchEspecies();
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie } = useGetTiposEspecie();
@@ -28,8 +29,9 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
           nombre,
           descripcion,
           img,
+          variedad, // ✅ Se incluye variedad
           tiempocrecimiento,
-          fk_tipoespecie, // 🔥 Corregido para coincidir con el backend
+          fk_tipoespecie,
         },
       },
       {
@@ -60,17 +62,27 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
+
       <Textarea
         value={descripcion}
         label="Descripción"
         onChange={(e) => setDescripcion(e.target.value)}
       />
+
       <Input
         value={img}
         label="Imagen (URL)"
         type="text"
         onChange={(e) => setImg(e.target.value)}
       />
+
+      <Input
+        value={variedad}
+        label="Variedad"
+        type="text"
+        onChange={(e) => setVariedad(e.target.value)} // ✅ Campo de variedad editable
+      />
+
       <Input
         label="Tiempo de Crecimiento (días)"
         type="number"
@@ -84,14 +96,14 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         <Select
           label="Tipo de Especie"
           placeholder="Selecciona un tipo"
-          selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []} // 🔥 Se asegura de convertirlo a string
+          selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0]; // 🔥 Extrae el valor seleccionado
-            setFk_TipoEspecie(Number(selectedKey)); // 🔥 Convierte el valor seleccionado a número
+            const selectedKey = Array.from(keys)[0];
+            setFk_TipoEspecie(Number(selectedKey));
           }}
         >
           {(tiposEspecie || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()} value={tipo.id.toString()}> 
+            <SelectItem key={tipo.id.toString()} value={tipo.id.toString()}>
               {tipo.nombre}
             </SelectItem>
           ))}

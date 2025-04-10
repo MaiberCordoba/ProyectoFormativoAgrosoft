@@ -1,5 +1,5 @@
 import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
-import { useGetEspecies } from "../../hooks/especies/useGetEpecies"; // Nuevo hook para obtener especies
+import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import { useEditarCultivos } from "../../hooks/cultivos/useEditarCultivos";
 import { useCrearCultivos } from "../../hooks/cultivos/useCrearCultivos";
 import { useEliminarCultivos } from "../../hooks/cultivos/useEliminarCultivos";
@@ -12,7 +12,7 @@ import { Cultivos } from "../../types";
 
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
-  const { data: especies } = useGetEspecies(); // Obtener las especies
+  const { data: especies } = useGetEspecies();
 
   const { 
     isOpen: isEditModalOpen, 
@@ -35,10 +35,9 @@ export function CultivosList() {
   } = useEliminarCultivos();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", fk_Especie: 0, unidades: 0, fechaSiembra: "", activo: true });
+    handleCrear({ id: 0, nombre: "", fk_Especie: 0, fk_semillero: 0, unidades: 0, fechaSiembra: "", activo: true });
   };
 
-  // Crear un mapa de especies para obtener el nombre por ID
   const especiesMap = especies?.reduce((map, especie) => {
     map[especie.id] = especie.nombre;
     return map;
@@ -48,6 +47,7 @@ export function CultivosList() {
     { name: "ID", uid: "id", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Especie", uid: "fk_especie", sortable: true },
+    { name: "Semillero", uid: "fk_semillero", sortable: true }, // <-- columna añadida
     { name: "Unidades", uid: "unidades" },
     { name: "Fecha de Siembra", uid: "fechasiembra", sortable: true },
     { name: "Activo", uid: "activo", sortable: true },
@@ -61,7 +61,9 @@ export function CultivosList() {
       case "nombre":
         return <span>{item.nombre}</span>;
       case "fk_especie":
-        return <span>{especiesMap[item.fk_Especie] || "Desconocido"}</span>; // Muestra el nombre en lugar del ID
+        return <span>{especiesMap[item.fk_Especie] || "Desconocido"}</span>;
+      case "fk_semillero":
+        return <span>{item.fk_semillero}</span>; // <-- muestra el ID del semillero
       case "unidades":
         return <span>{item.unidades}</span>;
       case "fechasiembra":

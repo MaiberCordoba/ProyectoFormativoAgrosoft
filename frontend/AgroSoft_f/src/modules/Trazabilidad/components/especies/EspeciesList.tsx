@@ -2,7 +2,7 @@ import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import { useEditarEspecies } from "../../hooks/especies/useEditarEspecies";
 import { useCrearEspecies } from "../../hooks/especies/useCrearEspecies";
 import { useEliminarEspecies } from "../../hooks/especies/useEliminarEpecies";
-import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie"; // ✅ Corrección
+import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarEspecieModal from "./EditarEspecieModal";
@@ -12,7 +12,7 @@ import { Especies } from "../../types";
 
 export function EspecieList() {
   const { data: especies, isLoading, error } = useGetEspecies();
-  const { data: tiposEspecies } = useGetTiposEspecie(); // ✅ Corrección
+  const { data: tiposEspecies } = useGetTiposEspecie();
 
   const { 
     isOpen: isEditModalOpen, 
@@ -35,20 +35,28 @@ export function EspecieList() {
   } = useEliminarEspecies();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, tipo_especie_nombre: null, nombre: "", descripcion: "", img: "", tiempocrecimiento: 0 });
+    handleCrear({
+      id: 0,
+      tipo_especie_nombre: null,
+      nombre: "",
+      descripcion: "",
+      variedad: "", // ✅ nuevo campo
+      img: "",
+      tiempocrecimiento: 0,
+    });
   };
 
-  // Mapeo seguro para obtener el nombre del tipo de especie
   const tipoEspecieMap = tiposEspecies?.reduce((acc, tipo) => {
     acc[tipo.id] = tipo.nombre;
     return acc;
   }, {} as Record<number, string>) || {}; 
-  
+
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
+    { name: "Variedad", uid: "variedad" }, // ✅ nuevo campo
     { name: "Tiempo de Crecimiento (días)", uid: "tiempocrecimiento", sortable: true },
-    { name: "Tipo de Especie", uid: "fk_tiposespecie" }, // ✅ Corrección
+    { name: "Tipo de Especie", uid: "fk_tiposespecie" },
     { name: "Acciones", uid: "acciones" },
   ];
   
@@ -58,6 +66,8 @@ export function EspecieList() {
         return <span>{item.nombre}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
+      case "variedad":
+        return <span>{item.variedad || "—"}</span>; // ✅ nuevo campo
       case "tiempocrecimiento":
         return <span>{item.tiempocrecimiento} días</span>;
       case "fk_tiposespecie": 
@@ -67,7 +77,7 @@ export function EspecieList() {
               ? tipoEspecieMap[item.fk_tipoespecie]
               : "Sin Tipo"}
           </span>
-        ); // ✅ Maneja `null` y `undefined`
+        );
       case "acciones":
         return (
           <AccionesTabla
@@ -79,9 +89,6 @@ export function EspecieList() {
         return <span>{String(item[columnKey as keyof Especies])}</span>;
     }
   };
-  
-  
-  
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las especies</p>;
@@ -97,7 +104,6 @@ export function EspecieList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && EspeciesEditada && (
         <EditarEspecieModal
           especie={EspeciesEditada}
