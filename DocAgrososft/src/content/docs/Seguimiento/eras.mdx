@@ -34,8 +34,7 @@ Este método devuelve la lista de todas las eras registradas.
         "estado": false,
         "posX": "3.00",
         "posY": "4.00"
-    },
-    "tipo": "disponible",
+    },,
     "tamX": "1.00",
     "tamY": "1.00",
     "posX": "1.00",
@@ -63,7 +62,6 @@ Este método permite registrar una nueva era.
     "tamY": 2,
     "posX": "3.00",
     "posY": "4.00",
-    "tipo": "disponible"
 }
 ```
 
@@ -76,7 +74,6 @@ Este método permite registrar una nueva era.
 | `tamY`     | number  | Sí        | Tamaño en Y               | 1             |
 | `posX`     | number  | Sí        | Posición en X             | 1             |
 | `posY`     | number  | Sí        | Posición en Y             | 1             |
-| `tipo`     | string  | Sí        | Estado de la era          | "disponible" |
 
 ###### ✅ Respuesta Exitosa (201 - Created)
 ```json
@@ -86,8 +83,7 @@ Este método permite registrar una nueva era.
   "tamX": 1,
   "tamY": 2,
   "posX": "3.00",
-  "posY": "4.00",
-  "tipo": "disponible"
+  "posY": "4.00"
 }
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
@@ -105,13 +101,13 @@ Este método permite actualizar/editar una era.
 #### **Parámetros del Request**
 | Parámetro | Tipo    | Requerido | Descripción         | Ejemplo     |
 |-----------|--------|-----------|---------------------|-------------|
-| `tipo`    | string | No        | Nuevo estado de la era | "ocupada" |
+| `fk_lote`    | number | si       | Nuevo lote al que pertenece | 2 |
 
 ###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
 {
   "id": 3,
-  "tipo": "ocupada"
+  "fk_lote": 2,
 }
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)

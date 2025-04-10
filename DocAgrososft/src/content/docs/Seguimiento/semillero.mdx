@@ -1,34 +1,42 @@
 ---
-title: Tipos Especie
-description: Endpoint para obtener tipos de especie en AgroSoft Api
+title: Semilleros
+description: Endpoint para la gestión de semilleros en AgroSoft API.
 ---
 
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de los tipos de especie en el sistema AgroSoft, incluyendo su creación, consulta, actualización y eliminación.
+Este endpoint permite la gestión de los semilleros en el sistema AgroSoft. Se puede crear, consultar, actualizar y eliminar información relacionada con los semilleros registrados.
 
-Cada tipo de especie contiene información clave como nombre, descripción e imagen.
+Cada semillero contiene los siguientes campos:
+- `fk_Especie`: ID de la especie asociada.
+- `unidades`: Cantidad de unidades sembradas.
+- `fechaSiembra`: Fecha de siembra.
+- `fechaEstimada`: Fecha estimada de traslado.
 
-## Métodos
+---
 
-### Método GET
+## 🔸 **Métodos Disponibles**
+
+### ✅ Método **GET**
 
 <ApiBaseBanner 
   method="GET" 
-  path="/tiposespecie/" 
+  path="/semilleros/" 
   baseUrl="http://127.0.0.1:8000"
 />
 
-Este método devuelve la lista de todos los tipos de especie registrados.  
-###### ✅ **Respuesta exitosa (200)**
+Este método devuelve la lista de todos los semilleros registrados.
+
+###### ✅ Respuesta exitosa (200)
 ```json
 [
   {
-    "id": 4,
-    "nombre": "Papa",
-    "descripcion": "Es papa",
-    "img": "png"
+    "id": 1,
+    "fk_Especie": "Papa",
+    "unidades": 50,
+    "fechaSiembra": "2025-04-01",
+    "fechaEstimada": "2025-04-30"
   }
 ]
 ```
@@ -46,28 +54,33 @@ Este método permite registrar un nuevo tipo de especie.
 
 ## **Campos Requeridos**
 ```json
-{
-  "nombre": "string",
-  "descripcion": "string",
-  "img": "string"
-}
+  {
+    "fk_Especie": "Papa",
+    "unidades": 50,
+    "fechaSiembra": "2025-04-01",
+    "fechaEstimada": "2025-04-30"
+  }
 ```
 #### **Parámetros del Request** 
 
 | Parámetro     | Tipo   | Requerido | Descripción                  | Ejemplo         |
 |--------------|--------|-----------|------------------------------|-----------------|
-| `nombre`     | string | Sí        | Nombre del tipo de especie   | "Papa"          |
-| `descripcion`| string | Sí        | Descripción del tipo de especie | "Es papa" |
-| `img`        | string | Sí        | Imagen del tipo de especie   | "imagen.png"    |
+| `fk_Especie`     | string | Sí        | fk_Especie de la especie   | "Papa"          |
+| `unidades`| string | Sí        | unidades de semillas | "50" |
+| `fechaSiembra`        | date | Sí        | Imagen del tipo de especi   | "2025-04-01"    |
+| `fechaEstimada`        | date | Sí        | Imagen del tipo de especi   | "2025-04-30"    |
 
 ###### ✅ Respuesta Exitosa (201 - Created)
 ```json
-{
-  "id": 4,
-  "nombre": "Papa",
-  "descripcion": "Es papa",
-  "img": "png"
-}
+[
+  {
+    "id": 1,
+    "fk_Especie": "Papa",
+    "unidades": 50,
+    "fechaSiembra": "2025-04-01",
+    "fechaEstimada": "2025-04-30"
+  }
+]
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
@@ -84,18 +97,20 @@ Este método permite actualizar/editar un tipo de especie.
 #### **Parámetros del Request**
 | Parámetro | Tipo   | Requerido | Descripción                  | Ejemplo |
 |----------|--------|-----------|------------------------------|---------|
-| `nombre` | string | No        | Nuevo nombre del tipo de especie   | "Yuca" |
-| `descripcion` | string | No | Nueva descripción del tipo de especie | "Raíz comestible" |
-| `img` | string | No | Nueva imagen del tipo de especie | "imagen_yuca.png" |
+| `id`     | string | Sí        | id de el semillero  | 1      |
+| `fk_Especie` | string | No        | fk_Especie de la especie   | "Yuca"|
 
 ###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
-{
-  "id": 4,
-  "nombre": "Yuca",
-  "descripcion": "Raíz comestible",
-  "img": "imagen_yuca.png"
-}
+[
+  {
+    "id": 1,
+    "fk_Especie": "Yuca",
+    "unidades": 50,
+    "fechaSiembra": "2025-04-01",
+    "fechaEstimada": "2025-04-30"
+  }
+]
 ```
 
 ###### ❌ Respuesta Error (500 - Internal Server Error)

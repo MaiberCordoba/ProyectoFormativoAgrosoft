@@ -29,6 +29,7 @@ Este método devuelve la lista de todos los cultivos registrados.
     "activo": true,
     "fechaSiembra": "2025-03-26",
     "fk_Especie": 2
+    "fk_semillero":5
   }
 ]
 ```
@@ -50,7 +51,8 @@ Este método permite registrar un nuevo cultivo.
   "unidades": Integer,
   "activo": Boolean,
   "fechaSiembra": "YYYY-MM-DD",
-  "fk_Especie": Integer
+  "fk_Especie": Integer,
+  "fk_semillero": Integer
 }
 ```
 #### **Parámetros del Request**
@@ -62,6 +64,7 @@ Este método permite registrar un nuevo cultivo.
 | `activo`        | boolean  | Sí       | Indica si el cultivo está activo o no         | true / false    |
 | `fechaSiembra`  | string   | Sí       | Fecha estimada de la siembra (YYYY-MM-DD)     | "2025-03-26"   |
 | `fk_Especie`    | integer  | Sí       | ID de la especie a la que pertenece           | 2               |
+| `fk_semillero`    | integer  | Sí       | ID de el semillero al que pertenece           | 5              |
 
 ---
 
@@ -73,7 +76,8 @@ Este método permite registrar un nuevo cultivo.
   "unidades": 25,
   "activo": true,
   "fechaSiembra": "2025-03-26",
-  "fk_Especie": 2
+  "fk_Especie": 2,
+  "fk_semillero": 5
 }
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
@@ -95,6 +99,7 @@ Este método permite actualizar/editar un cultivo existente.
 | `activo`        | boolean  | No       | Nuevo estado del cultivo                      | false           |
 | `fechaSiembra`  | string   | No       | Nueva fecha estimada de la siembra (YYYY-MM-DD) | "2025-04-10"   |
 | `fk_Especie`    | integer  | No       | Nuevo ID de la especie a la que pertenece     | 3               |
+| `fk_semillero`    | integer  | Sí       | ID de el semillero al que pertenece           | 5              |
 
 ###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
@@ -104,7 +109,8 @@ Este método permite actualizar/editar un cultivo existente.
   "unidades": 30,
   "activo": false,
   "fechaSiembra": "2025-04-10",
-  "fk_Especie": 3
+  "fk_Especie": 3,
+  "fk_semillero": 5
 }
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
