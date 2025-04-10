@@ -7,6 +7,8 @@ from apps.finanzas.api.models.ventas import Ventas
 from apps.finanzas.api.models.actividades import Actividades
 from apps.finanzas.api.models.insumos import Insumos
 from apps.finanzas.api.models.usosProductos import UsosProductos
+from apps.finanzas.api.models.unidadesTiempo import UnidadesTiempo
+from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
 # Register your models here.
 
 admin.site.register(TiposDesecho)
@@ -17,3 +19,5 @@ admin.site.register(Ventas)
 admin.site.register(Actividades)
 admin.site.register(Insumos)
 admin.site.register(UsosProductos)
+admin.site.register(UnidadesTiempo)
+admin.site.register(UnidadesMedida)
