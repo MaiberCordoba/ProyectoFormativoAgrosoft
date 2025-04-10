@@ -38,21 +38,6 @@ El módulo **Sanidad** gestiona y supervisa las actividades sanitarias dentro de
 4. **Gestión de herramientas y productos sanitarios**: Control de insumos utilizados en el manejo sanitario.
 5. **Registro de aplicaciones de productos**: Seguimiento del uso de productos fitosanitarios.
 
-  :::note
-    Es necesario incluir un <code>access_token</code> válido al enviar solicitudes a cualquier EndPoint. 
-    Para aprender cómo generar el token, utilice el endpoint de autenticación: 
-    <a href="/autenticacion/obtener-token">Auth Endpoint</a>. <br /><strong>Importante:</strong> 
-    El token de acceso tiene una duración de <strong>1 hora</strong>.
-  :::
-
-  #### Configuración de la Solicitud
-##### Parámetros necesarios para realizar una solicitud a la API
-
-| Parámetro         | Tipo    | Descripción                                | Requerido |
-|------------------|--------|--------------------------------------------|-----------|
-| `access_token`   | string | Token de acceso generado previamente      | ✅         |
-| `Content-Type`   | string | Tipo de contenido: `application/json`     | ✅         |
-| `Accept`        | string | Tipo de respuesta: `application/json`      | ✅         |
 
 <div class="card-grid">
   <a href="/sanidad/afecciones" class="card">

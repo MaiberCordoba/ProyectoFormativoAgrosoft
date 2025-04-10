@@ -7,7 +7,7 @@ import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarAfeccionCultivoModal from "./EditarAfeccionescultivoModal";
-import { CrearAfeccionCultivoModal } from "./CrearAfeccionescultivoModal";
+import {CrearAfeccionCultivoModal } from "./CrearAfeccionescultivoModal";
 import EliminarAfeccionCultivoModal from "./EliminarAfeccionescultivo";
 import { AfeccionesCultivo } from "../../types";
 
