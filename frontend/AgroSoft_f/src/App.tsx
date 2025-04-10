@@ -21,6 +21,8 @@ import { Herramientas } from "./modules/Finanzas/pages/pageHerramientas";
 import { UsosHerramientas } from "./modules/Finanzas/pages/pageUsosHerramientas";
 //import { UsosProductos } from "./modules/Finanzas/pages/pageUsosProductos";
 import { Ventas } from "./modules/Finanzas/pages/pageVentas";
+//import { UnidadesMedida } from "./modules/Finanzas/pages/pageUnidadesMedida";
+import { UnidadesTiempo } from "./modules/Finanzas/pages/pageUnidadesTiempo";
 
 //Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
@@ -36,6 +38,7 @@ import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
 import { ErasList } from "./modules/Trazabilidad/pages/eras";
 import { LotesList } from "./modules/Trazabilidad/pages/lotes";
 
+
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 import { TipoAfecciones } from "./modules/Sanidad/Pages/tipoafecciones";
@@ -50,6 +53,7 @@ import { Usuarios } from "./modules/Users/pages/pageUsers";
 
 //testeo
 import Testeo  from "./pages/testeo";
+
 
 
 const queryClient = new QueryClient();
@@ -88,7 +92,10 @@ function App() {
             <Route path="/ventas" element={<Ventas/>}/>
             <Route path="/cosechas" element={<Cosechas/>} />
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
-         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}          
+            {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
+            <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
+         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */} 
+
             {/*Electronica */}
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
