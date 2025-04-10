@@ -74,6 +74,8 @@ from apps.finanzas.api.routers.routerTiposDesechos import routerTiposDesecho
 from apps.finanzas.api.routers.routerTipoActividad import routerTipoActividad
 from apps.finanzas.api.routers.routerUsosInsumos import routerUsosInsumos
 from apps.finanzas.api.routers.routerVentas import routerVentas
+from apps.finanzas.api.routers.routerSalarios import routerSalarios
+from apps.finanzas.api.routers.routerTiempoActividadControl import routerTAC
 
 #Usuarios
 from apps.users.urls import router_usuarios
@@ -119,7 +121,10 @@ urlpatterns = [
     path('api/',include(routerTiposDesecho.urls)),
     path('api/',include(routerUsosInsumos.urls)),
     path('api/',include(routerVentas.urls)),
+    path('api/',include(routerSalarios.urls)),
+    path('api/',include(routerTAC.urls)),
     path('api/',include(routerTipoActividad.urls)),
+
     
      #Usuarios
     path('api/',include(router_usuarios.urls)),
