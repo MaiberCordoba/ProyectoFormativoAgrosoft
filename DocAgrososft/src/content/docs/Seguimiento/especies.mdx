@@ -25,9 +25,9 @@ Este método devuelve la lista de todas las especies registradas.
 [
   {
     "id": 2,
-    "nombre": "Mamuel",
-    "descripcion": "illo pillo",
-    "img": "xd",
+    "nombre": "Yuca",
+    "descripcion": "es yuca",
+    "img": "D:\videos\Imagen de WhatsApp 2025-03-31 a las 08.52.56_db772e6c.jpg",
     "tiempocrecimiento": 19,
     "fk_tipoespecie": 1
   }
@@ -58,9 +58,9 @@ Este metodo permite registrar una nueva Especie
 
 | Parámetro          | Tipo     | Requerido | Descripción                     | Ejemplo        |
 |--------------------|---------|-----------|---------------------------------|---------------|
-| `nombre`          | string  | Si        | Nombre de la especie            | "Mamuel"     |
-| `descripcion`     | string  | Si        | Descripción de la especie       | "illo pillo" |
-| `img`             | string  | Si        | URL de la imagen de la especie  | "img.png"    |
+| `nombre`          | string  | Si        | Nombre de la especie            | "Yuca"     |
+| `descripcion`     | string  | Si        | Descripción de la especie       | "Es yuca" |
+| `img`             | string  | Si        | ruta de la imagen de la especie  | "D:\videos\Imagen de WhatsApp 2025-03-31 a las 08.52.56_db772e6c.jpg"    |
 | `tiempocrecimiento` | integer | Si      | Tiempo de crecimiento en días  | 19            |
 | `fk_tipoespecie`  | integer | Si        | ID del tipo de especie          | 1             |
 
@@ -68,9 +68,9 @@ Este metodo permite registrar una nueva Especie
 ```json
 {
   "id": 2,
-  "nombre": "Mamuel",
-  "descripcion": "illo pillo",
-  "img": "xd",
+  "nombre": "Yuca",
+  "descripcion": "Es yuca",
+  "img": "D:\videos\Imagen de WhatsApp 2025-03-31 a las 08.52.56_db772e6c.jpg",
   "tiempocrecimiento": 19,
   "fk_tipoespecie": 1
 }
@@ -90,14 +90,15 @@ Este metodo permite actualizar/editar una especie
 | Parámetro        | Tipo     | Requerido | Descripción                        | Ejemplo  |
 |------------------|---------|-----------|------------------------------------|----------|
 | `nombre`        | string  | No        | Nuevo nombre de la especie        | "Papa"  |
+| `descripcion`     | string  | Si        | Descripción de la especie       | "Es papa" |
 
 ###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
 {
   "id": 2,
   "nombre": "Papa",
-  "descripcion": "illo pillo",
-  "img": "xd",
+  "descripcion": "es papa",
+  "img": "D:\videos\Imagen de WhatsApp 2025-03-31 a las 08.52.56_db772e6c.jpg",
   "tiempocrecimiento": 19,
   "fk_tipoespecie": 1
 }
