@@ -3,11 +3,11 @@ title: Semilleros
 description: Guía para gestionar semilleros en el sistema
 ---
 
-## 🌱 Uso de Semilleros
+## Uso de Semilleros
 
 El módulo **Semilleros** permite gestionar la siembra y el crecimiento de plantas antes de su trasplante a cultivos definitivos. Antes de crear un semillero, **debe existir al menos una especie registrada en el sistema**.
 
-### 1️⃣ **Acceder a la sección de Semilleros**
+### **Acceder a la sección de Semilleros**
 Para gestionar los semilleros, sigue estos pasos:
 1. Inicia sesión en el sistema.
 2. En el menú de navegación, selecciona **Cultivos**.
@@ -16,7 +16,7 @@ Para gestionar los semilleros, sigue estos pasos:
 ## Pagina semilleros
 ![Captura de pantalla semillero](../../../../public/semilleros.png)
 
-### 2️⃣ **Registrar un nuevo Semillero**
+### **Registrar un nuevo Semillero**
 Para agregar un nuevo semillero:
 1. Asegúrate de que **existe al menos una especie registrada** en el sistema.
 2. Dentro de la pantalla de **Semilleros**, haz clic en el botón **"Agregar"**.
@@ -30,7 +30,7 @@ Para agregar un nuevo semillero:
    - **Especie:** Selecciona la especie a la que pertenecen las semillas.
 4. Haz clic en **"Guardar"** para registrar el semillero.
 
-### 3️⃣ **Consultar, editar y eliminar semilleros existentes**
+### **Consultar, editar y eliminar semilleros existentes**
 - Para ver la información de un semillero, usa la lista disponible en la sección.
 ## lista de semilleros
 ![Captura de pantalla](../../../../public/listasemilleros.png)
