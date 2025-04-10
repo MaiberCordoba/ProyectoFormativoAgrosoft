@@ -10,7 +10,6 @@ interface CrearEraModalProps {
 
 export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
   const [fk_lote_id, setFkLoteId] = useState<number | null>(null);
-  const [tipo, setTipo] = useState<string>("");
   const [tamX, setTamX] = useState<number | null>(null);
   const [tamY, setTamY] = useState<number | null>(null);
   const [posX, setPosX] = useState<number | null>(null);
@@ -20,14 +19,13 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
   const { data: lotes, isLoading: isLoadingLotes } = useGetLotes();
 
   const handleSubmit = () => {
-    if (fk_lote_id === null || tipo.trim() === "" || tamX === null || tamY === null || posX === null || posY === null) {
+    if (fk_lote_id === null ||  tamX === null || tamY === null || posX === null || posY === null) {
       console.error("⚠️ Error: Todos los campos son obligatorios.");
       return;
     }
 
     const payload = {
       fk_lote_id,
-      tipo,
       tamX,
       tamY,
       posX,
@@ -40,7 +38,6 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
       onSuccess: () => {
         onClose();
         setFkLoteId(null);
-        setTipo("");
         setTamX(null);
         setTamY(null);
         setPosX(null);
@@ -82,13 +79,6 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
           )}
         </Select>
       )}
-
-      <Input
-        label="Tipo"
-        value={tipo}
-        onChange={(e) => setTipo(e.target.value)}
-        required
-      />
 
       <Input
         label="Tamaño X"

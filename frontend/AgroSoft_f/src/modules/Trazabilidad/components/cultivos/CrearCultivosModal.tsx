@@ -3,6 +3,7 @@ import { usePostCultivos } from "../../hooks/cultivos/usePostCultivos";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
+import { useGetSemilleros } from "../../hooks/semilleros/useGetSemilleros";
 
 interface CrearCultivoModalProps {
   onClose: () => void;
@@ -13,13 +14,15 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
   const [unidades, setUnidades] = useState<number | "">("");
   const [fechaSiembra, setFechaSiembra] = useState<string>("");
   const [fk_Especie, setFk_Especie] = useState<number | null>(null);
+  const [fk_semillero, setFk_Semillero] = useState<number | null>(null);
   const [activo, setActivo] = useState<boolean>(true); // Por defecto activo
 
   const { mutate, isPending } = usePostCultivos();
   const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
+  const { data: semilleros, isLoading: isLoadingSemilleros } = useGetSemilleros();
 
   const handleSubmit = () => {
-    if (!nombre || !unidades || !fechaSiembra || !fk_Especie) {
+    if (!nombre || !unidades || !fechaSiembra || !fk_Especie || !fk_semillero) {
       console.log("Por favor, completa todos los campos obligatorios.");
       return;
     }
@@ -29,6 +32,7 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
         unidades: Number(unidades),
         fechaSiembra,
         fk_Especie,
+        fk_semillero,
         activo,
       },
       {
@@ -38,6 +42,7 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
           setUnidades("");
           setFechaSiembra("");
           setFk_Especie(null);
+          setFk_Semillero(null);
           setActivo(true);
         },
       }
@@ -99,6 +104,26 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
           ))}
         </Select>
       )}
+
+      {isLoadingSemilleros ? (
+              <p>Cargando semilleros...</p>
+            ) : (
+        <Select
+          label="Semillero"
+          placeholder="Selecciona un semillero"
+          selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];
+            setFk_Semillero(Number(selectedKey));
+          }}
+        >
+          {(semilleros || []).map((semillero) => (
+            <SelectItem key={semillero.id.toString()}>{semillero.id}</SelectItem>
+          ))}
+        </Select>
+      )}
+
+      
 
         <Input
           type="checkbox"

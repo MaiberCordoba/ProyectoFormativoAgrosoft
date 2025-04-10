@@ -9,6 +9,7 @@ export interface Especies{
     id: number;
     nombre: string;
     descripcion: string;
+    variedad: string;
     img?: string;
     tiempocrecimiento: number;
     TiposEspecie?: TiposEspecie;
@@ -33,6 +34,8 @@ export interface Cultivos{
   fechaSiembra: string;
   Especies?: Especies;
   fk_Especie: number;
+  Semillero?: Semilleros;
+  fk_semillero: number;
 }
 
 export interface Lotes{
@@ -52,7 +55,6 @@ export interface Eras{
   tamY: number;
   posX: number;
   posY: number;
-  tipo: string;
   Lotes?: Lotes;
   fk_lote_id: number; 
 }

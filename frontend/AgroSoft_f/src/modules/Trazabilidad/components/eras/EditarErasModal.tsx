@@ -12,7 +12,6 @@ interface EditarEraModalProps {
 
 const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
   const [fk_lote_id, setFkLoteId] = useState<number | null>(era.fk_lote_id ?? null);
-  const [tipo, setTipo] = useState<string>(era.tipo ?? "");
   const [tamX, setTamX] = useState<number>(era.tamX ?? 0);
   const [tamY, setTamY] = useState<number>(era.tamY ?? 0);
   const [posX, setPosX] = useState<number>(era.posX ?? 0);
@@ -22,7 +21,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
   const { data: lotes, isLoading: isLoadingLotes } = useGetLotes();
 
   const handleSubmit = () => {
-    if (fk_lote_id === null || tipo.trim() === "" || tamX === null || tamY === null || posX === null || posY === null) {
+    if (fk_lote_id === null || tamX === null || tamY === null || posX === null || posY === null) {
       console.error("⚠️ Error: Todos los campos son obligatorios.");
       return;
     }
@@ -32,7 +31,6 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         id: era.id ?? 0,
         data: {
           fk_lote_id,
-          tipo,
           tamX,
           tamY,
           posX,
@@ -79,13 +77,6 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         </Select>
       )}
 
-      <Input
-        label="Tipo"
-        type="text"
-        value={tipo}
-        onChange={(e) => setTipo(e.target.value)}
-        required
-      />
 
       <Input
         label="Tamaño X"

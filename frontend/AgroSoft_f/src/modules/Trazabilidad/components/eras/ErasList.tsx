@@ -33,13 +33,12 @@ export function EraList() {
   } = useEliminarEras();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_lote_id: 0, tamX: 0, tamY: 0, posX: 0, posY: 0, tipo: "" });
+    handleCrear({ id: 0, fk_lote_id: 0, tamX: 0, tamY: 0, posX: 0, posY: 0 });
   };
 
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
     { name: "Lote", uid: "fk_lote_id", sortable: true },
-    { name: "Tipo", uid: "tipo" },
     { name: "Tamaño X", uid: "tamX" },
     { name: "Tamaño Y", uid: "tamY" },
     { name: "Posición X", uid: "posX" },
@@ -53,8 +52,6 @@ export function EraList() {
         return <span>{item.id}</span>;
       case "fk_lote_id":
         return <span>{item.fk_lote?.nombre ?? "Sin asignar"}</span>; // 🔥 CORREGIDO AQUÍ
-      case "tipo":
-        return <span>{item.tipo}</span>;
       case "tamX":
         return <span>{item.tamX}</span>;
       case "tamY":
