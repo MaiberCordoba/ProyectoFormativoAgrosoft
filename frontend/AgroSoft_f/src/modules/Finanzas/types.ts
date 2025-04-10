@@ -77,3 +77,25 @@ export interface TiposDesechos {
     nombre : string,
     descripcion : string
 }
+
+
+export interface UnidadesTiempo {
+    id: number;
+    nombre: string;
+    equivalenciabase: number;
+  }
+  
+
+  export enum TipoUnidadMedida {
+    MASA = "Masa",
+    VOLUMEN = "VOLUMEN"
+}
+
+  export interface UnidadesMedida {
+    id: number;
+    nombre: string;
+    abreviatura: string;
+    tipo:  keyof typeof TipoUnidadMedida; // Se usará "MASA" o "VOLUMEN"
+    equivalenciabase: number;
+  }
+  
