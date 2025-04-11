@@ -25,7 +25,11 @@ class UsosInsumos(models.Model):
         # Conversión a unidad base
             cantidad_en_base = self.cantidadProducto * self.fk_UnidadMedida.equivalenciabase
             self.costoUsoInsumo = (cantidad_en_base*self.fk_Insumo.valorTotalInsumos)/self.fk_Insumo.cantidadTotal
-           
+
+             # Resta del stock
+            if self._state.adding: 
+                self.fk_Insumo.cantidadDisponible -= cantidad_en_base
+                self.fk_Insumo.save()
 
         super().save(*args, **kwargs)
     

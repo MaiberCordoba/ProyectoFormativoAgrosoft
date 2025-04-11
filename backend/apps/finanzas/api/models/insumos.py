@@ -13,12 +13,16 @@ class Insumos(models.Model):
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida , on_delete=models.SET_NULL, null=True)
     valorTotalInsumos = models.FloatField()
     cantidadTotal = models.FloatField()
+    cantidadDisponible = models.FloatField(default=0)
     
     def save(self, *args, **kwargs):
         
         self.cantidadTotal = self.contenido * self.fk_UnidadMedida.equivalenciabase * self.unidades
         self.valorTotalInsumos = self.precio * self.unidades
 
+        if self.cantidadDisponible is None or self._state.adding:
+            self.cantidadDisponible = self.cantidadTotal    
+            
         super().save(*args, **kwargs)
         
     def __str__(self):
