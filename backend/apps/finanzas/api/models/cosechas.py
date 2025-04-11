@@ -9,7 +9,7 @@ class Cosechas(models.Model):
     cantidadTotal = models.FloatField(null=True, blank=True)
     cantidadDisponible = models.FloatField(default=0)
     fecha = models.DateField(auto_now=False)
-    precioReferencial = models.IntegerField()
+    precioReferencial = models.IntegerField(null=True)
 
     def save(self, *args, **kwargs):
         if self.fk_UnidadMedida:

@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from finanzas.api.models.unidadesTiempo import UnidadesTiempo
-from finanzas.api.models.actividades import Actividades
-from sanidad.api.models.controlesModel import Controles
-from finanzas.api.models.salarios import Salarios
+from apps.finanzas.api.models.unidadesTiempo import UnidadesTiempo
+from apps.finanzas.api.models.actividades import Actividades
+from apps.sanidad.api.models.controlesModel import Controles
+from apps.finanzas.api.models.salarios import Salarios
 
 
 class TiempoActividadControl(models.Model):
