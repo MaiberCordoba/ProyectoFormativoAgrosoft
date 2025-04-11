@@ -9,7 +9,7 @@ class Salarios(models.Model):
     monto = models.IntegerField()
     horas = models.FloatField()
     monto_minutos = models.FloatField(null=True, blank=True)
-    estado = models.CharField(max_length=10,choices=ESTADOS)
+    estado = models.CharField(max_length=10,choices=ESTADOS,default='activo')
     
     def save(self, *args, **kwargs):
         self.monto_minutos = self.monto / (self.horas * 60)
