@@ -10,6 +10,8 @@ from apps.finanzas.api.models.usosInsumos import UsosInsumos
 from apps.finanzas.api.models.tipoActividad import TipoActividad
 from apps.finanzas.api.models.unidadesTiempo import UnidadesTiempo
 from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
+from apps.finanzas.api.models.salarios import Salarios
+from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadControl
 
 # Register your models here.
 
@@ -24,4 +26,5 @@ admin.site.register(Insumos)
 admin.site.register(UsosInsumos)
 admin.site.register(UnidadesTiempo)
 admin.site.register(UnidadesMedida)
-
+admin.site.register(Salarios)
+admin.site.register(TiempoActividadControl)
