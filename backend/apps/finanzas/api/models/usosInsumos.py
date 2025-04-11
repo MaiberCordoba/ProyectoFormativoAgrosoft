@@ -12,7 +12,7 @@ class UsosInsumos(models.Model):
     cantidadProducto = models.IntegerField()
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida, on_delete=models.SET_NULL,null=True)
     costoUsoInsumo = models.FloatField(null=True,blank=True)
-    valorTotal = models.FloatField(null=True,blank=True)
+   
     
     def clean(self):
         if self.fk_Actividad and self.fk_Control:
