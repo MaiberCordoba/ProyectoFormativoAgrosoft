@@ -11,8 +11,8 @@ class Insumos(models.Model):
     fichaTecnica = models.CharField(max_length=20)
     unidades = models.IntegerField()
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida , on_delete=models.SET_NULL, null=True)
-    valorTotalInsumos = models.FloatField()
-    cantidadTotal = models.FloatField()
+    valorTotalInsumos = models.FloatField(null=True,blank=True)
+    cantidadTotal = models.FloatField(null=True,blank=True)
     cantidadDisponible = models.FloatField(default=0)
     
     def save(self, *args, **kwargs):

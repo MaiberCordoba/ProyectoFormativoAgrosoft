@@ -8,7 +8,7 @@ class Salarios(models.Model):
     nombre = models.CharField(max_length=40)
     monto = models.IntegerField()
     horas = models.FloatField()
-    monto_minutos = models.FloatField()
+    monto_minutos = models.FloatField(null=True, blank=True)
     estado = models.CharField(max_length=10,choices=ESTADOS)
     
     def save(self, *args, **kwargs):

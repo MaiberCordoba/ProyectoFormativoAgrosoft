@@ -7,12 +7,12 @@ from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
 
 class UsosInsumos(models.Model):
     fk_Insumo = models.ForeignKey(Insumos, on_delete=models.SET_NULL, null=True)
-    fk_Actividad = models.ForeignKey(Actividades, on_delete=models.SET_NULL, null=True)
-    fk_Control = models.ForeignKey(Controles, on_delete=models.SET_NULL, null=True)
+    fk_Actividad = models.ForeignKey(Actividades, on_delete=models.SET_NULL, null=True,blank=True)
+    fk_Control = models.ForeignKey(Controles, on_delete=models.SET_NULL, null=True,blank=True)
     cantidadProducto = models.IntegerField()
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida, on_delete=models.SET_NULL,null=True)
-    costoUsoInsumo = models.FloatField(null=True)
-    valorTotal = models.FloatField(null=True)
+    costoUsoInsumo = models.FloatField(null=True,blank=True)
+    valorTotal = models.FloatField(null=True,blank=True)
     
     def clean(self):
         if self.fk_Actividad and self.fk_Control:
