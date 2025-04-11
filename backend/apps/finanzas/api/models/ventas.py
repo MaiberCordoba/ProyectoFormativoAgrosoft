@@ -11,6 +11,10 @@ class Ventas(models.Model):
     valorTotal = models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs): 
+        
+        if self.precioUnitario is None or self._state.adding:
+            self.precioUnitario = self.fk_Cosecha.precioReferencial  
+            
         # Calcular valor total
         self.valorTotal = self.precioUnitario * self.cantidad
 
