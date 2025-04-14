@@ -78,7 +78,7 @@ export function UsersList() {
           return <Chip 
           size="sm" 
           className="capitalize"
-          variant="flat"
+          variant="dot"
           color={item.estado === "activo" ? "success" : "danger"} 
         >
           {item.estado}
