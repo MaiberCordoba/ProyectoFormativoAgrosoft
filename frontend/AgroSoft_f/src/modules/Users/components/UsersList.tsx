@@ -42,7 +42,8 @@ export function UsersList() {
       fechaNacimiento: "", 
       telefono: "", 
       correoElectronico: "", 
-      admin: false 
+      admin: false, 
+      estado:""
     });
   };
 
@@ -53,6 +54,7 @@ export function UsersList() {
     { name: "Apellidos", uid: "apellidos" },
     { name: "Email", uid: "correoElectronico" },
     { name: "Rol", uid: "admin" },
+    { name: "Estado", uid: "estado" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -71,6 +73,8 @@ export function UsersList() {
             return <span>{item.correoElectronico}</span>;
         case "admin":
             return <span>{item.admin ? "Administrador" : "Usuario"}</span>;
+        case "estado":
+            return <span>{item.estado}</span>;
         case "acciones":
             return (
             <AccionesTabla

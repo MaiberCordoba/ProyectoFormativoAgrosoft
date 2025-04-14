@@ -8,6 +8,7 @@ export interface User {
   correoElectronico: string;
   admin: boolean;
   password?: string;
+  estado: string;
 }
 
 export interface SensorData {
