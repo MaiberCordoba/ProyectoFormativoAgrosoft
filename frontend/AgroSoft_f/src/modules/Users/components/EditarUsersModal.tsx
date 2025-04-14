@@ -18,6 +18,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     fechaNacimiento: user.fechaNacimiento,
     telefono: user.telefono,
     correoElectronico: user.correoElectronico,
+    estado: user.estado,
     admin: user.admin
   });
 
@@ -111,6 +112,14 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           type="email"
           value={userData.correoElectronico}
           onChange={(e) => handleInputChange(e, 'correoElectronico')}
+          required
+        />
+
+        <Input
+          label="estado"
+          type="text"
+          value={userData.estado}
+          onChange={(e) => handleInputChange(e, 'estado')}
           required
         />
 
