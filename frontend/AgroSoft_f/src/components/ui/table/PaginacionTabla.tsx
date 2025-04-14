@@ -22,7 +22,7 @@ export const PaginacionTabla: React.FC<PaginacionTablaProps> = ({
         isCompact
         showControls
         showShadow
-        color="primary"
+        color="success"
         page={paginaActual}
         total={totalPaginas}
         onChange={onCambiarPagina}

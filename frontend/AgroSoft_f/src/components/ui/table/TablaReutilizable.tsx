@@ -110,7 +110,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
         />
         
         <Button
-          color="primary"
+          color="success"
           size="sm" // Tamaño pequeño
           endContent={<PlusIcon size={16} />}
           onPress={onCrearNuevo}
