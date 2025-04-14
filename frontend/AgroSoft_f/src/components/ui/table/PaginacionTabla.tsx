@@ -26,7 +26,7 @@ export const PaginacionTabla: React.FC<PaginacionTablaProps> = ({
         page={paginaActual}
         total={totalPaginas}
         onChange={onCambiarPagina}
-        className="mx-4"
+        className="mx-4  text-white"
       />
 
       <div className="hidden sm:flex w-[30%] justify-end gap-2">

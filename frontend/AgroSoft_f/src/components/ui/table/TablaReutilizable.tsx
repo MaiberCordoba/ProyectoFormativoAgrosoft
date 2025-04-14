@@ -114,7 +114,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           size="sm" // Tamaño pequeño
           endContent={<PlusIcon size={16} />}
           onPress={onCrearNuevo}
-          className="self-end" // Alineación individual
+          className="self-end text-white" // Alineación individual
         >
           Agregar
         </Button>
