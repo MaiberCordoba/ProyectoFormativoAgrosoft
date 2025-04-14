@@ -12,7 +12,7 @@ export const AccionesTabla: React.FC<AccionesTablaProps> = ({ onEditar, onElimin
     <div className="relative flex justify-end items-center gap-2">
       <Dropdown>
         <DropdownTrigger>
-          <Button isIconOnly size="sm" variant="light" className="text-gray-500 hover:text-gray-700">
+          <Button isIconOnly size="sm" variant="light" className="bg-gray-100 hover:bg-gray-200">
             <VerticalDotsIcon className="text-default-300" />
           </Button>
         </DropdownTrigger>
