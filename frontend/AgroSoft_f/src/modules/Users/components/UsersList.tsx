@@ -9,6 +9,7 @@ import { User } from "../types";
 import EditarUserModal from "./EditarUsersModal";
 import { CrearUsersModal } from "./CrearUsersModal";
 import EliminarUserModal from "./EliminarUsersModal";
+import { Chip } from "@heroui/react";
 
 
 export function UsersList() {
@@ -74,7 +75,14 @@ export function UsersList() {
         case "admin":
             return <span>{item.admin ? "Administrador" : "Usuario"}</span>;
         case "estado":
-            return <span>{item.estado}</span>;
+          return <Chip 
+          size="sm" 
+          className="capitalize"
+          variant="flat"
+          color={item.estado === "activo" ? "success" : "danger"} 
+        >
+          {item.estado}
+        </Chip>;
         case "acciones":
             return (
             <AccionesTabla
@@ -99,6 +107,10 @@ export function UsersList() {
         placeholderBusqueda="Buscar por nombre o email"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
+        opcionesEstado={[
+          { uid: "activo", nombre: "Activo" },
+          { uid: "inactivo", nombre: "Inactivo" }
+        ]}  
       />
 
       {/* Modales */}

@@ -11,8 +11,8 @@ export const FilasPorPagina: React.FC<FilasPorPaginaProps> = ({
   onChange,
 }) => {
   return (
-    <div className="flex items-center gap-2 ml-auto"> {/* ml-auto para alinear a la derecha */}
-      <span className="text-default-400 text-small">Filas por página:</span>
+    <div className="flex items-center gap-2 ml-auto">
+      <span className="text-default-400 text-small">Mostrar:</span>
       <Select
         aria-label="Filas por página"
         selectedKeys={[String(filasPorPagina)]}
@@ -20,9 +20,9 @@ export const FilasPorPagina: React.FC<FilasPorPaginaProps> = ({
           const selected = Array.from(keys)[0];
           onChange(Number(selected));
         }}
-        variant="underlined"
-        className="w-24 " // Ancho fijo
-        size="sm" // Tamaño pequeño
+        variant="flat"
+        size="sm"
+        className="w-20"
       >
         <SelectItem key="5">5</SelectItem>
         <SelectItem key="10">10</SelectItem>

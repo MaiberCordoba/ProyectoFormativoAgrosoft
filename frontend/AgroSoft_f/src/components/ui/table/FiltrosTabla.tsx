@@ -31,35 +31,37 @@ export const FiltrosTabla: React.FC<FiltrosTablaProps> = ({
       {/* Campo de búsqueda */}
       <Input
         isClearable
-        className="w-64"
+        endContent={<ChevronDownIcon className="text-gray-400" width={16} height={16} />} 
+        className="w-full sm:max-w-[100%]" // Ajuste de ancho
         placeholder={placeholderBusqueda}
-        startContent={<SearchIcon className="text-gray-400" />}
+        startContent={<SearchIcon className="text-default-400" />}
         value={valorFiltro}
         onClear={onLimpiarBusqueda}
         onValueChange={onCambiarBusqueda}
       />
 
-      {/* Dropdown para filtrar por estado (solo si hay opciones de estado) */}
-      {opcionesEstado && opcionesEstado.length > 0 && ( // Verificamos que opcionesEstado esté definido y no esté vacío
+      {/* Dropdown para filtrar por estado */}
+      {opcionesEstado && opcionesEstado.length > 0 && (
         <Dropdown>
           <DropdownTrigger>
             <Button
-              endContent={<ChevronDownIcon className="text-gray-400" />}
+              endContent={<ChevronDownIcon className="text-gray-400" width={16} height={16} />} 
               variant="flat"
-              className="w-32"
+              size="sm"
+              className="hidden sm:flex"
             >
               Estado
             </Button>
           </DropdownTrigger>
           <DropdownMenu
             disallowEmptySelection
-            aria-label="Filtro de estado"
+            aria-label="Status filter"
             closeOnSelect={false}
             selectedKeys={filtroEstado}
             selectionMode="multiple"
             onSelectionChange={(keys) => {
-              const keysComoStrings = new Set(Array.from(keys).map((key) => String(key)));
-              onCambiarFiltroEstado(keysComoStrings);
+              const keysSet = new Set(Array.from(keys).map(String));
+              onCambiarFiltroEstado(keysSet);
             }}
           >
             {opcionesEstado.map((estado) => (
