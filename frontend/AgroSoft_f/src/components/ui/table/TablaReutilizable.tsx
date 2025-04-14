@@ -129,9 +129,6 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           aria-label="Tabla reutilizable"
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-          classNames={{
-            wrapper: "border rounded-lg",
-          }}
         >
           <TableHeader columns={headerColumns}>
             {(column) => (
