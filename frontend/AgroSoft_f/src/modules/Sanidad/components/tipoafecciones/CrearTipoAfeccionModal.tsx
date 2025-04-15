@@ -5,9 +5,10 @@ import { Button, Input } from "@heroui/react";
 
 interface CrearTipoAfeccionModalProps {
   onClose: () => void;
+  onCreate: (nuevoTipo: { id: number; nombre: string }) => void; // Nuevo prop para retornar el tipo creado
 }
 
-export const CrearTipoAfeccionModal = ({ onClose }: CrearTipoAfeccionModalProps) => {
+export const CrearTipoAfeccionModal = ({ onClose,onCreate }: CrearTipoAfeccionModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [img, setImagen] = useState<File | null>(null);
@@ -26,8 +27,9 @@ export const CrearTipoAfeccionModal = ({ onClose }: CrearTipoAfeccionModalProps)
     formData.append("img", img); // este debe ser el mismo nombre que espera el backend
   
     mutate(formData, {
-      onSuccess: () => {
-        onClose();
+      onSuccess: (data) => {
+        onCreate({ id: data.id, nombre: data.nombre }); // ← Aquí envías el nuevo tipo al modal principal
+        onClose();      // ← También puedes cerrar aquí, o dejar que el padre lo haga
         setNombre("");
         setDescripcion("");
         setImagen(null);

@@ -96,6 +96,7 @@ export function TipoAfeccionesList() {
       {isCreateModalOpen && (
         <CrearTipoAfeccionModal
           onClose={closeCreateModal}
+          onCreate={handleCrearNuevo}
         />
       )}
 
