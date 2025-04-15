@@ -6,7 +6,7 @@ import { addToast } from "@heroui/toast";
 export const usePostAfeccion = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Afecciones, Error, Afecciones>({
+  return useMutation<any, Error, FormData, Afecciones>({
     mutationKey: ['crearAfeccion'],
     mutationFn: postAfecciones,
     onSuccess: (data) => {

@@ -6,9 +6,13 @@ export const getAfecciones = async ():Promise<Afecciones[]> => {
     return response.data
 };
 
-export const postAfecciones = async (data?:any):Promise<Afecciones> => {
-    const response = await apiClient.post<Afecciones>('plaga/',data);
-    return response.data
+export const postAfecciones = async (data:FormData):Promise<Afecciones> => {
+    const response = await apiClient.post<Afecciones>('plaga/',data,{
+        headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+    });
+    return response.data;
 }
 
 export const patchAfecciones = async ( id: number, data: Partial<Afecciones>): Promise<Afecciones> => {
