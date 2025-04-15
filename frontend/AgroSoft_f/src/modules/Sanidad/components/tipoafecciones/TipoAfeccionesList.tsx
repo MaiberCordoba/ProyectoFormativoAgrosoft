@@ -8,6 +8,7 @@ import EditarTipoAfeccionModal from "./EditarTipoAfeccionModal";
 import { CrearTipoAfeccionModal } from "./CrearTipoAfeccionModal";
 import EliminarTipoAfeccionModal from "./EliminarTipoAfeccionModal";
 import { TiposAfecciones } from "../../types";
+import { Image } from "@heroui/react";
 
 export function TipoAfeccionesList() {
   const { data, isLoading, error } = useGetTipoAfecciones();
@@ -39,7 +40,8 @@ export function TipoAfeccionesList() {
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Acciones", uid: "acciones" },
+    { name: "Img", uid: "img" },
+    { name: "Acciones", uid: "acciones" }
   ];
 
   // Función de renderizado
@@ -49,6 +51,13 @@ export function TipoAfeccionesList() {
         return <span>{item.nombre}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
+      case "img":
+        return <Image
+        isZoomed
+        src={item.img}
+        alt={item.nombre}
+        className="w-14 h-14 object-contain rounded-lg" 
+      />;
       case "acciones":
         return (
           <AccionesTabla
