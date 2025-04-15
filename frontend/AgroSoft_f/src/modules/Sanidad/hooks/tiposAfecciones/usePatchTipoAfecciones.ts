@@ -6,7 +6,7 @@ import { addToast } from "@heroui/react";
 export const usePatchTipoAfecciones = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<TiposAfecciones, Error, { id: number; data: Partial<TiposAfecciones> }>({
+  return useMutation<TiposAfecciones, Error, { id: number; data: FormData }>({
     mutationFn: ({ id, data }) => patchTipoAfecciones(id, data),
     onSuccess: (updatedTipoAfeccion, variables) => {
       // Actualiza la caché después de una mutación exitosa
@@ -21,7 +21,7 @@ export const usePatchTipoAfecciones = () => {
       addToast({
         title: "Actualización exitosa",
         description: "el tipo de afeccion se actualizó correctamente",
-        color: "success",
+        color: "primary",
      
       });
     },
