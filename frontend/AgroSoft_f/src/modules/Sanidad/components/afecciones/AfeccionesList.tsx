@@ -8,9 +8,14 @@ import EditarAfeccionModal from "./EditarAfeccionModal";
 import { CrearAfeccionModal } from "./CrearAfeccionModal";
 import EliminarAfeccionModal from "./EliminarAfeccion";
 import { Afecciones } from "../../types";
+import { useEffect } from "react";
 
 export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
+  useEffect(() => {
+    console.log(data); // Verifica que los datos contienen el campo `tipoPlaga`
+  }, [data]);
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -93,6 +98,7 @@ export function AfeccionesList() {
       {isCreateModalOpen && (
         <CrearAfeccionModal
           onClose={closeCreateModal}
+          onCreate={handleCrearNuevo}
         />
       )}
 
