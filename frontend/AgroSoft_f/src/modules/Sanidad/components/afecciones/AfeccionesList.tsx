@@ -40,6 +40,7 @@ export function AfeccionesList() {
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
     { name: "Tipo afectación", uid: "tipoPlaga" },
+    { name: "Img", uid: "img" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -52,6 +53,8 @@ export function AfeccionesList() {
         return <span>{item.descripcion}</span>;
       case "tipoPlaga":
         return <span>{item.tipoPlaga?.nombre || "No definido"}</span>;
+      case "img":
+        return <span>{item.img}</span>;
       case "acciones":
         return (
           <AccionesTabla
