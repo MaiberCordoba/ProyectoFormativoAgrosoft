@@ -35,6 +35,7 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
     formData.append("nombre", nombre);
     formData.append("descripcion", descripcion);
     formData.append("img",img);
+    formData.append("fk_Tipo", fk_Tipo.toString());
     
     mutate(formData,{
         onSuccess: (data) => {
