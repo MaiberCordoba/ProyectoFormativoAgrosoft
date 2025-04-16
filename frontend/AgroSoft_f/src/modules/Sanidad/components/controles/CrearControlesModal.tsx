@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { postControles} from "../../hooks/controles/usePostControles";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem,  } from "@heroui/react";
+import { Button, Input, Select, SelectItem,  } from "@heroui/react";
 import { useGetAfeccionesCultivo } from "../../hooks/afeccionescultivo/useGetAfeccionescultivo";
 import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
+import { Plus } from "lucide-react";
+import { TipoControl } from "../../types";
+import { CrearTipoControlModal } from "../tipocontrol/CrearTipoControlModal";
 
 interface CrearControlModalProps {
   onClose: () => void;
@@ -16,8 +19,11 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
   const [fk_TipoControl, setFk_TipoControl] = useState<number | null>(null);
 
   const { data: afecciones, isLoading: isLoadingAfecciones } = useGetAfeccionesCultivo();
-  const { data: tiposControl, isLoading: isLoadingTiposControl } = useGetTipoControl();
+  const { data: tiposControl, isLoading: isLoadingTiposControl, refetch: refetchTipoControl } = useGetTipoControl();
   const { mutate, isPending } = postControles();
+
+  //estado para manejar (abrir/cerrar) modal interno 
+  const [mostrarModalTiposControl, setMostrarModalTiposControl] = useState(false)
 
   const handleSubmit = () => {
     if (!fechaControl || !descripcion || !fk_Afeccion || !fk_TipoControl) {
@@ -25,7 +31,7 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
       return;
     }
     mutate(
-      { fechaControl , descripcion, fk_Afeccion, fk_TipoControl }, 
+      { id:0 ,fechaControl , descripcion, fk_Afeccion, fk_TipoControl }, 
       {
         onSuccess: () => {
           onClose();
@@ -38,7 +44,13 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
     );
   };
 
+  const handleTipoControlCreado = (nuevoTipo:TipoControl) => {
+    refetchTipoControl(); // actualiza el select con la nueva info
+    setFk_TipoControl(nuevoTipo.id); // selecciona el nuevo tipo
+    setMostrarModalTiposControl(false); // cierra el modal secundario
+  };
   return (
+    <>
     <ModalComponent
       isOpen={true}
       onClose={onClose}
@@ -90,25 +102,51 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
       )}
 
       {/* Selector de Tipo de Control */}
-      {isLoadingTiposControl ? (
-        <p>Cargando tipos de control...</p>
-      ) : (
-        <Select
-          label="Tipo de Control"
-          placeholder="Selecciona un tipo de control"
-          selectedKeys={fk_TipoControl ? [fk_TipoControl.toString()] : []}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_TipoControl(Number(selectedKey));
-          }}
-        >
-          {(tiposControl || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()}>
-              {tipo.nombre}
-            </SelectItem>
-          ))}
-        </Select>
+      <div className="flex items-center gap-2 ">
+        <div className="flex-1"> 
+          {isLoadingTiposControl ? (
+            <p>Cargando tipos de control...</p>
+          ) : (
+          <Select
+            label="Tipo de Control"
+            placeholder="Selecciona un tipo de control"
+            selectedKeys={fk_TipoControl ? [fk_TipoControl.toString()] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0];
+              setFk_TipoControl(Number(selectedKey));
+            }}
+          >
+            {(tiposControl || []).map((tipo) => (
+              <SelectItem key={tipo.id.toString()}>
+                {tipo.nombre}
+              </SelectItem>
+            ))}
+          </Select>
       )}
+        </div>
+
+        <Button
+          onPress={() => setMostrarModalTiposControl(true)}
+          color="success"
+          title="Agregar nuevo tipo"
+          radius="full"
+          size="sm"
+        >
+          <Plus className="w-5 h-5 text-white" />
+        </Button>
+
+      </div>
+      
     </ModalComponent>
+
+    {mostrarModalTiposControl && (
+      <CrearTipoControlModal
+      onClose={() => setMostrarModalTiposControl(false)}
+      onCreate={handleTipoControlCreado}
+      />
+    )}
+    
+    </>
+    
   );
 };

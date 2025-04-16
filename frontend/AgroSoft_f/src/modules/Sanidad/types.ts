@@ -41,7 +41,7 @@ export interface UsoProductosControl {
 }
 
 export interface Controles{
-    id?: number;
+    id: number;
     fk_Afeccion?: number;
     fk_TipoControl?: number;
     fechaControl: string;
