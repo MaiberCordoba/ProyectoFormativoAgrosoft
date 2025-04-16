@@ -104,7 +104,7 @@ export function AfeccionesList() {
       {isCreateModalOpen && (
         <CrearAfeccionModal
           onClose={closeCreateModal}
-          onCreate={handleCrearNuevo}
+          
         />
       )}
 
