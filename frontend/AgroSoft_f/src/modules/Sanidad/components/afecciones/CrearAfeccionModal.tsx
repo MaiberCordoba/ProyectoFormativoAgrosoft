@@ -8,11 +8,9 @@ import { Plus } from "lucide-react";
 
 interface CrearAfeccionModalProps {
   onClose: () => void;
-  onCreate: (nuevoTipo: { id: number; nombre: string;  }) => void; // Nuevo prop para retornar el tipo creado
-
 }
 
-export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProps) => {
+export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Tipo, setFk_Tipo] = useState<number | null>(null); 
@@ -38,8 +36,7 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
     formData.append("fk_Tipo", fk_Tipo.toString());
     
     mutate(formData,{
-        onSuccess: (data) => {
-          onCreate({ id: data.id, nombre: data.nombre }); // ← Aquí envías el nuevo tipo al modal principal
+        onSuccess: () => {
           onClose();
           setNombre("");
           setDescripcion("");

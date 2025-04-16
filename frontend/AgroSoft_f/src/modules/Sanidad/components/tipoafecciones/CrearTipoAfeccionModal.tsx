@@ -88,7 +88,7 @@ export const CrearTipoAfeccionModal = ({ onClose,onCreate }: CrearTipoAfeccionMo
             setPreview(URL.createObjectURL(file!)); 
         }}
         className="hidden"
-      />
+      />  
     </div>
 
     {preview && (

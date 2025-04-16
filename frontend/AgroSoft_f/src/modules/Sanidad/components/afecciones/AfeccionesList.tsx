@@ -60,9 +60,8 @@ export function AfeccionesList() {
       case "tipoPlaga":
         return <span>{item.tipoPlaga?.nombre || "No definido"}</span>;
       case "img":
-        console.log("img:", item.img);
         return <Image
-        isZoomed
+        
         src={item.img}
         alt={item.nombre}
         className="w-14 h-14 object-contain rounded-lg" 
