@@ -32,7 +32,7 @@ const SolicitarRecuperacion = () => {
                 required
               />
               <p className="text-sm text-gray-500 text-center">
-                <a href="/" className="text-green-600">
+                <a href="/login" className="text-green-600">
                   volver al incio
                 </a>
               </p>

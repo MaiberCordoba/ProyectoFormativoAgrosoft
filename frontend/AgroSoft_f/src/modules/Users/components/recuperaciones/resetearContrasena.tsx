@@ -23,7 +23,7 @@ const ResetearContrasena = () => {
       return;
     }
     mutate({ token, id, password });
-    navigate("/");
+    navigate("/login");
   };
 
   return (
