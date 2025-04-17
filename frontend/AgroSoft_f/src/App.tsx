@@ -50,6 +50,9 @@ import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
         
 //usuarios
 import { Usuarios } from "./modules/Users/pages/pageUsers";
+import SolicitarRecuperacion from "./modules/Users/components/recuperaciones/solicitarRecuperacion"
+import ResetearContrasena from "./modules/Users/components/recuperaciones/resetearContrasena";
+
 
 //testeo
 import Testeo  from "./pages/testeo";
@@ -77,12 +80,16 @@ function App() {
         {/* login */}
         <Route path="login" element={<Login />} />
         <Route path="/registro" element={<UserRegister />} />
+        <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
+        <Route path="/forgot-password" element={<ResetearContrasena />} />
+
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
 
             {/* Usuarios */}
             <Route path="/usuarios" element={<Usuarios />} />
+            
 
             {/* Finanzas */}
             <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
