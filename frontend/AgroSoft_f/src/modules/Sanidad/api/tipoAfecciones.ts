@@ -6,13 +6,21 @@ export const getTipoAfecciones = async ():Promise<TiposAfecciones[]> => {
     return response.data
 };
 
-export const postTipoAfecciones = async (data?:any):Promise<TiposAfecciones> => {
-    const response = await apiClient.post<TiposAfecciones>('tipoPlaga/',data);
-    return response.data
-}
+export const postTipoAfecciones = async (data: FormData): Promise<TiposAfecciones> => {
+    const response = await apiClient.post<TiposAfecciones>('tipoPlaga/', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  };
 
-export const patchTipoAfecciones = async ( id: number, data: Partial<TiposAfecciones>): Promise<TiposAfecciones> => {
-    const response = await apiClient.patch<TiposAfecciones>(`tipoPlaga/${id}/`, data);
+export const patchTipoAfecciones = async ( id: number, data: FormData): Promise<TiposAfecciones> => {
+    const response = await apiClient.patch<TiposAfecciones>(`tipoPlaga/${id}/`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
     return response.data;
   };
 

@@ -8,9 +8,15 @@ import EditarAfeccionModal from "./EditarAfeccionModal";
 import { CrearAfeccionModal } from "./CrearAfeccionModal";
 import EliminarAfeccionModal from "./EliminarAfeccion";
 import { Afecciones } from "../../types";
+import { useEffect } from "react";
+import { Image } from "@heroui/react";
 
 export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
+  useEffect(() => {
+    console.log(data); // Verifica que los datos contienen el campo `tipoPlaga`
+  }, [data]);
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -40,6 +46,7 @@ export function AfeccionesList() {
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
     { name: "Tipo afectación", uid: "tipoPlaga" },
+    { name: "Img", uid: "img" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -52,6 +59,13 @@ export function AfeccionesList() {
         return <span>{item.descripcion}</span>;
       case "tipoPlaga":
         return <span>{item.tipoPlaga?.nombre || "No definido"}</span>;
+      case "img":
+        return <Image
+        
+        src={item.img}
+        alt={item.nombre}
+        className="w-14 h-14 object-contain rounded-lg" 
+      />;
       case "acciones":
         return (
           <AccionesTabla
@@ -90,6 +104,7 @@ export function AfeccionesList() {
       {isCreateModalOpen && (
         <CrearAfeccionModal
           onClose={closeCreateModal}
+          
         />
       )}
 

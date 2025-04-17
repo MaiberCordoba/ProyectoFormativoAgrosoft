@@ -1,35 +1,41 @@
 import { useState } from "react";
 import { usePostTipoAfeccion } from "../../hooks/tiposAfecciones/usePostTipoAfecciones";
 import ModalComponent from "@/components/Modal";
-import { Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 
 interface CrearTipoAfeccionModalProps {
   onClose: () => void;
+  onCreate: (nuevoTipo: { id: number; nombre: string }) => void; // Nuevo prop para retornar el tipo creado
 }
 
-export const CrearTipoAfeccionModal = ({ onClose }: CrearTipoAfeccionModalProps) => {
+export const CrearTipoAfeccionModal = ({ onClose,onCreate }: CrearTipoAfeccionModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [img, setImagen] = useState("");
-
+  const [img, setImagen] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const { mutate, isPending } = usePostTipoAfeccion();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion ) {
+    if (!nombre || !descripcion || !img) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
-    mutate(
-      { nombre, descripcion, img },
-      {
-        onSuccess: () => {
-          onClose();
-          setNombre("");
-          setDescripcion("");
-          setImagen("");
-        },
-      }
-    );
+    //MANEJO DE FORDATA PARA MANEJO DE IMAGENES
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
+    formData.append("img", img); // este debe ser el mismo nombre que espera el backend
+  
+    mutate(formData, {
+      onSuccess: (data) => {
+        onCreate({ id: data.id, nombre: data.nombre }); // ← Aquí envías el nuevo tipo al modal principal
+        onClose();      // ← También puedes cerrar aquí, o dejar que el padre lo haga
+        setNombre("");
+        setDescripcion("");
+        setImagen(null);
+       
+      },
+    });
   };
 
   return (
@@ -61,13 +67,39 @@ export const CrearTipoAfeccionModal = ({ onClose }: CrearTipoAfeccionModalProps)
         onChange={(e) => setDescripcion(e.target.value)}
         required
       />
-       <Input
-        label="Imagen"
-        type="text"
-        value={img}
-        onChange={(e) => setImagen(e.target.value)}
-        required
-      />
+
+      <div className="mt-4">
+        <Button
+          type="submit"
+          variant="solid"
+          onPress={() => document.getElementById("imagenInput")?.click()}
+        >
+          Seleccionar imagen
+        </Button>
+
+      <input
+        id="imagenInput"
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) 
+            setImagen(file);
+            setPreview(URL.createObjectURL(file!)); 
+        }}
+        className="hidden"
+      />  
+    </div>
+
+    {preview && (
+      <div className="mt-4">
+        <img
+          src={preview}
+          alt="Vista previa"
+          className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+        />
+      </div>
+    )}
 
     </ModalComponent>
   );
