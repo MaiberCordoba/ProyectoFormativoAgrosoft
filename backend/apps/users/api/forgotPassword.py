@@ -12,9 +12,12 @@ serializer = URLSafeTimedSerializer(settings.SECRET_KEY)
 
 def generar_link_recuperacion(usuario):
     """Genera un token encriptado con tiempo de expiración."""
+    # Crear los datos para el token
     data = {"id": usuario.id, "token": default_token_generator.make_token(usuario)}
-    token = serializer.dumps(data) 
-    return f"{settings.FRONTEND_URL}/resetearContrasena/?token={token}&id={data}"
+    # Serializar solo el diccionario para crear el token
+    token = serializer.dumps(data)
+    # Generar el link con el ID correctamente y sin usar el diccionario entero
+    return f"{settings.FRONTEND_URL}/resetearContrasena/?token={token}&id={usuario.id}"
 
 
 @api_view(["POST"])
@@ -26,7 +29,7 @@ def solicitar_recuperacion(request):
         return Response({"error": "El email es requerido"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        usuario = User.objects.get(email=email)
+        usuario = User.objects.get(correoElectronico=email)
     except User.DoesNotExist:
         return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 

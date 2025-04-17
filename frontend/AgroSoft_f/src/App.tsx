@@ -1,6 +1,5 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Providers from "./context/ToastProvider";
 
@@ -10,7 +9,6 @@ import { Inicio } from "./pages/Inicio";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
 import UserRegister from "./modules/Users/pages/registrarUsuario";
-import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 
 //Finanzas
 import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
@@ -62,16 +60,6 @@ import Testeo  from "./pages/testeo";
 const queryClient = new QueryClient();
 
 function App() {
-  const navigate = useNavigate();
-  const { token } = useAuth(); // Usamos el hook para acceder al token de AuthContext
-
-  useEffect(() => {
-    // No redirigir a login si estamos en la página de registro o recuperación de contraseña
-    const path = window.location.pathname;
-    if (!token && path !== '/forgot-password' && path !== '/registro') {
-      navigate("/login");
-    }
-  }, [token, navigate]);
 
   return (
     <Providers>
@@ -81,7 +69,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="/registro" element={<UserRegister />} />
         <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
-        <Route path="/forgot-password" element={<ResetearContrasena />} />
+        <Route path="/resetearContrasena" element={<ResetearContrasena />} />
 
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
