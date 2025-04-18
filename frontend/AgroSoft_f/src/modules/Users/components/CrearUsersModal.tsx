@@ -86,7 +86,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
         },
       ]}
     >
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      
         <Input
           label="Identificación"
           type="number"
@@ -148,7 +148,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
             ¿Es administrador?
           </Checkbox>
         </div>
-      </div>
+   
     </ModalComponent>
   );
 };
