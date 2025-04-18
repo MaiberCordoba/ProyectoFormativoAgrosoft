@@ -53,14 +53,13 @@ const Login = () => {
                 name: "email",
                 label: "Correo electrónico",
                 type: "email",
-                placeholder: "Ingresa tu correo",
                 required: true,
               },
               {
                 name: "password",
                 label: "Contraseña",
                 type: "password",
-                placeholder: "Ingresa tu contraseña",
+                
                 required: true,
               },
             ]}
