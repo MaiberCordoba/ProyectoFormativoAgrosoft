@@ -6,11 +6,15 @@ import FormComponent from "@/components/Form";
 import logo from "../../public/sena.png"; 
 import sideLogo from "../../public/logoAgrosoft.png";
 import { Link } from "@heroui/react";
+import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
+
+  //estado para maneajar el modal de registro de usuarios
+  const [registerModalUsers, setRegisterModalUsers] = useState(false)
 
   const handleSubmit = async (data: Record<string, any>) => {
     setErrorMessage(""); // Limpiar errores previos
@@ -34,6 +38,7 @@ const Login = () => {
   };
 
   return (
+    <>
     <div className="relative flex items-center justify-center h-screen bg-white">
       {/* Fondo con línea verde */}
       <div className="absolute bottom-0 left-0 w-full h-auto">
@@ -53,14 +58,13 @@ const Login = () => {
                 name: "email",
                 label: "Correo electrónico",
                 type: "email",
-                placeholder: "Ingresa tu correo",
                 required: true,
               },
               {
                 name: "password",
                 label: "Contraseña",
                 type: "password",
-                placeholder: "Ingresa tu contraseña",
+                
                 required: true,
               },
             ]}
@@ -74,7 +78,7 @@ const Login = () => {
               ¿Olvidaste tu contraseña?
             </Link>
             <br />
-            <Link href="/registro" size="sm" style={{ fontSize: "10px" }} underline="hover" className="text-blue-500 hover:text-blue-700">
+            <Link   onPress={()=> setRegisterModalUsers(true)} size="sm" style={{ fontSize: "10px" }} underline="hover" className="text-blue-500 hover:text-blue-700">
               ¿Nuevo? Regístrate aquí
             </Link>
           </div>
@@ -95,6 +99,15 @@ const Login = () => {
       {/* Logo inferior izquierdo más grande */}
       <img src={logo} alt="Logo" className="w-[90px] absolute bottom-6 left-4" />
     </div>
+
+    {registerModalUsers && (
+      <CrearUsersModal
+        onClose={() => setRegisterModalUsers(false)}
+      />
+    )}
+    
+    </>
+    
   );
 };
 

@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "sena-green": "#2CC302",
+        "sena-green": "#16A34A",
       },
     },
   },
@@ -22,12 +22,18 @@ module.exports = {
       themes: {
         light: {
           colors: {
-            success: '#2CC302',
+            success:{
+              DEFAULT: "#16A34A",
+              foreground: "#ffffff"
+            }   
           },
         },
         dark: {
           colors: {
-            success: '#39A900',
+            success: {
+              DEFAULT: '#39A900',
+              foreground:"ffffff"
+            }
           },
         },
       },
