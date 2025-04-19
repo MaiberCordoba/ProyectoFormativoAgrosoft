@@ -67,7 +67,6 @@ function App() {
       <Routes>
         {/* login */}
         <Route path="login" element={<Login />} />
-        <Route path="/registro" element={<UserRegister />} />
         <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
         <Route path="/resetearContrasena" element={<ResetearContrasena />} />
 
