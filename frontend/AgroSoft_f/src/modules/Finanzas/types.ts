@@ -41,12 +41,29 @@ export interface Desechos {
     descripcion : string
 }
 
+export interface Herramientas {
+    id : number,
+    fk_Lote?: number,
+    lote? : Lotes ,
+    nombre : string,
+    descripcion : string,
+    unidades : number
+}
+
 export interface Insumos {
     id : number,
     nombre : string,
     descripcion : string,
     precio : number,
-    unidades : number
+    compuestoActivo : string, 
+    contenido : number,
+    fichaTecnica : string,
+    unidades : number,
+    fk_UnidadMedida : number,
+    unidadMedida : UnidadesMedida,
+    valorTotalInsumos : number,
+    cantidadTotal : number,
+    cantidadDisponible : number
 }
 
 export interface MovimientoInventario {
@@ -119,11 +136,20 @@ export interface UsosInsumos {
     fk_Actividad? : number,
     actividad? : Actividades,
     fk_Control : number,
+    control : Controles,
     cantidadProducto : number,
     fk_UnidadMedida : number,
+    unidadMedida : UnidadesMedida,
     costoUsoInsumo : number,
 }
 
+export interface UsosHerramientas {
+    id : number,
+    fk_Herramientas? : number,
+    herramienta?: Herramientas,
+    fk_Actividad? : number,
+    actividad? : Actividades
+}
 
 export interface Ventas {
     id : number,
@@ -141,19 +167,5 @@ export enum TipoUnidadMedida {
     VOLUMEN = "VOLUMEN"
 }
   
-export interface UsosHerramientas {
-    id : number,
-    fk_Herramientas? : number,
-    herramienta?: Herramientas,
-    fk_Actividad? : number,
-    actividad? : Actividades
-}
 
-export interface Herramientas {
-    id : number,
-    fk_Lote?: number,
-    lote? : Lotes ,
-    nombre : string,
-    descripcion : string,
-    unidades : number
-}
+
