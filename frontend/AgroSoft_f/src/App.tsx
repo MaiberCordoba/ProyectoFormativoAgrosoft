@@ -1,4 +1,4 @@
-import { Route, Routes} from "react-router-dom";
+import { Navigate, Route, Routes} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Providers from "./context/ToastProvider";
@@ -8,7 +8,6 @@ import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
-import UserRegister from "./modules/Users/pages/registrarUsuario";
 
 //Finanzas
 import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
@@ -54,12 +53,14 @@ import ResetearContrasena from "./modules/Users/components/recuperaciones/resete
 
 //testeo
 import Testeo  from "./pages/testeo";
+import Toast from "./components/Toast";
 
 
 
 const queryClient = new QueryClient();
 
 function App() {
+  const token = localStorage.getItem("token");
 
   return (
     <Providers>
@@ -69,6 +70,19 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
         <Route path="/resetearContrasena" element={<ResetearContrasena />} />
+
+        {/* si no hay token y ruta no existe redirige a home */}
+        {!token && 
+        <Route path="*" element={
+          <>
+            <Toast
+              title ="Ruta no encontrada"
+              description="La dirección a la que intentaste acceder no existe"
+            />
+            <Navigate to="/login" />
+          </>
+        }
+        />}
 
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
@@ -115,6 +129,19 @@ function App() {
 
             {/*test*/}
             <Route path="/testeo" element={<Testeo/>}></Route>
+
+            {/* si hay token y ruta no existe redirige a home */}
+            <Route path="*" 
+              element={
+                <>
+                  <Toast
+                    title ="Ruta no encontrada"
+                    description="La dirección a la que intentaste acceder no existe"
+                 />
+                  <Navigate to="/home" />
+                </>
+              } 
+            />
           </Route>
         </Route>
       </Routes>
