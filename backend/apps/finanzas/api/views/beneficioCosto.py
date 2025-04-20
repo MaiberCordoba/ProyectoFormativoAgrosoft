@@ -96,7 +96,7 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
             # 7. Calcular métricas finales
             total_costos = total_insumos + total_mano_obra
             beneficio = total_ventas - total_costos
-            relacion_bc = int(round(total_ventas / total_costos)) if total_costos > 0 else 0
+            relacion_bc = round(total_ventas / total_costos,2) if total_costos > 0 else 0
             
             # 8. Estructurar respuesta
             data = {
