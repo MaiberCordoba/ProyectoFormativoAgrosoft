@@ -3,6 +3,37 @@ import { Controles } from "../Sanidad/types"
 import { Cultivos, Lotes } from "../Trazabilidad/types"
 import { User } from "../Users/types"
 
+export interface ResumenEconomicoListado {
+    cultivo_id: number;
+    nombre_especie: string | null;
+    unidades: number;
+    fecha_siembra: string | null;
+    costo_insumos: number;
+    total_mano_obra: number;
+    total_costos: number;
+    total_ventas: number;
+    beneficio: number;
+    relacion_beneficio_costo: number;
+    
+  }
+
+  export interface DetalleResumenEconomico {
+    cultivo_id: number;
+    fecha_siembra: string | null;
+    unidades: number;
+    nombre: string | null;
+    total_insumos: number;
+    total_mano_obra: number;
+    total_costos: number;
+    total_ventas: number;
+    beneficio: number;
+    relacion_beneficio_costo: number;
+    detalle: {
+      num_actividades: number;
+      num_controles: number;
+      num_cosechas: number;
+    };
+  }
 
 export interface Actividades {
     id : number,
