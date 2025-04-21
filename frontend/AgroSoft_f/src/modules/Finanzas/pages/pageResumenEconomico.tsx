@@ -40,7 +40,7 @@ const ResumenFinancieroPage = () => {
  
    return (
      <div className="p-4">
-       <h1 className="text-2xl font-bold mb-6">Resumen Financiero de Cultivos</h1>
+       <h1 className="text-2xl font-bold mb-6 text-center">Resumen Financiero de Cultivos</h1>
        
        {/* Filtros */}
        <FiltrosCultivos
