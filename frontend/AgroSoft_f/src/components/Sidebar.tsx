@@ -89,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Finanzas",
             icon: DollarSign,
-            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos"],
+            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas"],
           },
           {
             title: "Gestión Fitosanitaria",
