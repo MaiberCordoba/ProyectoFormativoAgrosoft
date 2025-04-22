@@ -28,7 +28,16 @@ class SerializerTiempoActividadControl(ModelSerializer):
         minutos = tiempo * unidad.equivalenciaMinutos
         validated_data['valorTotal'] = minutos * salario.monto_minutos
 
-        return super().create(validated_data)
+        # Crear el registro
+        instance = super().create(validated_data)
+
+        # Actualizar estado de la actividad si está vinculada
+        if instance.fk_actividad:
+            actividad = instance.fk_actividad
+            actividad.estado = 'CO'
+            actividad.save()
+
+        return instance
 
     def update(self, instance, validated_data):
         unidad = validated_data.get('fk_unidadTiempo', instance.fk_unidadTiempo)
@@ -38,4 +47,13 @@ class SerializerTiempoActividadControl(ModelSerializer):
         minutos = tiempo * unidad.equivalenciaMinutos
         validated_data['valorTotal'] = minutos * salario.monto_minutos
 
-        return super().update(instance, validated_data)
+        # Actualizar el registro
+        instance = super().update(instance, validated_data)
+
+        # Actualizar estado de la actividad si está vinculada
+        if instance.fk_actividad:
+            actividad = instance.fk_actividad
+            actividad.estado = 'CO'
+            actividad.save()
+
+        return instance
