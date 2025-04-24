@@ -125,7 +125,7 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                     "responsable": actividad.fk_Usuario.nombre if actividad.fk_Usuario else None,
                     "fecha": actividad.fecha.strftime("%Y-%m-%d"),
                     "tiempo_total": tiempos['total_tiempo'] or 0,
-                    "costo_mano_obra": tiempos['total_valor'] or 0,
+                    "costo_mano_obra": int(round(tiempos.get('total_valor', 0))), 
                     "insumos": insumos_actividad,  
                     "total_insumos_actividad": total_insumos_actividad  
                 })
@@ -158,7 +158,7 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                     "plaga": control.fk_Afeccion.fk_Plaga.nombre if control.fk_Afeccion.fk_Plaga else None,
                     "tipo_plaga": control.fk_Afeccion.fk_Plaga.fk_Tipo.nombre if control.fk_Afeccion.fk_Plaga else None,
                     "tiempo_total": tiempo_control['total_tiempo'] or 0,
-                    "costo_mano_obra": tiempo_control['total_valor'] or 0,
+                    "costo_mano_obra": int(round(tiempo_control['total_valor'] or 0)),
                     "insumos": insumos_control,  
                     "total_insumos_control": total_insumos_control  
                 })
