@@ -5,9 +5,10 @@ import {
     ModalBody,
     ModalFooter,
     Button,
+    ModalProps,
   } from "@heroui/react";
   
-  interface ModalProps {
+  interface ModalsProps extends ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
@@ -17,11 +18,10 @@ import {
       color?: "primary" | "danger" | "secondary" | "success";
       variant?: "light" | "solid";
       onClick?: () => void;
-    
     }[];
   }
   
-  const ModalComponent = ({ isOpen, onClose, title, children, footerButtons }: ModalProps) => {
+  const ModalComponent = ({ isOpen, onClose, title, children, footerButtons }: ModalsProps) => {
     return (
       <>
         <Modal isOpen={isOpen} onOpenChange={onClose} className="overflow-hidden max-w-sm mx-auto">
