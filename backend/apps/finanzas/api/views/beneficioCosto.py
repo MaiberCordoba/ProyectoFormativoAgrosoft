@@ -113,6 +113,7 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                 total_insumos_actividad = 0
                 for insumo in actividad.usosinsumos_set.all():
                     insumos_actividad.append({
+                        "nombre": insumo.fk_Insumo.nombre,
                         "cantidad": insumo.cantidadProducto,
                         "unidad": insumo.fk_UnidadMedida.nombre if insumo.fk_UnidadMedida else None,
                         "costo": insumo.costoUsoInsumo
@@ -143,6 +144,7 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                 total_insumos_control = 0
                 for insumo in control.usosinsumos_set.all():
                     insumos_control.append({
+                        "nombre": insumo.fk_Insumo.nombre,
                         "cantidad": insumo.cantidadProducto,
                         "unidad": insumo.fk_UnidadMedida.nombre if insumo.fk_UnidadMedida else None,
                         "costo": insumo.costoUsoInsumo
@@ -187,7 +189,7 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                 "unidades": cultivo.unidades,
                 "nombre": nombre_especie,
                 "total_insumos": total_insumos,
-                "total_mano_obra": total_mano_obra,
+                "total_mano_obra": round (total_mano_obra,2),
                 "total_costos": total_costos,
                 "total_ventas": total_ventas,
                 "beneficio": beneficio,
