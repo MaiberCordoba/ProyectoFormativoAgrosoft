@@ -47,7 +47,7 @@ import { ControlesModal } from "./ControlesDetallesModal";
                 </Chip>
               </div>
               <p className="text-sm text-default-500">
-                ID: {cultivo.cultivo_id} | Siembra: {cultivo.fecha_siembra || "No registrada"}
+              Siembra: {cultivo.fecha_siembra || "No registrada"} | Unidades: {cultivo.unidades} 
               </p>
             </ModalHeader>
 
@@ -81,18 +81,6 @@ import { ControlesModal } from "./ControlesDetallesModal";
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div className="space-y-4">
-                    {/* Columna 1: Información básica e imagen */}
-                    <div className="bg-default-100 p-4 rounded-lg space-y-2">
-                      <h3 className="font-semibold mb-2">Información Básica</h3>
-                      <div className="space-y-2">
-                        <p><span className="text-default-500">Unidades:</span> {cultivo.unidades}</p>
-                        <p><span className="text-default-500">Actividades:</span> {cultivo.detalle.actividades.total}</p>
-                        <p><span className="text-default-500">Controles:</span> {cultivo.detalle.controles.total}</p>
-                        <p><span className="text-default-500">Cosechas:</span> {cultivo.detalle.cosechas.total}</p>
-                        <p><span className="text-default-500">Ventas:</span> {cultivo.detalle.ventas.total}</p>
-                      </div>
-                    </div>
-
                     {/* Espacio para imagen */}
                     <div className="bg-default-100 rounded-lg overflow-hidden aspect-w-1 aspect-h-1"> {/* Aspect ratio 1:1 para cuadrado */}
                       <div className="flex items-center justify-center bg-default-200">
