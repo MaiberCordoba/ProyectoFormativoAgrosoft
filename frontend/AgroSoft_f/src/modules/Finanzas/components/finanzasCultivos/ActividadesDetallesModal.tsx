@@ -1,6 +1,7 @@
-import { Modal, ModalBody, ModalContent, ModalHeader, TableCell, TableRow } from "@heroui/react";
+
 import { DetalleActividad } from "../../types";
-import { TablaFiltrable } from "./tablaFiltrable";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { ModalFiltrable } from "./tablaFiltrable";
 
 interface ActividadesModalProps {
   isOpen: boolean;
@@ -9,41 +10,48 @@ interface ActividadesModalProps {
 }
 
 export const ActividadesModal = ({ isOpen, onClose, actividades }: ActividadesModalProps) => {
-  // Definición de columnas para la tabla
-  const columnas = [
-    { key: 'tipo_actividad', label: 'Tipo', permiteOrdenar: true },
-    { key: 'responsable', label: 'Responsable', permiteOrdenar: true },
-    { key: 'fecha', label: 'Fecha', permiteOrdenar: true },
-    { key: 'tiempo_total', label: 'Tiempo (h)', permiteOrdenar: true },
-    { key: 'costo_mano_obra', label: 'Costo MO', permiteOrdenar: true },
-    { key: 'total_insumos_actividad', label: 'Total Insumos', permiteOrdenar: true }
-  ];
+  const datosTransformados = actividades.flatMap(actividad => 
+    actividad.insumos.map(insumo => ({
+      ...actividad,
+      insumo
+    }))
+  );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalContent>
-        <ModalHeader>Detalle de Actividades</ModalHeader>
-        <ModalBody>
-          <TablaFiltrable
-            datos={actividades}
-            columnas={columnas}
-            mostrarFiltroBusqueda={true}
-            mostrarFiltroFecha={true}
-            textoBusquedaPlaceholder="Buscar actividades..."
-            claveUnica={(item) => `${item.fecha}-${item.tipo_actividad}`}
-            renderFila={(item) => (
-              <TableRow>
-                <TableCell>{item.tipo_actividad || '-'}</TableCell>
-                <TableCell>{item.responsable || '-'}</TableCell>
-                <TableCell>{item.fecha}</TableCell>
-                <TableCell>{item.tiempo_total}</TableCell>
-                <TableCell>${item.costo_mano_obra.toLocaleString()}</TableCell>
-                <TableCell>${item.total_insumos_actividad.toLocaleString()}</TableCell>
-              </TableRow>
-            )}
-          />
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <ModalFiltrable
+      isOpen={isOpen}
+      onClose={onClose}
+      datos={datosTransformados}
+      textoBusquedaPlaceholder="Buscar actividades..."
+    >
+      <Table  className="w-full">
+        <TableHeader>
+          <TableColumn >Tipo</TableColumn>
+          <TableColumn>Responsable</TableColumn>
+          <TableColumn>Fecha</TableColumn>
+          <TableColumn  style={{ width: '80px', textAlign:"center" }}>Tiempo (h)</TableColumn>
+          <TableColumn>Costo MO</TableColumn>
+          <TableColumn>Costo Insumo</TableColumn>
+          <TableColumn>Nombre Insumo</TableColumn>
+          <TableColumn>Cantidad</TableColumn>
+          <TableColumn>Unidad</TableColumn>
+        </TableHeader>
+        <TableBody>
+          {datosTransformados.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.tipo_actividad || '-'}</TableCell>
+              <TableCell>{item.responsable || '-'}</TableCell>
+              <TableCell>{item.fecha}</TableCell>
+              <TableCell  style={{ width: '80px', textAlign:"center" }}>{item.tiempo_total}</TableCell>
+              <TableCell>${item.costo_mano_obra.toLocaleString()}</TableCell>
+              <TableCell>${item.insumo.costo.toLocaleString()}</TableCell>
+              <TableCell>{item.insumo.nombre}</TableCell>
+              <TableCell style={{ width: '80px', textAlign:"center" }}>{item.insumo.cantidad}</TableCell>
+              <TableCell>{item.insumo.unidad || '-'}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </ModalFiltrable>
   );
 };

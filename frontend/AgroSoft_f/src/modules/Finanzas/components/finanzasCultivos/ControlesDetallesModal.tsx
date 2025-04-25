@@ -1,6 +1,6 @@
-import { Modal, ModalBody, ModalContent, ModalHeader, TableCell, TableRow } from "@heroui/react";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { DetalleControl } from "../../types";
-import { TablaFiltrable } from "./tablaFiltrable";
+import { ModalFiltrable } from "./tablaFiltrable";
 
 interface ControlesModalProps {
   isOpen: boolean;
@@ -9,42 +9,50 @@ interface ControlesModalProps {
 }
 
 export const ControlesModal = ({ isOpen, onClose, controles }: ControlesModalProps) => {
-  const columnas = [
-    { key: 'descripcion', label: 'Descripción', permiteOrdenar: true },
-    { key: 'fecha', label: 'Fecha', permiteOrdenar: true },
-    { key: 'tipo_control', label: 'Tipo Control', permiteOrdenar: true },
-    { key: 'plaga', label: 'Plaga', permiteOrdenar: true },
-    { key: 'tiempo_total', label: 'Tiempo (h)', permiteOrdenar: true },
-    { key: 'costo_mano_obra', label: 'Costo MO', permiteOrdenar: true },
-    { key: 'total_insumos_control', label: 'Total Insumos', permiteOrdenar: true }
-  ];
+  const datosTransformados = controles.flatMap(control => 
+    control.insumos.map(insumo => ({
+      ...control,
+      insumo
+    }))
+  );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalContent>
-        <ModalHeader>Detalle de Controles</ModalHeader>
-        <ModalBody>
-          <TablaFiltrable
-            datos={controles}
-            columnas={columnas}
-            mostrarFiltroBusqueda={true}
-            mostrarFiltroFecha={true}
-            textoBusquedaPlaceholder="Buscar por descripción o plaga..."
-            claveUnica={(item) => `${item.fecha}-${item.tipo_control}-${item.plaga}`}
-            renderFila={(item) => (
-              <TableRow>
-                <TableCell>{item.descripcion}</TableCell>
-                <TableCell>{item.fecha}</TableCell>
-                <TableCell>{item.tipo_control || '-'}</TableCell>
-                <TableCell>{item.plaga || '-'}</TableCell>
-                <TableCell>{item.tiempo_total}</TableCell>
-                <TableCell>${item.costo_mano_obra.toLocaleString()}</TableCell>
-                <TableCell>${item.total_insumos_control.toLocaleString()}</TableCell>
-              </TableRow>
-            )}
-          />
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <ModalFiltrable
+      isOpen={isOpen}
+      onClose={onClose}
+      datos={datosTransformados}
+      textoBusquedaPlaceholder="Buscar controles o insumos..."
+    >
+      <Table className="w-full">
+        <TableHeader>
+          <TableColumn>Descripción</TableColumn>
+          <TableColumn>Fecha</TableColumn>
+          <TableColumn>Tipo Control</TableColumn>
+          <TableColumn>Plaga</TableColumn>
+          <TableColumn>Tiempo (h)</TableColumn>
+          <TableColumn>Costo MO</TableColumn>
+          <TableColumn>Total Insumos</TableColumn>
+          <TableColumn>Insumo</TableColumn>
+          <TableColumn>Cantidad</TableColumn>
+          <TableColumn>Unidad</TableColumn>
+        </TableHeader>
+        <TableBody>
+          {datosTransformados.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.descripcion}</TableCell>
+              <TableCell>{item.fecha}</TableCell>
+              <TableCell>{item.tipo_control || '-'}</TableCell>
+              <TableCell>{item.plaga || '-'}</TableCell>
+              <TableCell>{item.tiempo_total}</TableCell>
+              <TableCell>${item.costo_mano_obra.toLocaleString()}</TableCell>
+              <TableCell>${item.total_insumos_control.toLocaleString()}</TableCell>
+              <TableCell>{item.insumo.nombre}</TableCell>
+              <TableCell>{item.insumo.cantidad}</TableCell>
+              <TableCell>{item.insumo.unidad || '-'}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </ModalFiltrable>
   );
 };

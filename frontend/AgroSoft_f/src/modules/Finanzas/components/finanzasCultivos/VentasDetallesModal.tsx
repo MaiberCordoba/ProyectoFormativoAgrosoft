@@ -1,6 +1,6 @@
-import { Modal, ModalBody, ModalContent, ModalHeader, TableCell, TableRow } from "@heroui/react";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { DetalleVenta } from "../../types";
-import { TablaFiltrable } from "./tablaFiltrable";
+import { ModalFiltrable } from "./tablaFiltrable";
 
 interface VentasModalProps {
   isOpen: boolean;
@@ -9,35 +9,31 @@ interface VentasModalProps {
 }
 
 export const VentasModal = ({ isOpen, onClose, ventas }: VentasModalProps) => {
-  const columnas = [
-    { key: 'cantidad', label: 'Cantidad', permiteOrdenar: true },
-    { key: 'unidad', label: 'Unidad', permiteOrdenar: true },
-    { key: 'fecha', label: 'Fecha', permiteOrdenar: true },
-    { key: 'valor_total', label: 'Valor Total', permiteOrdenar: true }
-  ];
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalContent>
-        <ModalHeader>Detalle de Ventas</ModalHeader>
-        <ModalBody>
-          <TablaFiltrable
-            datos={ventas}
-            columnas={columnas}
-            mostrarFiltroBusqueda={false}
-            mostrarFiltroFecha={true}
-            claveUnica={(item) => `${item.fecha}-${item.cantidad}-${item.valor_total}`}
-            renderFila={(item) => (
-              <TableRow>
-                <TableCell>{item.cantidad}</TableCell>
-                <TableCell>{item.unidad || '-'}</TableCell>
-                <TableCell>{item.fecha}</TableCell>
-                <TableCell>${item.valor_total.toLocaleString()}</TableCell>
-              </TableRow>
-            )}
-          />
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <ModalFiltrable
+      isOpen={isOpen}
+      onClose={onClose}
+      datos={ventas}
+      textoBusquedaPlaceholder="Buscar ventas..."
+    >
+      <Table className="w-full">
+        <TableHeader>
+          <TableColumn>Cantidad</TableColumn>
+          <TableColumn>Unidad</TableColumn>
+          <TableColumn>Fecha</TableColumn>
+          <TableColumn>Valor Total</TableColumn>
+        </TableHeader>
+        <TableBody>
+          {ventas.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.cantidad}</TableCell>
+              <TableCell>{item.unidad || '-'}</TableCell>
+              <TableCell>{item.fecha}</TableCell>
+              <TableCell>${item.valor_total.toLocaleString()}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </ModalFiltrable>
   );
 };
