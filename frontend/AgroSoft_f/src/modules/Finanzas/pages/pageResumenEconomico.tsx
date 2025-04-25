@@ -16,18 +16,23 @@ const ResumenFinancieroPage = () => {
  
    // Manejar filtros
    const {
-     tipoEspecieId,
-     especieId,
-     handleTipoEspecieChange,
-     handleEspecieChange,
-     resetFiltros,
-   } = useFiltrosCultivos();
+    tipoEspecieId,
+    especieId,
+    fechaInicio,
+    fechaFin,
+    handleTipoEspecieChange,
+    handleEspecieChange,
+    handleFechaChange,
+    resetFiltros,
+  } = useFiltrosCultivos();
  
    // Filtrar resúmenes
-   const resumenesFiltrados = useFiltrarResumenes(
-     resumenes || [],
-     tipoEspecieId,
-     especieId
+  const resumenesFiltrados = useFiltrarResumenes(
+    resumenes || [],
+    tipoEspecieId,
+    especieId,
+    fechaInicio,
+    fechaFin
    );
  
    // Manejar selección de cultivo
@@ -39,19 +44,22 @@ const ResumenFinancieroPage = () => {
   } = useCultivoSelection();
  
    return (
-     <div className="p-4">
+     <div className="pt-0 p-2">
        <h1 className="text-2xl font-bold mb-6 text-center">Resumen Financiero de Cultivos</h1>
        
        {/* Filtros */}
        <FiltrosCultivos
-         tiposEspecie={tiposEspecie || []}
-         especies={especies || []}
-         tipoEspecieId={tipoEspecieId}
-         especieId={especieId}
-         onTipoEspecieChange={handleTipoEspecieChange}
-         onEspecieChange={handleEspecieChange}
-         onReset={resetFiltros}
-       />
+        tiposEspecie={tiposEspecie || []}
+        especies={especies || []}
+        tipoEspecieId={tipoEspecieId}
+        especieId={especieId}
+        fechaInicio={fechaInicio}
+        fechaFin={fechaFin}
+        onTipoEspecieChange={handleTipoEspecieChange}
+        onEspecieChange={handleEspecieChange}
+        onFechaChange={handleFechaChange}
+        onReset={resetFiltros}
+      />
        
        {/* Listado de cultivos */}
        <CultivoResumenList 
