@@ -23,6 +23,11 @@ import { UsosHerramientas } from "./modules/Finanzas/pages/pageUsosHerramientas"
 import { Ventas } from "./modules/Finanzas/pages/pageVentas";
 //import { UnidadesMedida } from "./modules/Finanzas/pages/pageUnidadesMedida";
 import { UnidadesTiempo } from "./modules/Finanzas/pages/pageUnidadesTiempo";
+import { Insumos } from "./modules/Finanzas/pages/pageInsumos"
+import { Salarios } from "./modules/Finanzas/pages/pageSalarios";
+import { TiempoActividadControl } from "./modules/Finanzas/pages/pageTiempoActividadControl";
+import { TipoActividad } from "./modules/Finanzas/pages/pageTiposActividad";
+
 
 //Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
@@ -94,10 +99,14 @@ function App() {
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
             {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
             <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
-         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */} 
+         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}
+            <Route path="/insumos" element={<Insumos/>}/> 
+            <Route path="/salarios" element={<Salarios/>}/>
+            <Route path="/TiempoActividadControl" element={<TiempoActividadControl/>}/>
+            <Route path="/TiposActividad" element={<TipoActividad/>}/>
 
             {/*Electronica */}
-            <Route path="/iot" element={<IoTPage />} />
+            <Route path="/iot" element={<IoTPage/>}/>
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
 
