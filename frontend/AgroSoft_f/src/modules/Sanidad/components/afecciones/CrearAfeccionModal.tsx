@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { usePostAfeccion } from "../../hooks/afecciones/usePostAfecciones";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem, toast } from "@heroui/react";
+import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { useGetTipoAfecciones } from "../../hooks/tiposAfecciones/useGetTipoAfecciones";
+import { CrearTipoAfeccionModal } from "../tipoafecciones/CrearTipoAfeccionModal";
+import { Plus } from "lucide-react";
 
 interface CrearAfeccionModalProps {
   onClose: () => void;
@@ -12,24 +14,33 @@ export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Tipo, setFk_Tipo] = useState<number | null>(null); 
-  const [img, setImg] = useState("")
+  const [img, setImagen] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
-  const { data: tiposPlaga, isLoading: isLoadingTiposPlaga } = useGetTipoAfecciones(); // Obtener los tipos de plaga
+  const { data: tiposPlaga,refetch: refetchTiposPlaga } = useGetTipoAfecciones(); // Obtener los tipos de plaga
   const { mutate, isPending } = usePostAfeccion();
 
+  // estado mostrar/ocultar del modal tipoAfeccion
+  const [mostrarModalTipoAfeccion, setMostrarModalTipoAfeccion] = useState(false); 
+  
   const handleSubmit = () => {
-    if (!nombre || !descripcion || !fk_Tipo) {
+    if (!nombre || !descripcion || !fk_Tipo || !img) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
-    mutate(
-      {nombre, descripcion, fk_Tipo, img }, // Envía el ID del tipo de plaga
-      {
+
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
+    formData.append("img",img);
+    formData.append("fk_Tipo", fk_Tipo.toString());
+    
+    mutate(formData,{
         onSuccess: () => {
           onClose();
           setNombre("");
           setDescripcion("");
-          setImg("");
+          setImagen(null);
           setFk_Tipo(null); // Limpiar el selector
         },
         
@@ -37,7 +48,14 @@ export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
     );
   };
 
+  const handleTipoAfeccionCreado = async (nuevoTipo: { id: number; nombre: string }) => {
+    await refetchTiposPlaga(); // Recarga los tipos
+    setFk_Tipo(nuevoTipo.id);  // Selecciona el nuevo automáticamente
+    setMostrarModalTipoAfeccion(false); // Cierra el modal secundario
+  };
+
   return (
+    <>
     <ModalComponent
       isOpen={true}
       onClose={onClose}
@@ -66,34 +84,78 @@ export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
         onChange={(e) => setDescripcion(e.target.value)}
         required
       />
-       <Input
-        label="Imagen"
-        type="text"
-        value={img}
-        onChange={(e) => setImg(e.target.value)}
-        required
-      />
 
-      {/* Selector de tipos de plaga con HeroUI */}
-      {isLoadingTiposPlaga ? (
-        <p>Cargando tipos de plaga...</p>
-      ) : (
-        <Select
-          label="Tipo de Plaga"
-          placeholder="Selecciona un tipo de plaga"
-          selectedKeys={fk_Tipo ? [fk_Tipo.toString()] : []} // HeroUI espera un array de strings
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0]; // HeroUI devuelve un Set
-            setFk_Tipo(Number(selectedKey)); // Actualiza el estado con el nuevo ID
-          }}
+<div className="flex items-center gap-2 mt-4">
+  <div className="flex-1">
+    <Select
+      label="Tipo de Afectacion"
+      placeholder="Selecciona un tipo de afectacion"
+      selectedKeys={fk_Tipo ? [fk_Tipo.toString()] : []}
+      onSelectionChange={(keys) => {
+        const selectedKey = Array.from(keys)[0];
+        setFk_Tipo(Number(selectedKey));
+      }}
+    > 
+      {(tiposPlaga || []).map((tipo) => (
+        <SelectItem key={tipo.id.toString()}>
+          {tipo.nombre}
+        </SelectItem>
+      ))}
+    </Select>
+  </div>
+
+  <Button
+    onPress={() => setMostrarModalTipoAfeccion(true)}
+    color="success"
+    title="Agregar nuevo tipo"
+    radius="full"
+    size="sm"
+  >
+    <Plus className="w-5 h-5 text-white" />
+  </Button>
+</div>
+
+<div className="mt-4">
+        <Button
+          type="submit"
+          variant="solid"
+          onPress={() => document.getElementById("imagenAfecciones")?.click()}
         >
-          {(tiposPlaga || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()}>
-              {tipo.nombre}
-            </SelectItem>
-          ))}
-        </Select>
-      )}
+          Seleccionar imagen
+        </Button>
+
+      <input
+        id="imagenAfecciones"
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) 
+            setImagen(file);
+            setPreview(URL.createObjectURL(file!)); 
+        }}
+        className="hidden"
+      />
+    </div>
+
+    {preview && (
+      <div className="mt-4">
+        <img
+          src={preview}
+          alt="Vista previa"
+          className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+        />
+      </div>
+    )}
     </ModalComponent>
+
+    {/*Modal secundario de tipo de afectación */}
+    {mostrarModalTipoAfeccion && (
+      <CrearTipoAfeccionModal
+        onClose={() => setMostrarModalTipoAfeccion(false)}
+        onCreate={handleTipoAfeccionCreado}
+      />
+    )}
+    </>
   );
 };

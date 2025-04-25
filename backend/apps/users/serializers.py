@@ -17,6 +17,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "correoElectronico",
             "password",
             "admin",
+            "estado",
         ]
         extra_kwargs = {
             "password": {"write_only": True},

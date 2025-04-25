@@ -18,6 +18,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+#IMPORTACIONES MANEJO DE IMAGENES
+from django.conf import settings
+from django.conf.urls.static import static
+
 #IMPORTACION DE SWAGGER DOCS GENERATOR
 from django.urls import re_path
 from rest_framework import permissions
@@ -70,15 +74,22 @@ from apps.finanzas.api.routers.routerActividades import routerActividades
 from apps.finanzas.api.routers.routerCosechas import routerCosechas
 from apps.finanzas.api.routers.routerCultivos import routerCultivos
 from apps.finanzas.api.routers.routerDesechos import routerDesechos
-from apps.finanzas.api.routers.routerHorasMensuales import routerHorasMensuales
 from apps.finanzas.api.routers.routerInsumos import routerInsumos
-from apps.finanzas.api.routers.routerPasantes import routerPasantes
 from apps.finanzas.api.routers.routerTiposDesechos import routerTiposDesecho
-from apps.finanzas.api.routers.routerUsosProductos import routerUsosProductos
+from apps.finanzas.api.routers.routerTipoActividad import routerTipoActividad
+from apps.finanzas.api.routers.routerUsosInsumos import routerUsosInsumos
 from apps.finanzas.api.routers.routerVentas import routerVentas
+from apps.finanzas.api.routers.routerSalarios import routerSalarios
+from apps.finanzas.api.routers.routerTiempoActividadControl import routerTAC
+from apps.finanzas.api.routers.routerUnidadesTiempo import routerUnidadesTiempo
+from apps.finanzas.api.routers.routerUnidadesMedida import routerUnidadesMedida
+from apps.finanzas.api.routers.routerMovimientoInventario import routerMovimientoInventario
+from apps.finanzas.api.routers.routerBeneficioCosto import routerBeneficioCosto
+from apps.finanzas.api.routers.routerListBeneficioCosto import routerListBeneficioCosto
 
 #Usuarios
 from apps.users.urls import router_usuarios
+from apps.users.api.forgotPassword import solicitar_recuperacion, resetear_contraseña
 
 
 urlpatterns = [
@@ -118,19 +129,28 @@ urlpatterns = [
     path('api/',include(routerCosechas.urls)),
     path('api/',include(routerCultivos.urls)),
     path('api/',include(routerDesechos.urls)),
-    path('api/',include(routerHorasMensuales.urls)),
     path('api/',include(routerInsumos.urls)),
-    path('api/',include(routerPasantes.urls)),
     path('api/',include(routerTiposDesecho.urls)),
-    path('api/',include(routerUsosProductos.urls)),
+    path('api/',include(routerUsosInsumos.urls)),
     path('api/',include(routerVentas.urls)),
+    path('api/',include(routerSalarios.urls)),
+    path('api/',include(routerTAC.urls)),
+    path('api/',include(routerTipoActividad.urls)),
+    path('api/',include(routerUnidadesTiempo.urls)),
+    path('api/',include(routerUnidadesMedida.urls)),
+    path('api/',include(routerMovimientoInventario.urls)),
+    path('api/',include(routerBeneficioCosto.urls)),
+    path('api/',include(routerListBeneficioCosto.urls)),
     
      #Usuarios
     path('api/',include(router_usuarios.urls)),
+    path("api/solicitar-recuperacion/", solicitar_recuperacion, name="solicitar_recuperacion"),
+    path("api/resetear-contrasena/", resetear_contraseña, name="resetear_contraseña"),
 
     # Ruta para obtener el token JWT
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     
     # Ruta para refrescar el token JWT
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

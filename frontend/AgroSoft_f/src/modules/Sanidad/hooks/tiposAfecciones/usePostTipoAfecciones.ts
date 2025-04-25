@@ -6,13 +6,12 @@ import { addToast } from "@heroui/toast";
 export const usePostTipoAfeccion = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<TiposAfecciones, Error, TiposAfecciones>({
+  return useMutation<any, Error, FormData, TiposAfecciones>({
     mutationKey: ['TiposAfecciones'],
     mutationFn: postTipoAfecciones,
     onSuccess: (data) => {
-      console.log("tipo de afeccion fue creada con éxito:", data);
+      console.log("tipo de afección fue creada con éxito:", data);
 
-      // Invalida la query para que se refresquen los datos
       queryClient.invalidateQueries({ queryKey: ['TiposAfecciones'] });
 
       addToast({

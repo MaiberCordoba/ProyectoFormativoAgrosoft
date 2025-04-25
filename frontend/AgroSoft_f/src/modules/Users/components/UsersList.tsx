@@ -9,6 +9,7 @@ import { User } from "../types";
 import EditarUserModal from "./EditarUsersModal";
 import { CrearUsersModal } from "./CrearUsersModal";
 import EliminarUserModal from "./EliminarUsersModal";
+import { Chip } from "@heroui/react";
 
 
 export function UsersList() {
@@ -42,7 +43,8 @@ export function UsersList() {
       fechaNacimiento: "", 
       telefono: "", 
       correoElectronico: "", 
-      admin: false 
+      admin: false, 
+      estado:""
     });
   };
 
@@ -53,6 +55,7 @@ export function UsersList() {
     { name: "Apellidos", uid: "apellidos" },
     { name: "Email", uid: "correoElectronico" },
     { name: "Rol", uid: "admin" },
+    { name: "Estado", uid: "estado" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -71,6 +74,15 @@ export function UsersList() {
             return <span>{item.correoElectronico}</span>;
         case "admin":
             return <span>{item.admin ? "Administrador" : "Usuario"}</span>;
+        case "estado":
+          return <Chip 
+          size="sm" 
+          className="capitalize"
+          variant="dot"
+          color={item.estado === "activo" ? "success" : "danger"} 
+        >
+          {item.estado}
+        </Chip>;
         case "acciones":
             return (
             <AccionesTabla
@@ -95,6 +107,10 @@ export function UsersList() {
         placeholderBusqueda="Buscar por nombre o email"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
+        opcionesEstado={[
+          { uid: "activo", nombre: "Activo" },
+          { uid: "inactivo", nombre: "Inactivo" }
+        ]}  
       />
 
       {/* Modales */}

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -102,8 +103,12 @@ CHANNEL_LAYERS = {
     },
 }
 
+#manejo de imagenes 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CORS_ALLOW_CREDENTIALS = True
+#ruta unica para manejo front-end
+CORS_ALLOW_CREDENTIALS = True   
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
@@ -169,3 +174,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+FRONTEND_URL = "http://localhost:5173"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'agrosofSena@gmail.com'
+EMAIL_HOST_PASSWORD = 'epcv duva nhwm hzlj'
+

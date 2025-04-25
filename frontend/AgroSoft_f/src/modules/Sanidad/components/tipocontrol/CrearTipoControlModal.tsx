@@ -2,12 +2,14 @@ import { useState } from "react";
 import { usePostTipoControl } from "../../hooks/tipoControl/usePostTipoControl";
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
+import { TipoControl } from "../../types";
 
 interface CrearTipoControlModalProps {
   onClose: () => void;
+  onCreate: (nuevoTipo:TipoControl) => void;
 }
 
-export const CrearTipoControlModal = ({ onClose }: CrearTipoControlModalProps) => {
+export const CrearTipoControlModal = ({ onClose,onCreate }: CrearTipoControlModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   
@@ -20,9 +22,10 @@ export const CrearTipoControlModal = ({ onClose }: CrearTipoControlModalProps) =
       return;
     }
     mutate(
-      { nombre, descripcion},
+      { id:0, nombre, descripcion},
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          onCreate(data);
           onClose();
           setNombre("");
           setDescripcion("");

@@ -10,8 +10,33 @@ module.exports = {
     "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "sena-green": "#16A34A",
+      },
+    },
   },
   darkMode: "class",
-  plugins: [heroui()],
+  plugins: [
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            success:{
+              DEFAULT: "#16A34A",
+              foreground: "#ffffff"
+            }   
+          },
+        },
+        dark: {
+          colors: {
+            success: {
+              DEFAULT: '#39A900',
+              foreground:"ffffff"
+            }
+          },
+        },
+      },
+    }),
+  ],
 }

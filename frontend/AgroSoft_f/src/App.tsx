@@ -1,6 +1,5 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Providers from "./context/ToastProvider";
 
@@ -9,8 +8,6 @@ import Principal from "@/layouts/principal";
 import { Inicio } from "./pages/Inicio";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import Login from "@/pages/Login";
-import UserRegister from "./modules/Users/pages/registrarUsuario";
-import { useAuth } from '@/hooks/UseAuth'; // Usa el hook aquí
 
 //Finanzas
 import { TiposDesechos } from "./modules/Finanzas/pages/pageTiposDesechos";
@@ -21,6 +18,8 @@ import { Herramientas } from "./modules/Finanzas/pages/pageHerramientas";
 import { UsosHerramientas } from "./modules/Finanzas/pages/pageUsosHerramientas";
 //import { UsosProductos } from "./modules/Finanzas/pages/pageUsosProductos";
 import { Ventas } from "./modules/Finanzas/pages/pageVentas";
+//import { UnidadesMedida } from "./modules/Finanzas/pages/pageUnidadesMedida";
+import { UnidadesTiempo } from "./modules/Finanzas/pages/pageUnidadesTiempo";
 
 //Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
@@ -36,6 +35,7 @@ import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
 import { ErasList } from "./modules/Trazabilidad/pages/eras";
 import { LotesList } from "./modules/Trazabilidad/pages/lotes";
 
+
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 import { TipoAfecciones } from "./modules/Sanidad/Pages/tipoafecciones";
@@ -47,24 +47,21 @@ import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
         
 //usuarios
 import { Usuarios } from "./modules/Users/pages/pageUsers";
+import SolicitarRecuperacion from "./modules/Users/components/recuperaciones/solicitarRecuperacion"
+import ResetearContrasena from "./modules/Users/components/recuperaciones/resetearContrasena";
+
 
 //testeo
 import Testeo  from "./pages/testeo";
+import Toast from "./components/Toast";
+import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
+
 
 
 const queryClient = new QueryClient();
 
 function App() {
-  const navigate = useNavigate();
-  const { token } = useAuth(); // Usamos el hook para acceder al token de AuthContext
-
-  useEffect(() => {
-    // No redirigir a login si estamos en la página de registro o recuperación de contraseña
-    const path = window.location.pathname;
-    if (!token && path !== '/forgot-password' && path !== '/registro') {
-      navigate("/login");
-    }
-  }, [token, navigate]);
+  const token = localStorage.getItem("token");
 
   return (
     <Providers>
@@ -72,13 +69,29 @@ function App() {
       <Routes>
         {/* login */}
         <Route path="login" element={<Login />} />
-        <Route path="/registro" element={<UserRegister />} />
+        <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
+        <Route path="/resetearContrasena" element={<ResetearContrasena />} />
+
+        {/* si no hay token y ruta no existe redirige a home */}
+        {!token && 
+        <Route path="*" element={
+          <>
+            <Toast
+              title ="Ruta no encontrada"
+              description="La dirección a la que intentaste acceder no existe"
+            />
+            <Navigate to="/login" />
+          </>
+        }
+        />}
+
         <Route element={<Principal />}>
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Inicio />} />
 
             {/* Usuarios */}
             <Route path="/usuarios" element={<Usuarios />} />
+            
 
             {/* Finanzas */}
             <Route path="/tipos-de-desechos" element={<TiposDesechos />} />
@@ -88,7 +101,12 @@ function App() {
             <Route path="/ventas" element={<Ventas/>}/>
             <Route path="/cosechas" element={<Cosechas/>} />
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
-         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}          
+            {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
+            <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
+            {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */} 
+            <Route path="/resumen-finanzas" element={<ResumenFinancieroPage/>} />
+
+
             {/*Electronica */}
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/registrar" element={<SensorFormPage />} />
@@ -114,6 +132,19 @@ function App() {
 
             {/*test*/}
             <Route path="/testeo" element={<Testeo/>}></Route>
+
+            {/* si hay token y ruta no existe redirige a home */}
+            <Route path="*" 
+              element={
+                <>
+                  <Toast
+                    title ="Ruta no encontrada"
+                    description="La dirección a la que intentaste acceder no existe"
+                 />
+                  <Navigate to="/home" />
+                </>
+              } 
+            />
           </Route>
         </Route>
       </Routes>

@@ -22,11 +22,11 @@ export const PaginacionTabla: React.FC<PaginacionTablaProps> = ({
         isCompact
         showControls
         showShadow
-        color="primary"
+        color="success"
         page={paginaActual}
         total={totalPaginas}
         onChange={onCambiarPagina}
-        className="mx-4"
+        className="mx-4  text-white"
       />
 
       <div className="hidden sm:flex w-[30%] justify-end gap-2">

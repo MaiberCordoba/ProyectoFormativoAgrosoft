@@ -38,6 +38,10 @@ class UsuarioManager(BaseUserManager):
 
 
 class Usuario(AbstractUser):
+    ESTADO_CHOICES = [
+        ('activo',"activo"),
+        ('inactivo',"inactivo")
+    ]
     username = None
     identificacion = models.BigIntegerField(unique=True, null=False)
     nombre = models.CharField(max_length=30)
@@ -46,6 +50,7 @@ class Usuario(AbstractUser):
     telefono = models.CharField(max_length=15)
     correoElectronico = models.CharField(max_length=255, unique=True, null=False)
     admin = models.BooleanField(default=False, null=False)
+    estado=models.CharField(max_length=10,choices=ESTADO_CHOICES,default='activo')
 
     USERNAME_FIELD = "correoElectronico"
     REQUIRED_FIELDS = [

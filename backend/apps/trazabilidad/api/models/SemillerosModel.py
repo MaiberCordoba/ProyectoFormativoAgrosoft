@@ -7,4 +7,4 @@ class Semilleros(models.Model):
     fechasiembra = models.DateField()
     fechaestimada = models.DateField()
     def __str__(self):
-        return ('Semillero de especie:'+str(self.fk_Especie))
+        return ('Semillero de especie:'+str(self.fk_especie))

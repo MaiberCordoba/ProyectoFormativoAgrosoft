@@ -19,25 +19,28 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const location = useLocation();
+  const location= useLocation();
 
   const toggleMenu = (menu: string) => {
     setOpenMenu(openMenu === menu ? null : menu);
   };
 
   return (
+    <>
     <aside
-      className={`bg-white p-2 shadow-lg min-h-screen flex flex-col gap-1 transition-all duration-300 ${
-        isOpen ? "w-48" : "w-0 hidden"
+       className={`bg-white p-2 shadow-lg min-h-screen flex flex-col gap-1 transition-all duration-300 overflow-y-auto max-h-[calc(100vh-100px)]  ${
+        isOpen ? "w-48 rounded-r-3xl " : "w-0 hidden"
       }`}
     >
       {isOpen && (
-        <div className="flex justify-center mb-1 sticky top-0 bg-white z-10 py-2">
-          <img src="/logoAgrosoft.png" alt="Logo" className="w-24" />
-        </div>
+        <div className=" flex justify-center items-center gap-2 mb-1  top-0 bg-white z-10 py-2">
+          <img src="/sena.png" alt="Agrosoft Logo" className="w-14" />
+          <div className="h-10 w-px bg-gray-300" />
+          <img  src="/logoAgrosoft.png" alt="SENA Logo" className="w-20" />
+      </div>
       )}
 
-      <nav className={`flex flex-col gap-1 ${isOpen ? "block" : "hidden"}`}>
+      <nav className={` flex flex-col gap-1 ${isOpen ? "block" : "hidden"} `}>
         <NavLink 
           to="/home" 
           className={({ isActive }) => 
@@ -86,12 +89,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Finanzas",
             icon: DollarSign,
-            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos"],
+            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas"],
           },
           {
             title: "Gestión Fitosanitaria",
             icon: ShieldCheck,
-            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles", "Productos para el control","usos de productos para el control"],
+            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles"],
             className: "text-left",
           },
         ].map((menu) => (
@@ -121,22 +124,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                 openMenu === menu.title ? "max-h-40" : "max-h-0"
               }`}
             >
-              {menu.submenus.map((submenu) => {
-                const path = `/${submenu.toLowerCase().replace(/\s+/g, "-")}`;
-                return (
-                  <NavLink
-                    key={submenu}
-                    to={path}
-                    className={({ isActive }) => 
-                      `block pl-8 py-1 text-xs text-gray-800 hover:bg-gray-100 rounded-lg ${
-                        isActive ? "bg-gray-200 font-medium" : ""
-                      }`
-                    }
-                  >
-                    {submenu}
-                  </NavLink>
-                );
-              })}
+              <div className="scroll-custom max-h-[150px] overflow-y-auto"> {/* Clase scroll-custom */}
+    {menu.submenus.map((submenu) => {
+      const path = `/${submenu.toLowerCase().replace(/\s+/g, "-")}`;
+      return (
+        <NavLink
+          key={submenu}
+          to={path}
+          className={({ isActive }) => 
+            `block pl-8 py-1 text-xs text-gray-800 hover:bg-gray-100 rounded-lg ${
+              isActive ? "bg-gray-200 font-medium" : ""
+            }`
+          }
+        >
+          {submenu}
+        </NavLink>
+      );
+    })}
+  </div>
             </div>
           </div>
         ))}
@@ -163,13 +168,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           <MapPin size={18} /> Mapa
         </NavLink>
       </nav>
-
-      {isOpen && (
-        <div className="mt-auto flex flex-col items-center  bottom-0 bg-white py-2">
-          <img src="/sena.png" alt="SENA" className="w-14" />
-        </div>
-      )}
+      
     </aside>
+    </>
   );
 };
 
