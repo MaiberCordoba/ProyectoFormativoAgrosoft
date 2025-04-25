@@ -54,6 +54,7 @@ export interface DetalleVenta {
   }
   
 export interface Insumo {
+    nombre: string;
     cantidad: number;
     unidad: string | null;
     costo: number;
