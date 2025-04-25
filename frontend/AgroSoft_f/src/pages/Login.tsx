@@ -91,8 +91,6 @@ const Login = () => {
         {/* Panel derecho con gris más claro */}
         <div className="w-1/2 bg-[#D9D9D9] flex flex-col items-center justify-center text-black p-10">
           <img src={sideLogo} alt="AgroSoft Logo" className="w-[190px] mb-7" />
-          <p className="text-center font-semibold text-lg">¡Descarga la App Móvil!</p>
-          <img src="../../public/googlePlay.png" alt="Descargar en Google Play" className="mt-4 w-40" />
         </div>
       </div>
 
