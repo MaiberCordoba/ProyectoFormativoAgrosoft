@@ -88,8 +88,8 @@ export const CrearAfeccionModal = ({ onClose }: CrearAfeccionModalProps) => {
 <div className="flex items-center gap-2 mt-4">
   <div className="flex-1">
     <Select
-      label="Tipo de Plaga"
-      placeholder="Selecciona un tipo de plaga"
+      label="Tipo de Afectacion"
+      placeholder="Selecciona un tipo de afectacion"
       selectedKeys={fk_Tipo ? [fk_Tipo.toString()] : []}
       onSelectionChange={(keys) => {
         const selectedKey = Array.from(keys)[0];
