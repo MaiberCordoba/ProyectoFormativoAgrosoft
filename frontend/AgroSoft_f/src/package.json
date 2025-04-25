@@ -32,6 +32,10 @@
     "date-fns": "^4.1.0",
     "framer-motion": "11.15.0",
     "jspdf": "^3.0.1",
+<<<<<<< HEAD:frontend/AgroSoft_f/package.json
+=======
+    "jspdf-autotable": "^5.0.2",
+>>>>>>> 94d6cc8 (Cambios en el backend y en el frontend, se agrego umbral, para asi poder poner manualemnte un umbral a sensor ya registrados):frontend/AgroSoft_f/src/package.json
     "lucide-react": "^0.477.0",
     "react": "18.3.1",
     "react-apexcharts": "^1.7.0",
