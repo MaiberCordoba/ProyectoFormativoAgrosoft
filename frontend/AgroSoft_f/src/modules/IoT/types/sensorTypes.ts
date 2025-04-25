@@ -15,3 +15,16 @@ export const SENSOR_TYPES = [
   { key: "HUM_T", label: "Humedad del Terreno" },
   { key: "PH", label: "Nivel de PH" },
 ];
+
+export interface SensorConExtras extends SensorData {
+  unidad: string;              
+  alerta: boolean;              
+}
+
+export interface Umbral {
+  id: number;
+  sensor_id: number;
+  valor_minimo: number;
+  valor_maximo: number;
+  tipo_sensor?: string; 
+}
