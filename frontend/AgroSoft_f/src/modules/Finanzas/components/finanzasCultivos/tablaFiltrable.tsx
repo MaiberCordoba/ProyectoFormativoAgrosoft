@@ -1,172 +1,115 @@
-import React, { useMemo, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  Input,
-  Divider
-} from '@heroui/react';
-import { FiltroFecha } from '@/components/ui/filtroFecha';
-import { FilasPorPagina } from '@/components/ui/table/filasPorPagina';
-import { PaginacionTabla } from '@/components/ui/table/PaginacionTabla';
+import { FiltroFecha } from "@/components/ui/filtroFecha";
+import { FilasPorPagina } from "@/components/ui/table/filasPorPagina";
+import { PaginacionTabla } from "@/components/ui/table/PaginacionTabla";
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalFooter, Input } from "@heroui/react";
+
 import { SearchCheckIcon } from 'lucide-react';
+import { useState, useMemo } from 'react';
 
-
-
-interface ColumnaTabla {
-  key: string;
-  label: string;
-  permiteOrdenar?: boolean;
-}
-
-interface TablaFiltrableProps<T> {
-  datos: T[];
-  columnas: ColumnaTabla[];
-  mostrarFiltroBusqueda?: boolean;
-  mostrarFiltroFecha?: boolean;
+interface ModalFiltrableProps {
+  isOpen: boolean;
+  onClose: () => void;
+  datos: any[];
   textoBusquedaPlaceholder?: string;
-  renderFila: (item: T) => React.ReactNode;
-  claveUnica: (item: T) => string;
+  children: React.ReactNode;
 }
 
-export const TablaFiltrable = <T extends Record<string, any>>({
+export const ModalFiltrable = ({
+  isOpen,
+  onClose,
   datos,
-  columnas,
-  mostrarFiltroBusqueda = true,
-  mostrarFiltroFecha = true,
   textoBusquedaPlaceholder = 'Buscar...',
-  renderFila,
-  claveUnica
-}: TablaFiltrableProps<T>) => {
-  // Estados para filtros
+  children
+}: ModalFiltrableProps) => {
   const [paginaActual, setPaginaActual] = useState(1);
-  const [filasPorPagina, setFilasPorPagina] = useState(5);
+  const [filasPorPagina, setFilasPorPagina] = useState(10);
   const [textoBusqueda, setTextoBusqueda] = useState('');
   const [rangoFechas, setRangoFechas] = useState({
     fechaInicio: null as string | null,
     fechaFin: null as string | null
   });
 
-  // Filtrar datos
   const datosFiltrados = useMemo(() => {
     let resultado = [...datos];
 
-    // Filtro por texto de búsqueda
     if (textoBusqueda) {
       const busqueda = textoBusqueda.toLowerCase();
       resultado = resultado.filter(item =>
-        Object.values(item).some(
-          val => val?.toString().toLowerCase().includes(busqueda)
-      ));
+        Object.values(item).some(val => 
+          val?.toString().toLowerCase().includes(busqueda)
+        )
+      );
     }
 
-    // Filtro por fecha (si el objeto tiene propiedad fecha)
-    if (mostrarFiltroFecha && (rangoFechas.fechaInicio || rangoFechas.fechaFin)) {
+    if (rangoFechas.fechaInicio || rangoFechas.fechaFin) {
       resultado = resultado.filter(item => {
         if (!item.fecha) return true;
-        
         const fechaItem = new Date(item.fecha);
-        const cumpleInicio = !rangoFechas.fechaInicio || 
-                         fechaItem >= new Date(rangoFechas.fechaInicio);
-        const cumpleFin = !rangoFechas.fechaFin || 
-                        fechaItem <= new Date(new Date(rangoFechas.fechaFin).setHours(23, 59, 59, 999));
-
-        return cumpleInicio && cumpleFin;
+        const inicio = rangoFechas.fechaInicio ? new Date(rangoFechas.fechaInicio) : null;
+        const fin = rangoFechas.fechaFin ? new Date(rangoFechas.fechaFin) : null;
+        
+        return (!inicio || fechaItem >= inicio) && 
+               (!fin || fechaItem <= new Date(fin.setHours(23, 59, 59, 999)));
       });
     }
 
     return resultado;
-  }, [datos, textoBusqueda, rangoFechas, mostrarFiltroFecha]);
+  }, [datos, textoBusqueda, rangoFechas]);
 
-  // Paginación
   const totalPaginas = Math.ceil(datosFiltrados.length / filasPorPagina);
   const datosPagina = datosFiltrados.slice(
     (paginaActual - 1) * filasPorPagina,
     paginaActual * filasPorPagina
   );
 
-  // Resetear paginación cuando cambian los filtros
-  React.useEffect(() => {
-    setPaginaActual(1);
-  }, [textoBusqueda, rangoFechas, filasPorPagina]);
-
-  const limpiarFiltroFecha = () => {
-    setRangoFechas({ fechaInicio: null, fechaFin: null });
-  };
-
   return (
-    <div className="space-y-4">
-      {/* Barra de filtros */}
-      <div className="flex flex-wrap gap-4 items-center justify-between">
-        {mostrarFiltroBusqueda && (
-          <Input
-            isClearable
-            className="flex-1 min-w-[200px]"
-            placeholder={textoBusquedaPlaceholder}
-            startContent={<SearchCheckIcon className="text-default-400" />}
-            value={textoBusqueda}
-            onClear={() => setTextoBusqueda('')}
-            onValueChange={setTextoBusqueda}
-          />
-        )}
+    <Modal isOpen={isOpen} onClose={onClose} size="4xl" className="overflow-hidden">
+      <ModalContent className="max-h-[90vh] flex flex-col ">
+        {/* Header con Filtros */}
+        <ModalHeader className="bg-gray-50 p-4 border-b">
+          <div className="flex flex-wrap gap-4 items-center">
+            <Input
+              isClearable
+              className="flex-1 min-w-[300px]"
+              placeholder={textoBusquedaPlaceholder}
+              startContent={<SearchCheckIcon className="text-gray-400" />}
+              value={textoBusqueda}
+              onClear={() => setTextoBusqueda('')}
+              onValueChange={setTextoBusqueda}
+            />
+            
+            <FiltroFecha
+              fechaInicio={rangoFechas.fechaInicio}
+              fechaFin={rangoFechas.fechaFin}
+              onChange={setRangoFechas}
+              onLimpiar={() => setRangoFechas({ fechaInicio: null, fechaFin: null })}
+            />
 
-        {mostrarFiltroFecha && (
-          <FiltroFecha
-            fechaInicio={rangoFechas.fechaInicio}
-            fechaFin={rangoFechas.fechaFin}
-            onChange={setRangoFechas}
-            onLimpiar={limpiarFiltroFecha}
-          />
-        )}
+            <FilasPorPagina
+              filasPorPagina={filasPorPagina}
+              onChange={setFilasPorPagina}
+            />
+          </div>
+        </ModalHeader>
 
-        <FilasPorPagina
-          filasPorPagina={filasPorPagina}
-          onChange={setFilasPorPagina}
-        />
-      </div>
+        {/* Cuerpo personalizado */}
+        <ModalBody className="flex-1 overflow-auto p-4">
+          <div className="p-4">
+            {children}
+          </div>
+        </ModalBody>
 
-      <Divider />
-
-      {/* Tabla */}
-      <div className="overflow-auto max-h-[500px]">
-        <Table aria-label="Tabla de datos">
-          <TableHeader>
-            {columnas.map(columna => (
-              <TableColumn 
-                key={columna.key}
-                allowsSorting={columna.permiteOrdenar}
-              >
-                {columna.label}
-              </TableColumn>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {datosPagina.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columnas.length} className="text-center py-4">
-                  No se encontraron resultados
-                </TableCell>
-              </TableRow>
-            ) : (
-              datosPagina.map(item => (
-                <React.Fragment key={claveUnica(item)}>
-                  {renderFila(item)}
-                </React.Fragment>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Paginación */}
-      <PaginacionTabla
-        paginaActual={paginaActual}
-        totalPaginas={totalPaginas}
-        onCambiarPagina={setPaginaActual}
-      />
-    </div>
+        {/* Footer con Paginación */}
+        <ModalFooter className="bg-gray-50 p-4 border-t w-full">
+            <div className="w-full">
+              <PaginacionTabla
+                paginaActual={paginaActual}
+                totalPaginas={totalPaginas}
+                onCambiarPagina={setPaginaActual}
+               />
+          </div>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
