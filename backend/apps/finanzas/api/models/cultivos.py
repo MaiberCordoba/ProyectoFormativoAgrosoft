@@ -6,4 +6,4 @@ class Cultivos(models.Model):
     activo = models.BooleanField(default=False, null=False)
     fechaSiembra = models.DateField(auto_now=False)
     def __str__(self):
-        return f"Nombre {self.fk_Semillero.fk_especie.nombre} "
+        return f"Nombre {self.fk_Semillero}"

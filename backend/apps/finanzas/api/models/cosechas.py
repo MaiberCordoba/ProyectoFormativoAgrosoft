@@ -11,14 +11,5 @@ class Cosechas(models.Model):
     fecha = models.DateField(auto_now=False)
     precioReferencial = models.IntegerField(null=True)
 
-    def save(self, *args, **kwargs):
-        if self.fk_UnidadMedida:
-            self.cantidadTotal = self.cantidad * self.fk_UnidadMedida.equivalenciabase
-
-            if self.cantidadDisponible == 0 or self._state.adding:
-                self.cantidadDisponible = self.cantidadTotal
-
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return str(self.fecha)

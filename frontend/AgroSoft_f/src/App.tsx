@@ -54,6 +54,7 @@ import ResetearContrasena from "./modules/Users/components/recuperaciones/resete
 //testeo
 import Testeo  from "./pages/testeo";
 import Toast from "./components/Toast";
+import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 
 
 
@@ -102,7 +103,9 @@ function App() {
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
             {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
             <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
-         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */} 
+            {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */} 
+            <Route path="/resumen-finanzas" element={<ResumenFinancieroPage/>} />
+
 
             {/*Electronica */}
             <Route path="/iot" element={<IoTPage />} />

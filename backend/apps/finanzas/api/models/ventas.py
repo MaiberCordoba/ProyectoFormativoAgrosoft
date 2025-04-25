@@ -10,21 +10,5 @@ class Ventas(models.Model):
     cantidad = models.IntegerField()
     valorTotal = models.IntegerField(blank=True, null=True)
 
-    def save(self, *args, **kwargs): 
-        
-        if self.precioUnitario is None or self._state.adding:
-            self.precioUnitario = self.fk_Cosecha.precioReferencial  
-            
-        # Calcular valor total
-        self.valorTotal = self.precioUnitario * self.cantidad
-
-        # Descontar del stock si es un nuevo registro
-        if self.fk_Cosecha and self.fk_UnidadMedida and self._state.adding:
-            cantidad_en_base = self.cantidad * self.fk_UnidadMedida.equivalenciabase
-            self.fk_Cosecha.cantidadDisponible -= cantidad_en_base
-            self.fk_Cosecha.save()
-
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return str(self.fecha)

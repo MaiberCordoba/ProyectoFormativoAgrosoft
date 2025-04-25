@@ -15,6 +15,6 @@ class Actividades(models.Model):
     titulo = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=200)
     fecha =models.DateField(auto_now=False)
-    estado=models.CharField(max_length=3,choices=ESTADO_CHOICES)
+    estado=models.CharField(max_length=3,choices=ESTADO_CHOICES,default='AS')
     def __str__(self):
         return self.titulo
