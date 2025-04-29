@@ -1,28 +1,28 @@
-import React from 'react';
+import React from 'react'; 
 import ModalComponent from '@/components/Modal';
-import { useDeleteUsoProducto } from '../../hooks/usosProductos/useDeleteUsosProductos';
-import { UsosProductos } from '../../types';
+import { useDeleteTipoActividad } from '../../hooks/tipoActividad/useDeleteTiposActividad';
+import { TipoActividad } from '../../types';
 import { AlertCircle } from 'lucide-react';
 
-interface EliminarUsoProductoModalProps {
-  usoProducto: UsosProductos;
+interface EliminarTipoActividadModalProps {
+  tipoActividad: TipoActividad;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const EliminarUsoProductoModal: React.FC<EliminarUsoProductoModalProps> = ({ 
-  usoProducto, 
+const EliminarTipoActividadModal: React.FC<EliminarTipoActividadModalProps> = ({ 
+  tipoActividad, 
   isOpen, 
   onClose,
 }) => {
-  const { mutate, isPending } = useDeleteUsoProducto();
+  const { mutate, isPending } = useDeleteTipoActividad();
 
   const handleConfirmDelete = () => {
     mutate(
-      { id: usoProducto.id },
+      { id: tipoActividad.id },
       {
         onSuccess: () => {
-          onClose(); // Cierra el modal después de eliminar
+          onClose();
         },
       }
     );
@@ -48,11 +48,11 @@ const EliminarUsoProductoModal: React.FC<EliminarUsoProductoModalProps> = ({
         </div>
         
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          ¿Eliminar el uso del producto "{usoProducto.id}"?
+          ¿Eliminar "{tipoActividad.nombre}"?
         </h3>
         
         <p className="text-gray-500 mb-4 max-w-md">
-          Esta acción eliminará permanentemente el uso del producto del sistema. 
+          Esta acción eliminará permanentemente el tipo de actividad del sistema. 
           ¿Estás seguro de continuar?
         </p>
       </div>
@@ -60,4 +60,4 @@ const EliminarUsoProductoModal: React.FC<EliminarUsoProductoModalProps> = ({
   );
 };
 
-export default EliminarUsoProductoModal;
+export default EliminarTipoActividadModal;
