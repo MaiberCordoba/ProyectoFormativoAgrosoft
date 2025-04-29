@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import ModalComponent from "@/components/Modal";
-import { Input, Checkbox } from "@heroui/react";
+import { Input, Checkbox, Select, SelectItem } from "@heroui/react";
 import { usePostUsers } from "../hooks/usePostUsers";
 
 interface CrearUsersModalProps {
@@ -8,6 +8,7 @@ interface CrearUsersModalProps {
 }
 
 interface UserFormState {
+  id:number,
   identificacion: string;
   nombre: string;
   apellidos: string;
@@ -16,10 +17,12 @@ interface UserFormState {
   correoElectronico: string;
   password: string;
   admin: boolean;
+  estado: string;
 }
 
 export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
   const [userData, setUserData] = useState<UserFormState>({
+    id:0,
     identificacion: "",
     nombre: "",
     apellidos: "",
@@ -27,6 +30,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     telefono: "",
     correoElectronico: "",
     password: "",
+    estado: "",
     admin: false
   });
 
@@ -59,6 +63,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
       onSuccess: () => {
         onClose();
         setUserData({
+          id:0,
           identificacion: "",
           nombre: "",
           apellidos: "",
@@ -66,6 +71,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           telefono: "",
           correoElectronico: "",
           password: "",
+          estado:"",
           admin: false
         });
       }
@@ -86,7 +92,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
         },
       ]}
     >
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      
         <Input
           label="Identificación"
           type="number"
@@ -140,6 +146,22 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           required
         />
 
+        <Select
+          isRequired
+          label="Estado"
+          selectedKeys={new Set([userData.estado])} // Muestra el valor actual
+          onSelectionChange={(keys) => {
+            const selectedValue = Array.from(keys)[0] as string;
+            setUserData(prev => ({
+              ...prev,
+              estado: selectedValue
+            }));
+          }}
+        >
+          <SelectItem key="activo" >Activo</SelectItem>
+          <SelectItem key="inactivo" >Inactivo</SelectItem>
+        </Select>
+
         <div className="flex items-center mt-2">
           <Checkbox
             isSelected={userData.admin}
@@ -148,7 +170,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
             ¿Es administrador?
           </Checkbox>
         </div>
-      </div>
+   
     </ModalComponent>
   );
 };

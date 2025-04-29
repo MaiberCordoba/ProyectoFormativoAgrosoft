@@ -83,9 +83,12 @@ from apps.finanzas.api.routers.routerTiempoActividadControl import routerTAC
 from apps.finanzas.api.routers.routerUnidadesTiempo import routerUnidadesTiempo
 from apps.finanzas.api.routers.routerUnidadesMedida import routerUnidadesMedida
 from apps.finanzas.api.routers.routerMovimientoInventario import routerMovimientoInventario
+from apps.finanzas.api.routers.routerBeneficioCosto import routerBeneficioCosto
+from apps.finanzas.api.routers.routerListBeneficioCosto import routerListBeneficioCosto
 
 #Usuarios
 from apps.users.urls import router_usuarios
+from apps.users.api.forgotPassword import solicitar_recuperacion, resetear_contraseña
 
 
 urlpatterns = [
@@ -134,9 +137,13 @@ urlpatterns = [
     path('api/',include(routerUnidadesTiempo.urls)),
     path('api/',include(routerUnidadesMedida.urls)),
     path('api/',include(routerMovimientoInventario.urls)),
+    path('api/',include(routerBeneficioCosto.urls)),
+    path('api/',include(routerListBeneficioCosto.urls)),
     
      #Usuarios
     path('api/',include(router_usuarios.urls)),
+    path("api/solicitar-recuperacion/", solicitar_recuperacion, name="solicitar_recuperacion"),
+    path("api/resetear-contrasena/", resetear_contraseña, name="resetear_contraseña"),
 
     # Ruta para obtener el token JWT
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -144,3 +151,4 @@ urlpatterns = [
     # Ruta para refrescar el token JWT
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

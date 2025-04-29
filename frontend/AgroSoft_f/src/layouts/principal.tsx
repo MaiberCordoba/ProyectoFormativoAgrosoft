@@ -8,9 +8,7 @@ const Principal: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLDivElement>(null);
 
-  // Configuración Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -19,7 +17,7 @@ const Principal: React.FC = () => {
       {
         root: null,
         threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px" // Margen negativo para detectar antes
+        rootMargin: "0px 0px -50px 0px"
       }
     );
 
@@ -37,37 +35,35 @@ const Principal: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-48' : 'w-0'} fixed h-full z-20 transition-all duration-300`}>
+      <div className={`${isSidebarOpen ? 'w-48' : 'w-0'} fixed h-full z-30 transition-all duration-300`}>
         <Sidebar isOpen={isSidebarOpen} />
       </div>
 
       {/* Contenedor Principal */}
-      <div className={`flex flex-col flex-1 transition-all duration-300 ${isSidebarOpen ? 'ml-48' : 'ml-0'}`}>
+      <div className={`flex flex-col flex-1 ${isSidebarOpen ? 'ml-48' : 'ml-0'} transition-all duration-300`}>
         {/* Navbar */}
-        <div className="sticky top-0 z-10">
+        <div className="sticky top-0 z-40 bg-white shadow-sm">
           <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         </div>
 
         {/* Contenido Principal */}
-        <main className="flex-1 pb-16"> {/* Padding para el footer */}
+        <main className="flex-1 pb-16 pt-0">
           <div className="p-6">
             <Outlet />
           </div>
-          {/* Sentinel (detector invisible) */}
           <div ref={sentinelRef} className="h-px w-full" />
         </main>
       </div>
 
-      {/* Footer (siempre visible pero con transición) */}
+      {/* Footer - Versión corregida */}
       <div
-        ref={footerRef}
-        className={`fixed bottom-0 left-0 right-0 transition-transform duration-500 ${
-          isSidebarOpen ? 'ml-48' : 'ml-0'
-        } ${
+        className={`fixed bottom-0 ${
+          isSidebarOpen ? 'left-48' : 'left-0'
+        } right-0 transition-all duration-300 ${
           isFooterVisible ? 'translate-y-0' : 'translate-y-full'
-        }`}
+        } z-20`}
       >
-        <Footer isSidebarOpen={isSidebarOpen} />
+        <Footer isSidebarOpen={isSidebarOpen}/>
       </div>
     </div>
   );

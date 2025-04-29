@@ -6,10 +6,9 @@ import { addToast } from "@heroui/react";
 export const usePatchAfecciones = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Afecciones, Error, { id: number; data: Partial<Afecciones> }>({
+  return useMutation<Afecciones, Error, { id: number; data: FormData }>({
     mutationFn: ({ id, data }) => patchAfecciones(id, data),
     onSuccess: (updatedAfeccion, variables) => {
-      // Actualiza la caché después de una mutación exitosa
       queryClient.setQueryData<Afecciones[]>(['afecciones'], (oldData) => {
         if (!oldData) return oldData;
         return oldData.map((afeccion) =>
@@ -17,21 +16,18 @@ export const usePatchAfecciones = () => {
         );
       });
 
-      // Toast de éxito
       addToast({
         title: "Actualización exitosa",
         description: "La afección se actualizó correctamente",
         color: "success",
-     
       });
     },
     onError: (error) => {
-      console.error(error)
+      console.error(error);
       addToast({
         title: "Error al actualizar",
         description: "No se pudo actualizar la afección",
         color: "danger",
-       
       });
     }
   });

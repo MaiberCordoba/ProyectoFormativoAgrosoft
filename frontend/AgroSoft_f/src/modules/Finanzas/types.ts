@@ -3,6 +3,93 @@ import { Controles } from "../Sanidad/types"
 import { Cultivos, Lotes } from "../Trazabilidad/types"
 import { User } from "../Users/types"
 
+export interface ResumenEconomicoListado {
+    cultivo_id: number;
+    nombre_especie: string | null;
+    unidades: number;
+    fecha_siembra: string | null;
+    costo_insumos: number;
+    total_mano_obra: number;
+    total_costos: number;
+    total_ventas: number;
+    beneficio: number;
+    relacion_beneficio_costo: number;
+    
+  }
+
+  
+export interface DetalleActividad {
+    tipo_actividad: string | null;
+    responsable: string | null;
+    fecha: string;
+    tiempo_total: number;
+    costo_mano_obra: number;
+    insumos: Insumo[];
+    total_insumos_actividad: number;
+  }
+  
+export interface DetalleControl {
+    descripcion: string;
+    fecha: string;
+    tipo_control: string | null;
+    plaga: string | null;
+    tipo_plaga: string | null;
+    tiempo_total: number;
+    costo_mano_obra: number;
+    insumos: Insumo[];
+    total_insumos_control: number;
+  }
+  
+export interface DetalleCosecha {
+    cantidad: number;
+    unidad: string | null;
+    fecha: string;
+  }
+  
+export interface DetalleVenta {
+    cantidad: number;
+    unidad: string | null;
+    fecha: string;
+    valor_total: number;
+  }
+  
+export interface Insumo {
+    nombre: string;
+    cantidad: number;
+    unidad: string | null;
+    costo: number;
+  }
+
+export interface DetalleResumenEconomico {
+  cultivo_id: number;
+  fecha_siembra: string | null;
+  unidades: number;
+  nombre: string | null;
+  total_insumos: number;
+  total_mano_obra: number;
+  total_costos: number;
+  total_ventas: number;
+  beneficio: number;
+  relacion_beneficio_costo: number;
+  detalle: {
+    actividades: {
+      total: number;
+      actividades_detalladas: DetalleActividad[];
+    };
+    controles: {
+      total: number;
+      controles_detallados: DetalleControl[];
+    };
+    cosechas: {
+      total: number;
+      cosechas_detalladas: DetalleCosecha[];
+    };
+    ventas: {
+      total: number;
+      ventas_detalladas: DetalleVenta[];
+    };
+  };
+}
 
 export interface Actividades {
     id : number,

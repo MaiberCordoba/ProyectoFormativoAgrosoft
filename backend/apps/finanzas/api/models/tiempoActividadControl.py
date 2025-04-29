@@ -13,15 +13,6 @@ class TiempoActividadControl(models.Model):
     fk_control = models.ForeignKey(Controles, on_delete=models.SET_NULL, null=True, blank=True)
     fk_salario = models.ForeignKey(Salarios, on_delete=models.SET_NULL, null=True)
 
-    def clean(self):
-        if self.fk_actividad and self.fk_control:
-            raise ValidationError("Solo puede relacionarse con una actividad O un control, no ambos.")
-        if not self.fk_actividad and not self.fk_control:
-            raise ValidationError("Debe seleccionar una actividad O un control.")
-
-    def __str__(self):
-        return f"Tiempo: {self.tiempo} {self.fk_unidadTiempo.nombre} - Valor: ${self.valorTotal:.2f}"
-
     class Meta:
         verbose_name = "Registro de Tiempo"
         verbose_name_plural = "Registros de Tiempo"

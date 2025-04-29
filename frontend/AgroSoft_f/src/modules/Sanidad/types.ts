@@ -9,7 +9,7 @@ export interface Afecciones{
     id: number;
     nombre: string;
     descripcion: string;
-    img?: string;
+    img: string;
     tipoPlaga?: TiposAfecciones;
     fk_Tipo?: number;
 }

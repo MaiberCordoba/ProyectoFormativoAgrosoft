@@ -89,12 +89,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Finanzas",
             icon: DollarSign,
-            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos"],
+            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas"],
           },
           {
             title: "Gestión Fitosanitaria",
             icon: ShieldCheck,
-            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles", "Productos para el control","usos de productos para el control"],
+            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles"],
             className: "text-left",
           },
         ].map((menu) => (
