@@ -35,7 +35,7 @@ export function CultivosList() {
   } = useEliminarCultivos();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", fk_Especie: 0, fk_semillero: 0, unidades: 0, fechaSiembra: "", activo: true });
+    handleCrear({ id: 0, fk_Especie: 0, fk_semillero: 0, unidades: 0, fechaSiembra: "", activo: true });
   };
 
   const especiesMap = especies?.reduce((map, especie) => {
@@ -45,9 +45,8 @@ export function CultivosList() {
 
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
-    { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Especie", uid: "fk_especie", sortable: true },
-    { name: "Semillero", uid: "fk_semillero", sortable: true }, // <-- columna añadida
+    { name: "Semillero", uid: "fk_semillero", sortable: true },
     { name: "Unidades", uid: "unidades" },
     { name: "Fecha de Siembra", uid: "fechasiembra", sortable: true },
     { name: "Activo", uid: "activo", sortable: true },
@@ -58,18 +57,16 @@ export function CultivosList() {
     switch (columnKey) {
       case "id":
         return <span>{item.id}</span>;
-      case "nombre":
-        return <span>{item.nombre}</span>;
       case "fk_especie":
         return <span>{especiesMap[item.fk_Especie] || "Desconocido"}</span>;
       case "fk_semillero":
-        return <span>{item.fk_semillero}</span>; // <-- muestra el ID del semillero
+        return <span>{item.fk_semillero}</span>;
       case "unidades":
         return <span>{item.unidades}</span>;
       case "fechasiembra":
         return <span>{item.fechaSiembra}</span>;
       case "activo":
-        return <span>{item.activo ? "Sí" : "No"}</span>;
+        return <span>{item.activo ? "Activo" : "Inactivo"}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -90,13 +87,12 @@ export function CultivosList() {
       <TablaReutilizable
         datos={cultivos || []}
         columnas={columnas}
-        claveBusqueda="nombre"
-        placeholderBusqueda="Buscar por Nombre"
+        claveBusqueda="fk_especie"
+        placeholderBusqueda="Buscar por Especie"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && CultivosEditada && (
         <EditarCultivoModal
           cultivo={CultivosEditada}
