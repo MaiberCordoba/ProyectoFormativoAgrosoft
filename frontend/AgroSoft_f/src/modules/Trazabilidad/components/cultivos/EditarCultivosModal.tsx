@@ -12,7 +12,6 @@ interface EditarCultivoModalProps {
 }
 
 const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClose }) => {
-  const [nombre, setNombre] = useState<string>(cultivo.nombre);
   const [unidades, setUnidades] = useState<number>(cultivo.unidades);
   const [fechaSiembra, setFechaSiembra] = useState<string>(cultivo.fechaSiembra);
   const [fk_Especie, setFk_Especie] = useState<number>(cultivo.fk_Especie);
@@ -33,7 +32,6 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
       {
         id: cultivo.id,
         data: {
-          nombre,
           unidades,
           fechaSiembra,
           fk_Especie,
@@ -63,12 +61,6 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         },
       ]}
     >
-      <Input
-        value={nombre}
-        label="Nombre"
-        type="text"
-        onChange={(e) => setNombre(e.target.value)}
-      />
       <Input
         value={unidades.toString()}
         label="Unidades"
