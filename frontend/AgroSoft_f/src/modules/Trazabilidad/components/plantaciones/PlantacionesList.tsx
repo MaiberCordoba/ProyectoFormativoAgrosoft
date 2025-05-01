@@ -2,7 +2,7 @@ import { useGetPlantaciones } from "../../hooks/plantaciones/useGetPlantaciones"
 import { useEditarPlantaciones } from "../../hooks/plantaciones/useEditarPlantaciones";
 import { useCrearPlantaciones } from "../../hooks/plantaciones/useCrearPlantaciones";
 import { useEliminarPlantaciones } from "../../hooks/plantaciones/useEliminarPlantaciones";
-import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
+import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarPlantacionModal from "./EditarPlantacionesModal";
@@ -12,19 +12,19 @@ import { Plantaciones } from "../../types";
 
 export function PlantacionesList() {
   const { data, isLoading, error } = useGetPlantaciones();
-  const { data: cultivos, isLoading: loadingCultivos } = useGetCultivos();
+  const { data: especies, isLoading: loadingEspecies } = useGetEspecies();
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    PlantacionesEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    PlantacionesEditada,
+    handleEditar
   } = useEditarPlantaciones();
 
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear
   } = useCrearPlantaciones();
 
   const {
@@ -35,12 +35,18 @@ export function PlantacionesList() {
   } = useEliminarPlantaciones();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0, fk_Era: 0 });
+    handleCrear({ id: 0, fk_Especie: 0, fk_Era: 0 });
   };
+
+  const especiesMap =
+    especies?.reduce((map, especie) => {
+      map[especie.id] = especie.nombre;
+      return map;
+    }, {} as Record<number, string>) || {};
 
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
-    { name: "Cultivo", uid: "fk_Cultivo", sortable: true },
+    { name: "Especie", uid: "fk_especie", sortable: true }, // 👈 nombre correcto
     { name: "Era", uid: "fk_Era", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -49,9 +55,8 @@ export function PlantacionesList() {
     switch (columnKey) {
       case "id":
         return <span>{item.id}</span>;
-      case "fk_Cultivo":
-        const cultivo = cultivos?.find(c => c.id === item.fk_Cultivo);
-        return <span>{cultivo ? cultivo.nombre : "Desconocido"}</span>;
+      case "fk_especie":
+        return <span>{especiesMap[item.fk_Especie] || "Desconocido"}</span>; // 👈 uso correcto del nombre
       case "fk_Era":
         return <span>{item.fk_Era}</span>;
       case "acciones":
@@ -66,7 +71,7 @@ export function PlantacionesList() {
     }
   };
 
-  if (isLoading || loadingCultivos) return <p>Cargando...</p>;
+  if (isLoading || loadingEspecies) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las plantaciones</p>;
 
   return (
@@ -80,7 +85,6 @@ export function PlantacionesList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && PlantacionesEditada && (
         <EditarPlantacionModal
           plantacion={PlantacionesEditada}
