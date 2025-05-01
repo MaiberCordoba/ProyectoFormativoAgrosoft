@@ -12,65 +12,80 @@ import { Especies } from "../../types";
 
 export function EspecieList() {
   const { data: especies, isLoading, error } = useGetEspecies();
-  const { data: tiposEspecies } = useGetTiposEspecie();
+  const { data: tiposEspecie } = useGetTiposEspecie();
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    EspeciesEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    EspeciesEditada,
+    handleEditar,
   } = useEditarEspecies();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearEspecies();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     EspeciesEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarEspecies();
 
   const handleCrearNuevo = () => {
     handleCrear({
       id: 0,
-      tipo_especie_nombre: null,
       nombre: "",
       descripcion: "",
-      variedad: "", // ✅ nuevo campo
       img: "",
-      tiempocrecimiento: 0,
+      tiempocrecimiento: "",
+      fk_tipoespecie: 0,
     });
   };
 
-  const tipoEspecieMap = tiposEspecies?.reduce((acc, tipo) => {
-    acc[tipo.id] = tipo.nombre;
-    return acc;
-  }, {} as Record<number, string>) || {}; 
+  const handleCreateSuccess = () => {
+    // Aquí podrías agregar lógica como refetch o toast
+    closeCreateModal();
+  };
+
+  const tipoEspecieMap =
+    tiposEspecie?.reduce((acc, tipo) => {
+      acc[tipo.id] = tipo.nombre;
+      return acc;
+    }, {} as Record<number, string>) || {};
 
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Variedad", uid: "variedad" }, // ✅ nuevo campo
-    { name: "Tiempo de Crecimiento (días)", uid: "tiempocrecimiento", sortable: true },
+    { name: "Tiempo de Crecimiento", uid: "tiempocrecimiento", sortable: true },
+    { name: "Imagen", uid: "img" },
     { name: "Tipo de Especie", uid: "fk_tiposespecie" },
     { name: "Acciones", uid: "acciones" },
   ];
-  
+
   const renderCell = (item: Especies, columnKey: React.Key) => {
     switch (columnKey) {
       case "nombre":
         return <span>{item.nombre}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
-      case "variedad":
-        return <span>{item.variedad || "—"}</span>; // ✅ nuevo campo
       case "tiempocrecimiento":
-        return <span>{item.tiempocrecimiento} días</span>;
-      case "fk_tiposespecie": 
+        return <span>{item.tiempocrecimiento}</span>;
+      case "img":
+        return item.img ? (
+          <div className="flex justify-center items-center">
+            <img
+              src={item.img}
+              alt={item.nombre}
+              className="w-14 h-14 rounded-lg object-cover border border-gray-300"
+            />
+          </div>
+        ) : (
+          <span className="text-gray-400 italic">No disponible</span>
+        );
+      case "fk_tiposespecie":
         return (
           <span>
             {item.fk_tipoespecie && tipoEspecieMap[item.fk_tipoespecie]
@@ -114,6 +129,7 @@ export function EspecieList() {
       {isCreateModalOpen && (
         <CrearEspecieModal
           onClose={closeCreateModal}
+          onCreate={handleCreateSuccess}
         />
       )}
 
