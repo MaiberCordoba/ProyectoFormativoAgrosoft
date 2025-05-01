@@ -35,7 +35,7 @@ const EliminarEspecieModal: React.FC<EliminarEspecieModalProps> = ({
       title=""
       footerButtons={[
         {
-          label: isPending ? "Borrando ..." : "Borrar",
+          label: isPending ? "Borrando..." : "Borrar",
           color: "danger",
           variant: "light",
           onClick: handleConfirmDelete,
@@ -52,8 +52,8 @@ const EliminarEspecieModal: React.FC<EliminarEspecieModalProps> = ({
         </h3>
 
         <p className="text-gray-500 mb-4 max-w-md">
-          Esta acción eliminará permanentemente la especie del sistema.
-          ¿Estás seguro de continuar?
+          Esta acción eliminará permanentemente la especie del sistema. ¿Estás
+          seguro de continuar?
         </p>
       </div>
     </ModalComponent>
