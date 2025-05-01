@@ -22,7 +22,7 @@ export const usePostTiposEspecie = () => {
       })
     },
     onError: (error) => {
-      console.error("Error al crear la afección:", error);
+      console.error("Error al crear el tipo de especie:", error);
       addToast({
         title: 'Error al crear la TiposEspecie',
         description: 'No fue posible  registrar nueva TiposEspecie',
