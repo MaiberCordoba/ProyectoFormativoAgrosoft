@@ -2,121 +2,183 @@ import { useState } from "react";
 import { usePostEspecies } from "../../hooks/especies/usePostEspecies";
 import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem, Button } from "@heroui/react";
+import { Plus } from "lucide-react";
+import { CrearTiposEspecieModal } from "../tiposEspecie/CrearTiposEspecieModal";
 
 interface CrearEspecieModalProps {
   onClose: () => void;
+  onCreate: (nuevaEspecie: { id: number }) => void;
 }
 
-export const CrearEspecieModal = ({ onClose }: CrearEspecieModalProps) => {
+const opcionesCrecimiento = [
+  { value: "perennes", label: "Perennes" },
+  { value: "semiperennes", label: "Semiperennes" },
+  { value: "transitorio", label: "Transitorio" },
+];
+
+export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [img, setImg] = useState("");
-  const [tiempocrecimiento, settiempocrecimiento] = useState<number | "">("");
+  const [img, setImg] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [tiempocrecimiento, setTiempocrecimiento] = useState<string | "">("");
   const [fk_tipoespecie, setFk_tipoespecie] = useState<number | null>(null);
-  const [variedad, setVariedad] = useState(""); // ✅ NUEVO campo
+  const [modalTipoEspecieVisible, setModalTipoEspecieVisible] = useState(false);
 
   const { mutate, isPending } = usePostEspecies();
-  const { data: tiposEspecie, isLoading: isLoadingTiposEspecie } = useGetTiposEspecie();
+  const { data: tiposEspecie, isLoading: isLoadingTiposEspecie, refetch } = useGetTiposEspecie();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie || !variedad) {
+    if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
-    mutate(
-      {
-        nombre,
-        descripcion,
-        img,
-        variedad, // ✅ Añadido
-        tiempocrecimiento: Number(tiempocrecimiento),
-        fk_tipoespecie,
+
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
+    formData.append("img", img);
+    formData.append("tiempocrecimiento", tiempocrecimiento);
+    formData.append("fk_tipoespecie", String(fk_tipoespecie));
+
+    mutate(formData, {
+      onSuccess: (data) => {
+        onCreate(data);
+        onClose();
+        setNombre("");
+        setDescripcion("");
+        setImg(null);
+        setPreview(null);
+        setTiempocrecimiento("");
+        setFk_tipoespecie(null);
       },
-      {
-        onSuccess: () => {
-          onClose();
-          setNombre("");
-          setDescripcion("");
-          setImg("");
-          settiempocrecimiento("");
-          setFk_tipoespecie(null);
-          setVariedad(""); // ✅ Resetear
-        },
-      }
-    );
+    });
+  };
+
+  const handleTipoEspecieCreado = (nuevoTipo: { id: number }) => {
+    refetch();
+    setFk_tipoespecie(nuevoTipo.id);
+    setModalTipoEspecieVisible(false);
   };
 
   return (
-    <ModalComponent
-      isOpen={true}
-      onClose={onClose}
-      title="Registro de Especie"
-      footerButtons={[
-        {
-          label: isPending ? "Guardando..." : "Guardar",
-          color: "success",
-          variant: "light",
-          onClick: handleSubmit,
-        },
-      ]}
-    >
-      <Input
-        label="Nombre"
-        type="text"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        required
-      />
+    <>
+      <ModalComponent
+        isOpen={true}
+        onClose={onClose}
+        title="Registro de Especie"
+        footerButtons={[
+          {
+            label: isPending ? "Guardando..." : "Guardar",
+            color: "success",
+            variant: "light",
+            onClick: handleSubmit,
+          },
+        ]}
+      >
+        <Input
+          label="Nombre"
+          type="text"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
 
-      <Input
-        label="Descripción"
-        type="text"
-        value={descripcion}
-        onChange={(e) => setDescripcion(e.target.value)}
-        required
-      />
+        <Input
+          label="Descripción"
+          type="text"
+          value={descripcion}
+          onChange={(e) => setDescripcion(e.target.value)}
+          required
+        />
 
-      <Input
-        label="Imagen"
-        type="text"
-        value={img}
-        onChange={(e) => setImg(e.target.value)}
-        required
-      />
-
-      <Input
-        label="Variedad" // ✅ NUEVO input
-        type="text"
-        value={variedad}
-        onChange={(e) => setVariedad(e.target.value)}
-        required
-      />
-
-      <Input
-        label="Tiempo de Crecimiento"
-        type="number"
-        value={tiempocrecimiento.toString()}
-        onChange={(e) => settiempocrecimiento(Number(e.target.value))}
-      />
-
-      {isLoadingTiposEspecie ? (
-        <p>Cargando tipos de especie...</p>
-      ) : (
         <Select
-          label="Tipo de Especie"
-          placeholder="Selecciona un tipo"
-          selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []}
+          label="Tiempo de Crecimiento"
+          placeholder="Selecciona una opción"
+          selectedKeys={tiempocrecimiento ? [tiempocrecimiento] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_tipoespecie(Number(selectedKey));
+            const selected = Array.from(keys)[0];
+            setTiempocrecimiento(String(selected));
           }}
         >
-          {(tiposEspecie || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
+          {opcionesCrecimiento.map((op) => (
+            <SelectItem key={op.value}>{op.label}</SelectItem>
           ))}
         </Select>
+
+        {isLoadingTiposEspecie ? (
+          <p>Cargando tipos de especie...</p>
+        ) : (
+          <div className="flex items-end gap-2 mt-4">
+            <div className="flex-1">
+              <Select
+                label="Tipo de Especie"
+                placeholder="Selecciona un tipo"
+                selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_tipoespecie(Number(selectedKey));
+                }}
+              >
+                {(tiposEspecie || []).map((tipo) => (
+                  <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button
+              onPress={() => setModalTipoEspecieVisible(true)}
+              color="success"
+              radius="full"
+              size="sm"
+              title="Agregar nuevo tipo de especie"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+          </div>
+        )}
+
+        <div className="mt-4">
+          <Button
+            type="button"
+            variant="solid"
+            onPress={() => document.getElementById("imgEspecieInput")?.click()}
+          >
+            Seleccionar imagen
+          </Button>
+
+          <input
+            id="imgEspecieInput"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImg(file);
+                setPreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+        </div>
+
+        {preview && (
+          <div className="mt-4">
+            <img
+              src={preview}
+              alt="Vista previa"
+              className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+            />
+          </div>
+        )}
+      </ModalComponent>
+
+      {modalTipoEspecieVisible && (
+        <CrearTiposEspecieModal
+          onClose={() => setModalTipoEspecieVisible(false)}
+          onCreate={handleTipoEspecieCreado}
+        />
       )}
-    </ModalComponent>
+    </>
   );
 };
