@@ -4,6 +4,7 @@ import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
+import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 
 interface CrearActividadesModalProps {
   onClose: () => void;
@@ -12,6 +13,7 @@ interface CrearActividadesModalProps {
 export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) => {
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(null);
+  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
@@ -19,21 +21,23 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
 
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
   const { data: users, isLoading: isLoadingUsers } = useGetUsers();
+  const { data: tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad();
   const { mutate, isPending } = usePostActividades();
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || !fk_Usuario || !titulo || !descripcion || !fecha || !estado) {
+    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      { fk_Cultivo, fk_Usuario, titulo, descripcion, fecha, estado },
+      { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
       {
         onSuccess: () => {
           onClose();
           setFk_Cultivo(null);
           setFk_Usuario(null);
+          setFk_TipoActividad(null);
           setTitulo("");
           setDescripcion("");
           setFecha("");
@@ -131,6 +135,24 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
             <SelectItem key={usuario.id.toString()}>{usuario.nombre}</SelectItem>
           ))}
         </Select>
+      )}
+
+      {isLoadingTiposActividad ? (
+        <p>Cargando tipos de actividad...</p>
+      ): (
+        <Select
+        label="Tipo Activida"
+        placeholder="Seleccione el tipo de actividad"
+        selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
+        onSelectionChange={(keys) => {
+          const selectedKey = Array.from(keys)[0];
+          setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
+        }}
+      >
+        {(tiposActividad || []).map((tipoActividad) => (
+          <SelectItem key={tipoActividad.id.toString()}>{tipoActividad.nombre}</SelectItem>
+        ))}
+      </Select>
       )}
     </ModalComponent>
   );

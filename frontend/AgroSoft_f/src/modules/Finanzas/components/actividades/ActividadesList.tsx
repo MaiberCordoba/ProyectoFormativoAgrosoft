@@ -10,11 +10,13 @@ import EliminarActividadesModal from "./EliminarActividades";
 import { Actividades } from "../../types";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
+import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 
 export function ActividadesList() {
   const { data, isLoading, error } = useGetActividades();
-  const { data: users, isLoading: loadingUser } = useGetUsers(); // Corregido
+  const { data: users, isLoading: loadingUser } = useGetUsers(); 
   const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
+  const { data : tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad()
 
   const { 
     isOpen: isEditModalOpen, 
@@ -37,13 +39,14 @@ export function ActividadesList() {
   } = useEliminarActividad();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0, fk_Usuario: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+    handleCrear({ id: 0, fk_Cultivo: 0, fk_Usuario: 0, fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
   };
 
   // Definición de columnas
   const columnas = [
     { name: "Cultivo", uid: "cultivo" },
     { name: "Usuario", uid: "usuario" },
+    { name: "TipoActividad", uid: "tipoActividad"},
     { name: "Titulo", uid: "titulo" },
     { name: "Descripcion", uid: "descripcion" },
     { name: "Fecha", uid: "fecha" },
@@ -60,6 +63,9 @@ export function ActividadesList() {
       case "usuario":
         const usuario = users?.find((c) => c.id === item.fk_Usuario);
         return <span>{usuario ? usuario.nombre : "No definido"}</span>;
+      case "tipoActividad":
+        const tipoActividad = tiposActividad?.find((c) => c.id === item.fk_TipoActividad);
+        return <span>{tipoActividad ? tipoActividad.nombre : "No definido"}</span>;
       case "titulo":
         return <span>{item.titulo}</span>;
       case "descripcion":
@@ -80,7 +86,7 @@ export function ActividadesList() {
     }
   };
 
-  if (isLoading || loadingUser || loadingCultivo) return <p>Cargando...</p>;
+  if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las actividades</p>;
 
   return (
