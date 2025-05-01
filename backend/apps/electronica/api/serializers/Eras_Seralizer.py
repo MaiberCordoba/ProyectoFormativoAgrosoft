@@ -12,5 +12,5 @@ class ErasSerializer(ModelSerializer):
 
     class Meta:
         model = Eras
-        fields = ['id', 'fk_lote', 'fk_lote_id', 'tipo', 'tamX', 'tamY', 'posX', 'posY']
+        fields = "__all__"
 

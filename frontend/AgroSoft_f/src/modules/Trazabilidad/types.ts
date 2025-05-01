@@ -39,19 +39,27 @@ export interface Lotes{
   id?: number;
   nombre: string;
   descripcion: string;
-  tamX: number;
-  tamY: number;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
   estado: boolean;
-  posX: number;
-  posY: number;
 }
 
 export interface Eras{
   id?: number;
-  tamX: number;
-  tamY: number;
-  posX: number;
-  posY: number;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
   tipo: string;
   Lotes?: Lotes;
   fk_lote: number; 
