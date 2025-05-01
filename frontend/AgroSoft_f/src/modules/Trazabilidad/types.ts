@@ -54,7 +54,7 @@ export interface Eras{
   posY: number;
   tipo: string;
   Lotes?: Lotes;
-  fk_lote_id: number; 
+  fk_lote: number; 
 }
 
 export interface Plantaciones{
