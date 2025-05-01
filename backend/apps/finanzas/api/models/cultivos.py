@@ -7,3 +7,8 @@ class Cultivos(models.Model):
     fechaSiembra = models.DateField(auto_now=False)
     def __str__(self):
         return f"Nombre {self.fk_Semillero}"
+
+class CoeficienteCultivo(models.Model):
+    cultivo = models.ForeignKey(Cultivos, on_delete=models.CASCADE)
+    fase_crecimiento = models.CharField(max_length=50)
+    kc_valor = models.DecimalField(max_digits=5, decimal_places=2)
