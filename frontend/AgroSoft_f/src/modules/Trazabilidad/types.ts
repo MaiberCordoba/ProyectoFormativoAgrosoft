@@ -5,16 +5,15 @@ export interface TiposEspecie{
   img: string;
 }
 
-export interface Especies{
-    id: number;
-    nombre: string;
-    descripcion: string;
-    variedad: string;
-    img?: string;
-    tiempocrecimiento: number;
-    TiposEspecie?: TiposEspecie;
-    fk_tipoespecie?: number | null;
-    tipo_especie_nombre?: string | null;
+export interface Especies {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  img?: string;
+  tiempocrecimiento: string;
+  TiposEspecie?: TiposEspecie;
+  fk_tipoespecie?: number | null;
+  tipo_especie_nombre?: string | null;
 }
 
 export interface Semilleros{
@@ -28,7 +27,6 @@ export interface Semilleros{
 
 export interface Cultivos{
   id?: number;
-  nombre: string;
   unidades: number;
   activo: boolean;
   fechaSiembra: string;
@@ -61,8 +59,8 @@ export interface Eras{
 
 export interface Plantaciones{
   id: number;
-  Cultivos?: Cultivos;
-  fk_Cultivo: number;
+  Especies?: Especies;
+  fk_Especie: number;
   Eras?: Eras;
   fk_Era: number;
 }
