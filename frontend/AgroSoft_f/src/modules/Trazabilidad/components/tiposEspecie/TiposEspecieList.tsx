@@ -8,9 +8,11 @@ import EditarTiposEspecieModal from "./EditarTiposEspecieModal";
 import { CrearTiposEspecieModal } from "./CrearTiposEspecieModal";
 import EliminarTiposEspecieModal from "./EliminarTiposEspecie";
 import { TiposEspecie } from "../../types";
+import { Image } from "@heroui/react"; // ← Asegúrate de tener este importado
 
 export function TiposEspecieList() {
   const { data, isLoading, error } = useGetTiposEspecie();
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -38,6 +40,7 @@ export function TiposEspecieList() {
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
+    { name: "Imagen", uid: "img" }, // ← Añadida columna imagen
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -47,6 +50,15 @@ export function TiposEspecieList() {
         return <span>{item.nombre}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
+      case "img":
+        return (
+          <Image
+            isZoomed
+            src={item.img}
+            alt={item.nombre}
+            className="w-14 h-14 object-cover rounded-lg border"
+          />
+        );
       case "acciones":
         return (
           <AccionesTabla
@@ -73,7 +85,6 @@ export function TiposEspecieList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && TiposEspecieEditada && (
         <EditarTiposEspecieModal
           especie={TiposEspecieEditada}

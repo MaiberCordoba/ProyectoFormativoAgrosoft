@@ -32,12 +32,17 @@ const EliminarTiposEspecieModal: React.FC<EliminarTiposEspecieModalProps> = ({
     <ModalComponent
       isOpen={isOpen}
       onClose={onClose}
-      title=""
+      title="Eliminar Tipo de Especie"
       footerButtons={[
         {
-          label: isPending ? "Borrando ..." : "Borrar",
-          color: "success",
-          variant: "light",
+          label: "Cancelar",
+          variant: "outline",
+          onClick: onClose,
+        },
+        {
+          label: isPending ? "Borrando..." : "Eliminar",
+          color: "danger",
+          variant: "solid",
           onClick: handleConfirmDelete,
         },
       ]}
@@ -52,8 +57,7 @@ const EliminarTiposEspecieModal: React.FC<EliminarTiposEspecieModalProps> = ({
         </h3>
 
         <p className="text-gray-500 mb-4 max-w-md">
-          Esta acción eliminará permanentemente el tipo de especie del sistema.
-          ¿Estás seguro de continuar?
+          Esta acción eliminará permanentemente este tipo de especie. No se podrá recuperar.
         </p>
       </div>
     </ModalComponent>
