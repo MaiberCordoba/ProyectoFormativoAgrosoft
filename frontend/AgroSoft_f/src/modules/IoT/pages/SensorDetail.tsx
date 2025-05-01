@@ -7,8 +7,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  RadioGroup,
-  Radio,
   Button
 } from "@heroui/react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
@@ -22,7 +20,6 @@ export default function SensorDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [sensorData, setSensorData] = useState<SensorData[]>([]);
-  const [selectedColor, setSelectedColor] = useState("default");
 
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${id}/`);
@@ -30,7 +27,12 @@ export default function SensorDetail() {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        setSensorData((prev) => [...prev.slice(-9), { timestamp: new Date().toLocaleTimeString(), valor: data.valor }]);
+        const newData: SensorData = { timestamp: new Date().toLocaleTimeString(), valor: data.valor };
+
+        setSensorData((prev) => {
+          const updatedData = [...prev, newData];
+          return updatedData.length > 10 ? updatedData.slice(-10) : updatedData;
+        });
       } catch (error) {
         console.error(`Error en WebSocket (${id}):`, error);
       }

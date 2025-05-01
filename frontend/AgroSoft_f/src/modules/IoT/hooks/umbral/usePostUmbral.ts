@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postUmbral } from "../../api/umbral";
+import axios from "axios";
 import { addToast } from "@heroui/toast";
 import { Umbral } from "../../types/sensorTypes";
 
@@ -7,6 +7,11 @@ interface UsePostUmbralOptions {
   onSuccess?: () => void;
   onError?: (error: Error) => void;
 }
+
+const postUmbral = async (nuevoUmbral: Omit<Umbral, "id">) => {
+  const response = await axios.post("http://127.0.0.1:8000/api/umbral/", nuevoUmbral);
+  return response.data;
+};
 
 export const usePostUmbral = (options?: UsePostUmbralOptions) => {
   const queryClient = useQueryClient();

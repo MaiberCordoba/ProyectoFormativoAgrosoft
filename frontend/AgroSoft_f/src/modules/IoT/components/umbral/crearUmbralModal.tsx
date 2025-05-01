@@ -3,19 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { addToast } from "@heroui/toast";
-import { Sensor } from "../../types/sensorTypes";
+import { SensorData, SENSOR_TYPES } from "../../types/sensorTypes";
 import { usePostUmbral } from "../../hooks/umbral/usePostUmbral";
 
 interface CrearUmbralModalProps {
   onClose: () => void;
 }
 
-const fetchSensores = async (): Promise<Sensor[]> => {
-  const res = await fetch("http://localhost:3000/sensores", {
-    headers: {
-      Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWNhY2lvbiI6MTA4NDMzMTczMSwibm9tYnJlIjoiYWRtaW4gY29yZG9iYSIsImNvcnJlb0VsZWN0cm9uaWNvIjoiYWRtaW5AZ21haWwuY29tIiwiYWRtaW4iOjAsImlhdCI6MTc0Mzk1MzkzMn0.GcG2Pifg7BYswjiHtvaonGwJlbZKvJFS4rSrZEuCzTM`,
-    },
-  });
+const fetchSensores = async (): Promise<SensorData[]> => {
+  const res = await fetch("http://127.0.0.1:8000/api/sensor/");
   if (!res.ok) throw new Error("Error al obtener los sensores");
   return res.json();
 };
@@ -40,16 +36,20 @@ export const CrearUmbralModal = ({ onClose }: CrearUmbralModalProps) => {
       resetForm();
       onClose();
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "No se pudo registrar el umbral";
       addToast({
         title: "Error",
-        description: error.message || "No se pudo registrar el umbral",
+        description: message,
         color: "danger",
       });
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (sensorId === null || valorMinimo === null || valorMaximo === null) {
       addToast({
         title: "Campos incompletos",
@@ -101,36 +101,47 @@ export const CrearUmbralModal = ({ onClose }: CrearUmbralModalProps) => {
       <Select
         label="Sensor"
         placeholder="Selecciona un sensor"
-        required
         selectedKeys={sensorId !== null ? [String(sensorId)] : []}
-        onSelectionChange={(keys) =>
-          setSensorId(Number(Array.from(keys)[0]))
-        }
+        onSelectionChange={(keys) => {
+          const keyArray = Array.from(keys || []);
+          setSensorId(keyArray.length > 0 ? Number(keyArray[0]) : null);
+        }}
       >
-        {sensores.map((sensor) => (
-          <SelectItem key={String(sensor.id)}>
-            {sensor.tipo_sensor} (ID {sensor.id})
-          </SelectItem>
-        ))}
+        {sensores.map((sensor) => {
+          const tipoLabel =
+            SENSOR_TYPES.find((s) => s.key === sensor.tipo)?.label ||
+            sensor.tipo;
+          const labelText = `${tipoLabel} (ID ${sensor.id})`;
+          return (
+            <SelectItem
+              key={String(sensor.id)}
+              textValue={labelText}
+            >
+              {labelText}
+            </SelectItem>
+          );
+        })}
       </Select>
 
       <Input
         label="Valor Mínimo"
         type="number"
-        required
         value={valorMinimo !== null ? String(valorMinimo) : ""}
         onChange={(e) =>
-          setValorMinimo(e.target.value ? parseFloat(e.target.value) : null)
+          setValorMinimo(
+            e.target.value ? parseFloat(e.target.value) : null
+          )
         }
       />
 
       <Input
         label="Valor Máximo"
         type="number"
-        required
         value={valorMaximo !== null ? String(valorMaximo) : ""}
         onChange={(e) =>
-          setValorMaximo(e.target.value ? parseFloat(e.target.value) : null)
+          setValorMaximo(
+            e.target.value ? parseFloat(e.target.value) : null
+          )
         }
       />
     </ModalComponent>

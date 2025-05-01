@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { usePostSensor } from "../../hooks/sensor/usePostSensor";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
-import { addToast } from "@heroui/toast"; // Importamos las alertas
+import { addToast } from "@heroui/toast"; 
 import { SENSOR_TYPES, SensorData } from "../../types/sensorTypes";
 
 interface Lote {
@@ -35,8 +35,8 @@ const fetchEras = async (): Promise<Era[]> => {
 
 const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
   const [tipo, setTipo] = useState<SensorCreateData["tipo"] | null>(null);
-  const [fk_lote, setFkLote] = useState<number | null>(null);
-  const [fk_eras, setFkEras] = useState<number | null>(null);
+  const [fk_lote_id, setFkLote] = useState<number | null>(null);
+  const [fk_eras_id, setFkEras] = useState<number | null>(null);
   const [valor, setValor] = useState<number | null>(null);
   const [fecha, setFecha] = useState<string>(new Date().toISOString().split("T")[0]);
 
@@ -46,7 +46,7 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
   const { mutate, isPending } = usePostSensor();
 
   const handleSubmit = () => {
-    if (!tipo || valor === null || fk_lote === null || fk_eras === null) {
+    if (!tipo || valor === null || fk_lote_id === null || fk_eras_id === null) {
       addToast({
         title: "Error",
         description: "Todos los campos son obligatorios.",
@@ -58,8 +58,8 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
     const sensorData: SensorData = {
       id: 0,
       tipo,
-      fk_lote,
-      fk_eras,
+      fk_lote_id,
+      fk_eras_id,
       valor,
       fecha,
     };
@@ -109,7 +109,7 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
       <Select
         label="Lote"
         placeholder="Selecciona un lote"
-        selectedKeys={fk_lote !== null ? [String(fk_lote)] : []}
+        selectedKeys={fk_lote_id !== null ? [String(fk_lote_id)] : []}
         onSelectionChange={(keys) => setFkLote(Number(Array.from(keys)[0]))}
       >
         {lotes.map((lote) => (
@@ -120,7 +120,7 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
       <Select
         label="Era"
         placeholder="Selecciona una era"
-        selectedKeys={fk_eras !== null ? [String(fk_eras)] : []}
+        selectedKeys={fk_eras_id !== null ? [String(fk_eras_id)] : []}
         onSelectionChange={(keys) => setFkEras(Number(Array.from(keys)[0]))}
       >
         {eras.map((era) => (
