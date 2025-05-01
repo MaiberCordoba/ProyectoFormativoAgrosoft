@@ -1,37 +1,33 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchEspecies } from '../../api/especiesApi';
 import { Especies } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchEspecies = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Especies, Error, { id: number; data: Partial<Especies> }>({
+  return useMutation<Especies, Error, { id: number; data: FormData | Partial<Especies> }>({
     mutationFn: ({ id, data }) => patchEspecies(id, data),
-    onSuccess: (updatedEspecies, variables) => {
-      // Actualiza la caché después de una mutación exitosa
-      queryClient.setQueryData<Especies[]>(['Especies'], (oldData) => {
+    onSuccess: (updatedEspecie, variables) => {
+      queryClient.setQueryData<Especies[]>(['especies'], (oldData) => {
         if (!oldData) return oldData;
-        return oldData.map((Especies) =>
-            Especies.id === variables.id ? { ...Especies, ...updatedEspecies } : Especies
+        return oldData.map((especie) =>
+          especie.id === variables.id ? { ...especie, ...updatedEspecie } : especie
         );
       });
 
-      // Toast de éxito
       addToast({
         title: "Actualización exitosa",
-        description: "la especie se actualizó correctamente",
+        description: "La especie se actualizó correctamente",
         color: "success",
-     
       });
     },
     onError: (error) => {
-      console.error(error)
+      console.error(error);
       addToast({
         title: "Error al actualizar",
         description: "No se pudo actualizar la especie",
         color: "danger",
-       
       });
     }
   });

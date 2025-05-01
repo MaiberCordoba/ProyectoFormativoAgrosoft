@@ -1,38 +1,32 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { patchTiposEspecie } from '../../api/tiposEspecieApi';
-import { TiposEspecie } from '../../types';
-import { addToast } from "@heroui/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { patchTiposEspecie } from "../../api/tiposEspecieApi";
+import { TiposEspecie } from "../../types";
+import { addToast } from "@heroui/toast";
 
 export const usePatchTiposEspecie = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<TiposEspecie, Error, { id: number; data: Partial<TiposEspecie> }>({
-    mutationFn: ({ id, data }) => patchTiposEspecie(id, data),
-    onSuccess: (updatedTiposEspecie, variables) => {
-      // Actualiza la caché después de una mutación exitosa
-      queryClient.setQueryData<TiposEspecie[]>(['TiposEspecie'], (oldData) => {
-        if (!oldData) return oldData;
-        return oldData.map((tiposEspecie) =>
-            tiposEspecie.id === variables.id ? { ...tiposEspecie, ...updatedTiposEspecie } : tiposEspecie
-        );
-      });
+  return useMutation<TiposEspecie, Error, { id: number; data: FormData }>({
+    mutationKey: ['actualizarTiposEspecie'],
+    mutationFn: async ({ id, data }) => patchTiposEspecie(id, data),
+    onSuccess: (data) => {
+      console.log("Tipo de especie actualizada con éxito:", data);
 
-      // Toast de éxito
+      queryClient.invalidateQueries({ queryKey: ['tiposEspecie'] });
+
       addToast({
-        title: "Actualización exitosa",
-        description: "El tipo de especie se actualizó correctamente",
-        color: "success",
-     
+        title: 'Actualización exitosa',
+        description: 'Tipo de especie actualizado con éxito',
+        color: 'success',
       });
     },
     onError: (error) => {
-      console.error(error)
+      console.error("Error al actualizar el tipo de especie:", error);
       addToast({
-        title: "Error al actualizar",
-        description: "No se pudo actualizar el tipos de especie",
-        color: "danger",
-       
+        title: 'Error al actualizar tipo de especie',
+        description: 'No fue posible actualizar el tipo de especie',
+        color: 'danger',
       });
-    }
+    },
   });
 };
