@@ -33,7 +33,6 @@ export interface Cultivos{
   fechaSiembra: string;
   Especies?: Especies;
   fk_Especie: number;
-  fk_Semillero?: number;
 }
 
 export interface Lotes{
@@ -54,7 +53,16 @@ export interface Lotes{
 export interface Plantaciones{
   id: number;
   Cultivos?: Cultivos;
-  fk_Cultivo: number;
+  fk_Cultivo: { // ✅ Nombre correcto según endpoint
+    unidades: number;
+    fk_Semillero: {
+      fk_especie: {
+        nombre: string;
+        id:number;
+        //... otros campos
+      };
+    };
+  };
   Eras?: Eras;
   fk_Era: number;
 }

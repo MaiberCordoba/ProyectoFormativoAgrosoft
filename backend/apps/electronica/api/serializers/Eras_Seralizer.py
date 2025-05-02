@@ -9,7 +9,7 @@ from apps.trazabilidad.api.models.PlantacionesModel import *
 class EspecieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Especies
-        fields = ['nombre']
+        fields = ['nombre','id']
 
 class SemilleroSerializer(serializers.ModelSerializer):
     fk_especie = EspecieSerializer()

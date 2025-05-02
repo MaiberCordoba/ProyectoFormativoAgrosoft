@@ -4,10 +4,22 @@ import { useGetLotes } from '../../hooks/lotes/useGetLotes';
 import { useGetEras } from '../../hooks/eras/useGetEras';
 import { LatLngTuple } from 'leaflet';
   
+interface MapComponentProps {
+  filtroEspecie?: string; // ID de la especie para filtrar
+}
 
-const MapComponent = () => {
+const MapComponent =  ({ filtroEspecie }: MapComponentProps) => {
   const { data: lotes } = useGetLotes();
   const { data: eras } = useGetEras();
+
+
+   // Filtrar eras basado en el filtro
+   const erasFiltradas = eras?.filter(era => {
+    if (!filtroEspecie) return true; // Si no hay filtro, mostrar todas
+    
+    const especieEra = era.plantaciones?.[0]?.fk_Cultivo?.fk_Semillero?.fk_especie;
+    return especieEra?.id?.toString() === filtroEspecie;
+  });
 
   // Función para crear polígonos con validación
   const crearPoligono = (
@@ -33,11 +45,9 @@ const MapComponent = () => {
       <MapContainer 
       center={[1.892429, -76.089677]} 
       zoom={18}
-      className="h-full w-full  rounded-md overflow-hidden"
       style={{ 
         height: '100%', 
         width: '100%',
-        isolation: 'isolate', // Previene conflictos de z-index
         zIndex:0
       }}
       >
@@ -73,7 +83,7 @@ const MapComponent = () => {
 
       
       {/* Eras con información de cultivos */}
-      {eras?.map((era) => {
+      {erasFiltradas?.map((era) => {
         const cultivo = era.plantaciones?.[0]?.fk_Cultivo; //  Accede a fk_Cultivo
         const semillero = cultivo?.fk_Semillero; //  Obtiene semillero
         const especie = semillero?.fk_especie; // Ahora sí obtienes la especie
