@@ -60,6 +60,7 @@ import ResetearContrasena from "./modules/Users/components/recuperaciones/resete
 import Testeo  from "./pages/testeo";
 import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
+import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
 
 
 
@@ -131,6 +132,8 @@ function App() {
             <Route path="/cultivos" element={<CultivoList />} />
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
+            <Route path="/mapa" element={<MapPage/>} />
+
 
             {/*Sanidad*/}
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>

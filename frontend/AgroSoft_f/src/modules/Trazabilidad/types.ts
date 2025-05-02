@@ -39,28 +39,48 @@ export interface Lotes{
   id?: number;
   nombre: string;
   descripcion: string;
-  tamX: number;
-  tamY: number;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
   estado: boolean;
-  posX: number;
-  posY: number;
-}
-
-export interface Eras{
-  id?: number;
-  tamX: number;
-  tamY: number;
-  posX: number;
-  posY: number;
-  tipo: string;
-  Lotes?: Lotes;
-  fk_lote_id: number; 
 }
 
 export interface Plantaciones{
   id: number;
   Cultivos?: Cultivos;
-  fk_Cultivo: number;
+  fk_Cultivo: { // ✅ Nombre correcto según endpoint
+    unidades: number;
+    fk_Semillero: {
+      fk_especie: {
+        nombre: string;
+        id:number;
+        //... otros campos
+      };
+    };
+  };
   Eras?: Eras;
   fk_Era: number;
 }
+
+
+export interface Eras{
+  id?: number;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
+  tipo: string;
+  Lotes?: Lotes;
+  fk_lote: number; 
+  plantaciones?: Plantaciones[];
+}
+
