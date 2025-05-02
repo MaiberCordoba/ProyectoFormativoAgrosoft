@@ -8,11 +8,11 @@ export const useEliminarUmbral = () => {
 
   const handleEliminar = (umbral: Umbral) => {
     setUmbralEliminado(umbral);
-    openModal();
+    openModal(); 
   };
 
   const handleSuccess = () => {
-    closeModal();
+    closeModal(); 
   };
 
   return {
