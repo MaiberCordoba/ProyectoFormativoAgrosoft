@@ -42,32 +42,38 @@ export interface Lotes{
   id?: number;
   nombre: string;
   descripcion: string;
-  tamX: number;
-  tamY: number;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
   estado: boolean;
-  posX: number;
-  posY: number;
 }
 
-export interface Eras{
-  id?: number;
-  tamX: number;
-  tamY: number;
-  posX: number;
-  posY: number;
-  Lotes?: Lotes;
-  fk_lote_id: number; 
-}
+
 
 export interface Plantaciones{
   id: number;
   Especies?: Especies;
   fk_Especie: number;
+  Cultivos?: Cultivos;
+  fk_Cultivo: {
+    unidades: number;
+    fk_Semillero: {
+      fk_especie: {
+        nombre: string;
+        id:number;
+      };
+    };
+  };
   Eras?: Eras;
   fk_Era: number;
 }
 
-export interface Variedad {
+export interface Variedad{
   id: number;
   nombre: string;
 }
