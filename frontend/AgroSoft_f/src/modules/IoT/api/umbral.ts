@@ -1,4 +1,5 @@
 import apiClient from "@/api/apiClient";
+import axios from "axios";
 import { Umbral } from "../types/sensorTypes";
 
 export const getUmbrales = async (): Promise<Umbral[]> => {
@@ -12,11 +13,11 @@ export const postUmbral = async (data: Omit<Umbral, "id">): Promise<Umbral> => {
 };
 
 export const putUmbral = async (id: number, data: Partial<Umbral>): Promise<Umbral> => {
-  const response = await apiClient.put(`umbral/${id}`, data);
+  const response = await axios.patch(`http://localhost:8000/api/umbral/${id}/`, data);
   return response.data;
 };
 
 export const deleteUmbral = async (id: number): Promise<Umbral> => {
-  const response = await apiClient.delete(`umbral/${id}`);
+  const response = await apiClient.delete(`/umbral/${id}/`);
   return response.data;
 };
