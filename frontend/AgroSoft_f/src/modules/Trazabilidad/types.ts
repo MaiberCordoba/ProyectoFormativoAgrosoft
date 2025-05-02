@@ -67,7 +67,9 @@ export interface Plantaciones{
   fk_Era: number;
 }
 
-export interface Variedad{
+export interface Variedad {
   id: number;
   nombre: string;
 }
+
+export type NuevaVariedad = Omit<Variedad, "id">;
