@@ -4,9 +4,12 @@ from apps.sanidad.api.serializers.afeccionesSerializer import AfeccionesModelSer
 from apps.sanidad.api.serializers.tiposControlSerializer import TiposControlModelSerializer;
 
 
+
 class ControlesModelSerializer(ModelSerializer):
     afeccion = AfeccionesModelSerializer(source='fk_Afeccion',read_only=True)
     tipoControl = TiposControlModelSerializer(source='fk_TipoControl',read_only=True)
+    
+    
     class Meta:
         model = Controles
         fields = "__all__"

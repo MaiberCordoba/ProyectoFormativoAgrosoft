@@ -4,6 +4,7 @@ import { useCrearControl } from "../../hooks/controles/useCrearControles";
 import { useEliminarControl } from "../../hooks/controles/useEliminarControles";
 import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
 
+
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarControlModal from "./EditarControlesModal";
