@@ -9,7 +9,10 @@ import {
   TableCell,
   Button
 } from "@heroui/react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip,
+  CartesianGrid, ResponsiveContainer
+} from "recharts";
 
 interface SensorData {
   timestamp: string;
@@ -21,20 +24,41 @@ export default function SensorDetail() {
   const navigate = useNavigate();
   const [sensorData, setSensorData] = useState<SensorData[]>([]);
 
+  // 🚀 Cargar datos guardados
+  useEffect(() => {
+    fetch(`http://localhost:3000/sensores/${id}`)
+      .then(res => res.json())
+      .then((data: any[]) => {
+        const parsed = data.map(item => ({
+          timestamp: new Date(item.fecha).toLocaleTimeString(),
+          valor: parseFloat(item.valor),
+        }));
+        setSensorData(parsed.slice(-10)); 
+      })
+      .catch(error => {
+        console.error("Error al cargar datos:", error);
+      });
+  }, [id]);
+
+  // 🔁 WebSocket para recibir nuevo dato
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${id}/`);
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        const newData: SensorData = { timestamp: new Date().toLocaleTimeString(), valor: data.valor };
+
+        const newData: SensorData = {
+          timestamp: new Date(data.fecha).toLocaleTimeString(),
+          valor: parseFloat(data.valor), 
+        };
 
         setSensorData((prev) => {
-          const updatedData = [...prev, newData];
-          return updatedData.length > 10 ? updatedData.slice(-10) : updatedData;
+          const updated = [...prev, newData];
+          return updated.length > 10 ? updated.slice(-10) : updated;
         });
       } catch (error) {
-        console.error(`Error en WebSocket (${id}):`, error);
+        console.error("Error al recibir WebSocket:", error);
       }
     };
 
@@ -47,30 +71,37 @@ export default function SensorDetail() {
         Regresar
       </Button>
 
-      <h1 className="text-2xl font-bold text-center mb-4">Detalles del Sensor: {id}</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">
+        Sensor ID: {id}
+      </h1>
 
       <div className="bg-white p-4 shadow-md rounded-lg mb-6">
-        <h2 className="text-lg font-semibold mb-2">Gráfica en tiempo real</h2>
+        <h2 className="text-lg font-semibold mb-2">Gráfica (últimos 10)</h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={sensorData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="timestamp" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="valor" stroke="#8884d8" strokeWidth={2} />
+            <Line
+              type="monotone"
+              dataKey="valor"
+              stroke="#8884d8"
+              strokeWidth={2}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       <div className="bg-white p-4 shadow-md rounded-lg">
-        <h2 className="text-lg font-semibold mb-2">Datos recientes</h2>
-        <Table aria-label="Datos del sensor" selectionMode="single">
+        <h2 className="text-lg font-semibold mb-2">Último dato</h2>
+        <Table aria-label="Datos del sensor">
           <TableHeader>
-            <TableColumn>Tiempo</TableColumn>
+            <TableColumn>Hora</TableColumn>
             <TableColumn>Valor</TableColumn>
           </TableHeader>
           <TableBody>
-            {sensorData.map((item, index) => (
+            {sensorData.slice(-1).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.timestamp}</TableCell>
                 <TableCell>{item.valor}</TableCell>

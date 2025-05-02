@@ -199,6 +199,9 @@ export default function IoTPages() {
       </div>
 
       <br />
+      <div className="flex justify-center col-span-full mb-8">
+        <h2 className="text-2xl font-bold text-gray-800">Evapotranspiración</h2>
+      </div>
       <div className="flex justify-center col-span-full">
         {evapotranspiracion ? (
           <EvapotranspiracionCard
@@ -214,6 +217,16 @@ export default function IoTPages() {
       </div>
 
       <br />
+      <div className="flex justify-between items-center w-full col-span-full mb-4">
+        <h2 className="text-xl font-semibold text-gray-800">Sensores Actuales</h2>
+        <Input
+          className="w-1/4"
+          placeholder="Buscar Sensor"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+        />
+      </div>
+      
       <div className="grid grid-cols-3 flex flex-wrap gap-4 justify-center items-center w-full max-w-6xl mx-auto">
         {sensoresFiltrados.length > 0 ? (
           sensoresFiltrados.map((sensor) => (
@@ -229,15 +242,14 @@ export default function IoTPages() {
           <p className="text-gray-500">No se encontraron sensores</p>
         )}
       </div>
-
-      <br />
-      <div className="col-span-full">
-        <SensorLista />
-      </div>
-
-      <br />
-      <div className="col-span-full">
-        <UmbralLista />
+      <br /> <br />     
+      <div className="flex gap-6">
+        <div className="w-full">
+          <SensorLista />
+        </div>
+        <div className="w-full">
+          <UmbralLista />
+        </div>
       </div>
     </div>
   );
