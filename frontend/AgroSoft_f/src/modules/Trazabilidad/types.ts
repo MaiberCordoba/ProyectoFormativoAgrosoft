@@ -33,6 +33,7 @@ export interface Cultivos{
   fechaSiembra: string;
   Especies?: Especies;
   fk_Especie: number;
+  fk_Semillero?: number;
 }
 
 export interface Lotes{
@@ -50,6 +51,15 @@ export interface Lotes{
   estado: boolean;
 }
 
+export interface Plantaciones{
+  id: number;
+  Cultivos?: Cultivos;
+  fk_Cultivo: number;
+  Eras?: Eras;
+  fk_Era: number;
+}
+
+
 export interface Eras{
   id?: number;
   latI1: number;
@@ -63,12 +73,6 @@ export interface Eras{
   tipo: string;
   Lotes?: Lotes;
   fk_lote: number; 
+  plantaciones?: Plantaciones[];
 }
 
-export interface Plantaciones{
-  id: number;
-  Cultivos?: Cultivos;
-  fk_Cultivo: number;
-  Eras?: Eras;
-  fk_Era: number;
-}

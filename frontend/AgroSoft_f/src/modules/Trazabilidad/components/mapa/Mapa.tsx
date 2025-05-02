@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Popup, Polygon } from 'react-leaflet';
+import { MapContainer, TileLayer, Rectangle, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useGetLotes } from '../../hooks/lotes/useGetLotes';
 import { useGetEras } from '../../hooks/eras/useGetEras';
@@ -30,11 +30,17 @@ const MapComponent = () => {
   };
 
   return (
-    <MapContainer 
+      <MapContainer 
       center={[1.892429, -76.089677]} 
-      zoom={18} 
-      style={{ height: "100vh", width: "100%" }}
-    >
+      zoom={18}
+      className="h-full w-full  rounded-md overflow-hidden"
+      style={{ 
+        height: '100%', 
+        width: '100%',
+        isolation: 'isolate', // Previene conflictos de z-index
+        zIndex:0
+      }}
+      >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -64,31 +70,52 @@ const MapComponent = () => {
         </Polygon>
       ))}
 
-      {/* Renderizar Eras */}
-      {eras?.map((era) => (
-        <Polygon
-          key={`era-${era.id}`}
-          positions={crearPoligono(
-            era.latI1,
-            era.longI1,
-            era.latS1,
-            era.longS1,
-            era.latI2,
-            era.longI2,
-            era.latS2,
-            era.longS2
-          )}
-        >
-          <Popup>
-            <div className="p-2">
-              <h3 className="font-bold">{era.tipo}</h3>
-              <p className="text-sm">Lote padre: {era.fk_lote}</p>
-            </div>
-          </Popup>
-        </Polygon>
-      ))}
-    </MapContainer>
-  );
+
+      
+      {/* Eras con información de cultivos */}
+      {eras?.map((era) => {
+        const cultivo = era.plantaciones?.[0]?.fk_Cultivo; //  Accede a fk_Cultivo
+        const semillero = cultivo?.fk_Semillero; //  Obtiene semillero
+        const especie = semillero?.fk_especie; // Ahora sí obtienes la especie
+
+        return (
+          <Polygon
+                key={`era-${era.id}`}
+                positions={crearPoligono(
+                  era.latI1,
+                  era.longI1,
+                  era.latS1,
+                  era.longS1,
+                  era.latI2,
+                  era.longI2,
+                  era.latS2,
+                  era.longS2
+                )}
+              >
+            <Popup>
+              <div className="p-2 min-w-[200px]">
+                <h3 className="font-bold text-lg mb-2">{era.tipo}</h3>
+
+                {cultivo && especie ? (
+                  <div className="space-y-1">
+                    <p className="text-sm">
+                      <span className="font-medium">Cultivo:</span> {especie.nombre}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Cantidad:</span> {cultivo.unidades}
+                    </p>
+                    
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">Sin cultivos registrados{especie?.nombre}</p>
+                )}
+              </div>
+            </Popup>
+          </Polygon>
+        );
+      })}
+      </MapContainer>
+);
 };
 
 export default MapComponent;
