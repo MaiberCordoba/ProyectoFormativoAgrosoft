@@ -9,10 +9,12 @@ import { CrearCosechasModal } from "./CrearCosechasModal";
 import EliminarCosechasModal from "./EliminarCosechas";
 import { Cosechas } from "../../types";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 
 export function CosechasList() {
   const { data, isLoading, error } = useGetCosechas();
     const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
+    const { data : unidadesMedida, isLoading: loadingUnidadMedida } = useGetUnidadesMedida()
   
   const { 
     isOpen: isEditModalOpen, 
@@ -35,14 +37,16 @@ export function CosechasList() {
   } = useEliminarCosecha();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0,unidades: 0, fecha: ""});
+    handleCrear({ id: 0, fk_Cultivo: 0, fk_UnidadMedida: 0,cantidad: 0, fecha: "", precioReferencial: 0});
   };
 
   // Definición de columnas movida aquí
   const columnas = [
     { name: "Cultivo", uid: "cultivo"  },
-    { name: "Unidades", uid: "unidades" },
-    { name: "Fecha", uid: "fecha" },
+    { name: "UnidadMedida", uid: "unidadMedida"  },
+    { name: "Cantidad Cosechada", uid: "cantidad" },
+    { name: "Fecha de cosecha", uid: "fecha" },
+    { name: "PrecioReferencial", uid: "precioReferencial" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -52,8 +56,11 @@ export function CosechasList() {
       case "cultivo":
         const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
         return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
-      case "unidades":
-        return <span>{item.unidades}</span>;
+      case "unidadMedida":
+        const unidadMedida = unidadesMedida?.find((c) => c.id === item.fk_UnidadMedida);
+        return <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>;
+      case "cantidad":
+        return <span>{item.cantidad}</span>;
       case "fecha":
         return <span>{item.fecha}</span>;
       case "acciones":
@@ -78,7 +85,7 @@ export function CosechasList() {
         datos={data || []}
         columnas={columnas}
         claveBusqueda="fecha"
-        placeholderBusqueda="Buscar por fecha"
+        placeholderBusqueda="Buscar por fecha de cosecha"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
