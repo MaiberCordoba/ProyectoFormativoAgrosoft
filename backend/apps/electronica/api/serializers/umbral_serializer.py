@@ -1,8 +1,7 @@
-from rest_framework.serializers import ModelSerializer
-from apps.electronica.api.models.umbral import *
-from apps.electronica.api.serializers.Sensor_Serializer import *
 from rest_framework import serializers
-
+from apps.electronica.api.models.umbral import Umbral
+from apps.electronica.api.serializers.Sensor_Serializer import SensorSerializer
+from apps.electronica.api.models.sensor import Sensor
 
 class UmbralSerializer(serializers.ModelSerializer):
     sensor = SensorSerializer(read_only=True)
@@ -15,6 +14,9 @@ class UmbralSerializer(serializers.ModelSerializer):
         fields = ['id', 'sensor', 'sensor_id', 'valor_minimo', 'valor_maximo']
 
     def validate(self, data):
-        if data.get('valor_minimo') >= data.get('valor_maximo'):
-            raise serializers.ValidationError("El valor mínimo debe ser menor al valor máximo.")
+        valor_minimo = data.get('valor_minimo')
+        valor_maximo = data.get('valor_maximo')
+        if valor_minimo is not None and valor_maximo is not None:
+            if valor_minimo >= valor_maximo:
+                raise serializers.ValidationError("El valor mínimo debe ser menor al valor máximo.")
         return data

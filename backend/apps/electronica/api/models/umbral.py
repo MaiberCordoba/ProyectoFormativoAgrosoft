@@ -13,5 +13,3 @@ class Umbral(models.Model):
     
     def __str__(self):
         return f'{self.sensor.id} - Valor mínimo: {self.valor_minimo}, Valor máximo: {self.valor_maximo}'
-
-
