@@ -26,5 +26,4 @@ export interface Umbral {
   sensor_id: number;
   valor_minimo: number;
   valor_maximo: number;
-  tipo_sensor?: string; 
 }
