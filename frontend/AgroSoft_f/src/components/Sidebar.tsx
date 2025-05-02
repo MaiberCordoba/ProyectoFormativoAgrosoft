@@ -94,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Gestión Fitosanitaria",
             icon: ShieldCheck,
-            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles"],
+            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles", "Seguimiento de afectaciones"],
             className: "text-left",
           },
         ].map((menu) => (

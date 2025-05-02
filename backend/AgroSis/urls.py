@@ -67,6 +67,8 @@ from apps.sanidad.api.routers.tiposControlRouter import router_tiposControl
 from apps.sanidad.api.routers.controlesRouter import router_controles
 from apps.sanidad.api.routers.productosControlRouter import router_productosControl
 from apps.sanidad.api.routers.UsosProductosControlRouter import router_usoProductosControl
+from apps.sanidad.api.routers.routerSeguimientoAfecciones import routerSeguimientoAfecciones
+from apps.sanidad.api.routers.routerlistSeguimientoAfecciones import routerListSeguimientoAfeccionesViewSet
 
 #Finanzas
 from apps.finanzas.api.routers.routerActividades import routerActividades
@@ -121,6 +123,8 @@ urlpatterns = [
     path("api/", include(router_controles.urls)),
     path("api/", include(router_productosControl.urls)),
     path("api/", include(router_usoProductosControl.urls)),
+    path("api/", include(routerSeguimientoAfecciones.urls)),
+    path("api/", include(routerListSeguimientoAfeccionesViewSet.urls)),
 
     #Finanzas
     path('api/',include(routerActividades.urls)),
