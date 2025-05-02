@@ -112,8 +112,6 @@ export interface Cosechas {
     fk_UnidadMedida : number,
     unidadMedida : UnidadesMedida
     cantidad : number,
-    cantidadTotal :number,
-    cantidadDisponible : number,
     fecha : string,
     precioReferencial : number
 }
