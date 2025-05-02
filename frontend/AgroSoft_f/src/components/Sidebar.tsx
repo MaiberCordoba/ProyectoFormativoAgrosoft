@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Cultivos",
             icon: Leaf,
-            submenus: ["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie", "Plantaciones"],
+            submenus: ["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie","Variedad","Informacion Cultivos Sembrados"],
           },
           {
             title: "Actividades",

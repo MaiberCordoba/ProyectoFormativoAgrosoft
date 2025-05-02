@@ -14,6 +14,8 @@ export interface Especies {
   TiposEspecie?: TiposEspecie;
   fk_tipoespecie?: number | null;
   tipo_especie_nombre?: string | null;
+  Variedad?: Variedad;
+  fk_variedad: number;
 }
 
 export interface Semilleros{
@@ -63,4 +65,9 @@ export interface Plantaciones{
   fk_Especie: number;
   Eras?: Eras;
   fk_Era: number;
+}
+
+export interface Variedad{
+  id: number;
+  nombre: string;
 }

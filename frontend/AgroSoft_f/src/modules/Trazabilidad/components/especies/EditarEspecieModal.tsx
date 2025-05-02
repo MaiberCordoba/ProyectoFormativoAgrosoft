@@ -4,6 +4,7 @@ import { usePatchEspecies } from "../../hooks/especies/usePatchEspecies";
 import { Especies } from "../../types";
 import { Input, Textarea, Select, SelectItem, Button } from "@heroui/react";
 import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie";
+import { useGetVariedad } from "../../hooks/variedad/useGetVariedad"; // <-- nuevo
 
 interface EditarEspecieModalProps {
   especie: Especies;
@@ -23,9 +24,11 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
   const [preview, setPreview] = useState<string | null>(especie.img || null);
   const [tiempocrecimiento, setTiempocrecimiento] = useState<string>(especie.tiempocrecimiento as string);
   const [fk_tipoespecie, setFk_TipoEspecie] = useState<number>(especie.fk_tipoespecie ?? 0);
+  const [fk_variedad, setFkVariedad] = useState<number>(especie.fk_variedad ?? 0); // <-- nuevo
 
   const { mutate, isPending } = usePatchEspecies();
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie } = useGetTiposEspecie();
+  const { data: variedades, isLoading: isLoadingVariedades } = useGetVariedad(); // <-- nuevo
 
   const handleSubmit = () => {
     const formData = new FormData();
@@ -33,6 +36,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
     formData.append("descripcion", descripcion);
     formData.append("tiempocrecimiento", tiempocrecimiento);
     formData.append("fk_tipoespecie", String(fk_tipoespecie));
+    formData.append("fk_variedad", String(fk_variedad)); // <-- nuevo
 
     if (img) {
       formData.append("img", img);
@@ -105,9 +109,25 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
           }}
         >
           {(tiposEspecie || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()} value={tipo.id.toString()}>
-              {tipo.nombre}
-            </SelectItem>
+            <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
+          ))}
+        </Select>
+      )}
+
+      {isLoadingVariedades ? (
+        <p>Cargando variedades...</p>
+      ) : (
+        <Select
+          label="Variedad"
+          placeholder="Selecciona una variedad"
+          selectedKeys={fk_variedad ? [fk_variedad.toString()] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];
+            setFkVariedad(Number(selectedKey));
+          }}
+        >
+          {(variedades || []).map((variedad) => (
+            <SelectItem key={variedad.id.toString()}>{variedad.nombre}</SelectItem>
           ))}
         </Select>
       )}
