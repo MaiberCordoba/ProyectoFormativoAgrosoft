@@ -21,3 +21,8 @@
 .scroll-custom::-webkit-scrollbar-thumb:hover {
   background-color: #555; /* Color más oscuro al pasar el mouse */
 }
+
+.leaflet-container {
+  height: calc(100vh - 64px); /* Resta el alto del header */
+  width: 100%;
+}
