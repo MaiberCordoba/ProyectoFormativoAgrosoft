@@ -29,7 +29,7 @@ Este método devuelve la lista de todos los lotes registrados.
     "descripcion": "Papaya en lote",
     "tamX": 10,
     "tamY": 20,
-    "estado": true,
+    "estado": "disponible",
     "posX": "5.00",
     "posY": "10.00"
   }
@@ -66,7 +66,7 @@ Este método permite registrar un nuevo Lote
 | `descripcion`     | string  | Sí        | Descripción del lote            | "Cultivo de papayas" |
 | `tamX`            | integer | Sí        | Tamaño en X                      | 10 |
 | `tamY`            | integer | Sí        | Tamaño en Y                      | 20 |
-| `estado`          | boolean | Sí        | Estado del lote                 | true |
+| `estado`          | boolean | Sí        | Estado del lote                 | "disponible" |
 | `posX`            | string  | Sí        | Posición en X                   | "5.00" |
 | `posY`            | string  | Sí        | Posición en Y                   | "10.00" |
 
@@ -78,7 +78,7 @@ Este método permite registrar un nuevo Lote
   "descripcion": "Manzanas en lote",
   "tamX": 15,
   "tamY": 25,
-  "estado": false,
+  "estado": "ocupado",
   "posX": "8.00",
   "posY": "12.00"
 }
@@ -98,7 +98,7 @@ Este método permite actualizar/editar un lote
 | Parámetro        | Tipo     | Requerido | Descripción                        | Ejemplo  |
 |------------------|---------|-----------|------------------------------------|----------|
 | `nombre`        | string  | No        | Nuevo nombre del lote              | "Lote de fresas"  |
-| `estado`        | boolean | No        | Nuevo estado del lote              | false |
+| `estado`        | boolean | No        | Nuevo estado del lote              | "ocupado" |
 
 ###### ✅ Respuesta Exitosa (200 - Ok)
 ```json
@@ -108,7 +108,7 @@ Este método permite actualizar/editar un lote
   "descripcion": "Papaya en lote",
   "tamX": 10,
   "tamY": 20,
-  "estado": false,
+  "estado": "ocupado",
   "posX": "5.00",
   "posY": "10.00"
 }

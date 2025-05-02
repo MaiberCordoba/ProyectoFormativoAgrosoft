@@ -1,11 +1,23 @@
 from django.db import models
 from .TiposEspecieModel import TiposEspecie
+from .VariedadModel import Variedad
 
 class Especies(models.Model):
-    fk_tipoespecie = models.ForeignKey(TiposEspecie,on_delete=models.SET_NULL,null=True)
+    class TiempoCrecimientoChoices(models.TextChoices):
+        PERENNES = 'perennes', 'Perennes'
+        SEMIPERENNES= 'semiperennes', 'Semiperennes'
+        TRANSITORIO = 'transitorio', 'Transitorio'
+
+    fk_tipoespecie = models.ForeignKey(TiposEspecie, on_delete=models.SET_NULL, null=True)
+    fk_variedad = models.ForeignKey(Variedad, on_delete=models.SET_NULL, null=True)
     nombre = models.CharField(max_length=30)
     descripcion = models.TextField(max_length=400)
-    img = models.CharField(max_length=255)
-    tiempocrecimiento = models.IntegerField()
+    img = models.ImageField(upload_to="especies/", null=True, blank=True)
+    tiempocrecimiento = models.CharField(
+        max_length=15,
+        choices=TiempoCrecimientoChoices.choices,
+        default=TiempoCrecimientoChoices.PERENNES
+    )
+
     def __str__(self):
         return self.nombre

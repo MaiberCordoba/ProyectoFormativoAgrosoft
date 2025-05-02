@@ -39,7 +39,7 @@ import { Plantaciones } from "./modules/Trazabilidad/pages/plantaciones";
 import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
 import { ErasList } from "./modules/Trazabilidad/pages/eras";
 import { LotesList } from "./modules/Trazabilidad/pages/lotes";
-
+import { VariedadList } from "./modules/Trazabilidad/components/variedad/VariedadList";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
@@ -61,6 +61,7 @@ import Testeo  from "./pages/testeo";
 import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
+
 
 
 
@@ -132,8 +133,8 @@ function App() {
             <Route path="/cultivos" element={<CultivoList />} />
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
+            <Route path="/variedad" element={<VariedadList />} />
             <Route path="/mapa" element={<MapPage/>} />
-
 
             {/*Sanidad*/}
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>

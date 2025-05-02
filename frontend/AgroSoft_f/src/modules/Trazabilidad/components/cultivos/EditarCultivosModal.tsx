@@ -4,6 +4,7 @@ import { usePatchCultivos } from "../../hooks/cultivos/usePatchCultivos";
 import { Cultivos } from "../../types";
 import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
+import { useGetSemilleros } from "../../hooks/semilleros/useGetSemilleros";
 
 interface EditarCultivoModalProps {
   cultivo: Cultivos;
@@ -11,14 +12,15 @@ interface EditarCultivoModalProps {
 }
 
 const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClose }) => {
-  const [nombre, setNombre] = useState<string>(cultivo.nombre);
   const [unidades, setUnidades] = useState<number>(cultivo.unidades);
   const [fechaSiembra, setFechaSiembra] = useState<string>(cultivo.fechaSiembra);
   const [fk_Especie, setFk_Especie] = useState<number>(cultivo.fk_Especie);
+  const [fk_semillero, setFk_Semillero] = useState<number>(cultivo.fk_semillero);
   const [activo, setActivo] = useState<boolean>(cultivo.activo);
 
   const { mutate, isPending } = usePatchCultivos();
   const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
+  const { data: semilleros, isLoading: isLoadingSemilleros } = useGetSemilleros();
 
   const handleSubmit = () => {
     if (cultivo.id === undefined) {
@@ -30,10 +32,10 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
       {
         id: cultivo.id,
         data: {
-          nombre,
           unidades,
           fechaSiembra,
           fk_Especie,
+          fk_semillero,
           activo,
         },
       },
@@ -59,12 +61,6 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         },
       ]}
     >
-      <Input
-        value={nombre}
-        label="Nombre"
-        type="text"
-        onChange={(e) => setNombre(e.target.value)}
-      />
       <Input
         value={unidades.toString()}
         label="Unidades"
@@ -94,6 +90,26 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         >
           {(especies || []).map((especie) => (
             <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
+          ))}
+        </Select>
+      )}
+
+      {isLoadingSemilleros ? (
+        <p>Cargando semilleros...</p>
+      ) : (
+        <Select
+          label="Semillero"
+          placeholder="Selecciona un semillero"
+          selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];
+            if (selectedKey) {
+              setFk_Semillero(Number(selectedKey));
+            }
+          }}
+        >
+          {(semilleros || []).map((semillero) => (
+            <SelectItem key={semillero.id.toString()}>{`${semillero.id}`}</SelectItem>
           ))}
         </Select>
       )}

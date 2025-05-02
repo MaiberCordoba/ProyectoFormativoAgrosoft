@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { usePostLotes } from "../../hooks/lotes/usePostLotes"; // Hook para registrar lotes
+import { usePostLotes } from "../../hooks/lotes/usePostLotes";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 
 interface CrearLoteModalProps {
   onClose: () => void;
+  onCreate: (nuevoLote: { id: number }) => void;
 }
 
-export const CrearLoteModal = ({ onClose }: CrearLoteModalProps) => {
+export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [tamX, setTamX] = useState<number | null>(null);
@@ -32,11 +33,13 @@ export const CrearLoteModal = ({ onClose }: CrearLoteModalProps) => {
         tamY,
         posX,
         posY,
-        estado: estado === "di", // Convertir "di" a `true` y "oc" a `false`
+        estado: estado === "di", // true para disponible, false para ocupado
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          onCreate(data); // Notificar lote creado
           onClose();
+          // Limpiar campos
           setNombre("");
           setDescripcion("");
           setTamX(null);

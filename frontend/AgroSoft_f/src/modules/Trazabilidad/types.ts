@@ -5,15 +5,17 @@ export interface TiposEspecie{
   img: string;
 }
 
-export interface Especies{
-    id: number;
-    nombre: string;
-    descripcion: string;
-    img?: string;
-    tiempocrecimiento: number;
-    TiposEspecie?: TiposEspecie;
-    fk_tipoespecie?: number | null;
-    tipo_especie_nombre?: string | null;
+export interface Especies {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  img?: string;
+  tiempocrecimiento: string;
+  TiposEspecie?: TiposEspecie;
+  fk_tipoespecie?: number | null;
+  tipo_especie_nombre?: string | null;
+  Variedad?: Variedad;
+  fk_variedad: number;
 }
 
 export interface Semilleros{
@@ -27,12 +29,13 @@ export interface Semilleros{
 
 export interface Cultivos{
   id?: number;
-  nombre: string;
   unidades: number;
   activo: boolean;
   fechaSiembra: string;
   Especies?: Especies;
   fk_Especie: number;
+  Semillero?: Semilleros;
+  fk_semillero: number;
 }
 
 export interface Lotes{
@@ -50,16 +53,19 @@ export interface Lotes{
   estado: boolean;
 }
 
+
+
 export interface Plantaciones{
   id: number;
+  Especies?: Especies;
+  fk_Especie: number;
   Cultivos?: Cultivos;
-  fk_Cultivo: { // ✅ Nombre correcto según endpoint
+  fk_Cultivo: { // Nombre correcto según endpoint
     unidades: number;
     fk_Semillero: {
       fk_especie: {
         nombre: string;
         id:number;
-        //... otros campos
       };
     };
   };
@@ -67,6 +73,11 @@ export interface Plantaciones{
   fk_Era: number;
 }
 
+
+export interface Variedad{
+  id: number;
+  nombre: string;
+}
 
 export interface Eras{
   id?: number;

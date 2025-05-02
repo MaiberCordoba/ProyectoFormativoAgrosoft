@@ -6,28 +6,27 @@ import { addToast } from "@heroui/toast";
 export const usePostEspecies = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Especies, Error, Especies>({
+  return useMutation<Especies, Error, FormData>({
     mutationKey: ['crearEspecies'],
-    mutationFn: postEspecies,
+    mutationFn: postEspecies, // espera FormData
     onSuccess: (data) => {
       console.log("Especie creada con éxito:", data);
 
-      // Invalida la query para que se refresquen los datos
-      queryClient.invalidateQueries({ queryKey: ['Especies'] });
+      queryClient.invalidateQueries({ queryKey: ['especies'] }); // clave en minúscula y consistente
 
       addToast({
-        title: 'Creacion exitosa',
-        description: 'Nueva Especies registrada con Exito',
-        color: 'success'
-      })
+        title: 'Creación exitosa',
+        description: 'Nueva especie registrada con éxito',
+        color: 'success',
+      });
     },
     onError: (error) => {
-      console.error("Error al crear la Especie:", error);
+      console.error("Error al crear la especie:", error);
       addToast({
-        title: 'Error al crear la Especies',
-        description: 'No fue posible  registrar nueva Especies',
-        color: 'success'
-      })
+        title: 'Error al crear especie',
+        description: 'No fue posible registrar la nueva especie',
+        color: 'danger', // color corregido
+      });
     },
   });
 };

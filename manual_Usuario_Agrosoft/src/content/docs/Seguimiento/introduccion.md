@@ -39,43 +39,43 @@ El módulo **Seguimiento de Cultivos** permite registrar y gestionar la informac
 
 <div class="card-grid">
   <a href="/seguimiento/semilleros" class="card">
-    <div class="card-icon">🌱</div>
+    <div class="card-icon"></div>
     <h3>Semilleros</h3>
     <p>Registra y gestiona los semilleros utilizados en la producción.</p>
   </a>
 
   <a href="/seguimiento/cultivos" class="card">
-    <div class="card-icon">🌾</div>
+    <div class="card-icon"></div>
     <h3>Cultivos</h3>
     <p>Consulta y gestiona la información de los cultivos registrados.</p>
   </a>
   
   <a href="/seguimiento/lotes" class="card">
-    <div class="card-icon">📍</div>
+    <div class="card-icon"></div>
     <h3>Lotes</h3>
     <p>Administra la ubicación y segmentación de los cultivos.</p>
   </a>
 
   <a href="/seguimiento/eras" class="card">
-    <div class="card-icon">🏞️</div>
+    <div class="card-icon"></div>
     <h3>Eras</h3>
     <p>Administra las eras agrícolas utilizadas en la producción.</p>
   </a>
 
   <a href="/seguimiento/especies" class="card">
-    <div class="card-icon">🌿</div>
+    <div class="card-icon"></div>
     <h3>Especies</h3>
     <p>Registra y clasifica las especies cultivadas.</p>
   </a>
 
   <a href="/seguimiento/tipos-especie" class="card">
-    <div class="card-icon">🔬</div>
+    <div class="card-icon"></div>
     <h3>Tipos de Especie</h3>
     <p>Gestiona las diferentes variedades dentro de cada especie.</p>
   </a>
 
   <a href="/seguimiento/plantaciones" class="card">
-    <div class="card-icon">🌍</div>
+    <div class="card-icon"></div>
     <h3>Plantaciones</h3>
     <p>Supervisa y controla las plantaciones activas.</p>
   </a>

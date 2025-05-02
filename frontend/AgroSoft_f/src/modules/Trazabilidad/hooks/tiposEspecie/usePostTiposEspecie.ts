@@ -6,28 +6,27 @@ import { addToast } from "@heroui/toast";
 export const usePostTiposEspecie = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<TiposEspecie, Error, TiposEspecie>({
+  return useMutation<TiposEspecie, Error, FormData>({
     mutationKey: ['crearTiposEspecie'],
     mutationFn: postTiposEspecie,
     onSuccess: (data) => {
-      console.log("Afección creada con éxito:", data);
+      console.log("Tipo de especie creada con éxito:", data);
 
-      // Invalida la query para que se refresquen los datos
-      queryClient.invalidateQueries({ queryKey: ['TiposEspecie'] });
+      queryClient.invalidateQueries({ queryKey: ['tiposEspecie'] });
 
       addToast({
-        title: 'Creacion exitosa',
-        description: 'Nueva TiposEspecie registrada con Exito',
-        color: 'success'
-      })
+        title: 'Creación exitosa',
+        description: 'Nuevo tipo de especie registrado con éxito',
+        color: 'success',
+      });
     },
     onError: (error) => {
-      console.error("Error al crear la afección:", error);
+      console.error("Error al crear el tipo de especie:", error);
       addToast({
-        title: 'Error al crear la TiposEspecie',
-        description: 'No fue posible  registrar nueva TiposEspecie',
-        color: 'success'
-      })
+        title: 'Error al crear tipo de especie',
+        description: 'No fue posible registrar el tipo de especie',
+        color: 'danger',
+      });
     },
   });
 };

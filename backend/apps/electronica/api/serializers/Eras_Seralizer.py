@@ -49,3 +49,4 @@ class ErasSerializer(serializers.ModelSerializer):
         model = Eras
         fields = '__all__'
         depth = 4  # Opcional para desarrollo, quitar en producción
+

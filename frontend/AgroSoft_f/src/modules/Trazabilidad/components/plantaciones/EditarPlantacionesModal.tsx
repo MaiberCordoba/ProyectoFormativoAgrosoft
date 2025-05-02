@@ -3,7 +3,7 @@ import ModalComponent from "@/components/Modal";
 import { usePatchPlantaciones } from "../../hooks/plantaciones/usePatchPlantaciones";
 import { Plantaciones } from "../../types";
 import { Select, SelectItem } from "@heroui/react";
-import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
+import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import { useGetEras } from "../../hooks/eras/useGetEras";
 
 interface EditarPlantacionModalProps {
@@ -12,11 +12,11 @@ interface EditarPlantacionModalProps {
 }
 
 const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacion, onClose }) => {
-  const [fk_Cultivo, setFk_Cultivo] = useState<number>(plantacion.fk_Cultivo);
+  const [fk_Especie, setFk_Especie] = useState<number>(plantacion.fk_Especie);
   const [fk_Era, setFk_Era] = useState<number>(plantacion.fk_Era);
 
   const { mutate, isPending } = usePatchPlantaciones();
-  const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
+  const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
   const { data: eras, isLoading: isLoadingEras } = useGetEras();
 
   const handleSubmit = () => {
@@ -24,7 +24,7 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
       {
         id: plantacion.id,
         data: {
-          fk_Cultivo,
+          fk_Especie,
           fk_Era,
         },
       },
@@ -50,21 +50,21 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
         },
       ]}
     >
-      {/* Select de Cultivo */}
-      {isLoadingCultivos ? (
-        <p>Cargando cultivos...</p>
+      {/* Select de Especie */}
+      {isLoadingEspecies ? (
+        <p>Cargando especies...</p>
       ) : (
         <Select
-          label="Cultivo"
-          placeholder="Selecciona un cultivo"
-          selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
+          label="Especie"
+          placeholder="Selecciona una especie"
+          selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_Cultivo(Number(selectedKey));
+            setFk_Especie(Number(selectedKey));
           }}
         >
-          {(cultivos || []).map((cultivo) => (
-            <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
+          {(especies || []).map((especie) => (
+            <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
           ))}
         </Select>
       )}
