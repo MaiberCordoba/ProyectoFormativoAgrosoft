@@ -129,12 +129,13 @@ function App() {
             <Route path="/tipos-especie" element={<TiposEspecie />} />
             <Route path="/especies" element={<EspeciesList />} />
             <Route path="/semilleros" element={<Semillero />} />
-            <Route path="/plantaciones" element={<Plantaciones />} />
+            <Route path="/informacion-cultivos-sembrados" element={<Plantaciones/>} />
             <Route path="/cultivos" element={<CultivoList />} />
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
             <Route path="/variedad" element={<VariedadList />} />
             <Route path="/mapa" element={<MapPage/>} />
+            
 
             {/*Sanidad*/}
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>

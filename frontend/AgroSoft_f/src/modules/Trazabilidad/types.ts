@@ -60,7 +60,7 @@ export interface Plantaciones{
   Especies?: Especies;
   fk_Especie: number;
   Cultivos?: Cultivos;
-  fk_Cultivo: { // Nombre correcto según endpoint
+  fk_Cultivo: {
     unidades: number;
     fk_Semillero: {
       fk_especie: {
@@ -73,25 +73,9 @@ export interface Plantaciones{
   fk_Era: number;
 }
 
-
 export interface Variedad{
   id: number;
   nombre: string;
 }
 
-export interface Eras{
-  id?: number;
-  latI1: number;
-  longI1: number;
-  latS1: number;
-  longS1: number;
-  latI2: number;
-  longI2: number;
-  latS2: number;
-  longS2: number;
-  tipo: string;
-  Lotes?: Lotes;
-  fk_lote: number; 
-  plantaciones?: Plantaciones[];
-}
-
+export type NuevaVariedad = Omit<Variedad, "id">;

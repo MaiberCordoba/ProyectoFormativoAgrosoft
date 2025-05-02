@@ -7,9 +7,7 @@ class Especies(models.Model):
         PERENNES = 'perennes', 'Perennes'
         SEMIPERENNES= 'semiperennes', 'Semiperennes'
         TRANSITORIO = 'transitorio', 'Transitorio'
-
     fk_tipoespecie = models.ForeignKey(TiposEspecie, on_delete=models.SET_NULL, null=True)
-    fk_variedad = models.ForeignKey(Variedad, on_delete=models.SET_NULL, null=True)
     nombre = models.CharField(max_length=30)
     descripcion = models.TextField(max_length=400)
     img = models.ImageField(upload_to="especies/", null=True, blank=True)
