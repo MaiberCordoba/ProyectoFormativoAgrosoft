@@ -15,14 +15,14 @@ const EliminarUmbralModal: React.FC<EliminarUmbralModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { mutate, isPending } = useDeleteUmbral();
+  const { mutate, isPending } = useDeleteUmbral(); 
 
   const handleConfirmDelete = () => {
     mutate(
       { id: umbral.id },
       {
         onSuccess: () => {
-          onClose();
+          onClose(); 
         },
       }
     );
@@ -32,13 +32,13 @@ const EliminarUmbralModal: React.FC<EliminarUmbralModalProps> = ({
     <ModalComponent
       isOpen={isOpen}
       onClose={onClose}
-      title=""
+      title="Eliminar Umbral"
       footerButtons={[
         {
           label: isPending ? "Eliminando..." : "Eliminar",
           color: "danger",
           variant: "light",
-          onClick: handleConfirmDelete,
+          onClick: handleConfirmDelete, 
         },
       ]}
     >

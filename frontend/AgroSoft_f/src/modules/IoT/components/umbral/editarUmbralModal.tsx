@@ -3,7 +3,7 @@ import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { addToast } from "@heroui/toast";
 import { Umbral } from "../../types/sensorTypes";
-import { usePatchUmbral } from "../../hooks/umbral/usePachtUmbral"; // 👈 tu hook personalizado
+import { usePatchUmbral } from "../../hooks/umbral/usePachtUmbral";
 
 interface EditarUmbralModalProps {
   umbral: Umbral;
@@ -30,6 +30,7 @@ const EditarUmbralModal: React.FC<EditarUmbralModalProps> = ({ umbral, onClose }
       {
         id: umbral.id,
         data: {
+          sensor_id: umbral.sensor_id,
           valor_minimo: valorMinimo,
           valor_maximo: valorMaximo,
         },
@@ -74,7 +75,6 @@ const EditarUmbralModal: React.FC<EditarUmbralModalProps> = ({ umbral, onClose }
         value={valorMinimo.toString()}
         onChange={(e) => setValorMinimo(Number(e.target.value))}
       />
-
       <Input
         label="Valor máximo"
         type="number"
