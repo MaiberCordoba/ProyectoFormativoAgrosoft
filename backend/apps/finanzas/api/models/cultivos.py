@@ -1,13 +1,9 @@
 from django.db import models
 from apps.trazabilidad.api.models.EspeciesModel import Especies
-from apps.trazabilidad.api.models.SemillerosModel import Semilleros
 
 class Cultivos(models.Model):
     nombre = models.CharField(max_length=50,null=True,unique=True)
-    fk_Especie = models.ForeignKey(Especies,on_delete=models.SET_NULL, null=True)
-    fk_semillero = models.ForeignKey(Semilleros,on_delete=models.SET_NULL, null=True)
-    unidades = models.IntegerField()
     activo = models.BooleanField(default=False, null=False)
-    fechaSiembra = models.DateField(auto_now=False)
+    fk_Especie = models.ForeignKey(Especies,on_delete=models.SET_NULL, null=True)
     def __str__(self):
-        return f"Nombre {self.fk_Semillero}"
+        return (str(self.fk_Especie.nombre) + str(" ") + str(self.nombre))
