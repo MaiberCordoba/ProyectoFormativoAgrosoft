@@ -10,5 +10,10 @@ class Plantaciones(models.Model):
     fk_Cultivo = models.ForeignKey(Cultivos, on_delete=models.SET_NULL,null=True)
     fk_Era = models.ForeignKey(Eras, on_delete=models.SET_NULL,null=True)
     creado = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return ("semillero: " + str(self.fk_semillero) + " cultivo: " + str(self.fk_Cultivo) + " hera: " + str(self.fk_Era))
+        info = []
+        if self.fk_semillero: info.append(f"semillero: {self.fk_semillero}")
+        if self.fk_Cultivo: info.append(f"cultivo: {self.fk_Cultivo}")
+        if self.fk_Era: info.append(f"era: {self.fk_Era}")
+        return " ".join(info) or "plantacion sin relaciones asignadas"
