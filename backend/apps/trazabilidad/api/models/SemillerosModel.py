@@ -1,10 +1,11 @@
 from django.db import models
-from .EspeciesModel import Especies
+from apps.finanzas.api.models.cultivos import Cultivos
 
 class Semilleros(models.Model):
-    fk_especie = models.ForeignKey(Especies,on_delete=models.SET_NULL,null=True)
     unidades = models.IntegerField()
     fechasiembra = models.DateField()
     fechaestimada = models.DateField()
+    fk_Cultivo = models.ForeignKey(Cultivos,on_delete=models.SET_NULL,null=True)
+    
     def __str__(self):
-        return ('Semillero de especie:'+str(self.fk_especie))
+        return ('Semillero de especie:'+str(self.fk_Cultivo))

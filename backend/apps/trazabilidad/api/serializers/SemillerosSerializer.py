@@ -1,9 +1,9 @@
 from rest_framework.serializers import ModelSerializer
 from ..models.SemillerosModel import Semilleros
-from apps.trazabilidad.api.serializers.EspeciesSerializer import EspeciesSerializer
+from apps.finanzas.api.serializers.serializerCultivos import SerializerCultivos
 
 class SemillerosSerializer(ModelSerializer):
-    especie = EspeciesSerializer(source='fk_especie',read_only=True)
+    cultivo = SerializerCultivos(source='fk_Cultivo',read_only=True)
     class Meta:
         model = Semilleros
         fields = '__all__'
