@@ -8,4 +8,4 @@ class Semilleros(models.Model):
     fk_Cultivo = models.ForeignKey(Cultivos,on_delete=models.SET_NULL,null=True)
     
     def __str__(self):
-        return ('Semillero de especie:'+str(self.fk_Cultivo))
+        return ('Semillero del cultivo:'+str(self.fk_Cultivo))

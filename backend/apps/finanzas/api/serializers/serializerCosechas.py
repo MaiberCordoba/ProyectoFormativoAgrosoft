@@ -17,7 +17,6 @@ class SerializerCosechas(serializers.ModelSerializer):
             equivalencia = unidad.equivalenciabase
             cantidad_total = cantidad * equivalencia
             validated_data['cantidadTotal'] = cantidad_total
-            validated_data['cantidadDisponible'] = cantidad_total
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
@@ -28,8 +27,5 @@ class SerializerCosechas(serializers.ModelSerializer):
             equivalencia = unidad.equivalenciabase
             cantidad_total = cantidad * equivalencia
             validated_data['cantidadTotal'] = cantidad_total
-
-            if instance.cantidadDisponible == 0:
-                validated_data['cantidadDisponible'] = cantidad_total
 
         return super().update(instance, validated_data)
