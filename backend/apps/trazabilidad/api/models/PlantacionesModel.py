@@ -11,4 +11,4 @@ class Plantaciones(models.Model):
     fk_Era = models.ForeignKey(Eras, on_delete=models.SET_NULL,null=True)
     creado = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return (str(self.fk_semillero) + str(self.fk_Cultivo) + str(" ") + str(self.fk_Era))
+        return ("semillero: " + str(self.fk_semillero) + " cultivo: " + str(self.fk_Cultivo) + " hera: " + str(self.fk_Era))
