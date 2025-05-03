@@ -1,8 +1,9 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from apps.finanzas.api.models.ventas import Ventas
-
+from apps.finanzas.api.serializers.serializerUnidadesMedida import serializerUnidadesMedida
 class SerializerVentas(ModelSerializer):
+    unidadMedida = serializerUnidadesMedida(source='fk_UnidadMedida', read_only=True)
     valorTotal = serializers.IntegerField(read_only=True)
     precioUnitario = serializers.IntegerField(required=False)
 
@@ -25,7 +26,7 @@ class SerializerVentas(ModelSerializer):
         # Descontar del stock
         if cosecha and unidad_medida:
             cantidad_en_base = cantidad * unidad_medida.equivalenciabase
-            cosecha.cantidadDisponible -= cantidad_en_base
+            cosecha.cantidadTotal -= cantidad_en_base
             cosecha.save()
 
         return super().create(validated_data)
