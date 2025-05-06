@@ -14,7 +14,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const [cantidad, setCantidad] = useState<number>(0);  // Inicializado en 0
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
-  const [precioReferencial, setPrecioReferencial] = useState<Number>(0)
+  const [precioReferencial, setPrecioReferencial] = useState<number>(0)
 
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
   const { data: UnidadMedida, isLoading: isLoadingUnidadMedida } = useGetUnidadesMedida();
@@ -84,7 +84,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           }}
         >
           {(cultivos || []).map((cultivo) => (
-            <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
+            <SelectItem key={cultivo.id.toString()}>{cultivo.Especies?.nombre}</SelectItem>
           ))}
         </Select>
       )}

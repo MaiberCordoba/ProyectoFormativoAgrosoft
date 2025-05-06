@@ -243,6 +243,7 @@ export interface Ventas {
     precioUnitario : number,
     fecha : string,
     fk_UnidadMedida : number,
+    unidadMedida : UnidadesMedida,
     cantidad : number,
     valorTotal : number
 }

@@ -40,11 +40,11 @@ export function VentasList() {
   };
 
   const columnas = [
-    { name: "fecha de Cosecha", uid: "cosecha" },
-    { name: "Precio Unitario", uid: "precioUnitario" },
     { name: "Fecha Venta", uid: "fecha" },
+    { name: "fecha de Cosecha", uid: "cosecha" },
     { name: "Unidad de medida", uid: "unidadMedida" },
     { name: "Cantidad", uid: "cantidad" },
+    { name: "Precio Unitario", uid: "precioUnitario" },
     { name: "Valor Total de venta", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -58,12 +58,12 @@ export function VentasList() {
         return <span>{item.precioUnitario}</span>;
       case "fecha":
         return <span>{item.fecha}</span>;
-        case "unidadMedida":
-          const unidadMedida = unidadesMedida?.find((c) => c.id === item.fk_UnidadMedida);
-          return <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>;
-        case "cantidad":
+      case "unidadMedida":
+        const unidadMedida = unidadesMedida?.find((c) => c.id === item.fk_UnidadMedida);
+        return <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>;
+      case "cantidad":
           return <span>{item.cantidad}</span>;
-        case "valorTotal":
+      case "valorTotal":
           return <span>{item.valorTotal}</span>;
       case "acciones":
         return (
