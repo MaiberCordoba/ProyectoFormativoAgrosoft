@@ -75,7 +75,7 @@ export function CosechasList() {
     }
   };
 
-  if (isLoading || loadingCultivo) return <p>Cargando...</p>;
+  if (isLoading || loadingCultivo || loadingUnidadMedida) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las Cosechas</p>;
 
   return (
