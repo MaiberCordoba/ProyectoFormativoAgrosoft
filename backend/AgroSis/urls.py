@@ -58,7 +58,6 @@ from apps.trazabilidad.api.routers.PlantacionesRouter import PlantacionesRouter
 from apps.trazabilidad.api.routers.SemillerosRouter import SemillerosRouter
 from apps.trazabilidad.api.routers.TiposEspeciesRouter import TiposEspecieRouter
 from apps.trazabilidad.api.routers.UsosHerramientasRouter import UsosHerramientasRouter
-from apps.trazabilidad.api.routers.VariedadRouter import VariedadRouter
 
 #Sanidad
 from apps.sanidad.api.routers.tipoPlagaRouter import router_tipoPlaga
@@ -115,7 +114,6 @@ urlpatterns = [
     path('api/',include(PlantacionesRouter.urls)),
     path('api/',include(SemillerosRouter.urls)),
     path('api/',include(UsosHerramientasRouter.urls)),
-    path('api/',include(VariedadRouter.urls)),
 
     
     #Sanidad
