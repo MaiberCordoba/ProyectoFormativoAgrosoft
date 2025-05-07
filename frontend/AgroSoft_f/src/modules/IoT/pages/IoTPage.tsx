@@ -135,6 +135,7 @@ export default function IoTPages() {
         console.error("Error al obtener los cultivos:", error);
       });
   }, []);
+  
 
   useEffect(() => {
     if (!cultivoId) return;
@@ -158,13 +159,38 @@ export default function IoTPages() {
   }, [cultivoId]);
 
   const sensoresList = [
-    { id: "viento", title: "Viento", icon: <WiStrongWind size={32} /> },
-    { id: "temperatura", title: "Temperatura", icon: <WiThermometer size={32} /> },
-    { id: "luzSolar", title: "Luz Solar", icon: <WiDayCloudy size={32} /> },
-    { id: "humedad", title: "Humedad", icon: <WiRaindrop size={32} /> },
-    { id: "humedadAmbiente", title: "H. Ambiente", icon: <WiHumidity size={32} /> },
-    { id: "lluvia", title: "Lluvia", icon: <WiRain size={32} /> },
+    {
+      id: "viento",
+      title: "Viento",
+      icon: <WiStrongWind size={32} style={{ color: "#5DADE2" }} />, // azul claro
+    },
+    {
+      id: "temperatura",
+      title: "Temperatura",
+      icon: <WiThermometer size={32} style={{ color: "#E74C3C" }} />, // rojo
+    },
+    {
+      id: "luzSolar",
+      title: "Luz Solar",
+      icon: <WiDayCloudy size={32} style={{ color: "#F1C40F" }} />, // amarillo
+    },
+    {
+      id: "humedad",
+      title: "Humedad",
+      icon: <WiRaindrop size={32} style={{ color: "#3498DB" }} />, // azul
+    },
+    {
+      id: "humedadAmbiente",
+      title: "H. Ambiente",
+      icon: <WiHumidity size={32} style={{ color: "#76D7C4" }} />, // verde agua
+    },
+    {
+      id: "lluvia",
+      title: "Lluvia",
+      icon: <WiRain size={32} style={{ color: "#2980B9" }} />, // azul oscuro
+    },
   ];
+  
 
   const sensoresFiltrados = sensoresList.filter((sensor) =>
     sensor.title.toLowerCase().includes(searchId.toLowerCase())
@@ -186,7 +212,7 @@ export default function IoTPages() {
         >
           {cultivos.length > 0 ? (
             cultivos.map((cultivo) => (
-              <SelectItem key={String(cultivo.id)}>{cultivo.nombre}</SelectItem>
+              <SelectItem key={String(cultivo.id)}>cultivo {cultivo.id}</SelectItem>
             ))
           ) : (
             <SelectItem isDisabled value="null">
@@ -213,12 +239,14 @@ export default function IoTPages() {
           <p className="text-red-500">{errorET}</p>
         ) : (
           <p className="text-gray-500">Calculando evapotranspiración...</p>
+          
         )}
+        
       </div>
 
       <br />
       <div className="flex justify-between items-center w-full col-span-full mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Sensores Actuales</h2>
+        <h2 className="text-xl font-semibold text-gray-800 justify-center">Sensores Actuales</h2>
         <Input
           className="w-1/4"
           placeholder="Buscar Sensor"
@@ -245,9 +273,11 @@ export default function IoTPages() {
       <br /> <br />     
       <div className="flex gap-6">
         <div className="w-full">
+          <h2 className="flex justify-center col-span-full text-xl font-semibold text-gray-800 ">Lista de Sensores</h2>
           <SensorLista />
         </div>
         <div className="w-full">
+          <h2 className="flex justify-center col-span-full text-xl font-semibold text-gray-800">Lista de Umbrales</h2>
           <UmbralLista />
         </div>
       </div>
