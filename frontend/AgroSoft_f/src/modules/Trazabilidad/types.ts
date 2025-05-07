@@ -12,10 +12,10 @@ export interface Especies {
   img?: string;
   tiempocrecimiento: string;
   TiposEspecie?: TiposEspecie;
-  fk_tipoespecie?: number | null;
+  fk_tipoespecie?: {
+    nombre: string;
+  };
   tipo_especie_nombre?: string | null;
-  Variedad?: Variedad;
-  fk_variedad: number;
 }
 
 export interface Semilleros{
@@ -23,19 +23,26 @@ export interface Semilleros{
   unidades: number;
   fechasiembra: string;
   fechaestimada: string;
-  Especies?: Especies;
-  fk_especie: number;
+  Cultivos?: Especies;
+  fk_Cultivo: {
+    nombre: string;
+    Especies?: Especies;
+    fk_Especie: {
+      nombre: string;
+    };
+  };
 }
 
 export interface Cultivos{
   id?: number;
+  nombre : string;
   unidades: number;
   activo: boolean;
   fechaSiembra: string;
   Especies?: Especies;
-  fk_Especie: number;
-  Semillero?: Semilleros;
-  fk_semillero: number;
+  fk_Especie: {
+    nombre: string;
+  };
 }
 
 export interface Lotes{
@@ -57,11 +64,9 @@ export interface Lotes{
 
 export interface Plantaciones{
   id: number;
-  Especies?: Especies;
-  fk_Especie: number;
   Cultivos?: Cultivos;
   fk_Cultivo: {
-    unidades: number;
+    nombre: string;
     fk_Semillero: {
       fk_especie: {
         nombre: string;
@@ -72,10 +77,3 @@ export interface Plantaciones{
   Eras?: Eras;
   fk_Era: number;
 }
-
-export interface Variedad{
-  id: number;
-  nombre: string;
-}
-
-export type NuevaVariedad = Omit<Variedad, "id">;
