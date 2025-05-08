@@ -35,11 +35,6 @@ const EliminarTiposEspecieModal: React.FC<EliminarTiposEspecieModalProps> = ({
       title="Eliminar Tipo de Especie"
       footerButtons={[
         {
-          label: "Cancelar",
-          variant: "outline",
-          onClick: onClose,
-        },
-        {
           label: isPending ? "Borrando..." : "Eliminar",
           color: "danger",
           variant: "solid",

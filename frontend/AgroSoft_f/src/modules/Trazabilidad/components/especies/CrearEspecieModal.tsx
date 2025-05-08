@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { usePostEspecies } from "../../hooks/especies/usePostEspecies";
 import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie";
-import { useGetVariedad } from "../../hooks/variedad/useGetVariedad";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearTiposEspecieModal } from "../tiposEspecie/CrearTiposEspecieModal";
-import { CrearVariedadModal } from "../variedad/CrearVariedadModal";
 
 interface CrearEspecieModalProps {
   onClose: () => void;
@@ -26,17 +24,14 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
   const [preview, setPreview] = useState<string | null>(null);
   const [tiempocrecimiento, setTiempocrecimiento] = useState<string | "">("");
   const [fk_tipoespecie, setFk_tipoespecie] = useState<number | null>(null);
-  const [fk_variedad, setFk_variedad] = useState<number | null>(null);
 
   const [modalTipoEspecieVisible, setModalTipoEspecieVisible] = useState(false);
-  const [modalVariedadVisible, setModalVariedadVisible] = useState(false);
 
   const { mutate, isPending } = usePostEspecies();
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie, refetch: refetchTipos } = useGetTiposEspecie();
-  const { data: variedades, isLoading: isLoadingVariedades, refetch: refetchVariedades } = useGetVariedad();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie || !fk_variedad) {
+    if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie ) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -47,7 +42,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
     formData.append("img", img);
     formData.append("tiempocrecimiento", tiempocrecimiento);
     formData.append("fk_tipoespecie", String(fk_tipoespecie));
-    formData.append("fk_variedad", String(fk_variedad));
 
     mutate(formData, {
       onSuccess: (data) => {
@@ -59,7 +53,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
         setPreview(null);
         setTiempocrecimiento("");
         setFk_tipoespecie(null);
-        setFk_variedad(null);
       },
     });
   };
@@ -70,11 +63,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
     setModalTipoEspecieVisible(false);
   };
 
-  const handleVariedadCreada = (nuevaVariedad: { id: number }) => {
-    refetchVariedades();
-    setFk_variedad(nuevaVariedad.id);
-    setModalVariedadVisible(false);
-  };
 
   return (
     <>
@@ -153,38 +141,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           </div>
         )}
 
-        {/* Variedad con botón de creación */}
-        <div className="mt-4 flex items-end gap-2">
-          <div className="flex-1">
-            {isLoadingVariedades ? (
-              <p>Cargando variedades...</p>
-            ) : (
-              <Select
-                label="Variedad"
-                placeholder="Selecciona una variedad"
-                selectedKeys={fk_variedad ? [fk_variedad.toString()] : []}
-                onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0];
-                  setFk_variedad(Number(selectedKey));
-                }}
-              >
-                {(variedades || []).map((variedad) => (
-                  <SelectItem key={variedad.id.toString()}>{variedad.nombre}</SelectItem>
-                ))}
-              </Select>
-            )}
-          </div>
-          <Button
-            onPress={() => setModalVariedadVisible(true)}
-            color="success"
-            radius="full"
-            size="sm"
-            title="Agregar nueva variedad"
-          >
-            <Plus className="w-5 h-5 text-white" />
-          </Button>
-        </div>
-
         {/* Imagen */}
         <div className="mt-4">
           <Button
@@ -228,12 +184,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
         />
       )}
 
-      {modalVariedadVisible && (
-        <CrearVariedadModal
-          onClose={() => setModalVariedadVisible(false)}
-          onCreate={handleVariedadCreada}
-        />
-      )}
     </>
   );
 };

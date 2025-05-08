@@ -1,4 +1,5 @@
-import { PlantacionesList } from "../components/plantaciones/PlantacionesList";
+import {PlantacionesList} from "../components/plantaciones/PlantacionesList";
+
 
 export function Plantaciones(){
     return(
