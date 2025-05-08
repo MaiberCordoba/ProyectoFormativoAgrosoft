@@ -154,16 +154,17 @@ export interface Insumos {
 export interface MovimientoInventario {
     id : number,
     tipo : "entrada" | "salida" ,
-    cantidad : number,
-    descripcion : string,
+    unidades : number,
     fk_Insumo : number,
     insumo : Insumos,
+    fk_UsoInsumo:number,
+    usoInsumo : UsosInsumos,
     fk_Herramienta : number,
     herramienta : Herramientas,
-    fk_Cosecha : number,
-    cosecha : Cosechas,
-    fk_Usuario : number,
-    usuario : User,
+    fk_UsoHerramienta : number,
+    usoHerramienta : UsosHerramientas
+    /* fk_Cosecha : number,
+    cosecha : Cosechas, */
 }
 
 export interface Salarios{
