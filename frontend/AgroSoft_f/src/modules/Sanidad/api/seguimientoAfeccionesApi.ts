@@ -1,12 +1,8 @@
+// ✅ API - Obtener todos los controles
+import { ControlDetails } from "../types";
 import apiClient from "@/api/apiClient";
-import { ControlDetails,ControlListItem  } from "../types";
 
-export const getSeguimientoAfecciones = async (): Promise<ControlListItem[]> => {
-  const response = await apiClient.get("/sanidad/segAfecciones");
-  return response.data;
+export const getAllControles = async (): Promise<ControlDetails[]> => {
+  const { data } = await apiClient.get("/controles");
+  return data;
 };
-
-export const getSeguimientoAfeccionesById = async (id: string): Promise<ControlDetails> => {
-  const response = await apiClient.get(`/sanidad/segAfecciones/${id}`);
-  return response.data;
-}
