@@ -1,29 +1,4 @@
-export interface ControlDetails {
-    control_id: number;
-    descripcion: string;
-    fecha_control: string | null;
-    tipo_control: string | null;
-    plaga: {
-      nombre: string | null;
-    };
-    especie: {
-      nombre: string | null;
-    };
-    lote: {
-      nombre: string | null;
-    };
-  }
-  
-  export interface ControlListItem {
-    control_id: number;
-    descripcion: string;
-    fecha_control: string | null;
-    plaga_nombre: string | null;
-    especie_nombre: string | null;
-    lote_nombre: string | null;
-  }
-  
-  // Reusing existing types from your provided typado
+
   export interface TiposAfecciones {
     id: number;
     nombre: string;
@@ -52,6 +27,16 @@ export interface ControlDetails {
     fk_TipoControl?: number;
     fechaControl: string;
     descripcion: string;
+  }
+
+  export interface ControlDetails {
+    id: number;
+    descripcion: string;
+    fechaControl: string;
+    tipoControl: TipoControl;
+    afeccionCultivo: AfeccionesCultivo & {
+      plaga: Afecciones;
+    };
   }
   
   export enum EstadoAfeccion {
