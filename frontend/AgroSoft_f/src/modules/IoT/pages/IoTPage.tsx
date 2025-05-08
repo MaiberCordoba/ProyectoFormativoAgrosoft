@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, Select, SelectItem, addToast } from "@heroui/react";
+import { Input, Select, SelectItem, addToast } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -16,9 +16,17 @@ import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Umbral } from "../types/sensorTypes"; 
+import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
+import { useEvapotranspiracionHistorica } from "../hooks/useEvapotranspiracionHistorica";
 
 export default function IoTPages() {
   const navigate = useNavigate();
+  const [loteId, setLoteId] = useState<number>(1); 
+  const [cultivoId, setCultivoId] = useState<number | string>("");
+  const { data: etHistorica = [], isLoading: isLoadingHistoric } = useEvapotranspiracionHistorica(
+    Number(cultivoId), 
+    loteId
+  );
 
   const [sensoresData, setSensoresData] = useState<Record<string, string>>({
     viento: "Cargando...",
@@ -30,7 +38,6 @@ export default function IoTPages() {
   });
 
   const [searchId, setSearchId] = useState("");
-  const [cultivoId, setCultivoId] = useState<number | string>("");
   const [cultivos, setCultivos] = useState<any[]>([]);
   const [evapotranspiracion, setEvapotranspiracion] = useState<null | {
     evapotranspiracion_mm_dia: number;
@@ -43,6 +50,13 @@ export default function IoTPages() {
     };
   }>(null);
   const [errorET, setErrorET] = useState<string | null>(null);
+  const [lastET, setLastET] = useState<{
+    fecha: string;
+    et_mm_dia: number;
+    kc?: number;
+    temperatura?: number;
+    humedad?: number;
+  } | null>(null);
 
   const { data: umbrales = [] } = useQuery<Umbral[]>({
     queryKey: ["umbrales"],
@@ -52,17 +66,59 @@ export default function IoTPages() {
     },
   });
 
-  const normalizar = (str: string) => str.toLowerCase().replace(/\s/g, "");
+  // Función para calcular evapotranspiración
+  const calcularEvapotranspiracion = async () => {
+    if (!cultivoId) return;
 
-  const mostrarAlerta = (mensaje: string) => {
-    addToast({
-      title: "🚨 Alerta de Sensor",
-      description: mensaje,
-      variant: "flat",
-      color: "danger",
-    });
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/evapotranspiracion/?cultivo_id=${cultivoId}&lote_id=${loteId}`
+      );
+      
+      if (!response.ok) throw new Error("Error al obtener evapotranspiración");
+      
+      const data = await response.json();
+      
+      setEvapotranspiracion(data);
+      setErrorET(null);
+      
+      // Crear nuevo dato para el historial
+      const nuevoDato = {
+        fecha: new Date().toISOString(),
+        et_mm_dia: data.evapotranspiracion_mm_dia,
+        kc: data.kc,
+        temperatura: data.sensor_data.temperatura,
+        humedad: data.sensor_data.humedad
+      };
+      
+      setLastET(nuevoDato);
+      
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorET("No se pudo calcular la evapotranspiración.");
+      setEvapotranspiracion(null);
+    }
   };
 
+  // Calcular automáticamente al cambiar cultivo o lote
+  useEffect(() => {
+    calcularEvapotranspiracion();
+  }, [cultivoId, loteId]);
+
+  // Cargar cultivos al inicio
+  useEffect(() => {
+    fetch("http://localhost:8000/api/cultivos")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Cultivos obtenidos:", data);
+        setCultivos(data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener los cultivos:", error);
+      });
+  }, []);
+
+  // Configuración de WebSockets para sensores
   useEffect(() => {
     const sensores = [
       { id: "viento", tipo_sensor: "VIE" },
@@ -80,8 +136,6 @@ export default function IoTPages() {
       const ws = new WebSocket(url);
       websockets.set(id, ws);
 
-      ws.onopen = () => console.log(`✅ Conectado al WebSocket de ${id}`);
-
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -93,9 +147,7 @@ export default function IoTPages() {
           }));
 
           const umbral = umbrales.find(
-            (u) =>
-              u.tipo_sensor &&
-              normalizar(u.tipo_sensor) === normalizar(tipo_sensor)
+            (u) => u.tipo_sensor && normalizar(u.tipo_sensor) === normalizar(tipo_sensor)
           );
 
           if (umbral && !isNaN(valor)) {
@@ -106,16 +158,12 @@ export default function IoTPages() {
             }
           }
         } catch (error) {
-          console.error(`❌ Error en ${id}:`, error);
+          console.error(`Error en ${tipo_sensor}:`, error);
         }
       };
 
       ws.onerror = (error) => {
-        console.error(`❌ WebSocket error en ${id}:`, error);
-      };
-
-      ws.onclose = () => {
-        console.warn(`⚠️ WebSocket cerrado en ${id}`);
+        console.error(`WebSocket error en ${tipo_sensor}:`, error);
       };
     });
 
@@ -124,74 +172,50 @@ export default function IoTPages() {
     };
   }, [umbrales]);
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/cultivos")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Cultivos obtenidos:", data);
-        setCultivos(data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener los cultivos:", error);
-      });
-  }, []);
-  
+  const normalizar = (str: string) => str.toLowerCase().replace(/\s/g, "");
 
-  useEffect(() => {
-    if (!cultivoId) return;
-
-    const lote_id = 1;
-    fetch(
-      `http://localhost:8000/api/evapotranspiracion/?cultivo_id=${cultivoId}&lote_id=${lote_id}`
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al obtener evapotranspiración");
-        return res.json();
-      })
-      .then((data) => {
-        setEvapotranspiracion(data);
-        setErrorET(null);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorET("No se pudo calcular la evapotranspiración.");
-      });
-  }, [cultivoId]);
+  const mostrarAlerta = (mensaje: string) => {
+    addToast({
+      title: "🚨 Alerta de Sensor",
+      description: mensaje,
+      variant: "flat",
+      color: "danger",
+    });
+  };
 
   const sensoresList = [
     {
       id: "viento",
       title: "Viento",
-      icon: <WiStrongWind size={32} style={{ color: "#5DADE2" }} />, // azul claro
+      icon: <WiStrongWind size={32} style={{ color: "#5DADE2" }} />,
     },
     {
       id: "temperatura",
       title: "Temperatura",
-      icon: <WiThermometer size={32} style={{ color: "#E74C3C" }} />, // rojo
+      icon: <WiThermometer size={32} style={{ color: "#E74C3C" }} />,
     },
     {
       id: "luzSolar",
       title: "Luz Solar",
-      icon: <WiDayCloudy size={32} style={{ color: "#F1C40F" }} />, // amarillo
+      icon: <WiDayCloudy size={32} style={{ color: "#F1C40F" }} />,
     },
     {
       id: "humedad",
       title: "Humedad",
-      icon: <WiRaindrop size={32} style={{ color: "#3498DB" }} />, // azul
+      icon: <WiRaindrop size={32} style={{ color: "#3498DB" }} />,
     },
     {
       id: "humedadAmbiente",
       title: "H. Ambiente",
-      icon: <WiHumidity size={32} style={{ color: "#76D7C4" }} />, // verde agua
+      icon: <WiHumidity size={32} style={{ color: "#76D7C4" }} />,
     },
     {
       id: "lluvia",
       title: "Lluvia",
-      icon: <WiRain size={32} style={{ color: "#2980B9" }} />, // azul oscuro
+      icon: <WiRain size={32} style={{ color: "#2980B9" }} />,
     },
   ];
   
-
   const sensoresFiltrados = sensoresList.filter((sensor) =>
     sensor.title.toLowerCase().includes(searchId.toLowerCase())
   );
@@ -199,6 +223,7 @@ export default function IoTPages() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 sm:gap-12 justify-center items-center w-full max-w-6xl mx-auto">
 
+      {/* Selector de cultivo */}
       <div className="flex gap-2 w-full max-w-md">
         <Select
           label="Cultivo a calcular evapotranspiración"
@@ -206,7 +231,6 @@ export default function IoTPages() {
           selectedKeys={cultivoId !== "" ? [String(cultivoId)] : []}
           onSelectionChange={(keys) => {
             const selectedCultivoId = Number(Array.from(keys)[0]);
-            console.log("Cultivo seleccionado:", selectedCultivoId);
             setCultivoId(selectedCultivoId);
           }}
         >
@@ -223,28 +247,36 @@ export default function IoTPages() {
           )}
         </Select>
       </div>
-
-      <br />
-      <div className="flex justify-center col-span-full mb-8">
-        <h2 className="text-2xl font-bold text-gray-800">Evapotranspiración</h2>
-      </div>
-      <div className="flex justify-center col-span-full">
+      <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="flex justify-center">
         {evapotranspiracion ? (
-          <EvapotranspiracionCard
+            <EvapotranspiracionCard
             etReal={evapotranspiracion.evapotranspiracion_mm_dia}
             kc={evapotranspiracion.kc}
             detalles={evapotranspiracion.sensor_data}
-          />
-        ) : errorET ? (
-          <p className="text-red-500">{errorET}</p>
-        ) : (
-          <p className="text-gray-500">Calculando evapotranspiración...</p>
-          
-        )}
-        
+      />
+    ) : errorET ? (
+      <p className="text-red-500">{errorET}</p>
+    ) : (
+      <p className="text-gray-500">Calculando evapotranspiración...</p>
+    )}
+  </div>
+    <br />
+  {evapotranspiracion && (
+    <div className="flex justify-center">
+      <EvapotranspiracionChart nuevoDato={lastET} />
+    </div>
+  )}
+</div>
+      <div className="col-span-full flex justify-center">
+        <button
+          onClick={calcularEvapotranspiracion}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+        >
+          Recalcular Evapotranspiración
+        </button>
       </div>
 
-      <br />
       <div className="flex justify-between items-center w-full col-span-full mb-4">
         <h2 className="text-xl font-semibold text-gray-800 justify-center">Sensores Actuales</h2>
         <Input
@@ -270,8 +302,9 @@ export default function IoTPages() {
           <p className="text-gray-500">No se encontraron sensores</p>
         )}
       </div>
-      <br /> <br />     
-      <div className="flex gap-6">
+      
+      {/* Listas de sensores y umbrales */}
+      <div className="flex gap-6 col-span-full">
         <div className="w-full">
           <h2 className="flex justify-center col-span-full text-xl font-semibold text-gray-800 ">Lista de Sensores</h2>
           <SensorLista />

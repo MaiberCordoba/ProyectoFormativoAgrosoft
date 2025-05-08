@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useSensorData(sensorId: string) {
+function useSensorData(sensorId: string) {
   const [sensorData, setSensorData] = useState({ valor: 0, alerta: "" });
 
   useEffect(() => {
@@ -23,3 +23,5 @@ export default function useSensorData(sensorId: string) {
 
   return sensorData;
 }
+
+export default useSensorData;

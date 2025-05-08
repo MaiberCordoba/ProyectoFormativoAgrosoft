@@ -43,6 +43,7 @@ export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) 
           </li>
         </ul>
       </div>
+      
       <div className="flex justify-center mt-4">
         <img
           src="/AGROPECUARIAS_Agronomia.png"
