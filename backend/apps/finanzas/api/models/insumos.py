@@ -12,8 +12,5 @@ class Insumos(models.Model):
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida , on_delete=models.SET_NULL, null=True)
 
     valorTotalInsumos = models.FloatField(null=True, blank=True)
-    cantidadTotal = models.FloatField(null=True, blank=True)
-    cantidadDisponible = models.FloatField(default=0)
-
     def __str__(self):
         return self.nombre
