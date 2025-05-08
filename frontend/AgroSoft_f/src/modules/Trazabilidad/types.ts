@@ -1,4 +1,4 @@
-export interface TiposEspecie{
+export interface TiposEspecie {
   id: number;
   nombre: string;
   descripcion: string;
@@ -11,71 +11,71 @@ export interface Especies {
   descripcion: string;
   img?: string;
   tiempocrecimiento: string;
-  TiposEspecie?: TiposEspecie;
-  fk_tipoespecie?: number | null;
-  tipo_especie_nombre?: string | null;
-  Variedad?: Variedad;
-  fk_variedad: number;
+  tiposEspecie: TiposEspecie;
+  fk_tipoespecie: number;
 }
 
-export interface Semilleros{
+export interface Cultivo {
+  id: number;
+  nombre: string;
+  activo: boolean;
+  especies: Especies;
+  fk_Especie: number;
+}
+
+export interface Semillero {
   id: number;
   unidades: number;
   fechasiembra: string;
   fechaestimada: string;
-  Especies?: Especies;
-  fk_especie: number;
+  cultivo: Cultivo;
+  fk_Cultivo: number;
 }
 
-export interface Cultivos{
-  id?: number;
-  unidades: number;
-  activo: boolean;
-  fechaSiembra: string;
-  Especies?: Especies;
-  fk_Especie: number;
-  Semillero?: Semilleros;
-  fk_semillero: number;
-}
-
-export interface Lotes{
-  id?: number;
+export interface Lotes {
+  id: number;
   nombre: string;
   descripcion: string;
-  latI1: number;
-  longI1: number;
-  latS1: number;
-  longS1: number;
-  latI2: number;
-  longI2: number;
-  latS2: number;
-  longS2: number;
-  estado: boolean;
+  latI1: number | null;
+  longI1: number | null;
+  latS1: number | null;
+  longS1: number | null;
+  latI2: number | null;
+  longI2: number | null;
+  latS2: number | null;
+  longS2: number | null;
+  estado: boolean | null;
+}
+
+export interface Eras {
+  id: number;
+  tipo: string;
+  fk_lote: Lotes;
+  latI1: number | null;
+  longI1: number | null;
+  latS1: number | null;
+  longS1: number | null;
+  latI2: number | null;
+  longI2: number | null;
+  latS2: number | null;
+  longS2: number | null;
+}
+
+export interface Plantaciones {
+  id: number;
+  fk_Cultivo: { nombre: string };
+  fk_semillero: { unidades: number; fechasiembra: string };
+  fk_Era: { id: number };
 }
 
 
-
-export interface Plantaciones{
-  id: number;
-  Especies?: Especies;
-  fk_Especie: number;
-  Cultivos?: Cultivos;
-  fk_Cultivo: {
-    unidades: number;
-    fk_Semillero: {
-      fk_especie: {
-        nombre: string;
-        id:number;
-      };
-    };
-  };
-  Eras?: Eras;
+export interface PlantacionCreate {
+  fk_Cultivo: number;
   fk_Era: number;
+  fk_semillero: number;
+  unidades: number;
+  fechaSiembra: string;
 }
 
-export interface Variedad{
-  id: number;
-  nombre: string;
-}
 
-export type NuevaVariedad = Omit<Variedad, "id">;
+
