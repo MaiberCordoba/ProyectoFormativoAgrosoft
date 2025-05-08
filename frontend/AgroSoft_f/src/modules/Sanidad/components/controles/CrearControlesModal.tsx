@@ -110,7 +110,8 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
               >
                 {(afecciones || []).map((afeccion) => (
                   <SelectItem key={afeccion.id.toString()}>
-                    {afeccion.nombre}
+                    {afeccion.plagas?.tipoPlaga?.nombre || "Sin nombre"}
+
                   </SelectItem>
                 ))}
               </Select>
