@@ -24,6 +24,7 @@ import { Insumos } from "./modules/Finanzas/pages/pageInsumos"
 import { Salarios } from "./modules/Finanzas/pages/pageSalarios";
 import { TiempoActividadControl } from "./modules/Finanzas/pages/pageTiempoActividadControl";
 import { TipoActividad } from "./modules/Finanzas/pages/pageTiposActividad";
+import { MovimientosInventario } from "./modules/Finanzas/pages/pageMovimientoInventario";
 
 
 //Electronica
@@ -110,6 +111,7 @@ function App() {
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
             {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
             <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
+            <Route path="/movimientos-inventario" element={<MovimientosInventario/>} />
 
          {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}
             <Route path="/insumos" element={<Insumos/>}/> 
