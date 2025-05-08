@@ -49,6 +49,7 @@ import { ProductosControl } from "./modules/Sanidad/Pages/productoscontrol";
 import { UsoProductosControl } from "./modules/Sanidad/Pages/usoproductoscontrol";
 import { Controles } from "./modules/Sanidad/Pages/controles";
 import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
+import ControlesPage from "./modules/Sanidad/Pages/pageSeguimentoAfecciones";
         
 //usuarios
 import { Usuarios } from "./modules/Users/pages/pageUsers";
@@ -61,6 +62,7 @@ import Testeo  from "./pages/testeo";
 import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
+
 
 
 
@@ -145,6 +147,8 @@ function App() {
             <Route path="/usos-de-productos-para-el-control" element={<UsoProductosControl/>}></Route>
             <Route path="/controles" element={<Controles/>}></Route>
             <Route path="/afectaciones-en-cultivos" element={<AfeccionesCultivo/>}></Route>
+            <Route path="/seguimiento-de-afectaciones" element={<ControlesPage />} />
+            
 
             {/*test*/}
             <Route path="/testeo" element={<Testeo/>}></Route>
