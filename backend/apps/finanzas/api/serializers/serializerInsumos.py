@@ -1,45 +1,26 @@
 from rest_framework.serializers import ModelSerializer
-from rest_framework import serializers
 from apps.finanzas.api.models.insumos import Insumos
+from apps.finanzas.api.models.movimientosInventario import MovimientoInventario
 
 class SerializerInsumos(ModelSerializer):
-    valorTotalInsumos = serializers.FloatField(read_only=True)
-    cantidadTotal = serializers.FloatField(read_only=True)
-    cantidadDisponible = serializers.FloatField(read_only=True)
-
     class Meta:
         model = Insumos
         fields = '__all__'
+        read_only_fields = ["valorTotalInsumos"]
 
     def create(self, validated_data):
-        contenido = validated_data.get('contenido')
-        unidades = validated_data.get('unidades')
-        precio = validated_data.get('precio')
-        unidad_medida = validated_data.get('fk_UnidadMedida')
-
-        cantidad_total = contenido * unidad_medida.equivalenciabase * unidades
+        # Calcular valor total antes de crear
+        precio = validated_data.get('precio', 0)
+        unidades = validated_data.get('unidades', 0)
         valor_total = precio * unidades
-
-        validated_data['cantidadTotal'] = cantidad_total
-        validated_data['valorTotalInsumos'] = valor_total
-        validated_data['cantidadDisponible'] = cantidad_total  # Inicializa igual a total
-
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        contenido = validated_data.get('contenido', instance.contenido)
-        unidades = validated_data.get('unidades', instance.unidades)
-        precio = validated_data.get('precio', instance.precio)
-        unidad_medida = validated_data.get('fk_UnidadMedida', instance.fk_UnidadMedida)
-
-        cantidad_total = contenido * unidad_medida.equivalenciabase * unidades
-        valor_total = precio * unidades
-
-        validated_data['cantidadTotal'] = cantidad_total
         validated_data['valorTotalInsumos'] = valor_total
 
-        # Si no se especifica cantidadDisponible en el update, mantener la actual
-        if 'cantidadDisponible' not in validated_data:
-            validated_data['cantidadDisponible'] = instance.cantidadDisponible
+        insumo = super().create(validated_data)
 
-        return super().update(instance, validated_data)
+        # Crear registro de entrada
+        MovimientoInventario.objects.create(
+            tipo='entrada',
+            fk_Insumo=insumo,
+            unidades=unidades
+        )
+        return insumo
