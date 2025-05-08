@@ -39,7 +39,6 @@ import { Plantaciones } from "./modules/Trazabilidad/pages/plantaciones";
 import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
 import { ErasList } from "./modules/Trazabilidad/pages/eras";
 import { LotesList } from "./modules/Trazabilidad/pages/lotes";
-import { VariedadList } from "./modules/Trazabilidad/components/variedad/VariedadList";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
@@ -133,7 +132,6 @@ function App() {
             <Route path="/cultivos" element={<CultivoList />} />
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
-            <Route path="/variedad" element={<VariedadList />} />
             <Route path="/mapa" element={<MapPage/>} />
             
 
