@@ -3,9 +3,13 @@ import { getUsosInsumos } from "../../api/usoInsumosApi";
 import { UsosInsumos } from "../../types";
 
 export const useGetUsosInsumos = () => {
-  return useQuery<UsosInsumos[], Error>({
+    const query = useQuery<UsosInsumos[], Error>({
     queryKey: ["usosInsumos"], 
     queryFn: getUsosInsumos, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

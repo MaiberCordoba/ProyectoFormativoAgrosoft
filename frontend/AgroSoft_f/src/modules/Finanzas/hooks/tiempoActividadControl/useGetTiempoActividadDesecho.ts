@@ -3,9 +3,13 @@ import { getTiempoActividadControl } from "../../api/tiempoActividadControlApi";
 import { TiempoActividadControl } from "../../types";
 
 export const useGetTiempoActividadControl = () => {
-  return useQuery<TiempoActividadControl[], Error>({
+    const query = useQuery<TiempoActividadControl[], Error>({
     queryKey: ["TiempoActivividadControl"], 
     queryFn: getTiempoActividadControl, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

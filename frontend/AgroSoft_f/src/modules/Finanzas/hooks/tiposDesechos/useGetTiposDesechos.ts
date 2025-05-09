@@ -3,9 +3,13 @@ import { getTiposDesechos } from "../../api/tiposDesechosApi";
 import { TiposDesechos } from "../../types";
 
 export const useGetTiposDesechos = () => {
-  return useQuery<TiposDesechos[], Error>({
+    const query = useQuery<TiposDesechos[], Error>({
     queryKey: ["tiposDesechos"], 
     queryFn: getTiposDesechos, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 
