@@ -1,11 +1,11 @@
 import React from "react";
 import ModalComponent from "@/components/Modal";
 import { useDeleteCultivos } from "../../hooks/cultivos/useDeleteCultivos";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 import { AlertCircle } from "lucide-react";
 
 interface EliminarCultivoModalProps {
-  cultivo?: Cultivos; // Se permite que cultivo sea opcional
+  cultivo?: Cultivo; // Se permite que cultivo sea opcional
   isOpen: boolean;
   onClose: () => void;
 }

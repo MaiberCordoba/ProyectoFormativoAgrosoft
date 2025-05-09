@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchCultivos } from "../../hooks/cultivos/usePatchCultivos";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 
 interface EditarCultivoModalProps {
-  cultivo: Cultivos;
+  cultivo: Cultivo;
   onClose: () => void;
 }
 

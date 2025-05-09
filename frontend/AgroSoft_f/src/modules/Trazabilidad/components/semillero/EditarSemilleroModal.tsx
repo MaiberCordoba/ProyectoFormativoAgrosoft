@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchSemilleros } from "../../hooks/semilleros/usePatchSemilleros";
-import { Semilleros } from "../../types";
+import { Semillero } from "../../types";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 
 interface EditarSemilleroModalProps {
-  semillero: Semilleros;
+  semillero: Semillero;
   onClose: () => void;
 }
 

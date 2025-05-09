@@ -7,7 +7,7 @@ import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarCultivoModal from "./EditarCultivosModal";
 import { CrearCultivoModal } from "./CrearCultivosModal";
 import EliminarCultivoModal from "./EliminarCultivo";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
@@ -41,17 +41,14 @@ export function CultivosList() {
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Especie", uid: "especies", sortable: false }, // corregido
     { name: "Activo", uid: "activo", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
   
-  const renderCell = (item: Cultivos, columnKey: React.Key) => {
+  const renderCell = (item: Cultivo, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
       case "especies":
@@ -66,7 +63,7 @@ export function CultivosList() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof Cultivos])}</span>;
+        return <span>{String(item[columnKey as keyof Cultivo])}</span>;
     }
   };
   
