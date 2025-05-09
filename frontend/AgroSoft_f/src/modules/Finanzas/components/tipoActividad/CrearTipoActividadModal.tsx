@@ -2,12 +2,14 @@ import { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { usePostTipoActividad } from "../../hooks/tipoActividad/usePostTiposActividad";
+import { TipoActividad } from "../../types";
 
 interface CrearTipoActividadModalProps {
   onClose: () => void;
+  onCreate:(nuevoTipoActividad:TipoActividad) => void
 }
 
-export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProps) => {
+export const CrearTipoActividadModal = ({ onClose, onCreate }: CrearTipoActividadModalProps) => {
   const [nombre, setNombre] = useState("");
   const { mutate, isPending } = usePostTipoActividad();
 
@@ -18,9 +20,10 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
     }
 
     mutate(
-      { nombre },
+      { id:0, nombre },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          onCreate(data);
           onClose();
           setNombre("");
         },
