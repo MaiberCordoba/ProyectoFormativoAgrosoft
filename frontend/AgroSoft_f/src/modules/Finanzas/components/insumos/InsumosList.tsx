@@ -60,9 +60,7 @@ export function InsumosList() {
     { name: "Ficha Técnica", uid: "fichaTecnica" },
     { name: "Unidades", uid: "unidades" },
     { name: "Unidad Medida", uid: "unidadMedida" },
-    { name: "Disponible", uid: "cantidadDisponible" },
     { name: "Valor Total Insumos", uid: "valorTotalInsumos" },
-    { name: "Unidades disponibles", uid: "cantidadTotal" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -73,8 +71,6 @@ export function InsumosList() {
         return <span>{unidad ? unidad.nombre : "No definido"}</span>;
       case "valorTotalInsumos":
         return <span>{item.valorTotalInsumos.toLocaleString("es-CO", { style: "currency", currency: "COP" })}</span>
-      case "cantidadTotal":
-        return <span>{item.cantidadTotal}</span>
       case "acciones":
         return (
           <AccionesTabla

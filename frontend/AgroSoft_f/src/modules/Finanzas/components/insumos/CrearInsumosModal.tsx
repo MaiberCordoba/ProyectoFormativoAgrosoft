@@ -14,7 +14,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
   const [precio, setPrecio] = useState<number | null>(null);
   const [compuestoActivo, setCompuestoActivo] = useState("");
   const [contenido, setContenido] = useState<number | null>(null);
-  const [fichaTecnica, setFichaTecnica] = useState(""); // Corregido a string
+  const [fichaTecnica, setFichaTecnica] = useState(""); 
   const [unidades, setUnidades] = useState<number | null>(null);
   const [fk_UnidadMedida, setfk_UnidadMedida] = useState<number | null>(null);
 
@@ -95,7 +95,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
       <Input
         label="Precio Insumo"
         type="number"
-        value={precio ?? ""}
+        value={precio}
         onChange={(e) => setPrecio(Number(e.target.value))}
         required
       />
