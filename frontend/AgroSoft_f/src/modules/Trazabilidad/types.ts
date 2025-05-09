@@ -50,7 +50,7 @@ export interface Lotes {
 export interface Eras {
   id: number;
   tipo: string;
-  fk_lote: Lotes;
+  fk_lote: Lotes ;
   latI1: number | null;
   longI1: number | null;
   latS1: number | null;
