@@ -1,3 +1,4 @@
+// EditarControlModal.tsx
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchControles } from "../../hooks/controles/usePatchControles";
@@ -5,38 +6,32 @@ import { Controles } from "../../types";
 import { Input, Textarea, Select, SelectItem } from "@heroui/react";
 import { useGetAfeccionesCultivo } from "../../hooks/afeccionescultivo/useGetAfeccionescultivo";
 import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
+import { useGetUsers } from '@/modules/Users/hooks/useGetUsers'; 
 
 interface EditarControlModalProps {
-  control: Controles; // El control que se está editando
-  onClose: () => void; // Función para cerrar el modal
+  control: Controles;
+  onClose: () => void;
 }
 
 const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClose }) => {
-  const [fecha, setFecha] = useState<string>(control.fecha);
-  const [descripcion, setDescripcion] = useState<string>(control.descripcion);
+  const [fechaControl, setFechaControl] = useState(control.fechaControl);
+  const [descripcion, setDescripcion] = useState(control.descripcion);
   const [fk_Afeccion, setFk_Afeccion] = useState<number>(control.fk_Afeccion || 0);
   const [fk_TipoControl, setFk_TipoControl] = useState<number>(control.fk_TipoControl || 0);
+  const [fk_Usuario, setFk_Usuario] = useState<number>(control.fk_Usuario || 0);
 
-  const { data: afeccionescultivo, isLoading: isLoadingAfecciones } = useGetAfeccionesCultivo();
-  const { data: tiposControl, isLoading: isLoadingTiposControl } = useGetTipoControl();
+  const { data: afecciones } = useGetAfeccionesCultivo();
+  const { data: tiposControl } = useGetTipoControl();
+  const { data: usuarios } = useGetUsers();
   const { mutate, isPending } = usePatchControles();
 
   const handleSubmit = () => {
     mutate(
       {
         id: control.id,
-        data: {
-          fecha,
-          descripcion,
-          fk_Afeccion,
-          fk_TipoControl,
-        },
+        data: { fechaControl, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
       },
-      {
-        onSuccess: () => {
-          onClose();
-        },
-      }
+      { onSuccess: onClose }
     );
   };
 
@@ -45,68 +40,40 @@ const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClos
       isOpen={true}
       onClose={onClose}
       title="Editar Control"
-      footerButtons={[
-        {
-          label: isPending ? "Guardando..." : "Guardar",
-          color: "success",
-          variant: "light",
-          onClick: handleSubmit,
-        },
-      ]}
+      footerButtons={[{ label: isPending ? "Guardando..." : "Guardar", onClick: handleSubmit }]}
     >
-      <Input
-        value={fecha}
-        label="Fecha"
-        type="date"
-        onChange={(e) => setFecha(e.target.value)}
-      />
-      <Textarea
-        value={descripcion}
-        label="Descripción"
-        onChange={(e) => setDescripcion(e.target.value)}
-      />
+      <Input label="Fecha" type="date" value={fechaControl} onChange={(e) => setFechaControl(e.target.value)} />
+      <Textarea label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
 
-      {/* Selector de Afección */}
-      {isLoadingAfecciones ? (
-        <p>Cargando afecciones...</p>
-      ) : (
-        <Select
-          label="Afección"
-          placeholder="Selecciona una afección"
-          selectedKeys={[fk_Afeccion.toString()]}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_Afeccion(Number(selectedKey));
-          }}
-        >
-          {(afeccionescultivo || []).map((afeccioncultivo) => (
-            <SelectItem key={afeccioncultivo.id.toString()}>
-              {afeccioncultivo.id}
-            </SelectItem>
-          ))}
-        </Select>
-      )}
+      <Select
+        label="Afección"
+        selectedKeys={[fk_Afeccion.toString()]}
+        onSelectionChange={(keys) => setFk_Afeccion(Number(Array.from(keys)[0]))}
+      >
+        {(afecciones || []).map((af) => (
+          <SelectItem key={af.id.toString()}>{af.plagas?.tipoPlaga?.nombre || "Sin nombre"}</SelectItem>
+        ))}
+      </Select>
 
-      {/* Selector de Tipo de Control */}
-      {isLoadingTiposControl ? (
-        <p>Cargando tipos de control...</p>
-      ) : (
-        <Select
-          label="Tipo de Control"
-          placeholder="Selecciona un tipo de control"
-          selectedKeys={[fk_TipoControl.toString()]}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_TipoControl(Number(selectedKey));
-          }}
-        >
-          {(tiposControl || []).map((tipo) => (
-            <SelectItem key={tipo.id.toString()}>
-              {tipo.nombre}
-            </SelectItem>
-          ))}
-        </Select>
-      )}
+      <Select
+        label="Tipo de Control"
+        selectedKeys={[fk_TipoControl.toString()]}
+        onSelectionChange={(keys) => setFk_TipoControl(Number(Array.from(keys)[0]))}
+      >
+        {(tiposControl || []).map((tc) => (
+          <SelectItem key={tc.id.toString()}>{tc.nombre}</SelectItem>
+        ))}
+      </Select>
+
+      <Select
+        label="Usuario"
+        selectedKeys={[fk_Usuario.toString()]}
+        onSelectionChange={(keys) => setFk_Usuario(Number(Array.from(keys)[0]))}
+      >
+        {(usuarios || []).map((user) => (
+          <SelectItem key={user.id.toString()}>{user.nombre}</SelectItem>
+        ))}
+      </Select>
     </ModalComponent>
   );
 };

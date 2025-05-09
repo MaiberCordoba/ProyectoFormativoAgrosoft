@@ -27,7 +27,13 @@
     fk_TipoControl?: number;
     fechaControl: string;
     descripcion: string;
-  }
+    fk_Usuario?: number;
+  usuario?: {
+    id: number;
+    nombre: string;
+  };
+}
+  
 
   export interface ControlDetails {
     id: number;
