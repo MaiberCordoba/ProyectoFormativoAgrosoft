@@ -98,17 +98,17 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
       <Input label="Tipo" value={tipo} onChange={(e) => setTipo(e.target.value)} required />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
-        <Input label="Lat. Inf. Izquierda" type="number" value={latI1 ?? ""} onChange={(e) => setLatI1(Number(e.target.value))} />
-        <Input label="Long. Inf. Izquierda" type="number" value={longI1 ?? ""} onChange={(e) => setLongI1(Number(e.target.value))} />
+        <Input label="Lat. Inf. Izquierda" type="number" value={(latI1 ?? "").toString()} onChange={(e) => setLatI1(Number(e.target.value))} />
+        <Input label="Long. Inf. Izquierda" type="number" value={(longI1 ?? "").toString()} onChange={(e) => setLongI1(Number(e.target.value))} />
 
-        <Input label="Lat. Sup. Izquierda" type="number" value={latS1 ?? ""} onChange={(e) => setLatS1(Number(e.target.value))} />
-        <Input label="Long. Sup. Izquierda" type="number" value={longS1 ?? ""} onChange={(e) => setLongS1(Number(e.target.value))} />
+        <Input label="Lat. Sup. Izquierda" type="number" value={(latS1 ?? "").toString()} onChange={(e) => setLatS1(Number(e.target.value))} />
+        <Input label="Long. Sup. Izquierda" type="number" value={(longS1 ?? "").toString()} onChange={(e) => setLongS1(Number(e.target.value))} />
 
-        <Input label="Lat. Inf. Derecha" type="number" value={latI2 ?? ""} onChange={(e) => setLatI2(Number(e.target.value))} />
-        <Input label="Long. Inf. Derecha" type="number" value={longI2 ?? ""} onChange={(e) => setLongI2(Number(e.target.value))} />
+        <Input label="Lat. Inf. Derecha" type="number" value={(latI2 ?? "").toString()} onChange={(e) => setLatI2(Number(e.target.value))} />
+        <Input label="Long. Inf. Derecha" type="number" value={(longI2 ?? "").toString()} onChange={(e) => setLongI2(Number(e.target.value))} />
 
-        <Input label="Lat. Sup. Derecha" type="number" value={latS2 ?? ""} onChange={(e) => setLatS2(Number(e.target.value))} />
-        <Input label="Long. Sup. Derecha" type="number" value={longS2 ?? ""} onChange={(e) => setLongS2(Number(e.target.value))} />
+        <Input label="Lat. Sup. Derecha" type="number" value={(latS2 ?? "").toString()} onChange={(e) => setLatS2(Number(e.target.value))} />
+        <Input label="Long. Sup. Derecha" type="number" value={(longS2 ?? "").toString()} onChange={(e) => setLongS2(Number(e.target.value))} />
       </div>
     </ModalComponent>
   );
