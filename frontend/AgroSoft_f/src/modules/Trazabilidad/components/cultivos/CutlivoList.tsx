@@ -43,7 +43,7 @@ export function CultivosList() {
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Especie", uid: "especies", sortable: false }, // corregido
-    { name: "Activo", uid: "activo", sortable: true },
+    { name: "Estado", uid: "activo", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
   
