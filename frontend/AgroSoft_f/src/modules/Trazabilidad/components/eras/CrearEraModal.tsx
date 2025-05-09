@@ -121,7 +121,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
           </div>
         )}
 
-        <Input label="Tipo" value={tipo} onChange={(e) => setTipo(e.target.value)} required />
+        <Input label="Numero de era #" value={tipo} onChange={(e) => setTipo(e.target.value)} required />
 
         <div className="grid grid-cols-2 gap-2 mt-2">
           <Input label="Lat. Inf. Izquierda" type="number" value={(latI1 ?? "").toString()} onChange={(e) => setLatI1(Number(e.target.value))} />

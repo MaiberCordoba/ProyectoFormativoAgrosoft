@@ -51,7 +51,7 @@ export function EraList() {
   };
 
   const columnas = [
-    { name: "Tipo", uid: "tipo", sortable: true },
+    { name: "Numero #", uid: "tipo", sortable: true },
     { name: "Lote", uid: "fk_lote", sortable: true },
     { name: "LatI1", uid: "latI1" },
     { name: "LongI1", uid: "longI1" },
@@ -120,7 +120,7 @@ export function EraList() {
         datos={eras || []}
         columnas={columnas}
         claveBusqueda="tipo"
-        placeholderBusqueda="Buscar por tipo"
+        placeholderBusqueda="Buscar por numero de era"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
