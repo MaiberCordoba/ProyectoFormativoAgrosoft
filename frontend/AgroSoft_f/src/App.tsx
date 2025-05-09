@@ -52,7 +52,6 @@ import ControlesPage from "./modules/Sanidad/Pages/pageSeguimentoAfecciones";
         
 //usuarios
 import { Usuarios } from "./modules/Users/pages/pageUsers";
-import SolicitarRecuperacion from "./modules/Users/components/recuperaciones/solicitarRecuperacion"
 import ResetearContrasena from "./modules/Users/components/recuperaciones/resetearContrasena";
 
 
@@ -77,7 +76,6 @@ function App() {
       <Routes>
         {/* login */}
         <Route path="login" element={<Login />} />
-        <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
         <Route path="/resetearContrasena" element={<ResetearContrasena />} />
 
         {/* si no hay token y ruta no existe redirige a home */}
