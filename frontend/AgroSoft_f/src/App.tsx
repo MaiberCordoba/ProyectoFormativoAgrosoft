@@ -24,7 +24,6 @@ import { UnidadesTiempo } from "./modules/Finanzas/pages/pageUnidadesTiempo";
 //Electronica
 import IoTPage from "./modules/IoT/pages/IoTPage";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
-import EvapotranspiracionDetail from "./modules/IoT/pages/EvapotranspiracionDetail";
 
 //trazabilidad
 import { TiposEspecie } from "./modules/Trazabilidad/pages/tiposEspecies";
@@ -110,7 +109,6 @@ function App() {
             {/*Electronica */}
             <Route path="/iot" element={<IoTPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
-            <Route path="/et-detalle" element={<EvapotranspiracionDetail />} />
 
             {/*Trazabilidad*/}
             <Route path="/tipos-especie" element={<TiposEspecie />} />

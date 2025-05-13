@@ -5,3 +5,5 @@ from apps.electronica.api.serializers.umbral_serializer import UmbralSerializer
 class UmbralViewSet(ModelViewSet):
     queryset = Umbral.objects.all()
     serializer_class = UmbralSerializer
+
+

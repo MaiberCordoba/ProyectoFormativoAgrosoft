@@ -118,7 +118,6 @@ export default function IoTPages() {
       });
   }, []);
 
-  // Configuración de WebSockets para sensores
   useEffect(() => {
     const sensores = [
       { id: "viento", tipo_sensor: "VIE" },
@@ -132,7 +131,7 @@ export default function IoTPages() {
     const websockets = new Map<string, WebSocket>();
 
     sensores.forEach(({ id, tipo_sensor }) => {
-      const url = `ws://localhost:8000/ws/sensores/${id}/`;
+      const url = `ws://localhost:8000/ws/sensor/${id}/`;
       const ws = new WebSocket(url);
       websockets.set(id, ws);
 

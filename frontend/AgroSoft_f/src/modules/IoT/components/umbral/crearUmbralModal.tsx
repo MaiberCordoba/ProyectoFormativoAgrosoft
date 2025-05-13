@@ -113,10 +113,7 @@ export const CrearUmbralModal = ({ onClose }: CrearUmbralModalProps) => {
             sensor.tipo;
           const labelText = `${tipoLabel} (ID ${sensor.id})`;
           return (
-            <SelectItem
-              key={String(sensor.id)}
-              textValue={labelText}
-            >
+            <SelectItem key={String(sensor.id)} textValue={labelText}>
               {labelText}
             </SelectItem>
           );

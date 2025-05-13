@@ -3,7 +3,7 @@ from apps.electronica.api.models.sensor import Sensor
 from django.core.exceptions import ValidationError
 
 class Umbral(models.Model):
-    sensor = models.ForeignKey(Sensor, on_delete=models.SET_NULL, null=True)
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, null=True, related_name="umbrales")
     valor_minimo = models.DecimalField(max_digits=10, decimal_places=2)
     valor_maximo = models.DecimalField(max_digits=10, decimal_places=2)
 
