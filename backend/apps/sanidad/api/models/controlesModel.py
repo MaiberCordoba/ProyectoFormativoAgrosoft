@@ -8,6 +8,8 @@ from apps.users.models import Usuario
 class Controles(models.Model):
     fk_Afeccion = models.ForeignKey(Afecciones, on_delete=models.SET_NULL, null=True)
     fk_TipoControl = models.ForeignKey(TiposControl, on_delete=models.SET_NULL, null=True)
+    fk_Usuario=models.ForeignKey(Usuario, on_delete= models.SET_NULL,null=True)
+    
     
     descripcion = models.TextField()
     fechaControl = models.DateField()

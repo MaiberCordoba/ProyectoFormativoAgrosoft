@@ -2,9 +2,6 @@ import { useGetControles } from "../../hooks/controles/useGetControless";
 import { useEditarControl } from "../../hooks/controles/useEditarControles";
 import { useCrearControl } from "../../hooks/controles/useCrearControles";
 import { useEliminarControl } from "../../hooks/controles/useEliminarControles";
-import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
-
-
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarControlModal from "./EditarControlesModal";
@@ -14,53 +11,63 @@ import { Controles } from "../../types";
 
 export function ControlesList() {
   const { data, isLoading, error } = useGetControles();
-  const { data: tiposControl } = useGetTipoControl();
-  
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    controlEditado, 
-    handleEditar 
+
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    controlEditado,
+    handleEditar,
   } = useEditarControl();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearControl();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     controlEliminado,
-    handleEliminar
+    handleEliminar,
   } = useEliminarControl();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Afeccion: 0, fk_TipoControl: 0, fechaControl: "", descripcion: "" });
+    handleCrear({
+      id: 0,
+      fk_Afeccion: 0,
+      fk_TipoControl: 0,
+      fechaControl: "",
+      descripcion: "",
+      fk_Usuario: 0,
+    });
   };
 
-  // Definición de columnas
   const columnas = [
-    { name: "FechaControl", uid: "fechacontrol" },
+    { name: "Fecha de Control", uid: "fechacontrol" },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Afección en el cultivo", uid: "fk_Afeccion" },
-    { name: "Tipo de Control", uid: "fk_TipoControl" },
+    { name: "Afección", uid: "afeccion" },
+    { name: "Tipo de Control", uid: "tipocontrol" },
+    { name: "Usuario", uid: "usuario" },
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Renderizado de celdas
   const renderCell = (item: Controles, columnKey: React.Key) => {
     switch (columnKey) {
       case "fechacontrol":
         return <span>{item.fechaControl}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
-      case "fk_Afeccion":
-        return <span>{item.fk_Afeccion || "No definido"}</span>;
-        case "fk_TipoControl":
-          const tipoControlNombre = tiposControl?.find(t => t.id === item.fk_TipoControl)?.nombre || "No definido";
-          return <span>{tipoControlNombre}</span>;
+      case "afeccion":
+        return (
+          <span>
+            {item.afeccion?.plagas?.tipoPlaga?.nombre || "Sin nombre"}
+          </span>
+        );
+      case "tipocontrol":
+        return <span>{item.tipoControl?.nombre || "No definido"}</span>;
+      case "usuario":
+        return <span>{item.usuario?.nombre || "No definido"}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -78,7 +85,6 @@ export function ControlesList() {
 
   return (
     <div className="p-4">
-      {/* Tabla reutilizable */}
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
@@ -88,19 +94,11 @@ export function ControlesList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && controlEditado && (
-        <EditarControlModal
-          control={controlEditado}
-          onClose={closeEditModal}
-        />
+        <EditarControlModal control={controlEditado} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && (
-        <CrearControlModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearControlModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && controlEliminado && (
         <EliminarControlModal
