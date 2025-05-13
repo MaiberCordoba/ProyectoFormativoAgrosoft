@@ -205,14 +205,14 @@ export interface UnidadesMedida {
     id: number;
     nombre: string;
     abreviatura: string;
-    tipo:  keyof typeof TipoUnidadMedida; // Se usará "MASA" o "VOLUMEN"
+    tipo: "MASA" | "VOLUMEN"; // Se usará "MASA" o "VOLUMEN"
     equivalenciabase: number;
 }
 
 export interface UnidadesTiempo {
     id: number;
     nombre: string;
-    equivalenciabase: number;
+    equivalenciaMinutos: number;
 }
 
 export interface UsosInsumos {
@@ -234,7 +234,8 @@ export interface UsosHerramientas {
     fk_Herramientas? : number,
     herramienta?: Herramientas,
     fk_Actividad? : number,
-    actividad? : Actividades
+    actividad? : Actividades,
+    unidades : number,
 }
 
 export interface Ventas {
@@ -249,10 +250,6 @@ export interface Ventas {
     valorTotal : number
 }
 
-export enum TipoUnidadMedida {
-    MASA = "Masa",
-    VOLUMEN = "VOLUMEN"
-}
   
 
 
