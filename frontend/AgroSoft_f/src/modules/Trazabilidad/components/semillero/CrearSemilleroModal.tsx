@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { usePostSemilleros } from "../../hooks/semilleros/usePostSemilleros";
-import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
+import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos"; // Cambiado
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
-import { CrearEspecieModal } from "../especies/CrearEspecieModal";
+import { CrearCultivoModal } from "../cultivos/CrearCultivosModal"; // Cambiado
 
 interface CrearSemilleroModalProps {
   onClose: () => void;
@@ -15,21 +15,21 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
   const [unidades, setUnidades] = useState<number | "">("");
   const [fechasiembra, setFechaSiembra] = useState<string>("");
   const [fechaestimada, setFechaEstimada] = useState<string>("");
-  const [fk_especie, setFk_Especie] = useState<number | null>(null);
+  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
 
-  const [modalEspecieVisible, setModalEspecieVisible] = useState(false);
+  const [modalCultivoVisible, setModalCultivoVisible] = useState(false);
 
   const { mutate, isPending } = usePostSemilleros();
-  const { data: especies, isLoading: isLoadingEspecies, refetch } = useGetEspecies();
+  const { data: cultivos, isLoading: isLoadingCultivos, refetch } = useGetCultivos();
 
   const handleSubmit = () => {
-    if (!unidades || !fechasiembra || !fechaestimada || !fk_especie) {
+    if (!unidades || !fechasiembra || !fechaestimada || !fk_Cultivo) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      { unidades: Number(unidades), fechasiembra, fechaestimada, fk_especie },
+      { unidades: Number(unidades), fechasiembra, fechaestimada, fk_Cultivo },
       {
         onSuccess: (data) => {
           onCreate(data);
@@ -37,16 +37,16 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
           setUnidades("");
           setFechaSiembra("");
           setFechaEstimada("");
-          setFk_Especie(null);
+          setFk_Cultivo(null);
         },
       }
     );
   };
 
-  const handleEspecieCreada = (nuevaEspecie: { id: number }) => {
-    refetch(); // actualiza la lista de especies
-    setFk_Especie(nuevaEspecie.id); // selecciona automáticamente la nueva especie
-    setModalEspecieVisible(false);
+  const handleCultivoCreado = (nuevoCultivo: { id: number }) => {
+    refetch(); // actualiza la lista de cultivos
+    setFk_Cultivo(nuevoCultivo.id); // selecciona automáticamente el nuevo cultivo
+    setModalCultivoVisible(false);
   };
 
   return (
@@ -88,32 +88,34 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
           required
         />
 
-        {isLoadingEspecies ? (
-          <p>Cargando especies...</p>
+        {isLoadingCultivos ? (
+          <p>Cargando cultivos...</p>
         ) : (
           <div className="flex items-end gap-2 mt-4">
             <div className="flex-1">
               <Select
-                label="Especie"
-                placeholder="Selecciona una especie"
-                selectedKeys={fk_especie ? [fk_especie.toString()] : []}
+                label="Cultivo"
+                placeholder="Selecciona un cultivo"
+                selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Especie(Number(selectedKey));
+                  setFk_Cultivo(Number(selectedKey));
                 }}
               >
-                {(especies || []).map((especie) => (
-                  <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
+                {(cultivos || []).map((cultivo) => (
+                  <SelectItem key={cultivo.id.toString()}>
+                    {cultivo.nombre}
+                  </SelectItem>
                 ))}
               </Select>
             </div>
 
             <Button
-              onPress={() => setModalEspecieVisible(true)}
+              onPress={() => setModalCultivoVisible(true)}
               color="success"
               radius="full"
               size="sm"
-              title="Agregar nueva especie"
+              title="Agregar nuevo cultivo"
             >
               <Plus className="w-5 h-5 text-white" />
             </Button>
@@ -121,10 +123,10 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
         )}
       </ModalComponent>
 
-      {modalEspecieVisible && (
-        <CrearEspecieModal
-          onClose={() => setModalEspecieVisible(false)}
-          onCreate={handleEspecieCreada}
+      {modalCultivoVisible && (
+        <CrearCultivoModal
+          onClose={() => setModalCultivoVisible(false)}
+          onCreate={handleCultivoCreado}
         />
       )}
     </>

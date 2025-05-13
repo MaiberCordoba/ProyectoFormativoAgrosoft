@@ -40,20 +40,17 @@ import { Plantaciones } from "./modules/Trazabilidad/pages/plantaciones";
 import { CultivoList } from "./modules/Trazabilidad/pages/cultivos";
 import { ErasList } from "./modules/Trazabilidad/pages/eras";
 import { LotesList } from "./modules/Trazabilidad/pages/lotes";
-import { VariedadList } from "./modules/Trazabilidad/components/variedad/VariedadList";
 
 //sanidad
 import { Afecciones } from "./modules/Sanidad/Pages/afecciones";
 import { TipoAfecciones } from "./modules/Sanidad/Pages/tipoafecciones";
 import { TipoControl } from "./modules/Sanidad/Pages/tipocontrol";
-import { ProductosControl } from "./modules/Sanidad/Pages/productoscontrol";
-import { UsoProductosControl } from "./modules/Sanidad/Pages/usoproductoscontrol";
 import { Controles } from "./modules/Sanidad/Pages/controles";
 import { AfeccionesCultivo } from "./modules/Sanidad/Pages/afeccionescultivo";
+import ControlesPage from "./modules/Sanidad/Pages/pageSeguimentoAfecciones";
         
 //usuarios
 import { Usuarios } from "./modules/Users/pages/pageUsers";
-import SolicitarRecuperacion from "./modules/Users/components/recuperaciones/solicitarRecuperacion"
 import ResetearContrasena from "./modules/Users/components/recuperaciones/resetearContrasena";
 
 
@@ -62,6 +59,7 @@ import Testeo  from "./pages/testeo";
 import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
+
 
 
 
@@ -77,7 +75,6 @@ function App() {
       <Routes>
         {/* login */}
         <Route path="login" element={<Login />} />
-        <Route path="/forgot-password" element={<SolicitarRecuperacion />} />
         <Route path="/resetearContrasena" element={<ResetearContrasena />} />
 
         {/* si no hay token y ruta no existe redirige a home */}
@@ -136,7 +133,6 @@ function App() {
             <Route path="/cultivos" element={<CultivoList />} />
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
-            <Route path="/variedad" element={<VariedadList />} />
             <Route path="/mapa" element={<MapPage/>} />
             
 
@@ -144,10 +140,10 @@ function App() {
             <Route path="/tipos-de-afectaciones" element={<TipoAfecciones/>}></Route>
             <Route path="/afectaciones" element={<Afecciones />} />
             <Route path="/tipos-de-control" element={<TipoControl/>}></Route>
-            <Route path="/productos-para-el-control" element={<ProductosControl/>}></Route>
-            <Route path="/usos-de-productos-para-el-control" element={<UsoProductosControl/>}></Route>
             <Route path="/controles" element={<Controles/>}></Route>
             <Route path="/afectaciones-en-cultivos" element={<AfeccionesCultivo/>}></Route>
+            <Route path="/seguimiento-de-afectaciones" element={<ControlesPage />} />
+            
 
             {/*test*/}
             <Route path="/testeo" element={<Testeo/>}></Route>

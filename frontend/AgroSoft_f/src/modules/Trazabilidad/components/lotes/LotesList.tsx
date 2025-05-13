@@ -12,60 +12,73 @@ import { Lotes } from "../../types";
 export function LoteList() {
   const { data, isLoading, error } = useGetLotes();
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    LotesEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    LotesEditada,
+    handleEditar,
   } = useEditarLotes();
 
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearLotes();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     LotesEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarLotes();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "", tamX: 0, tamY: 0, estado: false, posX: 0.0, posY: 0.0 });
+    handleCrear({
+      id: 0,
+      nombre: "",
+      descripcion: "",
+      latI1: 0,
+      longI1: 0,
+      latS1: 0,
+      longS1: 0,
+      latI2: 0,
+      longI2: 0,
+      latS2: 0,
+      longS2: 0,
+      estado: true,
+    });
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Tamaño X", uid: "tamX" },
-    { name: "Tamaño Y", uid: "tamY" },
+    { name: "LatI1", uid: "latI1" },
+    { name: "LongI1", uid: "longI1" },
+    { name: "LatS1", uid: "latS1" },
+    { name: "LongS1", uid: "longS1" },
+    { name: "LatI2", uid: "latI2" },
+    { name: "LongI2", uid: "longI2" },
+    { name: "LatS2", uid: "latS2" },
+    { name: "LongS2", uid: "longS2" },
     { name: "Estado", uid: "estado" },
-    { name: "Posición X", uid: "posX" },
-    { name: "Posición Y", uid: "posY" },
     { name: "Acciones", uid: "acciones" },
   ];
 
   const renderCell = (item: Lotes, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
       case "nombre":
-        return <span>{item.nombre}</span>;
       case "descripcion":
-        return <span>{item.descripcion}</span>;
-      case "tamX":
-        return <span>{item.tamX}</span>;
-      case "tamY":
-        return <span>{item.tamY}</span>;
+      case "latI1":
+      case "longI1":
+      case "latS1":
+      case "longS1":
+      case "latI2":
+      case "longI2":
+      case "latS2":
+      case "longS2":
+        return <span>{item[columnKey as keyof Lotes]}</span>;
       case "estado":
         return <span>{item.estado ? "Disponible" : "Ocupado"}</span>;
-      case "posX":
-        return <span>{item.posX}</span>;
-      case "posY":
-        return <span>{item.posY}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -94,16 +107,11 @@ export function LoteList() {
 
       {/* Modales */}
       {isEditModalOpen && LotesEditada && (
-        <EditarLoteModal
-          lote={LotesEditada}
-          onClose={closeEditModal}
-        />
+        <EditarLoteModal lote={LotesEditada} onClose={closeEditModal} />
       )}
 
       {isCreateModalOpen && (
-        <CrearLoteModal
-          onClose={closeCreateModal}
-        />
+        <CrearLoteModal onClose={closeCreateModal} onCreate={() => {}} />
       )}
 
       {isDeleteModalOpen && LotesEliminada && (

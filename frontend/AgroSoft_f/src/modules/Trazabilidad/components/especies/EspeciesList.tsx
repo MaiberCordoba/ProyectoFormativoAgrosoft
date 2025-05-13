@@ -3,7 +3,6 @@ import { useEditarEspecies } from "../../hooks/especies/useEditarEspecies";
 import { useCrearEspecies } from "../../hooks/especies/useCrearEspecies";
 import { useEliminarEspecies } from "../../hooks/especies/useEliminarEpecies";
 import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie";
-import { useGetVariedad } from "../../hooks/variedad/useGetVariedad"; // NUEVO
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarEspecieModal from "./EditarEspecieModal";
@@ -14,7 +13,6 @@ import { Especies } from "../../types";
 export function EspecieList() {
   const { data: especies, isLoading, error } = useGetEspecies();
   const { data: tiposEspecie } = useGetTiposEspecie();
-  const { data: variedades } = useGetVariedad(); // NUEVO
 
   const {
     isOpen: isEditModalOpen,
@@ -43,8 +41,7 @@ export function EspecieList() {
       descripcion: "",
       img: "",
       tiempocrecimiento: "",
-      fk_tipoespecie: 0,
-      fk_variedad: 0, 
+      fk_tipoespecie: "",
     });
   };
 
@@ -58,11 +55,6 @@ export function EspecieList() {
       return acc;
     }, {} as Record<number, string>) || {};
 
-  const variedadMap =
-    variedades?.reduce((acc, variedad) => {
-      acc[variedad.id] = variedad.nombre;
-      return acc;
-    }, {} as Record<number, string>) || {}; // NUEVO
 
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
@@ -70,7 +62,6 @@ export function EspecieList() {
     { name: "Tiempo de Crecimiento", uid: "tiempocrecimiento", sortable: true },
     { name: "Imagen", uid: "img" },
     { name: "Tipo de Especie", uid: "fk_tiposespecie" },
-    { name: "Variedad", uid: "fk_variedad" }, // NUEVO
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -100,14 +91,6 @@ export function EspecieList() {
             {item.fk_tipoespecie && tipoEspecieMap[item.fk_tipoespecie]
               ? tipoEspecieMap[item.fk_tipoespecie]
               : "Sin Tipo"}
-          </span>
-        );
-      case "fk_variedad":
-        return (
-          <span>
-            {item.fk_variedad && variedadMap[item.fk_variedad]
-              ? variedadMap[item.fk_variedad]
-              : "Sin Variedad"}
           </span>
         );
       case "acciones":

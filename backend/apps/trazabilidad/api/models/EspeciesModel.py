@@ -1,6 +1,5 @@
 from django.db import models
 from .TiposEspecieModel import TiposEspecie
-from .VariedadModel import Variedad
 
 class Especies(models.Model):
     class TiempoCrecimientoChoices(models.TextChoices):

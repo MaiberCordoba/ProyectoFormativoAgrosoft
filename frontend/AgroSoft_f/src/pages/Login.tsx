@@ -7,6 +7,7 @@ import logo from "../../public/sena.png";
 import sideLogo from "../../public/logoAgrosoft.png";
 import { Link } from "@heroui/react";
 import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
+import { SolicitarRecuperacionModal } from "@/modules/Users/components/recuperaciones/solicitarRecuperacion";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -15,6 +16,9 @@ const Login = () => {
 
   //estado para maneajar el modal de registro de usuarios
   const [registerModalUsers, setRegisterModalUsers] = useState(false)
+
+  //estado para maenjar modal de recuperar contraseña
+  const [solicitarRecuperacion, setSolicitarRecuperacion] = useState(false)
 
   const handleSubmit = async (data: Record<string, any>) => {
     setErrorMessage(""); // Limpiar errores previos
@@ -77,6 +81,10 @@ const Login = () => {
             <Link href="/forgot-password" size="sm" style={{ fontSize: "10px" }} underline="hover" className="text-blue-500 hover:text-blue-700">
               ¿Olvidaste tu contraseña?
             </Link>
+
+            <Link onPress={()=>setSolicitarRecuperacion(true)} size="sm" style={{ fontSize: "10px" }} underline="hover" className="text-blue-500 hover:text-blue-700">
+              ¿Olvidaste tu contraseña?
+            </Link>
             <br />
             <Link   onPress={()=> setRegisterModalUsers(true)} size="sm" style={{ fontSize: "10px" }} underline="hover" className="text-blue-500 hover:text-blue-700">
               ¿Nuevo? Regístrate aquí
@@ -104,6 +112,9 @@ const Login = () => {
       />
     )}
     
+    {solicitarRecuperacion && (
+      <SolicitarRecuperacionModal onClose={() => setSolicitarRecuperacion(false)} />
+    )}
     </>
     
   );

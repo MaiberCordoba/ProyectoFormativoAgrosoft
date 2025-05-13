@@ -1,23 +1,23 @@
 import apiClient from "@/api/apiClient";
-import { Cultivos } from "../types";
+import { Cultivo } from "../types";
 
-export const getCultivos = async ():Promise<Cultivos[]> => {
+export const getCultivos = async ():Promise<Cultivo[]> => {
     const response = await apiClient.get("cultivos/");
     return response.data
 };
 
-export const postCultivos = async (data?:any):Promise<Cultivos> => {
-    const response = await apiClient.post<Cultivos>('cultivos/',data);
+export const postCultivos = async (data?:any):Promise<Cultivo> => {
+    const response = await apiClient.post<Cultivo>('cultivos/',data);
     return response.data
 }
 
-export const patchCultivos = async ( id: number, data: Partial<Cultivos>): Promise<Cultivos> => {
-    const response = await apiClient.patch<Cultivos>(`cultivos/${id}/`, data);
+export const patchCultivos = async ( id: number, data: Partial<Cultivo>): Promise<Cultivo> => {
+    const response = await apiClient.patch<Cultivo>(`cultivos/${id}/`, data);
     return response.data;
   };
 
 
-export const deleteCultivos = async (id: number): Promise<Cultivos> => {
-    const response = await apiClient.delete<Cultivos>(`cultivos/${id}/`);
+export const deleteCultivos = async (id: number): Promise<Cultivo> => {
+    const response = await apiClient.delete<Cultivo>(`cultivos/${id}/`);
     return response.data
 }

@@ -12,11 +12,15 @@ interface EditarLoteModalProps {
 const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
   const [nombre, setNombre] = useState<string>(lote.nombre ?? "");
   const [descripcion, setDescripcion] = useState<string>(lote.descripcion ?? "");
-  const [tamX, setTamX] = useState<number>(lote.tamX ?? 0);
-  const [tamY, setTamY] = useState<number>(lote.tamY ?? 0);
-  const [posX, setPosX] = useState<number>(lote.posX ?? 0);
-  const [posY, setPosY] = useState<number>(lote.posY ?? 0);
-  const [estado, setEstado] = useState<string>(lote.estado ? "di" : "oc"); // Convertir booleano a string
+  const [latI1, setLatI1] = useState<number | null>(lote.latI1);
+  const [longI1, setLongI1] = useState<number | null>(lote.longI1);
+  const [latS1, setLatS1] = useState<number | null>(lote.latS1);
+  const [longS1, setLongS1] = useState<number | null>(lote.longS1);
+  const [latI2, setLatI2] = useState<number | null>(lote.latI2);
+  const [longI2, setLongI2] = useState<number | null>(lote.longI2);
+  const [latS2, setLatS2] = useState<number | null>(lote.latS2);
+  const [longS2, setLongS2] = useState<number | null>(lote.longS2);  
+  const [estado, setEstado] = useState<string>(lote.estado ? "di" : "oc");
 
   const { mutate, isPending } = usePatchLotes();
 
@@ -27,11 +31,15 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
         data: {
           nombre,
           descripcion,
-          tamX,
-          tamY,
-          posX,
-          posY,
-          estado: estado === "di", // Convertir "di" a `true` y "oc" a `false`
+          latI1,
+          longI1,
+          latS1,
+          longS1,
+          latI2,
+          longI2,
+          latS2,
+          longS2,
+          estado: estado === "di",
         },
       },
       {
@@ -57,11 +65,17 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
       ]}
     >
       <Input label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-      <Input label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} required />
-      <Input label="Tamaño X" type="number" value={tamX.toString()} onChange={(e) => setTamX(Number(e.target.value) || 0)} required />
-      <Input label="Tamaño Y" type="number" value={tamY.toString()} onChange={(e) => setTamY(Number(e.target.value) || 0)} required />
-      <Input label="Posición X" type="number" value={posX.toString()} onChange={(e) => setPosX(Number(e.target.value) || 0)} required />
-      <Input label="Posición Y" type="number" value={posY.toString()} onChange={(e) => setPosY(Number(e.target.value) || 0)} required />
+      <Input label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+
+      <Input label="Latitud I1" type="number" value={latI1.toString()} onChange={(e) => setLatI1(Number(e.target.value))} required />
+      <Input label="Longitud I1" type="number" value={longI1.toString()} onChange={(e) => setLongI1(Number(e.target.value))} required />
+      <Input label="Latitud S1" type="number" value={latS1.toString()} onChange={(e) => setLatS1(Number(e.target.value))} required />
+      <Input label="Longitud S1" type="number" value={longS1.toString()} onChange={(e) => setLongS1(Number(e.target.value))} required />
+
+      <Input label="Latitud I2" type="number" value={latI2.toString()} onChange={(e) => setLatI2(Number(e.target.value))} required />
+      <Input label="Longitud I2" type="number" value={longI2.toString()} onChange={(e) => setLongI2(Number(e.target.value))} required />
+      <Input label="Latitud S2" type="number" value={latS2.toString()} onChange={(e) => setLatS2(Number(e.target.value))} required />
+      <Input label="Longitud S2" type="number" value={longS2.toString()} onChange={(e) => setLongS2(Number(e.target.value))} required />
 
       <Select
         label="Estado"

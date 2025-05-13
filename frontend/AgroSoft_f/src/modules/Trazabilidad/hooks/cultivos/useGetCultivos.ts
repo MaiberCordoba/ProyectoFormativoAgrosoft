@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCultivos } from "../../api/cultivosApi";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 
 export const useGetCultivos = () => {
-  return useQuery<Cultivos[], Error>({
+  return useQuery<Cultivo[], Error>({
     queryKey: ["Cultivos"], 
     queryFn: getCultivos, 
   });
