@@ -51,8 +51,7 @@ export function EraList() {
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "Tipo", uid: "tipo", sortable: true },
+    { name: "Numero #", uid: "tipo", sortable: true },
     { name: "Lote", uid: "fk_lote", sortable: true },
     { name: "LatI1", uid: "latI1" },
     { name: "LongI1", uid: "longI1" },
@@ -80,8 +79,6 @@ export function EraList() {
 
   const renderCell = (item: Eras, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
       case "tipo":
         return <span>{item.tipo}</span>;
       case "fk_lote":
@@ -122,8 +119,8 @@ export function EraList() {
       <TablaReutilizable
         datos={eras || []}
         columnas={columnas}
-        claveBusqueda="id"
-        placeholderBusqueda="Buscar por ID"
+        claveBusqueda="tipo"
+        placeholderBusqueda="Buscar por numero de era"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />

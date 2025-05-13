@@ -50,7 +50,6 @@ export function LoteList() {
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
     { name: "LatI1", uid: "latI1" },
@@ -67,7 +66,6 @@ export function LoteList() {
 
   const renderCell = (item: Lotes, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
       case "nombre":
       case "descripcion":
       case "latI1":

@@ -40,7 +40,7 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
       {
         nombre,
         activo,
-        fk_Especie: especie.id, // ← lo enviamos como ID al backend
+        fk_Especie: especie.id, 
       },
       {
         onSuccess: () => {

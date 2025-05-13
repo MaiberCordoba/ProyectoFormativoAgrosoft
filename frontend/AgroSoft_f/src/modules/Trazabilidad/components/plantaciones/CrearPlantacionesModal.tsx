@@ -147,7 +147,7 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
       >
         {eras.map((era: Eras) => (
           <SelectItem key={era.id.toString()}>
-            {`Era ${era.tipo} en lote de ${era.fk_lote.nombre}`}
+            {`Era ${era.tipo} en ${era.Lote?.nombre}`}
           </SelectItem>
         ))}
       </Select>
