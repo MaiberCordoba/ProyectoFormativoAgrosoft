@@ -18,13 +18,13 @@ import { Herramientas } from "./modules/Finanzas/pages/pageHerramientas";
 import { UsosHerramientas } from "./modules/Finanzas/pages/pageUsosHerramientas";
 //import { UsosProductos } from "./modules/Finanzas/pages/pageUsosProductos";
 import { Ventas } from "./modules/Finanzas/pages/pageVentas";
-//import { UnidadesMedida } from "./modules/Finanzas/pages/pageUnidadesMedida";
 import { UnidadesTiempo } from "./modules/Finanzas/pages/pageUnidadesTiempo";
 import { Insumos } from "./modules/Finanzas/pages/pageInsumos"
 import { Salarios } from "./modules/Finanzas/pages/pageSalarios";
 import { TiempoActividadControl } from "./modules/Finanzas/pages/pageTiempoActividadControl";
 import { TipoActividad } from "./modules/Finanzas/pages/pageTiposActividad";
 import { MovimientosInventario } from "./modules/Finanzas/pages/pageMovimientoInventario";
+import { UnidadesMedida } from "./modules/Finanzas/pages/pageUnidadesMedida";
 
 
 //Electronica
@@ -112,6 +112,7 @@ function App() {
             {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
             <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
             <Route path="/movimientos-inventario" element={<MovimientosInventario/>} />
+            <Route path="/unidades-medida" element={<UnidadesMedida/>} />
 
          {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}
             <Route path="/insumos" element={<Insumos/>}/> 

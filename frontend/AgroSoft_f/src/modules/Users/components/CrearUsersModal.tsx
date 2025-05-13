@@ -2,9 +2,11 @@ import { useState, ChangeEvent } from "react";
 import ModalComponent from "@/components/Modal";
 import { Input, Checkbox, Select, SelectItem } from "@heroui/react";
 import { usePostUsers } from "../hooks/usePostUsers";
+import { User } from "../types";
 
 interface CrearUsersModalProps {
   onClose: () => void;
+  onCreate:(nuevoUsuario:User) => void
 }
 
 interface UserFormState {
@@ -20,7 +22,7 @@ interface UserFormState {
   estado: string;
 }
 
-export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
+export const CrearUsersModal = ({ onClose,onCreate }: CrearUsersModalProps) => {
   const [userData, setUserData] = useState<UserFormState>({
     id:0,
     identificacion: "",
@@ -60,8 +62,9 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     }
 
     mutate(userData, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         onClose();
+        onCreate(data)
         setUserData({
           id:0,
           identificacion: "",

@@ -2,12 +2,14 @@ import { useState } from "react";
 import { usePostSalario } from "../../hooks/salarios/usePostSalarios";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
+import { Salarios } from "../../types";
 
 interface CrearSalariosModalProps {
   onClose: () => void;
+  onCreate: (nuevoSalario : Salarios) => void
 }
 
-export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
+export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [monto, setMonto] = useState<number | "">("");
   const [horas, setHoras] = useState<number | "">("");
@@ -24,6 +26,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
     mutate(
       {
+        id:0,
         nombre,
         monto: Number(monto),
         horas: Number(horas),
@@ -31,8 +34,9 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
         estado,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          onCreate(data)
           setNombre("");
           setMonto("");
           setHoras("");

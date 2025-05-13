@@ -7,12 +7,14 @@ import { useGetSemilleros } from "../../hooks/semilleros/useGetSemilleros";
 import { Plus } from "lucide-react";
 import { CrearEspecieModal } from "../especies/CrearEspecieModal";
 import { CrearSemilleroModal } from "../semillero/CrearSemilleroModal";
+import { Cultivos } from "../../types";
 
 interface CrearCultivoModalProps {
   onClose: () => void;
+  onCreate: (nuevoCultivo:Cultivos) => void;
 }
 
-export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
+export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) => {
   const [unidades, setUnidades] = useState<string>("");
   const [fechaSiembra, setFechaSiembra] = useState<string>("");
   const [fk_Especie, setFk_Especie] = useState<number | null>(null);
@@ -50,8 +52,9 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
     };
 
     mutate(payload, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         onClose();
+        onCreate(data)
         setUnidades("");
         setFechaSiembra("");
         setFk_Especie(null);

@@ -36,13 +36,14 @@ export function UsosHerramientasList() {
   } = useEliminarUsoHerramienta();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Herramientas: 0, fk_Actividad: 0 });
+    handleCrear({ id: 0, fk_Herramientas: 0, fk_Actividad: 0,unidades:0 });
   };
 
   // Definición de columnas
   const columnas = [
     { name: "Herramienta", uid: "herramienta" },
     { name: "Actividad", uid: "actividad" },
+    { name: "Unidades", uid: "unidades"},
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -55,6 +56,8 @@ export function UsosHerramientasList() {
       case "actividad":
         const actividad = actividades?.find((c) => c.id === item.fk_Actividad);
         return <span>{actividad ? actividad.titulo : "No definido"}</span>;
+      case "actividad":
+        return <span>{item.unidades}</span>;
       case "acciones":
         return (
           <AccionesTabla

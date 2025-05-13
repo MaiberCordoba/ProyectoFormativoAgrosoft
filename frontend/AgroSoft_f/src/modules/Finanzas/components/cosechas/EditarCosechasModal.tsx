@@ -16,14 +16,13 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
   const [fecha, setFecha] = useState<string>(cosecha.fecha);
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(cosecha.fk_Cultivo ?? null); // Estado para el ID del cultivo
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(cosecha.fk_UnidadMedida ?? null); // Estado para el ID del cultivo
-  const [precioReferencial, setPrecioReferencial] = useState<number>(cosecha.precioReferencial); // Estado para el ID del cultivo
 
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();  // Obtener los cultivos
   const { data: unidadesMedida, isLoading: isLoadingUnidadMedida } = useGetUnidadesMedida();  // Obtener los cultivos
   const { mutate, isPending } = usePatchCosechas();  // Mutación para actualizar las cosechas
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || cantidad <= 0 || !fk_UnidadMedida || !fecha || !precioReferencial) {
+    if (!fk_Cultivo || cantidad <= 0 || !fk_UnidadMedida || !fecha) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -37,7 +36,6 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
           fecha,
           fk_Cultivo,  // Envía solo el ID del cultivo
           fk_UnidadMedida,
-          precioReferencial
         },
       },
       {
@@ -115,12 +113,6 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
           ))}
         </Select>
       )}
-      <Input
-        value={precioReferencial}
-        label="Precio de referencia"
-        type="number"
-        onChange={(e) => setPrecioReferencial(Number(e.target.value))}
-      />
     </ModalComponent>
   );
 };
