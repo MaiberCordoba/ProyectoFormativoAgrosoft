@@ -6,14 +6,19 @@ import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCult
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 import { Plus } from "lucide-react";
-import { TipoActividad } from "../../types";
+import { Actividades, TipoActividad } from "../../types";
+import { User } from "@/modules/Users/types";
 import { CrearTipoActividadModal } from "../tipoActividad/CrearTipoActividadModal";
+import { Cultivos } from "@/modules/Trazabilidad/types";
+import { CrearCultivoModal } from "@/modules/Trazabilidad/components/cultivos/CrearCultivosModal";
+import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 
 interface CrearActividadesModalProps {
   onClose: () => void;
+  onCreate:(nuevaActividad : Actividades) => void
 }
 
-export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) => {
+export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModalProps) => {
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(null);
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
@@ -21,10 +26,14 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
   const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
+  //Creacion de modales 
   const [tipoActividadModal, setTipoActividadModal] = useState(false)
+  const [usuarioModal, setUsuarioModal] = useState(false)
+  const [cultivoModal, setCultivoModal] = useState(false)
 
-  const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
-  const { data: users, isLoading: isLoadingUsers } = useGetUsers();
+
+  const { data: cultivos, isLoading: isLoadingCultivos,refetch:refetchCultivo } = useGetCultivos();
+  const { data: users, isLoading: isLoadingUsers, refetch:refetchUsuario } = useGetUsers();
   const { data: tiposActividad, isLoading: isLoadingTiposActividad, refetch:refetchTipoActividad  } = useGetTipoActividad();
   const { mutate, isPending } = usePostActividades();
 
@@ -37,8 +46,9 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
     mutate(
       { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          onCreate(data)
           setFk_Cultivo(null);
           setFk_Usuario(null);
           setFk_TipoActividad(null);
@@ -50,11 +60,23 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
       }
     );
   };
+  //Funciones para nuevos datos creados de modales 
   const handleTipoActividadCreada = (nuevoTipoActividad : TipoActividad) => {
     refetchTipoActividad()
     setFk_TipoActividad(nuevoTipoActividad.id)
     setTipoActividadModal(false)
   }
+  const handleCultivoCreado = (nuevoCultivo : Cultivos) => {
+    refetchCultivo()
+    setFk_Cultivo(nuevoCultivo.id)
+    setCultivoModal(false)
+  }
+  const handleUsuarioCreado = (nuevoUsuario : User) => {
+    refetchUsuario()
+    setFk_Usuario(nuevoUsuario.id)
+    setUsuarioModal(false)
+  }
+  
 
   return (
     <>
@@ -113,38 +135,64 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
         {isLoadingCultivos ? (
           <p>Cargando cultivos...</p>
         ) : (
-          <Select
-            label="Cultivo"
-            placeholder="Selecciona un cultivo"
-            selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
-            onSelectionChange={(keys) => {
-              const selectedKey = Array.from(keys)[0];
-              setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
-            }}
-          >
-            {(cultivos || []).map((cultivo) => (
-              <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
-            ))}
-          </Select>
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Cultivo"
+                placeholder="Selecciona un cultivo"
+                selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(cultivos || []).map((cultivo) => (
+                  <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button 
+            onPress={() => setCultivoModal(true)}
+            color="success"
+            title="Crear nuevo cultivo"
+            radius="full"
+            size="sm"
+            >
+              <Plus className="w-5 h-5 text-white"/>
+            </Button>
+          </div>
         )}
 
         {/* Selector de Usuarios (corregido) */}
         {isLoadingUsers ? (
           <p>Cargando usuarios...</p>
         ) : (
-          <Select
-            label="Usuario"
-            placeholder="Selecciona un Usuario"
-            selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
-            onSelectionChange={(keys) => {
-              const selectedKey = Array.from(keys)[0];
-              setFk_Usuario(selectedKey ? Number(selectedKey) : null);
-            }}
-          >
-            {(users || []).map((usuario) => (
-              <SelectItem key={usuario.id.toString()}>{usuario.nombre}</SelectItem>
-            ))}
-          </Select>
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Usuario"
+                placeholder="Selecciona un Usuario"
+                selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_Usuario(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(users || []).map((usuario) => (
+                  <SelectItem key={usuario.id.toString()}>{usuario.nombre}</SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button
+            onPress={() => setUsuarioModal(true)}
+            color="success"
+            title="Crear Usuario"
+            radius="full"
+            size="sm"
+            >
+              <Plus className="w-5 h-5 text-white"/>
+            </Button>
+          </div>
         )}
 
         {isLoadingTiposActividad ? (
@@ -182,6 +230,18 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
         <CrearTipoActividadModal 
         onClose={() => setTipoActividadModal(false)}
         onCreate={handleTipoActividadCreada}
+        />
+      )}
+      {cultivoModal && (
+        <CrearCultivoModal
+        onClose={() => setCultivoModal(false)}
+        onCreate={handleCultivoCreado}
+        />
+      )}
+      {usuarioModal && (
+        <CrearUsersModal
+        onClose={() => setUsuarioModal(false)}
+        onCreate={handleUsuarioCreado}
         />
       )}
     </>
