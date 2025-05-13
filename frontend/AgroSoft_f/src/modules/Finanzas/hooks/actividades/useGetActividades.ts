@@ -3,9 +3,13 @@ import { getActividades } from "../../api/actividadesApi";
 import { Actividades } from "../../types";
 
 export const useGetActividades = () => {
-  return useQuery<Actividades[], Error>({
+    const query = useQuery<Actividades[], Error>({
     queryKey: ["actividades"], 
     queryFn: getActividades, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

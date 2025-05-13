@@ -3,9 +3,13 @@ import { getDesechos } from "../../api/desechosApi";
 import { Desechos } from "../../types";
 
 export const useGetDesechos = () => {
-  return useQuery<Desechos[], Error>({
+    const query = useQuery<Desechos[], Error>({
     queryKey: ["desechos"], 
     queryFn: getDesechos, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

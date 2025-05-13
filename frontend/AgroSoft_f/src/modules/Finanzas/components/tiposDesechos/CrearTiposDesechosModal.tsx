@@ -2,12 +2,14 @@ import { useState } from "react";
 import { usePostTiposDesechos } from "../../hooks/tiposDesechos/usePostTiposDesechos";
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
+import { TiposDesechos } from "../../types";
 
 interface CrearTiposDesechosModalProps {
   onClose: () => void;
+  onCreate: (nuevoTipoDesecho : TiposDesechos) => void
 }
 
-export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProps) => {
+export const CrearTiposDesechosModal = ({ onClose,onCreate }: CrearTiposDesechosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
@@ -19,10 +21,11 @@ export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProp
       return;
     }
     mutate(
-      {nombre, descripcion }, // Envía el ID del tipo de plaga
+      {id:0 ,nombre, descripcion }, // Envía el ID del tipo de plaga
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          onCreate(data)
           setNombre("");
           setDescripcion("");
         },

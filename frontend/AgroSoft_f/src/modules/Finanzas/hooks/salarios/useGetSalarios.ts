@@ -3,9 +3,13 @@ import { getSalarios } from "../../api/salariosApi";
 import { Salarios } from "../../types";
 
 export const useGetSalarios = () => {
-  return useQuery<Salarios[], Error>({
+    const query = useQuery<Salarios[], Error>({
     queryKey: ["salarios"], 
     queryFn: getSalarios, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

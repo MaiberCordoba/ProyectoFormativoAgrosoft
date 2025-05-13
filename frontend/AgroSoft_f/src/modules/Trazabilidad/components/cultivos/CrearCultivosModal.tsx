@@ -6,8 +6,10 @@ import { Input, Select, SelectItem, Switch, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearEspecieModal } from "../especies/CrearEspecieModal";
 
+
 interface CrearCultivoModalProps {
   onClose: () => void;
+  onCreate: (nuevoCultivo:Cultivos) => void;
 }
 
 export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {

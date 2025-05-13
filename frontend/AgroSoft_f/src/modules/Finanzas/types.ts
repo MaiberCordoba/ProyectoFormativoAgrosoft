@@ -112,8 +112,6 @@ export interface Cosechas {
     fk_UnidadMedida : number,
     unidadMedida : UnidadesMedida
     cantidad : number,
-    cantidadTotal :number,
-    cantidadDisponible : number,
     fecha : string,
     precioReferencial : number
 }
@@ -156,16 +154,17 @@ export interface Insumos {
 export interface MovimientoInventario {
     id : number,
     tipo : "entrada" | "salida" ,
-    cantidad : number,
-    descripcion : string,
+    unidades : number,
     fk_Insumo : number,
     insumo : Insumos,
+    fk_UsoInsumo:number,
+    usoInsumo : UsosInsumos,
     fk_Herramienta : number,
     herramienta : Herramientas,
-    fk_Cosecha : number,
-    cosecha : Cosechas,
-    fk_Usuario : number,
-    usuario : User,
+    fk_UsoHerramienta : number,
+    usoHerramienta : UsosHerramientas
+    /* fk_Cosecha : number,
+    cosecha : Cosechas, */
 }
 
 export interface Salarios{
@@ -206,14 +205,14 @@ export interface UnidadesMedida {
     id: number;
     nombre: string;
     abreviatura: string;
-    tipo:  keyof typeof TipoUnidadMedida; // Se usará "MASA" o "VOLUMEN"
+    tipo: "MASA" | "VOLUMEN"; // Se usará "MASA" o "VOLUMEN"
     equivalenciabase: number;
 }
 
 export interface UnidadesTiempo {
     id: number;
     nombre: string;
-    equivalenciabase: number;
+    equivalenciaMinutos: number;
 }
 
 export interface UsosInsumos {
@@ -235,7 +234,8 @@ export interface UsosHerramientas {
     fk_Herramientas? : number,
     herramienta?: Herramientas,
     fk_Actividad? : number,
-    actividad? : Actividades
+    actividad? : Actividades,
+    unidades : number,
 }
 
 export interface Ventas {
@@ -245,14 +245,11 @@ export interface Ventas {
     precioUnitario : number,
     fecha : string,
     fk_UnidadMedida : number,
+    unidadMedida : UnidadesMedida,
     cantidad : number,
     valorTotal : number
 }
 
-export enum TipoUnidadMedida {
-    MASA = "Masa",
-    VOLUMEN = "VOLUMEN"
-}
   
 
 

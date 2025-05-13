@@ -1,8 +1,8 @@
 from django.db import models
-from apps.finanzas.api.models.cosechas import Cosechas
 from apps.trazabilidad.api.models.HerramientasModel import Herramientas
-from apps.users.models import Usuario
 from apps.finanzas.api.models.insumos import Insumos
+from apps.finanzas.api.models.usosInsumos import UsosInsumos
+from apps.trazabilidad.api.models.UsosHerramientasModel import UsosHerramientas
 
 class MovimientoInventario(models.Model):
     TIPO_CHOICES = [
@@ -10,13 +10,16 @@ class MovimientoInventario(models.Model):
         ('salida', 'Salida')
     ]
     tipo = models.CharField(max_length=30, choices=TIPO_CHOICES)
-    cantidad = models.IntegerField()
-    descripcion = models.TextField(max_length=300)
     fk_Insumo = models.ForeignKey(Insumos, models.SET_NULL, null=True, blank=True)
     fk_Herramienta = models.ForeignKey(Herramientas, models.SET_NULL, null=True, blank=True)
-    fk_Cosecha = models.ForeignKey(Cosechas, models.SET_NULL, null=True, blank=True)
-    fk_Usuario = models.ForeignKey(Usuario, models.SET_NULL, null=True, blank=True)
+    fk_UsoInsumo = models.ForeignKey(UsosInsumos, models.SET_NULL, null=True, blank=True)
+    fk_UsoHerramienta = models.ForeignKey(UsosHerramientas, models.SET_NULL, null=True, blank=True)
+    unidades = models.IntegerField()
 
-    
     def __str__(self):
-        return self.descripcion
+        if self.fk_Insumo:
+            return f"{self.tipo.title()} - {self.fk_Insumo.nombre}"
+        elif self.fk_UsoInsumo:
+            return f"{self.tipo.title()} - {self.fk_UsoInsumo.fk_Insumo.nombre}"
+        return self.tipo
+

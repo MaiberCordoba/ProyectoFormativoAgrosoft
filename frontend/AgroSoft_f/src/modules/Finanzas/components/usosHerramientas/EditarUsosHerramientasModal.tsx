@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchUsosHerramientas } from "../../hooks/usosHerramientas/usePatchUsosHerramientas";
 import { UsosHerramientas } from "../../types";
-import { Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 
@@ -14,6 +14,7 @@ interface EditarUsoHerramientaModalProps {
 const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ usoHerramienta, onClose }) => {
   const [fk_Herramientas, setFk_Herramienta] = useState<number>(usoHerramienta.herramienta?.id || 0);
   const [fk_Actividad, setFk_Actividad] = useState<number>(usoHerramienta.actividad?.id || 0);
+  const [unidades, setUnidades] = useState<number>(usoHerramienta.unidades);
 
   const { data: herramientas, isLoading: isLoadingHerramientas } = useGetHerramientas();
   const { data: actividades, isLoading: isLoadingActividades } = useGetActividades();
@@ -26,6 +27,7 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
         data: {
           fk_Herramientas,
           fk_Actividad,
+          unidades
         },
       },
       {
@@ -50,6 +52,13 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
         },
       ]}
     >
+      <Input
+        label="Cantidad Usada"
+        value={unidades}
+        type="number"
+        onChange={(e) => setUnidades(Number(e.target.value))}
+        required
+      />
       {/* Selector de Herramientas */}
       {isLoadingHerramientas ? (
         <p>Cargando herramientas...</p>

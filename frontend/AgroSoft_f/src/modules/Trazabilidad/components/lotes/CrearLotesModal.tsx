@@ -2,10 +2,11 @@ import { useState } from "react";
 import { usePostLotes } from "../../hooks/lotes/usePostLotes";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
+import { Lotes } from "../../types";
 
 interface CrearLoteModalProps {
   onClose: () => void;
-  onCreate: (nuevoLote: { id: number }) => void;
+  onCreate: (nuevoLote: Lotes) => void;
 }
 
 export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {

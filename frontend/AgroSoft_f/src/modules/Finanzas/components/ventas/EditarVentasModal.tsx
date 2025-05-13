@@ -4,6 +4,7 @@ import { usePatchVentas } from "../../hooks/ventas/usePatchVentas";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { Ventas } from "../../types";
 import { Input, Select, SelectItem } from "@heroui/react";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 
 interface EditarVentaModalProps {
   venta: Ventas;
@@ -11,15 +12,18 @@ interface EditarVentaModalProps {
 }
 
 const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) => {
+  const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(venta.fk_Cosecha || null);
   const [precioUnitario, setPrecioUnitario] = useState<number>(venta.precioUnitario);
   const [fecha, setFecha] = useState<string>(venta.fecha);
-  const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(venta.fk_Cosecha || null);
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(venta.fk_UnidadMedida || null);
+  const [cantidad, setCantidad] = useState<number>(venta.cantidad);
 
   const { mutate, isPending } = usePatchVentas();
   const { data: cosechas, isLoading: isLoadingCosechas } = useGetCosechas();
+  const { data: unidadesMedida, isLoading: isLoadingUnidadesMedida } = useGetUnidadesMedida();
 
   const handleSubmit = () => {
-    if (!precioUnitario || !fecha || !fk_Cosecha) {
+    if (!precioUnitario || !fecha || !fk_Cosecha || !fk_UnidadMedida || !cantidad) {
       console.log("Todos los campos son obligatorios");
       return;
     }
@@ -27,7 +31,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
     mutate(
       {
         id: venta.id,
-        data: { precioUnitario, fecha, fk_Cosecha },
+        data: { precioUnitario, fecha, fk_Cosecha,fk_UnidadMedida,cantidad },
       },
       {
         onSuccess: () => {
@@ -56,6 +60,13 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
         type="number"
         value={precioUnitario}
         onChange={(e) => setPrecioUnitario(Number(e.target.value))}
+        required
+      />
+      <Input
+        label="Cantidad de venta"
+        type="number"
+        value={cantidad}
+        onChange={(e) => setCantidad(Number(e.target.value))}
         required
       />
       
@@ -90,6 +101,23 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
           ))}
         </Select>
       )}
+      {isLoadingUnidadesMedida ? (
+              <p>Cargando unidades de medida...</p>
+            ) : (
+              <Select
+                label="Unidades de medida"
+                placeholder="Selecciona la unidad de medida"
+                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []} 
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];  
+                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);  
+                }}
+              >
+                {(unidadesMedida || []).map((unidadMedida) => (
+                  <SelectItem key={unidadMedida.id.toString()}>{unidadMedida.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
     </ModalComponent>
   );
 };
