@@ -37,7 +37,7 @@ export function CosechasList() {
   } = useEliminarCosecha();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0, fk_UnidadMedida: 0,cantidad: 0, fecha: "", precioReferencial: 0});
+    handleCrear({ id: 0, fk_Cultivo: 0, fk_UnidadMedida: 0,cantidad: 0, fecha: ""});
   };
 
   // Definición de columnas movida aquí
@@ -46,7 +46,6 @@ export function CosechasList() {
     { name: "UnidadMedida", uid: "unidadMedida"  },
     { name: "Cantidad Cosechada", uid: "cantidad" },
     { name: "Fecha de cosecha", uid: "fecha" },
-    { name: "PrecioReferencial", uid: "precioReferencial" },
     { name: "Acciones", uid: "acciones" },
   ];
 
