@@ -4,7 +4,7 @@ import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { useGetTiposDesechos } from "../../hooks/tiposDesechos/useGetTiposDesechos";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
-import { Desechos, TiposDesechos } from "../../types";
+import { TiposDesechos } from "../../types";
 import { Cultivos } from "@/modules/Trazabilidad/types";
 import { Plus } from "lucide-react";
 import { CrearCultivoModal } from "@/modules/Trazabilidad/components/cultivos/CrearCultivosModal";
@@ -12,10 +12,9 @@ import { CrearTiposDesechosModal } from "../tiposDesechos/CrearTiposDesechosModa
 
 interface CrearDesechosModalProps {
   onClose: () => void;
-  onCreate:(nuevoDesecho: Desechos) => void
 }
 
-export const CrearDesechosModal = ({ onClose,onCreate }: CrearDesechosModalProps) => {
+export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null); // Cambiado a número o null
   const [fk_TipoDesecho, setFk_TipoDesecho] = useState<number | null>(null); 
   const [nombre, setNombre] = useState("");
@@ -36,11 +35,10 @@ export const CrearDesechosModal = ({ onClose,onCreate }: CrearDesechosModalProps
     }
 
     mutate(
-      { id:0,fk_Cultivo, fk_TipoDesecho, nombre, descripcion },
+      { fk_Cultivo, fk_TipoDesecho, nombre, descripcion },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setFk_Cultivo(null);
           setFk_TipoDesecho(null);
           setNombre("");
