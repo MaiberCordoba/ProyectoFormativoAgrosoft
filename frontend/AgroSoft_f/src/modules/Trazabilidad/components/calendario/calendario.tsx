@@ -93,7 +93,7 @@ export default function CalendarioActividades() {
         },
       }}
       eventPropGetter={(event) => {
-        const backgroundColor = event.tipo === "actividad" ? "#2f80ed" : "#27ae60";
+        const backgroundColor = event.tipo === "actividad" ? "#27548A" : "#8FD14F";
         return {
           style: {
             backgroundColor,
