@@ -1,0 +1,293 @@
+import { useState } from "react";
+import { usePostUsoInsumo } from "../../hooks/usoInsumos/usePostUsoInsumos";
+import ModalComponent from "@/components/Modal";
+import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
+import { useGetActividades } from "../../hooks/actividades/useGetActividades";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+
+import { Actividades,Insumos, UnidadesMedida, UsosInsumos } from "../../types";
+import { Plus } from "lucide-react";
+import { CrearActividadesModal } from "../actividades/CrearActividadModal";
+import { CrearInsumosModal } from "../insumos/CrearInsumosModal";
+import { Controles } from "@/modules/Sanidad/types";
+import { CrearControlModal } from "@/modules/Sanidad/components/controles/CrearControlesModal";
+import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
+import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
+
+interface CrearUsoInsumoModalProps {
+  onClose: () => void;
+  onCreate: (nuevoUsoInsumo: UsosInsumos) => void;
+}
+
+export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalProps) => {
+  const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
+  const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
+  const [fk_Control, setFk_Control] = useState<number | null>(null);
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
+  const [cantidadProducto, setCantidadProducto] = useState<number | null>(null);
+  const [costoUsoInsumo, setCostoUsoInsumo] = useState<number | null>(null);
+
+  const [insumoModal, setInsumoModal] = useState(false);
+  const [actividadModal, setActividadModal] = useState(false);
+  const [controlModal, setControlModal] = useState(false);
+  const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
+
+  const { data: insumos, isLoading: isLoadingInsumos, refetch: refetchInsumos } = useGetInsumos();
+  const { data: actividades, isLoading: isLoadingActividades, refetch: refetchActividad } = useGetActividades();
+  const { data: controles, isLoading: isLoadingControles, refetch: refetchControles } = useGetControles();
+  const { data: unidadesMedida, isLoading: isLoadingUnidadesMedida, refetch: refetchUnidadesMedida } = useGetUnidadesMedida();
+
+  const { mutate, isPending } = usePostUsoInsumo();
+
+  const handleSubmit = () => {
+    if (
+      !fk_Insumo ||
+      !fk_Actividad ||
+      !fk_Control ||
+      !fk_UnidadMedida ||
+      cantidadProducto === null ||
+      costoUsoInsumo === null
+    ) {
+      console.log("Por favor, completa todos los campos.");
+      return;
+    }
+
+    mutate(
+      {
+        id: 0,
+        fk_Insumo,
+        fk_Actividad,
+        fk_Control,
+        fk_UnidadMedida,
+        cantidadProducto,
+        costoUsoInsumo,
+      },
+      {
+        onSuccess: (data : UsosInsumos) => {
+          onClose();
+          onCreate(data);
+          setFk_Insumo(null);
+          setFk_Actividad(null);
+          setFk_Control(null);
+          setFk_UnidadMedida(null);
+          setCantidadProducto(null);
+          setCostoUsoInsumo(null);
+        },
+      }
+    );
+  };
+
+  const handleActividadCreada = (nuevaActividad: Actividades) => {
+    refetchActividad();
+    setFk_Actividad(nuevaActividad.id);
+    setActividadModal(false);
+  };
+
+  const handleInsumoCreado = (nuevoInsumo: Insumos) => {
+    refetchInsumos();
+    setFk_Insumo(nuevoInsumo.id);
+    setInsumoModal(false);
+  };
+  const handleControlCreado = (nuevoControl: Controles) => {
+    refetchControles();
+    setFk_Control(nuevoControl.id);
+    setControlModal(false);
+  };
+  const handleUnidadMedidaCreada = (nuevaUnidadMedida: UnidadesMedida) => {
+    refetchUnidadesMedida();
+    setFk_UnidadMedida(nuevaUnidadMedida.id);
+    setUnidadMedidaModal(false);
+  };
+
+  return (
+    <>
+      <ModalComponent
+        isOpen={true}
+        onClose={onClose}
+        title="Registrar Uso de Insumo"
+        footerButtons={[
+          {
+            label: isPending ? "Guardando..." : "Guardar",
+            color: "success",
+            variant: "light",
+            onClick: handleSubmit,
+          },
+        ]}
+      >
+        <Input
+          label="Cantidad Usada"
+          type="number"
+          value={cantidadProducto ?? ""}
+          onChange={(e) => setCantidadProducto(Number(e.target.value))}
+          required
+        />
+
+        <Input
+          label="Costo del uso del insumo"
+          type="number"
+          value={costoUsoInsumo ?? ""}
+          onChange={(e) => setCostoUsoInsumo(Number(e.target.value))}
+          required
+        />
+
+        {/* Selector de Insumos */}
+        {isLoadingInsumos ? (
+          <p>Cargando insumos...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Insumo"
+                placeholder="Selecciona un insumo"
+                selectedKeys={fk_Insumo ? [fk_Insumo.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_Insumo(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(insumos || []).map((insumo) => (
+                  <SelectItem key={insumo.id.toString()}>
+                    {insumo.nombre}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button
+              onPress={() => setInsumoModal(true)}
+              color="success"
+              title="Crear Insumo"
+              size="sm"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+          </div>
+        )}
+
+        {/* Selector de Actividades */}
+        {isLoadingActividades ? (
+          <p>Cargando actividades...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Actividad"
+                placeholder="Selecciona una actividad"
+                selectedKeys={fk_Actividad ? [fk_Actividad.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(actividades || []).map((actividad) => (
+                  <SelectItem key={actividad.id.toString()}>
+                    {actividad.titulo}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button
+              onPress={() => setActividadModal(true)}
+              color="success"
+              title="Crear actividad"
+              size="sm"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+          </div>
+        )}
+
+        {/* Selector de Control */}
+        { isLoadingControles ? (
+          <p>Cargando Controles...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+              label="Control"
+              placeholder="Selecciona un control"
+              selectedKeys={fk_Control ? [fk_Control.toString()] : []}
+              onSelectionChange={(keys) => {
+                const selectedKey = Array.from(keys)[0];
+                setFk_Control(selectedKey ? Number(selectedKey) : null);
+              }}
+              >
+              {(controles || []).map((control) => (
+                <SelectItem key={control.id.toString()}>
+                  {control.nombre}
+                </SelectItem>
+              ))}
+            </Select>
+            </div>
+              <Button
+              onPress={() => setControlModal(true)}
+              color="success"
+              title="Crear Control"
+              size="sm"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+          </div>
+        )}
+
+        {/* Selector de Unidad de Medida */}
+        { isLoadingUnidadesMedida ? (
+          <p>Cargando Undiades de medida...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+              label="Unidad de Medida"
+              placeholder="Selecciona una unidad"
+              selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
+              onSelectionChange={(keys) => {
+                const selectedKey = Array.from(keys)[0];
+                setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+              }}
+              >
+              {(unidadesMedida || []).map((unidad) => (
+                <SelectItem key={unidad.id.toString()}>
+                  {unidad.nombre}
+                </SelectItem>
+              ))}
+            </Select>
+            </div>
+              <Button
+              onPress={() => setUnidadMedidaModal(true)}
+              color="success"
+              title="Crear unidad medida"
+              size="sm"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+          </div>
+        )}
+      </ModalComponent>
+
+      {actividadModal && (
+        <CrearActividadesModal
+          onClose={() => setActividadModal(false)}
+          onCreate={handleActividadCreada}
+        />
+      )}
+      {insumoModal && (
+        <CrearInsumosModal
+          onClose={() => setInsumoModal(false)}
+          onCreate={handleInsumoCreado}
+        />
+      )}
+      {controlModal && (
+        <CrearControlModal
+          onClose={() => setControlModal(false)}
+          onCreate={handleControlCreado}
+        />
+      )}
+      {unidadMedidaModal && (
+        <CrearUnidadesMedidaModal
+          onClose={() => setUnidadMedidaModal(false)}
+          onCreate={handleUnidadMedidaCreada}
+        />
+      )}
+    </>
+  );
+};
