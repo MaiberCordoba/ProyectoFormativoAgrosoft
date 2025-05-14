@@ -1,0 +1,112 @@
+import { useGetUsosInsumos } from "../../hooks/usoInsumos/useGetUsoInsumos";
+import { useEditarUsoInsumo } from "../../hooks/usoInsumos/useEditarUsoInsumos";
+import { useCrearUsosInsumo } from "../../hooks/usoInsumos/useCrearUsoInsumos";
+import { useEliminarUsoInsumo } from "../../hooks/usoInsumos/useEliminarUsoInsumos";
+import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
+import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
+import EditarUsosInsumosModal from "./EditarUsosInsumosModal";
+import { CrearUsoInsumoModal } from "./CrearUsosInsumosModal";
+import EliminarUsosInsumosModal from "./EliminarUsosInsumos";
+import { UsosInsumos } from "../../types";
+import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
+import { useGetActividades } from "../../hooks/actividades/useGetActividades";
+
+export function UsosInsumosList() {
+  const { data, isLoading, error, refetch } = useGetUsosInsumos();
+  const { data: insumos, isLoading: loadingInsumos } = useGetInsumos();
+  const { data: actividades, isLoading: loadingActividades } = useGetActividades();
+
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    usoInsumoEdidato,
+    handleEditar,
+  } = useEditarUsoInsumo();
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
+  } = useCrearUsosInsumo();
+
+  const {
+    isOpen: isDeleteModalOpen,
+    closeModal: closeDeleteModal,
+    usoInsumoEliminado,
+    handleEliminar,
+  } = useEliminarUsoInsumo();
+
+  const handleCrearNuevo = () => {
+    handleCrear({ id: 0, fk_Insumo: 0, fk_Actividad: 0, cantidadProducto: 0 });
+  };
+
+  const columnas = [
+    { name: "Insumo", uid: "insumo" },
+    { name: "Actividad", uid: "actividad" },
+    { name: "Cantidad", uid: "cantidadProducto" },
+    { name: "Acciones", uid: "acciones" },
+  ];
+
+  const renderCell = (item: UsosInsumos, columnKey: React.Key) => {
+    switch (columnKey) {
+      case "insumo":
+        const insumo = insumos?.find((i) => i.id === item.fk_Insumo);
+        return <span>{insumo ? insumo.nombre : "No definido"}</span>;
+      case "actividad":
+        const actividad = actividades?.find((a) => a.id === item.fk_Actividad);
+        return <span>{actividad ? actividad.titulo : "No definido"}</span>;
+      case "cantidadProducto":
+        return <span>{item.cantidadProducto}</span>;
+      case "acciones":
+        return (
+          <AccionesTabla
+            onEditar={() => handleEditar(item)}
+            onEliminar={() => handleEliminar(item)}
+          />
+        );
+      default:
+        return <span>{String(item[columnKey as keyof UsosInsumos])}</span>;
+    }
+  };
+
+  if (isLoading || loadingInsumos || loadingActividades) return <p>Cargando...</p>;
+  if (error) return <p>Error al cargar los Usos de Insumos</p>;
+
+  return (
+    <div className="p-4">
+      <TablaReutilizable
+        datos={data || []}
+        columnas={columnas}
+        claveBusqueda="insumo"
+        placeholderBusqueda="Buscar por insumo"
+        renderCell={renderCell}
+        onCrearNuevo={handleCrearNuevo}
+      />
+
+      {isEditModalOpen && usoInsumoEdidato && (
+        <EditarUsosInsumosModal
+          usoInsumo={usoInsumoEdidato}
+          onClose={closeEditModal}
+        />
+      )}
+
+      {isCreateModalOpen && (
+        <CrearUsoInsumoModal
+          onClose={closeCreateModal}
+          onCreate={() => {
+            refetch(); // Vuelve a cargar la tabla tras crear
+            closeCreateModal();
+          }}
+        />
+      )}
+
+      {isDeleteModalOpen && usoInsumoEliminado && (
+        <EliminarUsosInsumosModal
+          usoInsumo={usoInsumoEliminado}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+        />
+      )}
+    </div>
+  );
+}
