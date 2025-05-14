@@ -93,7 +93,7 @@ export default function CalendarioActividades() {
         },
       }}
       eventPropGetter={(event) => {
-        const backgroundColor = event.tipo === "actividad" ? "#27548A" : "#8FD14F";
+        const backgroundColor = event.tipo === "actividad" ? "#12A34A" : "#06202B";
         return {
           style: {
             backgroundColor,
@@ -107,7 +107,7 @@ export default function CalendarioActividades() {
         const isWeekend = date.getDay() === 0 || date.getDay() === 6;
         return {
           style: {
-            backgroundColor: isWeekend ? "#f0f0f0" : "#f9fcff",
+            backgroundColor: isWeekend ? "#f9fcff" : "#f9fcff",
             border: "1px solid #e0e0e0",
           },
         };
