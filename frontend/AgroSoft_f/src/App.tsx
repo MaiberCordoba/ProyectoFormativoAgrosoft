@@ -16,7 +16,7 @@ import { Actividades } from "./modules/Finanzas/pages/pageActividades";
 import { Cosechas } from "./modules/Finanzas/pages/pageCosechas";
 import { Herramientas } from "./modules/Finanzas/pages/pageHerramientas";
 import { UsosHerramientas } from "./modules/Finanzas/pages/pageUsosHerramientas";
-//import { UsosProductos } from "./modules/Finanzas/pages/pageUsosProductos";
+import { UsosInsumos } from "./modules/Finanzas/pages/pageUsosInsumos";
 import { Ventas } from "./modules/Finanzas/pages/pageVentas";
 import { UnidadesTiempo } from "./modules/Finanzas/pages/pageUnidadesTiempo";
 import { Insumos } from "./modules/Finanzas/pages/pageInsumos"
@@ -106,16 +106,14 @@ function App() {
             <Route path="/ventas" element={<Ventas/>}/>
             <Route path="/cosechas" element={<Cosechas/>} />
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
-            {/*<Route path="/unidades-medida" element={<UnidadesMedida/>} />*/}
             <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
             <Route path="/movimientos-inventario" element={<MovimientosInventario/>} />
             <Route path="/unidades-medida" element={<UnidadesMedida/>} />
-
-         {/*<Route path="/usos-productos" element={<UsosProductos/>} /> */}
+            <Route path="/usos-insumos" element={<UsosInsumos/>} /> 
             <Route path="/insumos" element={<Insumos/>}/> 
             <Route path="/salarios" element={<Salarios/>}/>
-            <Route path="/TiempoActividadControl" element={<TiempoActividadControl/>}/>
-            <Route path="/TiposActividad" element={<TipoActividad/>}/>
+            <Route path="/Tiempo-Actividad-Control" element={<TiempoActividadControl/>}/>
+            <Route path="/Tipos-Actividad" element={<TipoActividad/>}/>
             <Route path="/resumen-finanzas" element={<ResumenFinancieroPage/>} />
 
 
