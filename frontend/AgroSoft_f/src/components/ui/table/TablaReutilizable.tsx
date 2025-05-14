@@ -22,6 +22,7 @@ interface TablaReutilizableProps<T extends { [key: string]: any }> {
   opcionesEstado?: { uid: string; nombre: string }[];
   renderCell: (item: T, columnKey: React.Key) => React.ReactNode;
   onCrearNuevo: () => void;
+  onRegistroMasivo?: () => void;
   placeholderBusqueda?: string;
   initialVisibleColumns?: string[]; // Nueva prop
   renderReporteAction?: (data: T[]) => React.ReactNode;
@@ -35,6 +36,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   opcionesEstado = [],
   renderCell,
   onCrearNuevo,
+  onRegistroMasivo = undefined,
   placeholderBusqueda = "Buscar...",
   initialVisibleColumns = columnas.map(c => c.uid), // Por defecto todas visibles
 }: TablaReutilizableProps<T>) => {
@@ -118,6 +120,20 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
         >
           Agregar
         </Button>
+
+        {
+          onRegistroMasivo !== undefined &&
+          <Button
+            color="success"
+            size="sm" // Tamaño pequeño
+            endContent={<PlusIcon size={16} />}
+            onPress={onRegistroMasivo}
+            className="self-end text-white" // Alineación individual
+          >
+            Registro masivo
+          </Button>
+
+        }
 
         {renderReporteAction && renderReporteAction(datos)}
       </div>
