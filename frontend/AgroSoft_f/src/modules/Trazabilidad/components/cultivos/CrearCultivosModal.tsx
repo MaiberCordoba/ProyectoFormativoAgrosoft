@@ -9,7 +9,7 @@ import { CrearEspecieModal } from "../especies/CrearEspecieModal";
 
 interface CrearCultivoModalProps {
   onClose: () => void;
-  onCreate: (nuevoCultivo:Cultivos) => void;
+  onCreate: (nuevoCultivo:CrearCultivoModalProps) => void;
 }
 
 export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
