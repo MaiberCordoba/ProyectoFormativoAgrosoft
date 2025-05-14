@@ -11,6 +11,8 @@ class Insumos(models.Model):
     unidades = models.IntegerField()
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida , on_delete=models.SET_NULL, null=True)
 
+    totalGramos = models.IntegerField(null=True, blank=True)
+    cantidadGramos = models.IntegerField(null=True, blank=True)
     valorTotalInsumos = models.FloatField(null=True, blank=True)
     def __str__(self):
         return self.nombre
