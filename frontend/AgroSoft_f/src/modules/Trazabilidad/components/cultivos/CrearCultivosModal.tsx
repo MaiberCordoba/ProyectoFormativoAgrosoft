@@ -5,14 +5,15 @@ import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Switch, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearEspecieModal } from "../especies/CrearEspecieModal";
+import { Cultivo } from "../../types";
 
 
 interface CrearCultivoModalProps {
   onClose: () => void;
-  onCreate: (nuevoCultivo:CrearCultivoModalProps) => void;
+  onCreate: (nuevoCultivo:Cultivo) => void;
 }
 
-export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
+export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) => {
   const [nombre, setNombre] = useState<string>("");
   const [activo, setActivo] = useState<boolean>(true);
   const [fk_Especie, setFk_Especie] = useState<{ nombre: string } | null>(null);
@@ -45,8 +46,9 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
         fk_Especie: especie.id, 
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          onCreate(data)
           setNombre("");
           setFk_Especie(null);
           setActivo(true);

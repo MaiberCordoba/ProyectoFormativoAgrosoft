@@ -14,8 +14,8 @@ interface CrearUsoHerramientaModalProps {
   onCreate: (nuevoUsoHerramienta : UsosHerramientas) => void
 }
 
-export const CrearUsoHerramientaModal = ({ onClose,onCreate }: CrearUsoHerramientaModalProps) => {
-  const [fk_Herramientas, setFk_Herramienta] = useState<number | null>(null);
+export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalProps) => {
+  const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
   const [unidades, setUnidades] = useState<number | null>(null)
 
@@ -27,17 +27,16 @@ export const CrearUsoHerramientaModal = ({ onClose,onCreate }: CrearUsoHerramien
   const { mutate, isPending } = usePostUsoHerramienta();
 
   const handleSubmit = () => {
-    if (!fk_Herramientas || !fk_Actividad || !unidades) {
+    if (!fk_Herramienta || !fk_Actividad || !unidades) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      { id:0,fk_Herramientas, fk_Actividad, unidades },
+      { fk_Herramienta, fk_Actividad, unidades },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setFk_Herramienta(null);
           setFk_Actividad(null);
           setUnidades(null)
@@ -88,7 +87,7 @@ export const CrearUsoHerramientaModal = ({ onClose,onCreate }: CrearUsoHerramien
               <Select
                 label="Herramienta"
                 placeholder="Selecciona una herramienta"
-                selectedKeys={fk_Herramientas ? [fk_Herramientas.toString()] : []}
+                selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
                   setFk_Herramienta(selectedKey ? Number(selectedKey) : null);

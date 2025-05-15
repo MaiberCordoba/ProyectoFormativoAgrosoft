@@ -9,6 +9,7 @@ import { CrearInsumosModal } from "./CrearInsumosModal";
 import EliminarInsumoModal from "./EliminarInsumos";
 import { Insumos } from "../../types";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+import { Image } from "@heroui/react";
 
 export function InsumosList() {
   const { data, isLoading, error } = useGetInsumos();
@@ -71,6 +72,12 @@ export function InsumosList() {
         return <span>{unidad ? unidad.nombre : "No definido"}</span>;
       case "valorTotalInsumos":
         return <span>{item.valorTotalInsumos.toLocaleString("es-CO", { style: "currency", currency: "COP" })}</span>
+      case "fichaTecnica":
+        return <Image
+        src={item.fichaTecnica}
+        alt={item.nombre}
+        className="w-14 h-14 object-contain rounded-lg"
+        />
       case "acciones":
         return (
           <AccionesTabla

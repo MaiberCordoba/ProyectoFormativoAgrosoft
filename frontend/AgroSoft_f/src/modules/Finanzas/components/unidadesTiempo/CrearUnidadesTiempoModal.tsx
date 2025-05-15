@@ -11,7 +11,7 @@ interface CrearUnidadesTiempoModalProps {
 
 
 export const CrearUnidadesTiempoModal = ({
-  onClose,onCreate
+  onClose,
 }: CrearUnidadesTiempoModalProps) => {
   const [nombre, setNombre] = useState("");
   const [equivalenciaMinutos, setEquivalenciaMinutos] = useState(0);
@@ -26,9 +26,8 @@ export const CrearUnidadesTiempoModal = ({
     mutate(
       { id:0,nombre, equivalenciaMinutos },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setNombre("");
           setEquivalenciaMinutos(0);
         },

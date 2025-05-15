@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { Input, Select, SelectItem } from '@heroui/react';
+import { Button, Input, Select, SelectItem } from '@heroui/react';
 import { usePatchInsumos } from '../../hooks/insumos/usePatchInsumos';
 import { Insumos } from '../../types';
 import { useGetUnidadesMedida } from '@/modules/Finanzas/hooks/unidadesMedida/useGetUnidadesMedida';
@@ -16,32 +16,32 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
   const [precio, setPrecio] = useState<number>(insumo.precio);
   const [compuestoActivo, setCompuestoActivo] = useState(insumo.compuestoActivo);
   const [contenido, setContenido] = useState<number>(insumo.contenido);
-  const [fichaTecnica, setFichaTecnica] = useState(insumo.fichaTecnica);
+  const [fichaTecnica, setFichaTecnica] = useState<File | null>(null);
   const [unidades, setUnidades] = useState<number>(insumo.unidades);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(insumo.fk_UnidadMedida || null);
+  const [preview,setPreview] = useState<string | null>(null)
 
   const { data: unidadesMedida, isLoading: isLoadingUnidad } = useGetUnidadesMedida();
   const { mutate, isPending } = usePatchInsumos();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion || precio === null || !compuestoActivo || contenido === null || !fichaTecnica || unidades === null || fk_UnidadMedida === null) {
-      console.log("Por favor, completa todos los campos.");
+    const formData = new FormData()
+    formData.append("nombre",nombre)
+    formData.append("descripcion",descripcion)
+    formData.append("precio",precio.toString())
+    formData.append("compuestoActivo",compuestoActivo)
+    formData.append("contenido",contenido.toString())
+    formData.append("unidades",unidades.toString())
+    formData.append("fk_UnidadMedida",fk_UnidadMedida.toString())
+    if (fichaTecnica) {
+      formData.append("fichaTecnica",fichaTecnica)
       return;
     }
 
     mutate(
       {
         id: insumo.id,
-        data: {
-          nombre,
-          descripcion,
-          precio,
-          compuestoActivo,
-          contenido,
-          fichaTecnica,
-          unidades,
-          fk_UnidadMedida,
-        },
+        data: formData,
       },
       {
         onSuccess: () => {
@@ -66,7 +66,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       ]}
     >
       <Input
-        label="Nombre"
+        label="Nombre Insumo"
         value={nombre}
         type="text"
         onChange={(e) => setNombre(e.target.value)}
@@ -80,7 +80,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
         required
       />
       <Input
-        label="Precio"
+        label="Precio unidad insumo"
         value={precio}
         type="number"
         onChange={(e) => setPrecio(Number(e.target.value))}
@@ -93,44 +93,68 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
         onChange={(e) => setCompuestoActivo(e.target.value)}
         required
       />
+        <Input
+          label="Unidades compradas"
+          value={unidades}
+          type="number"
+          onChange={(e) => setUnidades(Number(e.target.value))}
+          required
+        />
       <Input
-        label="Contenido"
+        label="Contenido del insumo"
         value={contenido}
         type="number"
         onChange={(e) => setContenido(Number(e.target.value))}
         required
       />
-      <Input
-        label="Ficha Técnica"
-        value={fichaTecnica}
-        type="text"
-        onChange={(e) => setFichaTecnica(e.target.value)}
-        required
-      />
-      <Input
-        label="Unidades"
-        value={unidades}
-        type="number"
-        onChange={(e) => setUnidades(Number(e.target.value))}
-        required
-      />
-      {isLoadingUnidad ? (
-        <p>Cargando unidades de medida...</p>
-      ) : (
-        <Select
-          label="Unidad de Medida"
-          placeholder="Selecciona una unidad"
-          selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
-          }}
-        >
-          {(unidadesMedida || []).map((unidad) => (
-            <SelectItem key={unidad.id.toString()}>{unidad.nombre}</SelectItem>
-          ))}
-        </Select>
-      )}
+        {isLoadingUnidad ? (
+          <p>Cargando unidades de medida...</p>
+        ) : (
+          <Select
+            label="Unidad de Medida"
+            placeholder="Selecciona una unidad"
+            selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0];
+              setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+            }}
+          >
+            {(unidadesMedida || []).map((unidad) => (
+              <SelectItem key={unidad.id.toString()}>{unidad.nombre}</SelectItem>
+            ))}
+          </Select>
+        )}
+      <div className="mt-4">
+            <Button
+            type="submit"
+            variant="solid"
+            onPress={()=> document.getElementById("imagenFichaTecnica")?.click()}
+            >
+              Ficha tecnica
+            </Button>
+            <span className="flex-1 p-3">Cargar ficha tecnica</span>
+            <input 
+            id="imagenFichaTecnica"
+            type="file" 
+            accept="image/"
+            onChange={(e)=>{
+              const file = e.target.files?.[0]
+              if (file)
+                setFichaTecnica(file)
+                setPreview(URL.createObjectURL(file!))
+            }}
+            className="hidden"
+            />
+          </div>
+          {preview && (
+            <div className="mt-4">
+              <img
+              src={preview}
+              alt="Vista Previa"
+              className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+              />
+            </div>
+          )}
     </ModalComponent>
   );
 };

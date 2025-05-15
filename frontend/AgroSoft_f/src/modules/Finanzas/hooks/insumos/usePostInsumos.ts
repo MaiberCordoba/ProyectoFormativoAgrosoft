@@ -6,7 +6,7 @@ import { addToast } from "@heroui/toast";
 export const usePostInsumo = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Insumos, Error,Insumos>({
+  return useMutation<Insumos, Error,FormData,Insumos>({
     mutationKey: ['crearInsumo'],
     mutationFn: postInsumo,
     onSuccess: (data) => {

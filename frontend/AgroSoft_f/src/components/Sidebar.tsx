@@ -11,6 +11,7 @@ import {
   Wrench,
   ShieldCheck,
   ChevronDown,
+  ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -84,12 +85,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Actividades",
             icon: Wrench,
-            submenus: ["Actividades", "Usos herramientas", "Herramientas", "Usos productos"],
+            submenus: ["Actividades", "Tipos Actividad","Tiempo actividad control","Unidades medida","Unidades tiempo"],
           },
           {
             title: "Finanzas",
             icon: DollarSign,
-            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas"],
+            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas","Salarios"],
+          },
+          {
+            title: "Inventario",
+            icon: ClipboardList,
+            submenus: ["Insumos","Herramientas","Usos Herramientas","Usos Insumos","Movimientos Inventario"],
           },
           {
             title: "Gestión Fitosanitaria",

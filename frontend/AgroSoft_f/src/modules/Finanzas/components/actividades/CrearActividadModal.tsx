@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 import { Actividades, TipoActividad } from "../../types";
 import { User } from "@/modules/Users/types";
 import { CrearTipoActividadModal } from "../tipoActividad/CrearTipoActividadModal";
-import { Cultivos } from "@/modules/Trazabilidad/types";
+import { Cultivo } from "@/modules/Trazabilidad/types";
 import { CrearCultivoModal } from "@/modules/Trazabilidad/components/cultivos/CrearCultivosModal";
 import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 
@@ -18,7 +18,7 @@ interface CrearActividadesModalProps {
   onCreate:(nuevaActividad : Actividades) => void
 }
 
-export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModalProps) => {
+export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) => {
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(null);
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
@@ -44,11 +44,10 @@ export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModa
     }
 
     mutate(
-      { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
+      {fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setFk_Cultivo(null);
           setFk_Usuario(null);
           setFk_TipoActividad(null);
@@ -66,7 +65,7 @@ export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModa
     setFk_TipoActividad(nuevoTipoActividad.id)
     setTipoActividadModal(false)
   }
-  const handleCultivoCreado = (nuevoCultivo : Cultivos) => {
+  const handleCultivoCreado = (nuevoCultivo : Cultivo) => {
     refetchCultivo()
     setFk_Cultivo(nuevoCultivo.id)
     setCultivoModal(false)
@@ -109,7 +108,7 @@ export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModa
           required
         />
         <Input
-          label="Fecha"
+          label="Fecha Asignacion"
           type="date"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}

@@ -14,9 +14,9 @@ interface CrearVentasModalProps {
   onCreate: (nuevaVenta : Ventas) => void
 }
 
-export const CrearVentasModal = ({ onClose,onCreate }: CrearVentasModalProps) => {
+export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
-  const [precioUnitario, setPrecioUnitario] = useState<number>(0);
+  const [precioUnitario, setPrecioUnitario] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [cantidad, setCantidad] = useState<number>(0);
@@ -37,9 +37,8 @@ export const CrearVentasModal = ({ onClose,onCreate }: CrearVentasModalProps) =>
     mutate(
       { fk_Cosecha, precioUnitario, fecha, fk_UnidadMedida, cantidad },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setFk_Cosecha(null);
           setPrecioUnitario(0);
           setFecha("");
@@ -102,22 +101,21 @@ export const CrearVentasModal = ({ onClose,onCreate }: CrearVentasModalProps) =>
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
-
               <Select
-                label="Fecha Cosecha"
-                placeholder="Seleccione la fecha de la cosecha"
-                selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
-                onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0];
-                  setFk_Cosecha(selectedKey ? Number(selectedKey) : null);
-                }}
+              label="Cosecha"
+              placeholder="Selecciona la cantidad y fecha"
+              selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
+              onSelectionChange={(keys) => {
+                const selectedKey = Array.from(keys)[0];
+                setFk_Cosecha(selectedKey ? Number(selectedKey) : null);
+              }}
               >
                 {(cosechas || []).map((cosecha) => (
                   <SelectItem
                     key={cosecha.id.toString()}
-                    textValue={cosecha.fecha}
+                    textValue={`Cantidad:${cosecha.cantidad} Fecha: ${cosecha.fecha}`}
                   >
-                    {cosecha.fecha}
+                  <span>Cantidad: {cosecha.cantidad} Fecha: {cosecha.fecha} </span>
                   </SelectItem>
                 ))}
               </Select>

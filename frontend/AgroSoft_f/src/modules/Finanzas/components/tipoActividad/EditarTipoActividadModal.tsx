@@ -14,7 +14,7 @@ const EditarTipoActividadModal: React.FC<EditarTipoActividadModalProps> = ({ tip
   const { mutate, isPending } = usePatchTipoActividades();
 
   const handleSubmit = () => {
-    if (!nombre.trim()) {
+    if (!nombre) {
       console.log("Por favor, completa el campo nombre.");
       return;
     }

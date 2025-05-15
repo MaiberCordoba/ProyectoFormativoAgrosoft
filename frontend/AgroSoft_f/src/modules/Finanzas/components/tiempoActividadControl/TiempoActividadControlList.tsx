@@ -58,7 +58,7 @@ export function TiempoActividadControlList() {
     { name: "Salario", uid: "salario" },
     { name: "Unidad Tiempo", uid: "unidadTiempo" },
     { name: "Tiempo", uid: "tiempo" },
-    { name: "Valor Total", uid: "valorTotal" },
+    { name: "Valor minuto", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" }
   ];
 
@@ -66,10 +66,10 @@ export function TiempoActividadControlList() {
     switch (columnKey) {
       case "actividad":
         const actividad = actividades?.find((a) => a.id === item.fk_actividad);
-        return <span>{actividad ? actividad.titulo : "No definido"}</span>;
+        return <span>{actividad ? actividad.titulo : "No Aplica"}</span>;
       case "control":
         const control = controles?.find((c) => c.id === item.fk_control);
-        return <span>{control ? control.fechaControl : "No definido"}</span>;
+        return <span>{control ? control.fechaControl : "No Aplica"}</span>;
       case "salario":
         const salario = salarios?.find((s) => s.id === item.fk_salario);
         return <span>{salario ? salario.nombre : "No definido"}</span>;

@@ -12,14 +12,13 @@ interface EditarSalariosModalProps {
 const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onClose }) => {
   const [nombre, setNombre] = useState<string>(salario.nombre);
   const [monto, setMonto] = useState<number>(salario.monto);
-  const [horas, setHoras] = useState<number>(salario.horas);
-  const [monto_minutos, setMontoMinutos] = useState<number>(salario.monto_minutos);
+  const [horas, setHoras] = useState<number | null>(salario.horas);
   const [estado, setEstado] = useState<"activo" | "inactivo">(salario.estado);
 
   const { mutate, isPending } = usePatchSalarios();  
 
   const handleSubmit = () => {
-    if (!nombre || monto === null || horas === null || monto_minutos === null || !estado) {
+    if (!nombre || monto === null || horas === null || !estado) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -31,7 +30,6 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
           nombre,
           monto,
           horas,
-          monto_minutos,
           estado,
         },
       },
@@ -59,32 +57,26 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
     >
       <Input
         value={nombre}
-        label="Nombre"
+        label="Nombre Salario"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
         required
       />
       <Input
         value={monto}
-        label="Monto"
+        label="Monto(valor)"
         type="number"
         onChange={(e) => setMonto(Number(e.target.value))}
         required
       />
       <Input
         value={horas}
-        label="Horas"
+        label="Horas de trabajo(dia)"
         type="number"
         onChange={(e) => setHoras(Number(e.target.value))}
         required
       />
-      <Input
-        value={monto_minutos}
-        label="Monto por Minuto"
-        type="number"
-        onChange={(e) => setMontoMinutos(Number(e.target.value))}
-        required
-      />
+     
 
       <Select
         label="Estado"

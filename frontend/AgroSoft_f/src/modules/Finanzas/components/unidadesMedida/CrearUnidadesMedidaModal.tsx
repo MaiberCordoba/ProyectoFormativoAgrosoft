@@ -9,7 +9,7 @@ interface CrearUnidadesMedidaModalProps {
   onCreate: (nuevaUnidadMedida : UnidadesMedida) => void
 }
 
-export const CrearUnidadesMedidaModal = ({ onClose, onCreate }: CrearUnidadesMedidaModalProps) => {
+export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalProps) => {
   const [nombre, setNombre] = useState("");
   const [abreviatura, setAbreviatura] = useState("");
   const [tipo, setTipo] = useState<"MASA" | "VOLUMEN" | "">("");
@@ -26,9 +26,8 @@ export const CrearUnidadesMedidaModal = ({ onClose, onCreate }: CrearUnidadesMed
     mutate(
       { id:0,nombre, abreviatura, tipo, equivalenciabase },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setNombre("");
           setAbreviatura("");
           setTipo("");

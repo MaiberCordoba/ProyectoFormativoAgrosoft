@@ -8,12 +8,14 @@ import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { Plus } from "lucide-react";
 import { CrearTipoControlModal } from "../tipocontrol/CrearTipoControlModal";
 import { CrearAfeccionCultivoModal } from "../afeccionescultivo/CrearAfeccionescultivoModal";
+import { Controles } from "../../types";
 
 interface CrearControlModalProps {
   onClose: () => void;
+  onCreate: (nuevocontrol : Controles) => void
 }
 
-export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
+export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) => {
   const [fechaControl, setFechaControl] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Afeccion, setFk_Afeccion] = useState<number | null>(null);
@@ -37,8 +39,9 @@ export const CrearControlModal = ({ onClose }: CrearControlModalProps) => {
     mutate(
       { id: 0, fechaControl, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          onCreate(data)
           setFechaControl("");
           setDescripcion("");
           setFk_Afeccion(null);

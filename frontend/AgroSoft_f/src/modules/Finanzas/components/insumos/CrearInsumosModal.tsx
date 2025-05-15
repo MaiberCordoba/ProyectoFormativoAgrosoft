@@ -12,15 +12,16 @@ interface CrearInsumosModalProps {
   onCreate : (nuevoInsumo : Insumos) => void
 }
 
-export const CrearInsumosModal = ({ onClose,onCreate }: CrearInsumosModalProps) => {
+export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState<number | null>(null);
   const [compuestoActivo, setCompuestoActivo] = useState("");
   const [contenido, setContenido] = useState<number | null>(null);
-  const [fichaTecnica, setFichaTecnica] = useState(""); 
+  const [fichaTecnica, setFichaTecnica] = useState<File | null>(null); 
   const [unidades, setUnidades] = useState<number | null>(null);
   const [fk_UnidadMedida, setfk_UnidadMedida] = useState<number | null>(null);
+  const [preview, setPreview] = useState<string | null>(null)
 
   const [unidadMedidaModal, setUnidadeMedidaModal] = useState(false)
 
@@ -34,36 +35,33 @@ export const CrearInsumosModal = ({ onClose,onCreate }: CrearInsumosModalProps) 
       precio === null ||
       !compuestoActivo ||
       contenido === null ||
-      !fichaTecnica ||
       unidades === null ||
       fk_UnidadMedida === null
     ) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
+      const formData = new FormData()
+      formData.append("nombre",nombre)
+      formData.append("descripcion",descripcion)
+      formData.append("precio",precio.toString())
+      formData.append("compuestoActivo",compuestoActivo)
+      formData.append("contenido",contenido.toString())
+      formData.append("fichaTecnica",fichaTecnica)
+      formData.append("unidades",unidades.toString())
+      formData.append("fk_UnidadMedida",fk_UnidadMedida.toString())
 
-    mutate(
+    mutate(formData,
       {
-        nombre,
-        descripcion,
-        precio,
-        compuestoActivo,
-        contenido,
-        fichaTecnica,
-        unidades,
-        fk_UnidadMedida,
-      },
-      {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           // Limpiar campos
           setNombre("");
           setDescripcion("");
           setPrecio(null);
           setCompuestoActivo("");
           setContenido(null);
-          setFichaTecnica("");
+          setFichaTecnica(null);
           setUnidades(null);
           setfk_UnidadMedida(null);
         },
@@ -106,7 +104,7 @@ export const CrearInsumosModal = ({ onClose,onCreate }: CrearInsumosModalProps) 
           required
         />
         <Input
-          label="Precio Insumo"
+          label="Precio unidad insumo"
           type="number"
           value={precio}
           onChange={(e) => setPrecio(Number(e.target.value))}
@@ -119,56 +117,80 @@ export const CrearInsumosModal = ({ onClose,onCreate }: CrearInsumosModalProps) 
           onChange={(e) => setCompuestoActivo(e.target.value)}
           required
           />
+          <Input
+            label="Unidades compradas"
+            type="number"
+            value={unidades ?? ""}
+            onChange={(e) => setUnidades(Number(e.target.value))}
+            required
+          />
         <Input
-          label="Contenido"
+          label="Contenido del insumo"
           type="number"
           value={contenido ?? ""}
           onChange={(e) => setContenido(Number(e.target.value))}
           required
           />
-        <Input
-          label="Ficha Técnica"
-          type="text"
-          value={fichaTecnica}
-          onChange={(e) => setFichaTecnica(e.target.value)}
-          required
-          />
-        <Input
-          label="Unidades"
-          type="number"
-          value={unidades ?? ""}
-          onChange={(e) => setUnidades(Number(e.target.value))}
-          required
-          />
-        {isLoadingUnidad ? (
-          <p>Cargando unidades de medida...</p>
-        ) : (
-          <div className="flex items-center gap-2">
-            <div className="flex-1">
-              <Select
-                label="Unidad de Medida"
-                placeholder="Selecciona la Unidad de Medida"
-                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
-                onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0];
-                  setfk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
-                }}
-                >
-                {(unidadesMedida || []).map((unidad) => (
-                  <SelectItem key={unidad.id.toString()}>{unidad.nombre}</SelectItem>
-                ))}
-              </Select>
+          {isLoadingUnidad ? (
+            <p>Cargando unidades de medida...</p>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <Select
+                  label="Unidad de Medida"
+                  placeholder="Selecciona la Unidad de Medida"
+                  selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
+                  onSelectionChange={(keys) => {
+                    const selectedKey = Array.from(keys)[0];
+                    setfk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                  }}
+                  >
+                  {(unidadesMedida || []).map((unidad) => (
+                    <SelectItem key={unidad.id.toString()}>{unidad.nombre}</SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <Button
+              onPress={()=> setUnidadeMedidaModal(true)}
+              color="success"
+              title="Crear unidad medida"
+              size="sm"
+              >
+                  <Plus className="w-5 h-5 text-white"/>
+              </Button>
             </div>
+          )}
+          <div className="mt-4">
+            <input 
+            id="imagenFichaTecnica"
+            type="file" 
+            accept="image/"
+            onChange={(e)=>{
+              const file = e.target.files?.[0]
+              if (file)
+                setFichaTecnica(file)
+                setPreview(URL.createObjectURL(file!))
+            }}
+            className="hidden"
+            />
             <Button
-            onPress={()=> setUnidadeMedidaModal(true)}
-            color="success"
-            title="Crear unidad medida"
-            size="sm"
+            type="submit"
+            variant="solid"
+            onPress={()=> document.getElementById("imagenFichaTecnica")?.click()}
             >
-                <Plus className="w-5 h-5 text-white"/>
+              Ficha Tecnica
             </Button>
+            <span className="flex-1 p-3">Cargar ficha tecnica</span>
           </div>
-        )}
+          {preview && (
+            <div className="mt-4">
+              <img
+              src={preview}
+              alt="Vista Previa"
+              className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+              />
+            </div>
+          )}
       </ModalComponent>
       {unidadMedidaModal && (
       <CrearUnidadesMedidaModal
