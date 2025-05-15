@@ -59,6 +59,7 @@ import Testeo  from "./pages/testeo";
 import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
+import CalendarioPage from "./modules/Trazabilidad/pages/calendario";
 
 
 
@@ -132,6 +133,8 @@ function App() {
             <Route path="/eras" element={<ErasList />} />
             <Route path="/lotes" element={<LotesList />} />
             <Route path="/mapa" element={<MapPage/>} />
+            <Route path="/calendario" element={<CalendarioPage/>} />
+
             
 
             {/*Sanidad*/}
