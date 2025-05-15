@@ -12,17 +12,16 @@ import {
 import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
 import { useEvapotranspiracionHistorica } from "../hooks/useEvapotranspiracionHistorica";
+import { SensorData, SENSOR_TYPES, SENSOR_UNITS } from "../types/sensorTypes";
 
 export default function IoTPages() {
   const navigate = useNavigate();
-  const [loteId, setLoteId] = useState<number>(1); 
+  const [loteId, setLoteId] = useState<number>(1);
   const [cultivoId, setCultivoId] = useState<number | string>("");
   const { data: etHistorica = [], isLoading: isLoadingHistoric } = useEvapotranspiracionHistorica(
-    Number(cultivoId), 
+    Number(cultivoId),
     loteId
   );
 
@@ -56,15 +55,104 @@ export default function IoTPages() {
     humedad?: number;
   } | null>(null);
 
-  const { data: umbrales = [] } = useQuery<Umbral[]>({
-    queryKey: ["umbrales"],
-    queryFn: async () => {
-      const res = await axios.get("http://localhost:8000/api/umbral");
-      return res.data;
-    },
-  });
+  // Función para verificar alertas
+  const checkForAlerts = (sensor: SensorData): boolean => {
+    if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
+      return sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo;
+    }
+    return false;
+  };
 
-  // Función para calcular evapotranspiración
+  // Función para mostrar alertas
+  const showAlertToast = (sensor: SensorData) => {
+    const sensorType = SENSOR_TYPES.find(st => st.key === sensor.tipo);
+    const sensorName = sensorType?.label || sensor.tipo;
+    const unit = SENSOR_UNITS[sensor.tipo] || "";
+    
+    let message = "";
+    if (sensor.valor < (sensor.umbral_minimo || 0)) {
+      message = `${sensorName} por debajo del mínimo (${sensor.umbral_minimo}${unit}). Valor actual: ${sensor.valor}${unit}`;
+    } else {
+      message = `${sensorName} por encima del máximo (${sensor.umbral_maximo}${unit}). Valor actual: ${sensor.valor}${unit}`;
+    }
+
+    addToast({
+      title: "🚨 Alerta de Sensor",
+      description: message,
+      variant: "flat",
+      color: "danger",
+    });
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/sensor/?limit=100`);
+        if (!response.ok) throw new Error("Error al obtener sensores");
+        const sensorsData: SensorData[] = await response.json();
+        
+        if (Array.isArray(sensorsData)) {
+          sensorsData.forEach(sensor => {
+            if (checkForAlerts(sensor)) {
+              showAlertToast(sensor);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error al cargar datos iniciales:", error);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+  // WebSocket para datos en tiempo real con verificación de alertas
+  useEffect(() => {
+    const sensorConnections = [
+      { id: "viento", tipo: "VIE" },
+      { id: "temperatura", tipo: "TEM" },
+      { id: "luzSolar", tipo: "LUM" },
+      { id: "humedad", tipo: "HUM_T" },
+      { id: "humedadAmbiente", tipo: "HUM_A" },
+      { id: "lluvia", tipo: "LLUVIA" },
+    ];
+
+    const websockets = new Map<string, WebSocket>();
+
+    sensorConnections.forEach(({ id, tipo }) => {
+      const url = `ws://localhost:8000/ws/sensor/${id}/`;
+      const ws = new WebSocket(url);
+      websockets.set(id, ws);
+
+      ws.onmessage = (event) => {
+        try {
+          const data: SensorData = JSON.parse(event.data);
+          const valor = parseFloat(data.valor.toString());
+
+          setSensoresData((prevData) => ({
+            ...prevData,
+            [id]: isNaN(valor) ? "-" : valor.toFixed(2),
+          }));
+
+          // Verificar alertas en datos en tiempo real
+          if (checkForAlerts(data)) {
+            showAlertToast(data);
+          }
+        } catch (error) {
+          console.error(`Error en ${tipo}:`, error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error(`WebSocket error en ${tipo}:`, error);
+      };
+    });
+
+    return () => {
+      websockets.forEach((ws) => ws.close());
+    };
+  }, []);
+
   const calcularEvapotranspiracion = async () => {
     if (!cultivoId) return;
 
@@ -115,70 +203,6 @@ export default function IoTPages() {
         console.error("Error al obtener los cultivos:", error);
       });
   }, []);
-
-  useEffect(() => {
-    const sensores = [
-      { id: "viento", tipo_sensor: "VIE" },
-      { id: "temperatura", tipo_sensor: "TEM" },
-      { id: "luzSolar", tipo_sensor: "LUM" },
-      { id: "humedad", tipo_sensor: "HUM_T" },
-      { id: "humedadAmbiente", tipo_sensor: "HUM_A" },
-      { id: "lluvia", tipo_sensor: "LLUVIA" },
-    ];
-
-    const websockets = new Map<string, WebSocket>();
-
-    sensores.forEach(({ id, tipo_sensor }) => {
-      const url = `ws://localhost:8000/ws/sensor/${id}/`;
-      const ws = new WebSocket(url);
-      websockets.set(id, ws);
-
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          const valor = parseFloat(data.valor);
-
-          setSensoresData((prevData) => ({
-            ...prevData,
-            [id]: isNaN(valor) ? "-" : valor.toFixed(2),
-          }));
-
-          const umbral = umbrales.find(
-            (u) => u.tipo_sensor && normalizar(u.tipo_sensor) === normalizar(tipo_sensor)
-          );
-
-          if (umbral && !isNaN(valor)) {
-            if (valor < umbral.valor_minimo || valor > umbral.valor_maximo) {
-              mostrarAlerta(
-                `${id.toUpperCase()} fuera de umbral.\nValor actual: ${valor}\nRango permitido: ${umbral.valor_minimo} - ${umbral.valor_maximo}`
-              );
-            }
-          }
-        } catch (error) {
-          console.error(`Error en ${tipo_sensor}:`, error);
-        }
-      };
-
-      ws.onerror = (error) => {
-        console.error(`WebSocket error en ${tipo_sensor}:`, error);
-      };
-    });
-
-    return () => {
-      websockets.forEach((ws) => ws.close());
-    };
-  }, [umbrales]);
-
-  const normalizar = (str: string) => str.toLowerCase().replace(/\s/g, "");
-
-  const mostrarAlerta = (mensaje: string) => {
-    addToast({
-      title: "🚨 Alerta de Sensor",
-      description: mensaje,
-      variant: "flat",
-      color: "danger",
-    });
-  };
 
   const sensoresList = [
     {
