@@ -11,11 +11,9 @@ import {
 } from "react-icons/wi";
 import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
-import { UmbralLista } from "../components/umbral/UmbralListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Umbral } from "../types/sensorTypes"; 
 import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
 import { useEvapotranspiracionHistorica } from "../hooks/useEvapotranspiracionHistorica";
 
@@ -301,16 +299,13 @@ export default function IoTPages() {
           <p className="text-gray-500">No se encontraron sensores</p>
         )}
       </div>
-      
-      {/* Listas de sensores y umbrales */}
+      <br />
+      <br />
+
       <div className="flex gap-6 col-span-full">
         <div className="w-full">
           <h2 className="flex justify-center col-span-full text-xl font-semibold text-gray-800 ">Lista de Sensores</h2>
           <SensorLista />
-        </div>
-        <div className="w-full">
-          <h2 className="flex justify-center col-span-full text-xl font-semibold text-gray-800">Lista de Umbrales</h2>
-          <UmbralLista />
         </div>
       </div>
     </div>

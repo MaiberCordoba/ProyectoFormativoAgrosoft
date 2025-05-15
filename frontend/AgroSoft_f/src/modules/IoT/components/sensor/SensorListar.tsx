@@ -14,28 +14,38 @@ export function SensorLista() {
   const navigate = useNavigate();
 
   const { data, isLoading, error } = useGetSensor();
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    sensorEditado, 
-    handleEditar 
+
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    sensorEditado,
+    handleEditar,
   } = useEditarSensor();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearSensor();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     sensorEliminado,
-    handleEliminar
+    handleEliminar,
   } = useEliminarSensor();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_lote_id: null, fk_eras_id: null, fecha: "", tipo: "TEM", valor: 0 });
+    handleCrear({
+      id: 0,
+      fk_lote_id: null,
+      fk_eras_id: null,
+      fecha: "",
+      tipo: "TEM",
+      valor: 0,
+      umbral_minimo: null,
+      umbral_maximo: null,
+    });
   };
 
   const irADetalleSensor = (id: number) => {
@@ -43,7 +53,7 @@ export function SensorLista() {
   };
 
   const getSensorLabel = (tipo: string) => {
-    const sensor = SENSOR_TYPES.find(s => s.key === tipo);
+    const sensor = SENSOR_TYPES.find((s) => s.key === tipo);
     return sensor ? sensor.label : "Desconocido";
   };
 
@@ -51,6 +61,8 @@ export function SensorLista() {
     { name: "Fecha", uid: "fecha", sortable: true },
     { name: "Tipo de Sensor", uid: "tipo" },
     { name: "Valor", uid: "valor" },
+    { name: "Umbral Mínimo", uid: "umbral_minimo" },
+    { name: "Umbral Máximo", uid: "umbral_maximo" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -83,6 +95,10 @@ export function SensorLista() {
             {item.valor}
           </span>
         );
+      case "umbral_minimo":
+        return <span>{item.umbral_minimo ?? "—"}</span>;
+      case "umbral_maximo":
+        return <span>{item.umbral_maximo ?? "—"}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -91,7 +107,9 @@ export function SensorLista() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof SensorData])}</span>;
+        return (
+          <span>{String(item[columnKey as keyof SensorData])}</span>
+        );
     }
   };
 
@@ -110,16 +128,11 @@ export function SensorLista() {
       />
 
       {isEditModalOpen && sensorEditado && (
-        <EditarSensorModal
-          sensor={sensorEditado}
-          onClose={closeEditModal}
-        />
+        <EditarSensorModal sensor={sensorEditado} onClose={closeEditModal} />
       )}
 
       {isCreateModalOpen && (
-        <CrearSensorModal
-          onClose={closeCreateModal}
-        />
+        <CrearSensorModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && sensorEliminado && (

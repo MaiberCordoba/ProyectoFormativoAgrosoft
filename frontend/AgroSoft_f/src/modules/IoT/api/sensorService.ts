@@ -1,4 +1,4 @@
-const SOCKET_URL = "ws://127.0.0.1:8000/ws/sensores/";
+const SOCKET_URL = "ws://127.0.0.1:8000/ws/sensor/";
 
 export const connectWebSocket = (onMessage: (data: any) => void) => {
     const socket = new WebSocket(SOCKET_URL);

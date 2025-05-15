@@ -1,10 +1,12 @@
 export interface SensorData {
-  id: number;
-  fk_lote_id: number | null;
-  fk_eras_id: number | null;
-  fecha: string; 
+  id?: number;  
+  fk_lote_id?: number | null;
+  fk_eras_id?: number | null;
+  fecha: string;
   tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH";
-  valor: number; 
+  valor: number;
+  umbral_minimo?: number | null;  
+  umbral_maximo?: number | null;
 }
 
 export const SENSOR_TYPES = [
@@ -19,11 +21,4 @@ export const SENSOR_TYPES = [
 export interface SensorConExtras extends SensorData {
   unidad: string;              
   alerta: boolean;              
-}
-
-export interface Umbral {
-  id: number;
-  sensor_id: number;
-  valor_minimo: number;
-  valor_maximo: number;
 }

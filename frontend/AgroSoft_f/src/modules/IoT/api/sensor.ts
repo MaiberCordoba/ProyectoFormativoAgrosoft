@@ -4,6 +4,7 @@ import { SensorData } from "../types/sensorTypes";
 export const get = async (): Promise<SensorData[]> => {
     const response = await apiClient.get("/sensor/");
     return response.data;
+    
 };
 
 export const post = async (data: SensorData): Promise<SensorData> => {
