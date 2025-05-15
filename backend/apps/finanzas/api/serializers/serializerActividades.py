@@ -1,10 +1,16 @@
 from rest_framework.serializers import ModelSerializer
 from apps.finanzas.api.models.actividades import Actividades
-from apps.trazabilidad.api.serializers.PlantacionesSerializer import PlantacionesSerializer
 from rest_framework import serializers
+from apps.trazabilidad.api.serializers.PlantacionesSerializer import PlantacionesSerializer
+from apps.finanzas.api.serializers.serializerCultivos import SerializerCultivos
+from apps.users.serializers import UsuarioSerializer
+from apps.finanzas.api.serializers.serializerTipoActividad import SerializerTipoActividad
 
 class SerializerActividades(ModelSerializer):
-    plantaciones = PlantacionesSerializer(source='fk_Plantacion',read_only=True)
+    plantaciones = PlantacionesSerializer (source='fk_Plantacion',read_only=True)
+    cultivo = SerializerCultivos(source='fk_Cultivo',read_only=True)
+    usuario = UsuarioSerializer(source='fk_Usuario', read_only=True) 
+    tipoActividad = SerializerTipoActividad(source='fk_TipoActividad', read_only=True)
     class Meta:
         model = Actividades
         fields = '__all__'
