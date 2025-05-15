@@ -27,6 +27,10 @@ const SENSOR_UNITS: Record<string, string> = {
   PH: "pH"
 };
 
+// Tipos de sensores por ubicación
+const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE"];
+const ERAS_ONLY = ["HUM_T", "PH"];
+
 // Función helper para convertir SENSOR_TYPES a diccionario
 function dict(sensorTypes: {key: string, label: string}[]): Map<string, string> {
   const map = new Map();
@@ -44,6 +48,27 @@ export default function AllSensorsDashboard() {
   const [selectedEras, setSelectedEras] = useState<number[]>([]);
   const [availableLotes, setAvailableLotes] = useState<{id: number, nombre: string}[]>([]);
   const [availableEras, setAvailableEras] = useState<{id: number, nombre: string, fk_lote_id: number}[]>([]);
+  const [showLotesSelect, setShowLotesSelect] = useState(true);
+  const [showErasSelect, setShowErasSelect] = useState(true);
+
+  // Efecto para controlar qué selectores de ubicación mostrar
+  useEffect(() => {
+    if (selectedTypes.length === 0) {
+      setShowLotesSelect(true);
+      setShowErasSelect(true);
+      return;
+    }
+
+    const hasLoteSensors = selectedTypes.some(t => LOTES_ONLY.includes(t));
+    const hasEraSensors = selectedTypes.some(t => ERAS_ONLY.includes(t));
+
+    setShowLotesSelect(hasLoteSensors);
+    setShowErasSelect(hasEraSensors);
+    
+    // Resetear selecciones cuando cambian los tipos
+    if (!hasLoteSensors) setSelectedLotes([]);
+    if (!hasEraSensors) setSelectedEras([]);
+  }, [selectedTypes]);
 
   // Función para verificar alertas
   const checkForAlerts = (sensor: SensorData): boolean => {
@@ -113,7 +138,6 @@ export default function AllSensorsDashboard() {
         }
       } catch (error) {
         console.error("Error al cargar datos iniciales:", error);
-        // Aquí podrías agregar un toast o alerta para informar al usuario
       } finally {
         setIsLoading(false);
       }
@@ -239,51 +263,59 @@ export default function AllSensorsDashboard() {
             onSelectionChange={(keys) => setSelectedTypes(Array.from(keys) as string[])}
           >
             {SENSOR_TYPES.map(type => (
-              <SelectItem key={type.key} >
+              <SelectItem key={type.key}>
                 {type.label}
               </SelectItem>
             ))}
           </Select>
         </div>
 
-        <div>
-          <label id="lotes-label" className="block text-sm font-medium text-gray-700 mb-2">
-            Lotes
-          </label>
-          <Select
-            aria-labelledby="lotes-label"
-            selectionMode="multiple"
-            selectedKeys={selectedLotes.map(String)}
-            onSelectionChange={(keys) => setSelectedLotes(Array.from(keys).map(Number))}
-          >
-            {availableLotes.map(lote => (
-              <SelectItem key={String(lote.id)}>
-                {lote.nombre}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
+        {showLotesSelect && (
+          <div>
+            <label id="lotes-label" className="block text-sm font-medium text-gray-700 mb-2">
+              Lotes
+            </label>
+            <Select
+              aria-labelledby="lotes-label"
+              selectionMode="multiple"
+              selectedKeys={selectedLotes.map(String)}
+              onSelectionChange={(keys) => setSelectedLotes(Array.from(keys).map(Number))}
+            >
+              {availableLotes.map(lote => (
+                <SelectItem key={String(lote.id)}>
+                  {lote.nombre}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        )}
 
-        <div>
-          <label id="eras-label" className="block text-sm font-medium text-gray-700 mb-2">
-            Eras
-          </label>
-          <Select
-            aria-labelledby="eras-label"
-            selectionMode="multiple"
-            selectedKeys={selectedEras.map(String)}
-            onSelectionChange={(keys) => setSelectedEras(Array.from(keys).map(Number))}
-          >
-            {availableEras.map(era => (
-              <SelectItem key={String(era.id)}>
-                {era.nombre} (Lote {era.fk_lote_id})
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
+        {showErasSelect && (
+          <div>
+            <label id="eras-label" className="block text-sm font-medium text-gray-700 mb-2">
+              Eras
+            </label>
+            <Select
+              aria-labelledby="eras-label"
+              selectionMode="multiple"
+              selectedKeys={selectedEras.map(String)}
+              onSelectionChange={(keys) => setSelectedEras(Array.from(keys).map(Number))}
+            >
+              {availableEras.map(era => (
+                <SelectItem key={String(era.id)}>
+                  {era.nombre} (Lote {era.fk_lote_id})
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        )}
+
+        {selectedTypes.length > 0 && !showLotesSelect && !showErasSelect && (
+          <div className="col-span-2 flex items-center text-sm text-gray-500">
+            Los tipos seleccionados no requieren ubicación específica
+          </div>
+        )}
       </div>
-
-      
 
       {/* Gráfica */}
       <div className="bg-white p-6 shadow-md rounded-lg mb-6">
@@ -406,7 +438,6 @@ export default function AllSensorsDashboard() {
                 <div className="text-sm text-gray-500 mt-1">
                   {new Date(sensor.fecha).toLocaleString()}
                 </div>
-              
               </div>
             ))}
         </div>
