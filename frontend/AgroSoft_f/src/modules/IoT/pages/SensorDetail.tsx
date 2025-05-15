@@ -6,7 +6,6 @@ import {
   CartesianGrid, ResponsiveContainer, ReferenceLine
 } from "recharts";
 import { SensorData, SENSOR_TYPES, SensorConExtras } from "../types/sensorTypes";
-import SensorReport from "../components/reportes";
 
 // Colores para cada tipo de sensor
 const SENSOR_COLORS: Record<string, string> = {
@@ -403,9 +402,11 @@ export default function AllSensorsDashboard() {
                     </span>
                   )}
                 </div>
+              
                 <div className="text-sm text-gray-500 mt-1">
                   {new Date(sensor.fecha).toLocaleString()}
                 </div>
+              
               </div>
             ))}
         </div>
