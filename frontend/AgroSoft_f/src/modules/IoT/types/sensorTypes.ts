@@ -1,11 +1,11 @@
 export interface SensorData {
-  id?: number;  
+  id?: number;
   fk_lote_id?: number | null;
   fk_eras_id?: number | null;
   fecha: string;
   tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH";
   valor: number;
-  umbral_minimo?: number | null;  
+  umbral_minimo?: number | null;
   umbral_maximo?: number | null;
 }
 
@@ -19,6 +19,27 @@ export const SENSOR_TYPES = [
 ];
 
 export interface SensorConExtras extends SensorData {
-  unidad: string;              
-  alerta: boolean;              
+  unidad: string;
+  alerta: boolean;
+  locationName?: string;
 }
+
+// Colores para cada tipo de sensor
+export const SENSOR_COLORS: Record<string, string> = {
+  TEM: "#8884d8",
+  LUM: "#ffc658",
+  HUM_A: "#82ca9d",
+  VIE: "#ff8042",
+  HUM_T: "#0088FE",
+  PH: "#00C49F"
+};
+
+// Unidades para cada sensor
+export const SENSOR_UNITS: Record<string, string> = {
+  TEM: "°C",
+  LUM: "lux",
+  HUM_A: "%",
+  VIE: "km/h",
+  HUM_T: "%",
+  PH: "pH"
+};
