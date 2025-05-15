@@ -7,7 +7,7 @@ class Insumos(models.Model):
     precio = models.IntegerField()
     compuestoActivo = models.CharField(max_length=20, null=True)
     contenido = models.FloatField(null=True)
-    fichaTecnica = models.CharField(max_length=20, null=True)
+    fichaTecnica = models.ImageField(upload_to="insumos/",null=True,blank=True)
     unidades = models.IntegerField()
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida , on_delete=models.SET_NULL, null=True)
 
