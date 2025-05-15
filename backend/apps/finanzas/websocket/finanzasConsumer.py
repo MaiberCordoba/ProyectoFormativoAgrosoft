@@ -1,5 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core.mail import send_mail
+from django.conf import settings
 
 class FinanzasConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -23,4 +25,23 @@ class FinanzasConsumer(AsyncWebsocketConsumer):
     async def send_notification(self, event):
         """Recibe la notificación desde la vista y la envía al usuario."""
         message = event["message"]
-        await self.send(text_data=json.dumps({"notification": message}))
+        email = event.get("email")
+        
+        # Envía la notificación por WebSocket
+        await self.send(text_data=json.dumps({
+            "notification": message,
+            "type": "actividad_asignada"
+        }))
+        
+        # Si hay email, envía también por correo
+        if email:
+            try:
+                send_mail(
+                    subject="Nueva actividad asignada",
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error enviando email: {e}")
