@@ -12,7 +12,7 @@ export interface SensorData {
   fk_lote?: number | null;
   fk_eras?: number | null;
   fecha: string;
-  tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH";
+  tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH" | "LLUVIA";
   valor: number;
   umbral_minimo?: number | null;
   umbral_maximo?: number | null;
@@ -25,6 +25,8 @@ export const SENSOR_TYPES = [
   { key: "VIE", label: "Velocidad del Viento" },
   { key: "HUM_T", label: "Humedad del Terreno" },
   { key: "PH", label: "Nivel de PH" },
+  { key: "LLUVIA", label: "Lluvia" }
+
 ];
 
 export interface SensorConExtras extends SensorData {
@@ -38,7 +40,8 @@ const SENSOR_COLORS: Record<string, string> = {
   HUM_A: "#82ca9d",
   VIE: "#ff8042",
   HUM_T: "#0088FE",
-  PH: "#00C49F"
+  PH: "#00C49F",
+  LLUVIA: "#FFBB28"
 };
 
 const SENSOR_UNITS: Record<string, string> = {
@@ -47,10 +50,11 @@ const SENSOR_UNITS: Record<string, string> = {
   HUM_A: "%",
   VIE: "km/h",
   HUM_T: "%",
-  PH: "pH"
+  PH: "pH",
+  LLUVIA: "mm"
 };
 
-const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE"];
+const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE", "LLUVIA"];
 const ERAS_ONLY = ["HUM_T", "PH"];
 
 function dict(sensorTypes: {key: string, label: string}[]): Map<string, string> {

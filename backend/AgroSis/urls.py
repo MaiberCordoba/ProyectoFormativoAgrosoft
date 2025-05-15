@@ -51,7 +51,6 @@ from apps.electronica.api.routers.era_router import router_era
 from apps.electronica.api.routers.lote_router import router_Lote
 from apps.electronica.api.routers.sensor_router import router_sensor 
 from apps.electronica.api.routers.evapotranspiracion_router import urlpatterns as evapotranspiracion_urls
-
 #Trazabilidad
 from apps.trazabilidad.api.routers.EspeciesRouter import EspeciesRouter
 from apps.trazabilidad.api.routers.HerramientasRouter import HerramientasRouter

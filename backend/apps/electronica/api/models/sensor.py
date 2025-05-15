@@ -9,7 +9,8 @@ class Sensor(models.Model):
         ('HUM_A', 'Humedad Ambiental'),
         ('VIE', 'Velocidad del Viento'),
         ('HUM_T', 'Humedad del Terreno'),
-        ('PH', 'Nivel de PH')
+        ('PH', 'Nivel de PH'),
+        ('LLUVIA', 'Lluvia')
     ]
 
     fk_lote = models.ForeignKey(Lote, on_delete=models.SET_NULL, null=True, related_name='sensores', blank=True)

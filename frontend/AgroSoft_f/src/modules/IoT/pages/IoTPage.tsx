@@ -7,14 +7,15 @@ import {
   WiDayCloudy,
   WiRaindrop,
   WiHumidity,
-  WiRain,
+  WiRain, 
 } from "react-icons/wi";
+import { BiTestTube } from "react-icons/bi";
 import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
 import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
 import { useEvapotranspiracionHistorica } from "../hooks/useEvapotranspiracionHistorica";
-import { SensorData, SENSOR_TYPES, SENSOR_UNITS } from "../types/sensorTypes";
+import { SENSOR_TYPES, SENSOR_UNITS } from "../types/sensorTypes";
 
 export default function IoTPages() {
   const navigate = useNavigate();
@@ -25,15 +26,21 @@ export default function IoTPages() {
     loteId
   );
 
-  const [sensoresData, setSensoresData] = useState<Record<string, string>>({
-    viento: "Cargando...",
-    temperatura: "Cargando...",
-    luzSolar: "Cargando...",
-    humedad: "Cargando...",
-    humedadAmbiente: "Cargando...",
-    lluvia: "Cargando...",
+  const [filters, setFilters] = useState({
+    loteId: "",
+    eraId: "",
+    hours: "24"
   });
 
+  const [sensorAverages, setSensorAverages] = useState<Record<string, {
+    average: number;
+    unit: string;
+    min_threshold?: number;
+    max_threshold?: number;
+    count?: number;
+  }>>({});
+
+  const [loadingAverages, setLoadingAverages] = useState(false);
   const [searchId, setSearchId] = useState("");
   const [cultivos, setCultivos] = useState<any[]>([]);
   const [evapotranspiracion, setEvapotranspiracion] = useState<null | {
@@ -55,103 +62,54 @@ export default function IoTPages() {
     humedad?: number;
   } | null>(null);
 
-  // Función para verificar alertas
-  const checkForAlerts = (sensor: SensorData): boolean => {
-    if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
-      return sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo;
-    }
-    return false;
-  };
+  // Función para obtener promedios de sensores
+  const fetchSensorAverages = async () => {
+    setLoadingAverages(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.loteId) params.append('lote_id', filters.loteId);
+      if (filters.eraId) params.append('era_id', filters.eraId);
+      params.append('hours', filters.hours);
 
-  // Función para mostrar alertas
-  const showAlertToast = (sensor: SensorData) => {
-    const sensorType = SENSOR_TYPES.find(st => st.key === sensor.tipo);
-    const sensorName = sensorType?.label || sensor.tipo;
-    const unit = SENSOR_UNITS[sensor.tipo] || "";
-    
-    let message = "";
-    if (sensor.valor < (sensor.umbral_minimo || 0)) {
-      message = `${sensorName} por debajo del mínimo (${sensor.umbral_minimo}${unit}). Valor actual: ${sensor.valor}${unit}`;
-    } else {
-      message = `${sensorName} por encima del máximo (${sensor.umbral_maximo}${unit}). Valor actual: ${sensor.valor}${unit}`;
-    }
-
-    addToast({
-      title: "🚨 Alerta de Sensor",
-      description: message,
-      variant: "flat",
-      color: "danger",
-    });
-  };
-
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/sensor/?limit=100`);
-        if (!response.ok) throw new Error("Error al obtener sensores");
-        const sensorsData: SensorData[] = await response.json();
-        
-        if (Array.isArray(sensorsData)) {
-          sensorsData.forEach(sensor => {
-            if (checkForAlerts(sensor)) {
-              showAlertToast(sensor);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Error al cargar datos iniciales:", error);
+      const response = await fetch(`http://127.0.0.1:8000/api/sensor/averages/?${params.toString()}`);
+      
+      if (!response.ok) {
+        throw new Error("Error al obtener promedios");
       }
-    };
+      
+      const data = await response.json();
+      console.log("Datos de promedios recibidos:", data);
+      
+      // Transformar datos para incluir unidades y asegurar estructura consistente
+      const transformedData: Record<string, any> = {};
+      Object.keys(data).forEach(key => {
+        transformedData[key] = {
+          ...data[key],
+          unit: SENSOR_UNITS[key] || '',
+          average: data[key].average || 0,
+          min_threshold: data[key].min_threshold || null,
+          max_threshold: data[key].max_threshold || null,
+          count: data[key].count || 0
+        };
+      });
+      
+      setSensorAverages(transformedData);
+    } catch (error) {
+      console.error("Error al obtener promedios:", error);
+      addToast({
+        title: "Error",
+        description: "No se pudieron cargar los promedios de los sensores",
+        variant: "flat",
+        color: "danger",
+      });
+    } finally {
+      setLoadingAverages(false);
+    }
+  };
 
-    fetchInitialData();
-  }, []);
-
-  // WebSocket para datos en tiempo real con verificación de alertas
   useEffect(() => {
-    const sensorConnections = [
-      { id: "viento", tipo: "VIE" },
-      { id: "temperatura", tipo: "TEM" },
-      { id: "luzSolar", tipo: "LUM" },
-      { id: "humedad", tipo: "HUM_T" },
-      { id: "humedadAmbiente", tipo: "HUM_A" },
-      { id: "lluvia", tipo: "LLUVIA" },
-    ];
-
-    const websockets = new Map<string, WebSocket>();
-
-    sensorConnections.forEach(({ id, tipo }) => {
-      const url = `ws://localhost:8000/ws/sensor/${id}/`;
-      const ws = new WebSocket(url);
-      websockets.set(id, ws);
-
-      ws.onmessage = (event) => {
-        try {
-          const data: SensorData = JSON.parse(event.data);
-          const valor = parseFloat(data.valor.toString());
-
-          setSensoresData((prevData) => ({
-            ...prevData,
-            [id]: isNaN(valor) ? "-" : valor.toFixed(2),
-          }));
-
-          // Verificar alertas en datos en tiempo real
-          if (checkForAlerts(data)) {
-            showAlertToast(data);
-          }
-        } catch (error) {
-          console.error(`Error en ${tipo}:`, error);
-        }
-      };
-
-      ws.onerror = (error) => {
-        console.error(`WebSocket error en ${tipo}:`, error);
-      };
-    });
-
-    return () => {
-      websockets.forEach((ws) => ws.close());
-    };
-  }, []);
+    fetchSensorAverages();
+  }, [filters.loteId, filters.eraId, filters.hours]);
 
   const calcularEvapotranspiracion = async () => {
     if (!cultivoId) return;
@@ -168,7 +126,6 @@ export default function IoTPages() {
       setEvapotranspiracion(data);
       setErrorET(null);
       
-      // Crear nuevo dato para el historial
       const nuevoDato = {
         fecha: new Date().toISOString(),
         et_mm_dia: data.evapotranspiracion_mm_dia,
@@ -186,7 +143,6 @@ export default function IoTPages() {
     }
   };
 
-  // Calcular automáticamente al cambiar cultivo o lote
   useEffect(() => {
     calcularEvapotranspiracion();
   }, [cultivoId, loteId]);
@@ -196,7 +152,6 @@ export default function IoTPages() {
     fetch("http://localhost:8000/api/cultivos")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Cultivos obtenidos:", data);
         setCultivos(data);
       })
       .catch((error) => {
@@ -207,42 +162,55 @@ export default function IoTPages() {
   const sensoresList = [
     {
       id: "viento",
+      tipo: "VIE",
       title: "Viento",
       icon: <WiStrongWind size={32} style={{ color: "#5DADE2" }} />,
     },
     {
       id: "temperatura",
+      tipo: "TEM",
       title: "Temperatura",
       icon: <WiThermometer size={32} style={{ color: "#E74C3C" }} />,
     },
     {
       id: "luzSolar",
+      tipo: "LUM",
       title: "Luz Solar",
       icon: <WiDayCloudy size={32} style={{ color: "#F1C40F" }} />,
     },
     {
       id: "humedad",
+      tipo: "HUM_T",
       title: "Humedad",
       icon: <WiRaindrop size={32} style={{ color: "#3498DB" }} />,
     },
     {
       id: "humedadAmbiente",
+      tipo: "HUM_A",
       title: "H. Ambiente",
       icon: <WiHumidity size={32} style={{ color: "#76D7C4" }} />,
     },
     {
       id: "lluvia",
+      tipo: "LLUVIA",
       title: "Lluvia",
       icon: <WiRain size={32} style={{ color: "#2980B9" }} />,
     },
+    {
+      id: "ph",
+      tipo: "PH",
+      title: "pH",
+      icon: <BiTestTube  size={30} style={{ color: "#8E44AD" }} />,
+    },
   ];
-  
+
   const sensoresFiltrados = sensoresList.filter((sensor) =>
     sensor.title.toLowerCase().includes(searchId.toLowerCase())
   );
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 sm:gap-12 justify-center items-center w-full max-w-6xl mx-auto">
+      
 
       {/* Selector de cultivo */}
       <div className="flex gap-2 w-full max-w-md">
@@ -260,7 +228,7 @@ export default function IoTPages() {
               <SelectItem key={String(cultivo.id)}>cultivo {cultivo.id}</SelectItem>
             ))
           ) : (
-            <SelectItem isDisabled value="null">
+            <SelectItem isDisabled>
               {cultivos.length === 0
                 ? "No hay cultivos disponibles"
                 : "Cargando..."}
@@ -268,27 +236,32 @@ export default function IoTPages() {
           )}
         </Select>
       </div>
+      
+
       <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="flex justify-center">
-        {evapotranspiracion ? (
-            <EvapotranspiracionCard
-            etReal={evapotranspiracion.evapotranspiracion_mm_dia}
-            kc={evapotranspiracion.kc}
-            detalles={evapotranspiracion.sensor_data}
-      />
-    ) : errorET ? (
-      <p className="text-red-500">{errorET}</p>
-    ) : (
-      <p className="text-gray-500">Calculando evapotranspiración...</p>
-    )}
-  </div>
-    <br />
-  {evapotranspiracion && (
-    <div className="flex justify-center">
-      <EvapotranspiracionChart nuevoDato={lastET} />
-    </div>
-  )}
-</div>
+        <div className="flex justify-center">
+          {evapotranspiracion ? (
+              <EvapotranspiracionCard
+              etReal={evapotranspiracion.evapotranspiracion_mm_dia}
+              kc={evapotranspiracion.kc}
+              detalles={evapotranspiracion.sensor_data}
+            />
+          ) : errorET ? (
+            <p className="text-red-500">{errorET}</p>
+          ) : (
+            <p className="text-gray-500">Calculando evapotranspiración...</p>
+          )}
+        </div>
+        <br />
+        {evapotranspiracion && (
+          <div className="flex justify-center">
+            <EvapotranspiracionChart nuevoDato={lastET} />
+          </div>
+        )}
+      </div>
+
+      
+
       <div className="col-span-full flex justify-center">
         <button
           onClick={calcularEvapotranspiracion}
@@ -298,8 +271,9 @@ export default function IoTPages() {
         </button>
       </div>
 
+
       <div className="flex justify-between items-center w-full col-span-full mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 justify-center">Sensores Actuales</h2>
+        <h2 className="text-xl font-semibold text-gray-800 justify-center">Promedios de Sensores</h2>
         <Input
           className="w-1/4"
           placeholder="Buscar Sensor"
@@ -307,18 +281,82 @@ export default function IoTPages() {
           onChange={(e) => setSearchId(e.target.value)}
         />
       </div>
+      {/* Filtros de sensores */}
+      <div className="col-span-full flex gap-4 w-full max-w-6xl mx-auto">
+        <Select
+          label="Filtrar por Lote"
+          placeholder="Todos los lotes"
+          selectedKeys={filters.loteId ? [filters.loteId] : []}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            setFilters(prev => ({...prev, loteId: selected || ""}));
+          }}
+        >
+          <SelectItem key="1">Lote 1</SelectItem>
+          <SelectItem key="2">Lote 2</SelectItem>
+        </Select>
+
+        <Select
+          label="Filtrar por Era"
+          placeholder="Todas las eras"
+          selectedKeys={filters.eraId ? [filters.eraId] : []}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            setFilters(prev => ({...prev, eraId: selected || ""}));
+          }}
+        >
+          <SelectItem key="1">Era 1</SelectItem>
+          <SelectItem key="2">Era 2</SelectItem>
+        </Select>
+
+        <Select
+          label="Período de tiempo (horas)"
+          selectedKeys={[filters.hours]}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            setFilters(prev => ({...prev, hours: selected || "24"}));
+          }}
+        >
+          <SelectItem key="1">Última hora</SelectItem>
+          <SelectItem key="6">Últimas 6 horas</SelectItem>
+          <SelectItem key="24">Últimas 24 horas</SelectItem>
+          <SelectItem key="168">Última semana</SelectItem>
+        </Select>
+      </div>
+      <br />
       
       <div className="grid grid-cols-3 flex flex-wrap gap-4 justify-center items-center w-full max-w-6xl mx-auto">
         {sensoresFiltrados.length > 0 ? (
-          sensoresFiltrados.map((sensor) => (
-            <SensorCard
-              key={sensor.id}
-              icon={sensor.icon}
-              title={sensor.title}
-              value={sensoresData[sensor.id] ?? "Cargando..."}
-              onClick={() => navigate(`/sensores/${sensor.id}`)}
-            />
-          ))
+          sensoresFiltrados.map((sensor) => {
+            const averageData = sensorAverages[sensor.tipo] || {};
+            const hasData = averageData.average !== undefined;
+            const isAlert = averageData.min_threshold !== undefined && 
+                           averageData.max_threshold !== undefined &&
+                           (averageData.average < averageData.min_threshold || 
+                            averageData.average > averageData.max_threshold);
+            
+            return (
+              <SensorCard
+                key={sensor.id}
+                icon={sensor.icon}
+                title={sensor.title}
+                value={
+                  loadingAverages
+                    ? "Calculando..."
+                    : hasData
+                      ? `${averageData.average.toFixed(2)} ${averageData.unit}`
+                      : "Sin datos"
+                }
+                subtitle={
+                  hasData
+                    ? `Mín: ${averageData.min_threshold?.toFixed(2)} | Máx: ${averageData.max_threshold?.toFixed(2)}`
+                    : "No hay datos"
+                }
+                alert={isAlert}
+                onClick={() => navigate(`/sensores/${sensor.id}`)}
+              />
+            );
+          })
         ) : (
           <p className="text-gray-500">No se encontraron sensores</p>
         )}

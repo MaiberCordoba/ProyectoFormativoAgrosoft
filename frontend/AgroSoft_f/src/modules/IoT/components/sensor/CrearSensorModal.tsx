@@ -33,7 +33,7 @@ const fetchEras = async (): Promise<Era[]> => {
   return res.json();
 };
 
-const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE"];
+const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE", "LLUVIA"];
 const ERAS_ONLY = ["HUM_T", "PH"];
 
 const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {

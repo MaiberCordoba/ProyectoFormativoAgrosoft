@@ -33,7 +33,7 @@ class SensorSerializer(ModelSerializer):
         errores = {}
 
         # Validación corregida para sensores que requieren lote
-        if tipo in ['TEM', 'LUM', 'HUM_A', 'VIE']:
+        if tipo in ['TEM', 'LUM', 'HUM_A', 'VIE', 'LLUVIA']:
             if 'fk_lote_id' not in data and 'fk_lote' not in data:
                 errores['fk_lote_id'] = "Este campo es requerido para sensores de ambiente"
 
