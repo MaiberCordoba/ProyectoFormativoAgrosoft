@@ -200,7 +200,7 @@ export default function IoTPages() {
       id: "ph",
       tipo: "PH",
       title: "pH",
-      icon: <BiTestTube  size={30} style={{ color: "#8E44AD" }} />,
+      icon: <BiTestTube  size={28} style={{ color: "#8E44AD" }} />,
     },
   ];
 
