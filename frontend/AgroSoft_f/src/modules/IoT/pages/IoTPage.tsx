@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Select, SelectItem, addToast } from "@heroui/react";
+import { Input, Select, SelectItem, addToast, toast } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -15,16 +15,57 @@ import { SensorLista } from "../components/sensor/SensorListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
 import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
 import { useEvapotranspiracionHistorica } from "../hooks/useEvapotranspiracionHistorica";
-import { SENSOR_TYPES, SENSOR_UNITS } from "../types/sensorTypes";
+import { ReportGenerator } from "../components/Interfaz";
+
+// Define missing types
+type SensorData = {
+  tipo: string;
+  valor: number;
+  umbral_minimo: number | null;
+  umbral_maximo: number | null;
+  [key: string]: any;
+};
+
+const SENSOR_TYPES = [
+  { key: "VIE", label: "Viento" },
+  { key: "TEM", label: "Temperatura" },
+  { key: "LUM", label: "Luz Solar" },
+  { key: "HUM_T", label: "Humedad del Suelo" },
+  { key: "HUM_A", label: "Humedad Ambiente" },
+  { key: "LLUVIA", label: "Lluvia" },
+  { key: "PH", label: "pH" },
+];
+
+const SENSOR_UNITS: Record<string, string> = {
+  VIE: "km/h",
+  TEM: "°C",
+  LUM: "lux",
+  HUM_T: "%",
+  HUM_A: "%",
+  LLUVIA: "mm",
+  PH: "",
+};
 
 export default function IoTPages() {
   const navigate = useNavigate();
   const [loteId, setLoteId] = useState<number>(1);
+    const [lotes, setLotes] = useState<Array<{ id: number; nombre: string }>>([]);
+  const [eras, setEras] = useState<Array<{ id: number; nombre: string; fk_lote_id: number }>>([]);
   const [cultivoId, setCultivoId] = useState<number | string>("");
   const { data: etHistorica = [], isLoading: isLoadingHistoric } = useEvapotranspiracionHistorica(
     Number(cultivoId),
     loteId
   );
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/api/lote/')
+      .then(res => res.json())
+      .then(data => setLotes(data));
+      
+    fetch('http://127.0.0.1:8000/api/eras/')
+      .then(res => res.json())
+      .then(data => setEras(data));
+  }, []);
 
   const [filters, setFilters] = useState({
     loteId: "",
@@ -61,8 +102,8 @@ export default function IoTPages() {
     temperatura?: number;
     humedad?: number;
   } | null>(null);
+  const [sensoresData, setSensoresData] = useState<Record<string, string>>({});
 
-  // Función para obtener promedios de sensores
   const fetchSensorAverages = async () => {
     setLoadingAverages(true);
     try {
@@ -78,9 +119,7 @@ export default function IoTPages() {
       }
       
       const data = await response.json();
-      console.log("Datos de promedios recibidos:", data);
       
-      // Transformar datos para incluir unidades y asegurar estructura consistente
       const transformedData: Record<string, any> = {};
       Object.keys(data).forEach(key => {
         transformedData[key] = {
@@ -147,7 +186,6 @@ export default function IoTPages() {
     calcularEvapotranspiracion();
   }, [cultivoId, loteId]);
 
-  // Cargar cultivos al inicio
   useEffect(() => {
     fetch("http://localhost:8000/api/cultivos")
       .then((res) => res.json())
@@ -157,6 +195,102 @@ export default function IoTPages() {
       .catch((error) => {
         console.error("Error al obtener los cultivos:", error);
       });
+  }, []);
+
+  const checkForAlerts = (sensor: SensorData): boolean => {
+    if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
+      return sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo;
+    }
+    return false;
+  };
+
+  const showAlertToast = (sensor: SensorData) => {
+    const sensorType = SENSOR_TYPES.find(st => st.key === sensor.tipo);
+    const sensorName = sensorType?.label || sensor.tipo;
+    const unit = SENSOR_UNITS[sensor.tipo] || "";
+
+    let message = "";
+    if (sensor.valor < (sensor.umbral_minimo || 0)) {
+      message = `${sensorName} por debajo del mínimo (${sensor.umbral_minimo}${unit}). Valor actual: ${sensor.valor}${unit}`;
+    } else {
+      message = `${sensorName} por encima del máximo (${sensor.umbral_maximo}${unit}). Valor actual: ${sensor.valor}${unit}`;
+    }
+
+    addToast({
+      title: "🚨 Alerta de Sensor",
+      description: message,
+      variant: "flat",
+      color: "danger",
+      duration: 5000,
+    });
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/sensor/?limit=100`);
+        if (!response.ok) throw new Error("Error al obtener sensores");
+        const sensorsData: SensorData[] = await response.json();
+
+        if (Array.isArray(sensorsData)) {
+          sensorsData.forEach(sensor => {
+            if (checkForAlerts(sensor)) {
+              showAlertToast(sensor);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error al cargar datos iniciales:", error);
+      }
+    };
+
+    fetchInitialData();
+    fetchSensorAverages();
+  }, []);
+
+  useEffect(() => {
+    const sensorConnections = [
+      { id: "viento", tipo: "VIE" },
+      { id: "temperatura", tipo: "TEM" },
+      { id: "luzSolar", tipo: "LUM" },
+      { id: "humedad", tipo: "HUM_T" },
+      { id: "humedadAmbiente", tipo: "HUM_A" },
+      { id: "lluvia", tipo: "LLUVIA" },
+    ];
+
+    const websockets = new Map<string, WebSocket>();
+
+    sensorConnections.forEach(({ id, tipo }) => {
+      const url = `ws://localhost:8000/ws/sensor/${id}/`;
+      const ws = new WebSocket(url);
+      websockets.set(id, ws);
+
+      ws.onmessage = (event) => {
+        try {
+          const data: SensorData = JSON.parse(event.data);
+          const valor = parseFloat(data.valor.toString());
+
+          setSensoresData((prevData) => ({
+            ...prevData,
+            [id]: isNaN(valor) ? "-" : valor.toFixed(2),
+          }));
+
+          if (checkForAlerts(data)) {
+            showAlertToast(data);
+          }
+        } catch (error) {
+          console.error(`Error en ${tipo}:`, error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error(`WebSocket error en ${tipo}:`, error);
+      };
+    });
+
+    return () => {
+      websockets.forEach((ws) => ws.close());
+    };
   }, []);
 
   const sensoresList = [
@@ -200,7 +334,7 @@ export default function IoTPages() {
       id: "ph",
       tipo: "PH",
       title: "pH",
-      icon: <BiTestTube  size={28} style={{ color: "#8E44AD" }} />,
+      icon: <BiTestTube size={28} style={{ color: "#8E44AD" }} />,
     },
   ];
 
@@ -210,9 +344,6 @@ export default function IoTPages() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 sm:gap-12 justify-center items-center w-full max-w-6xl mx-auto">
-      
-
-      {/* Selector de cultivo */}
       <div className="flex gap-2 w-full max-w-md">
         <Select
           label="Cultivo a calcular evapotranspiración"
@@ -225,7 +356,7 @@ export default function IoTPages() {
         >
           {cultivos.length > 0 ? (
             cultivos.map((cultivo) => (
-              <SelectItem key={String(cultivo.id)}>cultivo {cultivo.id}</SelectItem>
+              <SelectItem key={String(cultivo.id)}>{`Cultivo ${cultivo.id}`}</SelectItem>
             ))
           ) : (
             <SelectItem isDisabled>
@@ -236,7 +367,6 @@ export default function IoTPages() {
           )}
         </Select>
       </div>
-      
 
       <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="flex justify-center">
@@ -260,8 +390,6 @@ export default function IoTPages() {
         )}
       </div>
 
-      
-
       <div className="col-span-full flex justify-center">
         <button
           onClick={calcularEvapotranspiracion}
@@ -270,7 +398,6 @@ export default function IoTPages() {
           Recalcular Evapotranspiración
         </button>
       </div>
-
 
       <div className="flex justify-between items-center w-full col-span-full mb-4">
         <h2 className="text-xl font-semibold text-gray-800 justify-center">Promedios de Sensores</h2>
@@ -281,7 +408,7 @@ export default function IoTPages() {
           onChange={(e) => setSearchId(e.target.value)}
         />
       </div>
-      {/* Filtros de sensores */}
+      
       <div className="col-span-full flex gap-4 w-full max-w-6xl mx-auto">
         <Select
           label="Filtrar por Lote"
@@ -331,9 +458,9 @@ export default function IoTPages() {
             const averageData = sensorAverages[sensor.tipo] || {};
             const hasData = averageData.average !== undefined;
             const isAlert = averageData.min_threshold !== undefined && 
-                           averageData.max_threshold !== undefined &&
-                           (averageData.average < averageData.min_threshold || 
-                            averageData.average > averageData.max_threshold);
+                         averageData.max_threshold !== undefined &&
+                         (averageData.average < averageData.min_threshold || 
+                          averageData.average > averageData.max_threshold);
             
             return (
               <SensorCard
@@ -349,7 +476,7 @@ export default function IoTPages() {
                 }
                 subtitle={
                   hasData
-                    ? `Mín: ${averageData.min_threshold?.toFixed(2)} | Máx: ${averageData.max_threshold?.toFixed(2)}`
+                    ? `Mín: ${averageData.min_threshold?.toFixed(2) || 'N/A'} | Máx: ${averageData.max_threshold?.toFixed(2) || 'N/A'}`
                     : "No hay datos"
                 }
                 alert={isAlert}
@@ -370,6 +497,12 @@ export default function IoTPages() {
           <SensorLista />
         </div>
       </div>
+      <br />
+      <ReportGenerator 
+        lotes={lotes} 
+        eras={eras} 
+        sensorTypes={SENSOR_TYPES} 
+      />
     </div>
   );
 }
