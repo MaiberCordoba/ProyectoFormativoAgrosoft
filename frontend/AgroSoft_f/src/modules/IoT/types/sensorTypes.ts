@@ -2,6 +2,8 @@ export interface SensorData {
   id?: number;
   fk_lote_id?: number | null;
   fk_eras_id?: number | null;
+  fk_lote?: number | null;
+  fk_eras?: number | null;
   fecha: string;
   tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH";
   valor: number;

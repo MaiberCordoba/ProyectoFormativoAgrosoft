@@ -38,8 +38,8 @@ const ERAS_ONLY = ["HUM_T", "PH"];
 
 const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
   const [tipo, setTipo] = useState<SensorCreateData["tipo"] | "">("");
-  const [fk_lote_id, setFkLote] = useState<number | null>(null);
-  const [fk_eras_id, setFkEras] = useState<number | null>(null);
+  const [fk_lote, setFkLote] = useState<number | null>(null);
+  const [fk_eras, setFkEras] = useState<number | null>(null);
   const [valor, setValor] = useState<number | null>(null);
   const [umbral_minimo, setUmbralMinimo] = useState<number | null>(null);
   const [umbral_maximo, setUmbralMaximo] = useState<number | null>(null);
@@ -54,75 +54,74 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
   const isEraRequired = tipo && ERAS_ONLY.includes(tipo);
 
   const handleSubmit = () => {
-  if (!tipo || valor === null || (!isLoteRequired && !isEraRequired)) {
-    addToast({
-      title: "Error",
-      description: "Todos los campos obligatorios deben estar completos.",
-      color: "danger",
-    });
-    return;
-  }
-
-  if (isLoteRequired && fk_lote_id === null) {
-    addToast({ title: "Error", description: "Selecciona un lote.", color: "danger" });
-    return;
-  }
-
-  if (isEraRequired && fk_eras_id === null) {
-    addToast({ title: "Error", description: "Selecciona una era.", color: "danger" });
-    return;
-  }
-
-  if (umbral_minimo !== null && umbral_maximo !== null && umbral_minimo >= umbral_maximo) {
-    addToast({
-      title: "Error",
-      description: "El umbral mínimo debe ser menor que el umbral máximo.",
-      color: "danger",
-    });
-    return;
-  }
-
-  const sensorData: Partial<SensorData> = {
-    id: 0,
-    tipo: tipo as SensorData["tipo"],
-    valor,
-    fecha,
-    umbral_minimo,
-    umbral_maximo,
-  };
-
-  if (isLoteRequired && fk_lote_id !== null) {
-    sensorData.fk_lote_id = fk_lote_id;
-  }
-
-  if (isEraRequired && fk_eras_id !== null) {
-    sensorData.fk_eras_id = fk_eras_id;
-  }
-
-    // 🔍 Aquí ves lo que estás enviando
-    console.log("SensorData a enviar:", sensorData);
-
-  mutate(sensorData as SensorData, {
-    onSuccess: () => {
-      addToast({ title: "Éxito", description: "Sensor creado con éxito.", color: "success" });
-      onClose();
-      setTipo("");
-      setFkLote(null);
-      setFkEras(null);
-      setValor(null);
-      setFecha(new Date().toISOString().split("T")[0]);
-      setUmbralMinimo(null);
-      setUmbralMaximo(null);
-    },
-    onError: (error) => {
+    if (!tipo || valor === null || (!isLoteRequired && !isEraRequired)) {
       addToast({
         title: "Error",
-        description: error.message || "Ocurrió un error al crear el sensor.",
+        description: "Todos los campos obligatorios deben estar completos.",
         color: "danger",
       });
-    },
-  });
-};
+      return;
+    }
+
+    if (isLoteRequired && fk_lote === null) {
+      addToast({ title: "Error", description: "Selecciona un lote.", color: "danger" });
+      return;
+    }
+
+    if (isEraRequired && fk_eras === null) {
+      addToast({ title: "Error", description: "Selecciona una era.", color: "danger" });
+      return;
+    }
+
+    if (umbral_minimo !== null && umbral_maximo !== null && umbral_minimo >= umbral_maximo) {
+      addToast({
+        title: "Error",
+        description: "El umbral mínimo debe ser menor que el umbral máximo.",
+        color: "danger",
+      });
+      return;
+    }
+
+    const sensorData: Partial<SensorData> = {
+      tipo: tipo as SensorData["tipo"],
+      valor,
+      fecha,
+      umbral_minimo,
+      umbral_maximo,
+    };
+
+    if (isLoteRequired && fk_lote !== null) {
+      sensorData.fk_lote_id = fk_lote;
+    }
+
+    if (isEraRequired && fk_eras !== null) {
+      sensorData.fk_eras_id = fk_eras;
+    }
+
+    // Enviar datos al backend
+    console.log("SensorData a enviar:", sensorData);
+
+    mutate(sensorData as SensorData, {
+      onSuccess: () => {
+        addToast({ title: "Éxito", description: "Sensor creado con éxito.", color: "success" });
+        onClose();
+        setTipo("");
+        setFkLote(null);
+        setFkEras(null);
+        setValor(null);
+        setFecha(new Date().toISOString().split("T")[0]);
+        setUmbralMinimo(null);
+        setUmbralMaximo(null);
+      },
+      onError: (error: any) => {
+        addToast({
+          title: "Error",
+          description: error.message || "Ocurrió un error al crear el sensor.",
+          color: "danger",
+        });
+      },
+    });
+  };
 
   return (
     <ModalComponent
@@ -150,9 +149,7 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
         }}
       >
         {SENSOR_TYPES.map((sensor) => (
-          <SelectItem key={sensor.key} >
-            {sensor.label}
-          </SelectItem>
+          <SelectItem key={sensor.key}>{sensor.label}</SelectItem>
         ))}
       </Select>
 
@@ -160,16 +157,14 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
         <Select
           label="Lote"
           placeholder="Selecciona un lote"
-          selectedKeys={fk_lote_id !== null ? [String(fk_lote_id)] : []}
+          selectedKeys={fk_lote !== null ? [String(fk_lote)] : []}
           onSelectionChange={(keys) => {
             const selected = Number(Array.from(keys)[0]);
             setFkLote(selected);
           }}
         >
           {lotes.map((lote) => (
-            <SelectItem key={String(lote.id)} >
-              {lote.nombre}
-            </SelectItem>
+            <SelectItem key={String(lote.id)}>{lote.nombre}</SelectItem>
           ))}
         </Select>
       )}
@@ -178,16 +173,14 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
         <Select
           label="Era"
           placeholder="Selecciona una era"
-          selectedKeys={fk_eras_id !== null ? [String(fk_eras_id)] : []}
+          selectedKeys={fk_eras !== null ? [String(fk_eras)] : []}
           onSelectionChange={(keys) => {
             const selected = Number(Array.from(keys)[0]);
             setFkEras(selected);
           }}
         >
           {eras.map((era) => (
-            <SelectItem key={String(era.id)} >
-              {`Era ${era.id}`}
-            </SelectItem>
+            <SelectItem key={String(era.id)}>{`Era ${era.id}`}</SelectItem>
           ))}
         </Select>
       )}
