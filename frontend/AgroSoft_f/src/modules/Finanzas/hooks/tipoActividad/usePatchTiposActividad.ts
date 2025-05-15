@@ -10,7 +10,7 @@ export const usePatchTipoActividades = () => {
     mutationFn: ({ id, data }) => patchTipoActividad(id, data),
     onSuccess: (updatedTipoActividades, variables) => {
       // Actualiza la caché después de una mutación exitosa
-      queryClient.setQueryData<TipoActividad[]>(['tipoActividades'], (oldData) => {
+      queryClient.setQueryData<TipoActividad[]>(['tipoActividad'], (oldData) => {
         if (!oldData) return oldData;
         return oldData.map((tipoActividad) =>
           tipoActividad.id === variables.id ? { ...tipoActividad, ...updatedTipoActividades } : tipoActividad

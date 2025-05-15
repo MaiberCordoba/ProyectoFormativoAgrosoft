@@ -10,7 +10,7 @@ export const usePatchTiempoActividadControl = () => {
     mutationFn: ({ id, data }) => patchTiempoActividadControl(id, data),
     onSuccess: (updatedTiempoActividadControl, variables) => {
       // Actualiza la caché después de una mutación exitosa
-      queryClient.setQueryData<TiempoActividadControl[]>(['tiempoActividadControl'], (oldData) => {
+      queryClient.setQueryData<TiempoActividadControl[]>(['TiempoActividadControl'], (oldData) => {
         if (!oldData) return oldData;
         return oldData.map((tiempoActividad) =>
           tiempoActividad.id === variables.id ? { ...tiempoActividad, ...updatedTiempoActividadControl } : tiempoActividad

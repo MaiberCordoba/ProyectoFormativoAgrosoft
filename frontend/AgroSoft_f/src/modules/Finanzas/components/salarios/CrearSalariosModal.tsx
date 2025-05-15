@@ -9,7 +9,7 @@ interface CrearSalariosModalProps {
   onCreate: (nuevoSalario : Salarios) => void
 }
 
-export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps) => {
+export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [monto, setMonto] = useState<number | "">("");
   const [horas, setHoras] = useState<number | "">("");
@@ -32,9 +32,8 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
         estado,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setNombre("");
           setMonto("");
           setHoras("");

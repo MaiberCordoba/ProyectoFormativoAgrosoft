@@ -9,7 +9,7 @@ interface CrearTipoActividadModalProps {
   onCreate:(nuevoTipoActividad:TipoActividad) => void
 }
 
-export const CrearTipoActividadModal = ({ onClose, onCreate }: CrearTipoActividadModalProps) => {
+export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProps) => {
   const [nombre, setNombre] = useState("");
   const { mutate, isPending } = usePostTipoActividad();
 
@@ -22,8 +22,7 @@ export const CrearTipoActividadModal = ({ onClose, onCreate }: CrearTipoActivida
     mutate(
       { id:0, nombre },
       {
-        onSuccess: (data) => {
-          onCreate(data);
+        onSuccess: () => {
           onClose();
           setNombre("");
         },

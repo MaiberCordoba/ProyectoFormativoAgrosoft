@@ -31,7 +31,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
   const { mutate, isPending } = usePatchTiempoActividadControl();
 
   const handleSubmit = () => {
-    if (!tiempo || !valorTotal || !fk_unidadTiempo || !fk_actividad || !fk_control || !fk_salario) {
+    if (!tiempo || !valorTotal || !fk_unidadTiempo || !fk_salario) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -120,7 +120,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         }}
       >
         {(controles || []).map((control) => (
-          <SelectItem key={control.id.toString()}>{control.nombre}</SelectItem>
+          <SelectItem key={control.id.toString()}>{control.descripcion}</SelectItem>
         ))}
       </Select>
 

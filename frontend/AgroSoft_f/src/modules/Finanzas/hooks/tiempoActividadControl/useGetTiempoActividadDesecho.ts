@@ -4,7 +4,7 @@ import { TiempoActividadControl } from "../../types";
 
 export const useGetTiempoActividadControl = () => {
     const query = useQuery<TiempoActividadControl[], Error>({
-    queryKey: ["TiempoActivividadControl"], 
+    queryKey: ["TiempoActividadControl"], 
     queryFn: getTiempoActividadControl, 
   });
   return{

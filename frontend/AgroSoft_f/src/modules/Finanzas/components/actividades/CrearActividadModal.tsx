@@ -18,7 +18,7 @@ interface CrearActividadesModalProps {
   onCreate:(nuevaActividad : Actividades) => void
 }
 
-export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModalProps) => {
+export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) => {
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(null);
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
@@ -46,9 +46,8 @@ export const CrearActividadesModal = ({ onClose,onCreate }: CrearActividadesModa
     mutate(
       {fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
           setFk_Cultivo(null);
           setFk_Usuario(null);
           setFk_TipoActividad(null);

@@ -10,7 +10,6 @@ import { Actividades, Salarios, TiempoActividadControl, UnidadesTiempo } from ".
 import { Controles } from "@/modules/Sanidad/types";
 import { Plus } from "lucide-react";
 import { CrearActividadesModal } from "../actividades/CrearActividadModal";
-import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
 import { CrearControlModal } from "@/modules/Sanidad/components/controles/CrearControlesModal";
 import { CrearSalariosModal } from "../salarios/CrearSalariosModal";
 import { CrearUnidadesTiempoModal } from "../unidadesTiempo/CrearUnidadesTiempoModal";
@@ -20,9 +19,8 @@ interface CrearTiempoActividadControlModalProps {
   onCreate: (nuevoTiempoAC: TiempoActividadControl) => void
 }
 
-export const CrearTiempoActividadControlModal = ({ onClose,onCreate }: CrearTiempoActividadControlModalProps) => {
-  const [tiempo, setTiempo] = useState<number>(0);
-  const [valorTotal, setValorTotal] = useState<number>(0);
+export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActividadControlModalProps) => {
+  const [tiempo, setTiempo] = useState<number | null>(null);
   const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number | null>(null);
   const [fk_actividad, setFk_Actividad] = useState<number | null>(null);
   const [fk_control, setFk_Control] = useState<number | null>(null);
@@ -41,22 +39,18 @@ export const CrearTiempoActividadControlModal = ({ onClose,onCreate }: CrearTiem
 
   const handleSubmit = () => {
     if (
-      !tiempo || !valorTotal ||
-      !fk_unidadTiempo || !fk_actividad ||
-      !fk_control || !fk_salario
+      !tiempo || !fk_unidadTiempo || !fk_salario
     ) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      {id:0, tiempo, valorTotal, fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
+      {id:0, tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
       {
         onSuccess: (data) => {
           onClose();
-          onCreate(data)
-          setTiempo(0);
-          setValorTotal(0);
+          setTiempo(null);
           setFk_UnidadTiempo(null);
           setFk_Actividad(null);
           setFk_Control(null);
@@ -106,13 +100,6 @@ export const CrearTiempoActividadControlModal = ({ onClose,onCreate }: CrearTiem
           type="number"
           value={tiempo}
           onChange={(e) => setTiempo(Number(e.target.value))}
-          required
-          />
-        <Input
-          label="Valor Total"
-          type="number"
-          value={valorTotal}
-          onChange={(e) => setValorTotal(Number(e.target.value))}
           required
           />
           {isLoadingUnidadTiempo ? (
@@ -191,7 +178,7 @@ export const CrearTiempoActividadControlModal = ({ onClose,onCreate }: CrearTiem
               }}
               >
               {(controles || []).map((control) => (
-                <SelectItem key={control.id.toString()}>{control.nombre}</SelectItem>
+                <SelectItem key={control.id.toString()}>{control.descripcion}</SelectItem>
               ))}
             </Select>
           </div>

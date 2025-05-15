@@ -9,9 +9,9 @@ export const useDeleteTiempoActividadControl = () => {
     return useMutation<TiempoActividadControl, Error, { id: number }, { previousTiempoActividadControl?: TiempoActividadControl[] }>({
         mutationFn: ({ id }) => deleteTiempoActividadControl(id),
         onMutate: async (variables) => {
-            await queryClient.cancelQueries({ queryKey: ['tiempoActividadControl'] });
+            await queryClient.cancelQueries({ queryKey: ['TiempoActividadControl'] });
             const previousTiempoActividadControl = queryClient.getQueryData<TiempoActividadControl[]>(['tiempoActividadControl']);
-            queryClient.setQueryData<TiempoActividadControl[]>(['tiempoActividadControl'], (old) => 
+            queryClient.setQueryData<TiempoActividadControl[]>(['TiempoActividadControl'], (old) => 
                 old?.filter(TiempoActividadControl => TiempoActividadControl.id !== variables.id) || []
             );
             return { previousTiempoActividadControl };

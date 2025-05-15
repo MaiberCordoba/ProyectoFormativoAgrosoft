@@ -20,7 +20,7 @@ interface CrearUsoInsumoModalProps {
   onCreate: (nuevoUsoInsumo: UsosInsumos) => void;
 }
 
-export const CrearUsoInsumoModal = ({ onClose}: CrearUsoInsumoModalProps) => {
+export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
   const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
   const [fk_Control, setFk_Control] = useState<number | null>(null);
