@@ -53,3 +53,44 @@ class SerializerInsumos(ModelSerializer):
         )
 
         return insumo_nuevo
+    
+    
+    def update(self, instance, validated_data):
+        # Guardar valores anteriores para calcular la diferencia
+        unidades_anteriores = instance.unidades
+        precio_anterior = instance.precio
+        contenido_anterior = instance.contenido
+        equivalencia_base = validated_data.get("fk_UnidadMedida", instance.fk_UnidadMedida).equivalenciabase
+
+        # Obtener nuevos valores (o mantener los existentes)
+        unidades_nuevas = validated_data.get("unidades", unidades_anteriores)
+        precio_nuevo = validated_data.get("precio", precio_anterior)
+        contenido_nuevo = validated_data.get("contenido", contenido_anterior)
+
+        # Calcular nuevos valores
+        cantidad_gramos = unidades_nuevas * contenido_nuevo * equivalencia_base
+        valor_total = precio_nuevo * unidades_nuevas
+
+        # Actualizar campos derivados
+        instance.cantidadGramos = cantidad_gramos
+        instance.totalGramos = cantidad_gramos
+        instance.valorTotalInsumos = valor_total
+
+        # Actualizar otros campos directamente
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        # Si las unidades cambiaron, registrar movimiento de inventario
+        if unidades_nuevas != unidades_anteriores:
+            diferencia = unidades_nuevas - unidades_anteriores
+            tipo_movimiento = 'entrada' if diferencia > 0 else 'salida'
+
+            MovimientoInventario.objects.create(
+                tipo=tipo_movimiento,
+                fk_Insumo=instance,
+                unidades=abs(diferencia)
+            )
+
+        return instance
