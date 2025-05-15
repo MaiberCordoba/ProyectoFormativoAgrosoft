@@ -38,8 +38,8 @@ export function SensorLista() {
   const handleCrearNuevo = () => {
     handleCrear({
       id: 0,
-      fk_lote_id: null,
-      fk_eras_id: null,
+      fk_lote: null,
+      fk_eras: null,
       fecha: "",
       tipo: "TEM",
       valor: 0,
@@ -63,6 +63,7 @@ export function SensorLista() {
     { name: "Valor", uid: "valor" },
     { name: "Umbral Mínimo", uid: "umbral_minimo" },
     { name: "Umbral Máximo", uid: "umbral_maximo" },
+    { name: "Ubicación", uid: "ubicacion" }, // Columna Ubicación
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -99,6 +100,14 @@ export function SensorLista() {
         return <span>{item.umbral_minimo ?? "—"}</span>;
       case "umbral_maximo":
         return <span>{item.umbral_maximo ?? "—"}</span>;
+      case "ubicacion":
+        if (item.fk_lote !== null && item.fk_lote !== undefined) {
+          return <span className="text-green-600 font-medium">Lote {item.fk_lote}</span>;
+        } else if (item.fk_eras !== null && item.fk_eras !== undefined) {
+          return <span className="text-blue-600 font-medium">Era {item.fk_eras}</span>;
+        } else {
+          return <span className="text-gray-400 italic">No asignado</span>;
+        }
       case "acciones":
         return (
           <AccionesTabla
@@ -107,9 +116,7 @@ export function SensorLista() {
           />
         );
       default:
-        return (
-          <span>{String(item[columnKey as keyof SensorData])}</span>
-        );
+        return <span>{String(item[columnKey as keyof SensorData])}</span>;
     }
   };
 
@@ -131,9 +138,7 @@ export function SensorLista() {
         <EditarSensorModal sensor={sensorEditado} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && (
-        <CrearSensorModal onClose={closeCreateModal} />
-      )}
+      {isCreateModalOpen && <CrearSensorModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && sensorEliminado && (
         <EliminarSensorModal
