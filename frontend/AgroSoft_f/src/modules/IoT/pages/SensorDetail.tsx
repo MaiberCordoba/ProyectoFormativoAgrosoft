@@ -7,7 +7,6 @@ import {
 } from "recharts";
 import { SensorData, SENSOR_TYPES, SensorConExtras } from "../types/sensorTypes";
 
-// Colores para cada tipo de sensor
 const SENSOR_COLORS: Record<string, string> = {
   TEM: "#8884d8",
   LUM: "#ffc658",
@@ -17,7 +16,6 @@ const SENSOR_COLORS: Record<string, string> = {
   PH: "#00C49F"
 };
 
-// Unidades para cada sensor
 const SENSOR_UNITS: Record<string, string> = {
   TEM: "°C",
   LUM: "lux",
@@ -27,11 +25,9 @@ const SENSOR_UNITS: Record<string, string> = {
   PH: "pH"
 };
 
-// Tipos de sensores por ubicación
 const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE"];
 const ERAS_ONLY = ["HUM_T", "PH"];
 
-// Función helper para convertir SENSOR_TYPES a diccionario
 function dict(sensorTypes: {key: string, label: string}[]): Map<string, string> {
   const map = new Map();
   sensorTypes.forEach(type => map.set(type.key, type.label));
@@ -51,7 +47,6 @@ export default function AllSensorsDashboard() {
   const [showLotesSelect, setShowLotesSelect] = useState(true);
   const [showErasSelect, setShowErasSelect] = useState(true);
 
-  // Efecto para controlar qué selectores de ubicación mostrar
   useEffect(() => {
     if (selectedTypes.length === 0) {
       setShowLotesSelect(true);
@@ -64,13 +59,11 @@ export default function AllSensorsDashboard() {
 
     setShowLotesSelect(hasLoteSensors);
     setShowErasSelect(hasEraSensors);
-    
-    // Resetear selecciones cuando cambian los tipos
+
     if (!hasLoteSensors) setSelectedLotes([]);
     if (!hasEraSensors) setSelectedEras([]);
   }, [selectedTypes]);
 
-  // Función para verificar alertas
   const checkForAlerts = (sensor: SensorData): boolean => {
     if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
       return sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo;
@@ -78,13 +71,11 @@ export default function AllSensorsDashboard() {
     return false;
   };
 
-  // Función para generar prefijos únicos para cada sensor
   const getSensorPrefix = (sensor: SensorConExtras): string => {
     const locationId = sensor.fk_lote_id || sensor.fk_eras_id;
     return `${sensor.tipo}-${locationId}`;
   };
 
-  // Función para obtener el nombre del lote/era
   const getLocationName = (sensor: SensorConExtras): string => {
     if (sensor.fk_lote_id) {
       const lote = availableLotes.find(l => l.id === sensor.fk_lote_id);
@@ -98,16 +89,14 @@ export default function AllSensorsDashboard() {
     return "Ubicación desconocida";
   };
 
-  // Cargar datos históricos de todos los sensores
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        // Obtener datos de sensores
         const sensorsResponse = await fetch(`http://127.0.0.1:8000/api/sensor/?limit=100`);
         if (!sensorsResponse.ok) throw new Error("Error al obtener sensores");
         const sensorsData: SensorData[] = await sensorsResponse.json();
-        
+
         if (Array.isArray(sensorsData)) {
           const enrichedData = sensorsData.map(item => ({
             ...item,
@@ -115,8 +104,7 @@ export default function AllSensorsDashboard() {
             alerta: checkForAlerts(item)
           }));
           setAllSensorsData(enrichedData);
-          
-          // Obtener datos de ubicación
+
           const [lotesResponse, erasResponse] = await Promise.all([
             fetch("http://127.0.0.1:8000/api/lote/"),
             fetch("http://127.0.0.1:8000/api/eras/")
@@ -146,7 +134,6 @@ export default function AllSensorsDashboard() {
     fetchInitialData();
   }, []);
 
-  // WebSocket para datos en tiempo real
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8000/ws/sensor/all/");
 
@@ -173,12 +160,10 @@ export default function AllSensorsDashboard() {
     };
   }, []);
 
-  // Combinar datos históricos y en tiempo real
   const combinedData = useMemo(() => {
     return [...allSensorsData, ...realTimeData];
   }, [allSensorsData, realTimeData]);
 
-  // Filtrar sensores según selección
   const filteredSensors = useMemo(() => {
     return combinedData.filter(sensor => {
       const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(sensor.tipo);
@@ -186,16 +171,14 @@ export default function AllSensorsDashboard() {
         (sensor.fk_lote_id && selectedLotes.includes(sensor.fk_lote_id));
       const eraMatch = selectedEras.length === 0 || 
         (sensor.fk_eras_id && selectedEras.includes(sensor.fk_eras_id));
-      
+
       return typeMatch && (loteMatch || eraMatch);
     });
   }, [combinedData, selectedTypes, selectedLotes, selectedEras]);
 
-  // Agrupar datos para el gráfico
   const chartData = useMemo(() => {
-    // Agrupar por timestamp
     const groupedByTime: Record<string, SensorConExtras[]> = {};
-    
+
     combinedData.forEach(sensor => {
       const timeKey = new Date(sensor.fecha).toLocaleTimeString();
       if (!groupedByTime[timeKey]) {
@@ -203,8 +186,7 @@ export default function AllSensorsDashboard() {
       }
       groupedByTime[timeKey].push(sensor);
     });
-    
-    // Convertir a formato para Recharts
+
     return Object.entries(groupedByTime).map(([timestamp, sensors]) => {
       const point: any = { timestamp };
       sensors.forEach(sensor => {
@@ -217,10 +199,9 @@ export default function AllSensorsDashboard() {
     });
   }, [combinedData]);
 
-  // Obtener líneas a mostrar basadas en los sensores filtrados
   const linesToShow = useMemo(() => {
     const uniqueSensors = new Map<string, {type: string, locationId?: number, color: string}>();
-    
+
     filteredSensors.forEach(sensor => {
       const key = `${sensor.tipo}-${sensor.fk_lote_id || sensor.fk_eras_id}`;
       if (!uniqueSensors.has(key)) {
@@ -231,7 +212,7 @@ export default function AllSensorsDashboard() {
         });
       }
     });
-    
+
     return Array.from(uniqueSensors.values());
   }, [filteredSensors]);
 
@@ -303,7 +284,7 @@ export default function AllSensorsDashboard() {
             >
               {availableEras.map(era => (
                 <SelectItem key={String(era.id)}>
-                  {era.nombre} (Lote {era.fk_lote_id})
+                  Era {era.fk_lote_id}{era.id}
                 </SelectItem>
               ))}
             </Select>
