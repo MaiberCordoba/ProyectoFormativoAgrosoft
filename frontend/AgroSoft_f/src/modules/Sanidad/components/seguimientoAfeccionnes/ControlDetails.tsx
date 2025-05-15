@@ -26,7 +26,7 @@ const ListaControles = ({ controles }: Props) => {
 
   const controlesFiltrados = controles.filter((control) => {
     const tipo = control.tipoControl?.nombre?.toLowerCase() || "";
-    const cultivo = control.afeccion?.plantaciones?.eras?.Lote?.nombre?.toLowerCase() || "";
+    const cultivo = control.afeccion?.plantaciones?.cultivo?.nombre?.toLowerCase() || "";
     const estadoCod = control.afeccion?.estado || "";
     const estadoNombre = estadoLabels[estadoCod] || "";
 
@@ -104,7 +104,7 @@ const ListaControles = ({ controles }: Props) => {
               <p><strong>Descripción:</strong> {control.descripcion ?? 'Sin descripción'}</p>
               <p><strong>Afección:</strong> {control.afeccion?.plagas?.nombre ?? 'Plaga no disponible'}</p>
               <p><strong>Tipo de afección:</strong> {control.afeccion?.plagas?.tipoPlaga?.nombre ?? 'Tipo no disponible'}</p>
-              <p><strong>Cultivo (Lote):</strong> {control.afeccion?.plantaciones?.eras?.Lote?.nombre ?? 'Cultivo no disponible'}</p>
+              <p><strong>Cultivo (Lote):</strong> {control.afeccion?.plantaciones?.cultivo?.nombre ?? 'Cultivo no disponible'}</p>
               <p><strong>Tipo de Control:</strong> {control.tipoControl?.nombre ?? 'Tipo no disponible'}</p>
               <p><strong>Estado de la Afección:</strong> {estadoLabels[estadoCod] ?? 'Estado no disponible'}</p>
             </div>
