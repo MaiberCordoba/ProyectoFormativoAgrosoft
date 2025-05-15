@@ -19,4 +19,4 @@ class Actividades(models.Model):
     fecha =models.DateField(auto_now=False)
     estado=models.CharField(max_length=3,choices=ESTADO_CHOICES,default='AS')
     def __str__(self):
-        return self.titulo
+        return ("fecha: " + str(self.fecha) + " titulo: " + str(self.titulo) + " encargado: " + str(self.fk_Usuario.nombre))
