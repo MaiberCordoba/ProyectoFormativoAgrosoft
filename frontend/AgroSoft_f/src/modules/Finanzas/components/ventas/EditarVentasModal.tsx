@@ -63,7 +63,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
         required
       />
       <Input
-        label="Cantidad de venta"
+        label="Cantidad de producto"
         type="number"
         value={cantidad}
         onChange={(e) => setCantidad(Number(e.target.value))}
@@ -71,7 +71,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       />
       
       <Input
-        label="Fecha"
+        label="Fecha de venta"
         type="date"
         value={fecha}
         onChange={(e) => setFecha(e.target.value)}
@@ -84,7 +84,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       ) : (
         <Select
           label="Cosecha"
-          placeholder="Selecciona la fecha de la cosecha"
+          placeholder="Selecciona la cantidad y fecha"
           selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
@@ -94,9 +94,9 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
           {(cosechas || []).map((cosecha) => (
             <SelectItem
               key={cosecha.id.toString()}
-              textValue={`${cosecha.id} - ${cosecha.fecha}`}
+              textValue={`Cantidad:${cosecha.cantidad} Fecha: ${cosecha.fecha}`}
             >
-              {cosecha.id} - {cosecha.fecha}
+             <span>Cantidad: {cosecha.cantidad} Fecha: {cosecha.fecha} </span>
             </SelectItem>
           ))}
         </Select>

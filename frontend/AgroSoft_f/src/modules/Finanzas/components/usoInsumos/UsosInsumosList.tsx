@@ -10,11 +10,15 @@ import EliminarUsosInsumosModal from "./EliminarUsosInsumos";
 import { UsosInsumos } from "../../types";
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
+import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 
 export function UsosInsumosList() {
   const { data, isLoading, error, refetch } = useGetUsosInsumos();
   const { data: insumos, isLoading: loadingInsumos } = useGetInsumos();
   const { data: actividades, isLoading: loadingActividades } = useGetActividades();
+  const { data: controles, isLoading: loadingControles } = useGetControles()
+  const { data: unidades, isLoading: loadingUnidades } = useGetUnidadesMedida()
 
   const {
     isOpen: isEditModalOpen,
@@ -37,13 +41,16 @@ export function UsosInsumosList() {
   } = useEliminarUsoInsumo();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Insumo: 0, fk_Actividad: 0, cantidadProducto: 0 });
+    handleCrear({ id: 0, fk_Insumo: 0, fk_Actividad: 0,fk_Control:0,fk_UnidadMedida:0, cantidadProducto: 0,costoUsoInsumo:0 });
   };
 
   const columnas = [
     { name: "Insumo", uid: "insumo" },
     { name: "Actividad", uid: "actividad" },
-    { name: "Cantidad", uid: "cantidadProducto" },
+    { name: "Control", uid: "control" },
+    { name: "Cantidad Usado", uid: "cantidad" },
+    { name: "Unidad Medida", uid: "unidad" },
+    { name: "Costo producto usado", uid: "costo" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -54,9 +61,17 @@ export function UsosInsumosList() {
         return <span>{insumo ? insumo.nombre : "No definido"}</span>;
       case "actividad":
         const actividad = actividades?.find((a) => a.id === item.fk_Actividad);
-        return <span>{actividad ? actividad.titulo : "No definido"}</span>;
-      case "cantidadProducto":
+        return <span>{actividad ? actividad.titulo : "No aplica"}</span>;
+      case "control":
+        const control = controles?.find((a) => a.id === item.fk_Control);
+        return <span>{control ? control.descripcion: "No aplica"}</span>;
+      case "unidad":
+        const unidad = unidades?.find((a) => a.id === item.fk_UnidadMedida);
+        return <span>{unidad ? unidad.nombre : "No definido"}</span>;
+      case "cantidad":
         return <span>{item.cantidadProducto}</span>;
+      case "costo":
+        return <span>{item.costoUsoInsumo}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -69,7 +84,7 @@ export function UsosInsumosList() {
     }
   };
 
-  if (isLoading || loadingInsumos || loadingActividades) return <p>Cargando...</p>;
+  if (isLoading || loadingInsumos || loadingActividades || loadingControles || loadingUnidades) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Usos de Insumos</p>;
 
   return (

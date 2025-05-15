@@ -9,7 +9,7 @@ interface CrearTiposDesechosModalProps {
   onCreate: (nuevoTipoDesecho : TiposDesechos) => void
 }
 
-export const CrearTiposDesechosModal = ({ onClose,onCreate }: CrearTiposDesechosModalProps) => {
+export const CrearTiposDesechosModal = ({ onClose,/* onCreate */ }: CrearTiposDesechosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
@@ -23,9 +23,9 @@ export const CrearTiposDesechosModal = ({ onClose,onCreate }: CrearTiposDesechos
     mutate(
       {id:0 ,nombre, descripcion }, // Envía el ID del tipo de plaga
       {
-        onSuccess: (data) => {
+        onSuccess: (/* data */) => {
           onClose();
-          onCreate(data)
+          //onCreate(data)
           setNombre("");
           setDescripcion("");
         },

@@ -13,9 +13,9 @@ interface EditarUsoInsumoModalProps {
 }
 
 const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, onClose }) => {
-  const [fk_Insumo, setFk_Insumo] = useState<number>(usoInsumo.insumo?.id || 0);
-  const [fk_Actividad, setFk_Actividad] = useState<number>(usoInsumo.actividad?.id || 0);
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number>(usoInsumo.unidadMedida?.id || 0);
+  const [fk_Insumo, setFk_Insumo] = useState<number>(usoInsumo.fk_Insumo || 0);
+  const [fk_Actividad, setFk_Actividad] = useState<number>(usoInsumo.fk_Actividad || 0);
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number>(usoInsumo.fk_UnidadMedida || 0);
   const [cantidadProducto, setCantidadProducto] = useState<number>(usoInsumo.cantidadProducto);
 
   const { data: insumos, isLoading: isLoadingInsumos } = useGetInsumos();

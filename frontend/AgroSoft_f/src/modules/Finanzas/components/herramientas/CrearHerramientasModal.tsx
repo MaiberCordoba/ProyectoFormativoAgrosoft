@@ -13,18 +13,18 @@ interface CrearHerramientasModalProps {
   onCreate:  (nuevaHerramienta : Herramientas) => void
 }
 
-export const CrearHerramientasModal = ({ onClose,onCreate }: CrearHerramientasModalProps) => {
+export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps) => {
   const [fk_Lote, setFk_Lote] = useState<number | null>(null);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [unidades, setUnidades] = useState<number>(0);
+  const [unidades, setUnidades] = useState<number | null>(null);
 
   const [lotesModal, setLotesModal] = useState(false)
   const { data: lotes, isLoading: isLoadingLotes, refetch: refetchLotes } = useGetLotes();
   const { mutate, isPending } = usePostHerramienta();
 
   const handleSubmit = () => {
-    if (!fk_Lote || !nombre.trim() || !descripcion.trim() || unidades <= 0) {
+    if (!fk_Lote || !nombre.trim() || !descripcion.trim() || !unidades) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -32,11 +32,10 @@ export const CrearHerramientasModal = ({ onClose,onCreate }: CrearHerramientasMo
     mutate(
       { id:0,fk_Lote, unidades, nombre, descripcion },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data);
           setFk_Lote(null);
-          setUnidades(0);
+          setUnidades(null);
           setNombre("");
           setDescripcion("");
         },
@@ -80,7 +79,7 @@ export const CrearHerramientasModal = ({ onClose,onCreate }: CrearHerramientasMo
         />
 
         <Input
-          label="Unidades"
+          label="Cantidad"
           type="number"
           value={unidades}
           onChange={(e) => setUnidades(e.target.value ? Number(e.target.value) : 0)}

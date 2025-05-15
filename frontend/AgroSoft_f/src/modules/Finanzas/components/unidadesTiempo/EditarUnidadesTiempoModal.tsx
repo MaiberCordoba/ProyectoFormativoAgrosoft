@@ -11,7 +11,7 @@ interface EditarUnidadesTiempoModalProps {
 
 const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ unidadTiempo, onClose }) => {
   const [nombre, setNombre] = useState<string>(unidadTiempo.nombre);
-  const [equivalenciabase, setEquivalenciabase] = useState<number>(unidadTiempo.equivalenciabase);
+  const [equivalenciaMinutos, setEquivalenciaMinutos] = useState<number>(unidadTiempo.equivalenciaMinutos);
 
   const { mutate, isPending } = usePatchUnidadesTiempo();
 
@@ -21,7 +21,7 @@ const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ u
         id: unidadTiempo.id,
         data: {
           nombre,
-          equivalenciabase,
+          equivalenciaMinutos,
         },
       },
       {
@@ -54,10 +54,10 @@ const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ u
         onChange={(e) => setNombre(e.target.value)}
       />
       <Input
-        value={equivalenciabase.toString()}
-        label="Equivalencia Base"
+        value={equivalenciaMinutos.toString()}
+        label="Equivalencia Minutos"
         type="number"
-        onChange={(e) => setEquivalenciabase(Number(e.target.value))}
+        onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))}
       />
     </ModalComponent>
   );

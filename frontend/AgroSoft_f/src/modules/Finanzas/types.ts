@@ -1,6 +1,6 @@
 //Creacion de los tipos de datos
 import { Controles } from "../Sanidad/types"
-import { Cultivos, Lotes } from "../Trazabilidad/types"
+import { Cultivo, Lotes, Plantaciones } from "../Trazabilidad/types"
 import { User } from "../Users/types"
 
 export interface ResumenEconomicoListado {
@@ -94,7 +94,7 @@ export interface DetalleResumenEconomico {
 export interface Actividades {
     id : number,
     fk_Cultivo?: number,
-    cultivo?: Cultivos,
+    cultivo?: Cultivo,
     fk_Usuario? : number,
     usuario? : User,
     fk_TipoActividad : number,
@@ -107,19 +107,19 @@ export interface Actividades {
 
 export interface Cosechas {
     id : number,
-    fk_Cultivo? : number,
-    cultivo? : Cultivos,
+    fk_Plantacion? : number,
+    plantacion? : Plantaciones,
     fk_UnidadMedida : number,
-    unidadMedida : UnidadesMedida
     cantidad : number,
+    unidadMedida : UnidadesMedida
+    cantidadTotal : number,
     fecha : string,
-    precioReferencial : number
 }
 
 export interface Desechos {
     id : number,
-    fk_Cultivo? : number,
-    cultivo? : Cultivos,
+    fk_Plantacion? : number,
+    plantacion? : Plantaciones,
     fk_TipoDesecho? : number,
     tipoDesecho? : TiposDesechos,
     nombre : string,
@@ -146,9 +146,9 @@ export interface Insumos {
     unidades : number,
     fk_UnidadMedida : number,
     unidadMedida : UnidadesMedida,
+    totalGramos : number,
+    cantidadGramos : number
     valorTotalInsumos : number,
-    cantidadTotal : number,
-    cantidadDisponible : number
 }
 
 export interface MovimientoInventario {
@@ -182,9 +182,9 @@ export interface TiempoActividadControl {
     valorTotal : number,
     fk_unidadTiempo : number,
     unidadTiempo : UnidadesTiempo,
-    fk_actividad : number,
+    fk_actividad? : number,
     actividad : Actividades,
-    fk_control : number,
+    fk_control? : number,
     control : Controles,
     fk_salario : number,
     salario : Salarios
@@ -231,7 +231,7 @@ export interface UsosInsumos {
 
 export interface UsosHerramientas {
     id : number,
-    fk_Herramientas? : number,
+    fk_Herramienta? : number,
     herramienta?: Herramientas,
     fk_Actividad? : number,
     actividad? : Actividades,

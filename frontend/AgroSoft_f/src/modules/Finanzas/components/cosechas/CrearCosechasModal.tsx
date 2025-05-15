@@ -3,60 +3,60 @@ import { usePostCosecha } from "../../hooks/cosechas/usePostCosechas";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
-import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { Cosechas, UnidadesMedida } from "../../types";
-import { CrearCultivoModal } from "@/modules/Trazabilidad/components/cultivos/CrearCultivosModal";
-import { Cultivos } from "@/modules/Trazabilidad/types";
 import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { Plantaciones } from "@/modules/Trazabilidad/types";
+import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
 
 interface CrearCosechasModalProps {
   onClose: () => void;
   onCreate: (nuevaCosecha:Cosechas) => void;
 }
 
-export const CrearCosechasModal = ({ onClose,onCreate }: CrearCosechasModalProps) => {
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
-  const [cantidad, setCantidad] = useState<number>(0);  // Inicializado en 0
+export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
+  const [cantidad, setCantidad] = useState<number | null>(null);  // Inicializado en 0
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
+
 //Creacion de estados para abrir modales
   const [unidadMedidaModal,setUnidadMedidaModal] = useState(false)
-  const [cultivoModal,setCultivoModal] = useState(false)
+  const [PlantacionModal,setPlantacionModal] = useState(false)
 
-  const { data: cultivos, isLoading: isLoadingCultivos, refetch: refetchCultivo } = useGetCultivos();
+  const { data: plantaciones, isLoading: isLoadingPlantaciones, refetch: refetchPlantaciones } = useGetPlantaciones()
   const { data: UnidadMedida, isLoading: isLoadingUnidadMedida, refetch: refetchUnidadMedida  } = useGetUnidadesMedida();
   const { mutate, isPending } = usePostCosecha();
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || cantidad <= 0 || !fk_UnidadMedida || !fecha ) {
+    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha ) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      { fk_Cultivo, cantidad, fk_UnidadMedida, fecha},
+      { fk_Plantacion, cantidad, fk_UnidadMedida, fecha},
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data)
-          setFk_Cultivo(null);
-          setCantidad(0)
+          setFk_Plantacion(null);
+          setCantidad(null)
           setFk_UnidadMedida(null) // Restablecer a 0
           setFecha("");
         },
       }
     );
   };
-  const handleCultivoCreado = (nuevoCultivo : Cultivos) =>{
-    refetchCultivo()
-    setFk_Cultivo(nuevoCultivo.id)
-    setCultivoModal(false)
+  const handlePlantacionCreada = (nuevaPlantacion : Plantaciones) =>{
+    refetchPlantaciones()
+    setFk_Plantacion(nuevaPlantacion.id)
+    setPlantacionModal(false)
   }
   const handleUnidadMedidaCreada = (nuevaUnidadMedida : UnidadesMedida) =>{
     refetchUnidadMedida()
-    setFk_Cultivo(nuevaUnidadMedida.id)
-    setCultivoModal(false)
+    setFk_UnidadMedida(nuevaUnidadMedida.id)
+    setUnidadMedidaModal(false)
   }
 
   return (
@@ -90,29 +90,29 @@ export const CrearCosechasModal = ({ onClose,onCreate }: CrearCosechasModalProps
           required
         />
 
-        {isLoadingCultivos ? (
-          <p>Cargando cultivos...</p>
+        {isLoadingPlantaciones ? (
+          <p>Cargando plantaciones...</p>
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
-                label="Cultivo"
-                placeholder="Selecciona un cultivo"
-                selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []} 
+                label="Plantacion"
+                placeholder="Selecciona una plantacion"
+                selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0]; 
-                  setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
+                  setFk_Plantacion(selectedKey ? Number(selectedKey) : null);
                 }}
               >
-                {(cultivos || []).map((cultivo) => (
-                  <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
+                {(plantaciones || []).map((plantacion) => (
+                  <SelectItem key={plantacion.id.toString()}>{plantacion.fk_Cultivo.nombre}</SelectItem>
                 ))}
               </Select>
             </div>
             <Button
-            onPress={() => setCultivoModal(true)}
+            onPress={() => setPlantacionModal(true)}
             color="success"
-            title="Crear nuevo cultivo"
+            title="Crear nueva plantacion"
             radius="full"
             size="sm"
             >
@@ -151,10 +151,10 @@ export const CrearCosechasModal = ({ onClose,onCreate }: CrearCosechasModalProps
           </div>
         )}
       </ModalComponent>
-      {cultivoModal && (
-        <CrearCultivoModal
-        onClose={() => setCultivoModal(false)}
-        onCreate={handleCultivoCreado}
+      {PlantacionModal && (
+        <CrearPlantacionModal
+        onClose={() => setPlantacionModal(false)}
+        onCreate={handlePlantacionCreada}
         />
       )}
       {unidadMedidaModal && (

@@ -20,13 +20,12 @@ interface CrearUsoInsumoModalProps {
   onCreate: (nuevoUsoInsumo: UsosInsumos) => void;
 }
 
-export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalProps) => {
+export const CrearUsoInsumoModal = ({ onClose}: CrearUsoInsumoModalProps) => {
   const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
   const [fk_Control, setFk_Control] = useState<number | null>(null);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [cantidadProducto, setCantidadProducto] = useState<number | null>(null);
-  const [costoUsoInsumo, setCostoUsoInsumo] = useState<number | null>(null);
 
   const [insumoModal, setInsumoModal] = useState(false);
   const [actividadModal, setActividadModal] = useState(false);
@@ -43,11 +42,8 @@ export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalPr
   const handleSubmit = () => {
     if (
       !fk_Insumo ||
-      !fk_Actividad ||
-      !fk_Control ||
       !fk_UnidadMedida ||
-      cantidadProducto === null ||
-      costoUsoInsumo === null
+      cantidadProducto === null
     ) {
       console.log("Por favor, completa todos los campos.");
       return;
@@ -61,18 +57,15 @@ export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalPr
         fk_Control,
         fk_UnidadMedida,
         cantidadProducto,
-        costoUsoInsumo,
       },
       {
-        onSuccess: (data : UsosInsumos) => {
+        onSuccess: () => {
           onClose();
-          onCreate(data);
           setFk_Insumo(null);
           setFk_Actividad(null);
           setFk_Control(null);
           setFk_UnidadMedida(null);
           setCantidadProducto(null);
-          setCostoUsoInsumo(null);
         },
       }
     );
@@ -114,20 +107,14 @@ export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalPr
             onClick: handleSubmit,
           },
         ]}
+        
       >
+        <p><strong>No elegir una actividad y un control a la vez</strong></p>
         <Input
           label="Cantidad Usada"
           type="number"
           value={cantidadProducto ?? ""}
           onChange={(e) => setCantidadProducto(Number(e.target.value))}
-          required
-        />
-
-        <Input
-          label="Costo del uso del insumo"
-          type="number"
-          value={costoUsoInsumo ?? ""}
-          onChange={(e) => setCostoUsoInsumo(Number(e.target.value))}
           required
         />
 
@@ -163,7 +150,6 @@ export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalPr
             </Button>
           </div>
         )}
-
         {/* Selector de Actividades */}
         {isLoadingActividades ? (
           <p>Cargando actividades...</p>
@@ -214,7 +200,7 @@ export const CrearUsoInsumoModal = ({ onClose, onCreate }: CrearUsoInsumoModalPr
               >
               {(controles || []).map((control) => (
                 <SelectItem key={control.id.toString()}>
-                  {control.nombre}
+                  {control.descripcion}
                 </SelectItem>
               ))}
             </Select>

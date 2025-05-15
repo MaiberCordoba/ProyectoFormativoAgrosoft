@@ -6,10 +6,11 @@ import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
 import { useGetSemilleros } from "../../hooks/semilleros/useGetSemilleros";
 import ModalComponent from "@/components/Modal";
 import { Select, SelectItem, Input } from "@heroui/react";
-import type { Especies, Cultivo, Semillero, Eras } from "../../types";
+import type { Especies, Cultivo, Semillero, Eras, Plantaciones } from "../../types";
 
 interface CrearPlantacionModalProps {
   onClose: () => void;
+  onCreate: (nuevaPlantacion: Plantaciones) => void
 }
 
 export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => {

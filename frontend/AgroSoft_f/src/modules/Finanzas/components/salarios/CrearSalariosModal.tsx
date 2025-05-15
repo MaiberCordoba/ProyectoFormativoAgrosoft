@@ -13,13 +13,12 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
   const [nombre, setNombre] = useState("");
   const [monto, setMonto] = useState<number | "">("");
   const [horas, setHoras] = useState<number | "">("");
-  const [monto_minutos, setMontoMinutos] = useState<number | "">("");
   const [estado, setEstado] = useState<"activo" | "inactivo" | "">("");
 
   const { mutate, isPending } = usePostSalario();
 
   const handleSubmit = () => {
-    if (!nombre || monto === "" || horas === "" || monto_minutos === "" || !estado) {
+    if (!nombre || monto === "" || horas === "" || !estado) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -30,7 +29,6 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
         nombre,
         monto: Number(monto),
         horas: Number(horas),
-        monto_minutos: Number(monto_minutos),
         estado,
       },
       {
@@ -40,7 +38,6 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
           setNombre("");
           setMonto("");
           setHoras("");
-          setMontoMinutos("");
           setEstado("");
         },
       }
@@ -62,7 +59,7 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
       ]}
     >
       <Input
-        label="Nombre"
+        label="Nombre Salario"
         type="text"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
@@ -70,7 +67,7 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
       />
 
       <Input
-        label="Monto"
+        label="Monto(valor)"
         type="number"
         value={monto}
         onChange={(e) => setMonto(Number(e.target.value))}
@@ -78,18 +75,10 @@ export const CrearSalariosModal = ({ onClose,onCreate }: CrearSalariosModalProps
       />
 
       <Input
-        label="Horas"
+        label="Horas de trabajo(dia)"
         type="number"
         value={horas}
         onChange={(e) => setHoras(Number(e.target.value))}
-        required
-      />
-
-      <Input
-        label="Monto por Minuto"
-        type="number"
-        value={monto_minutos}
-        onChange={(e) => setMontoMinutos(Number(e.target.value))}
         required
       />
 

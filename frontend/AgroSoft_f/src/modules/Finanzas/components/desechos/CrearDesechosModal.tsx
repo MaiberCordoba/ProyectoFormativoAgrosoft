@@ -3,43 +3,44 @@ import { usePostDesecho } from "../../hooks/desechos/usePostDesechos";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { useGetTiposDesechos } from "../../hooks/tiposDesechos/useGetTiposDesechos";
-import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
-import { TiposDesechos } from "../../types";
-import { Cultivos } from "@/modules/Trazabilidad/types";
+import { Desechos, TiposDesechos } from "../../types";
 import { Plus } from "lucide-react";
-import { CrearCultivoModal } from "@/modules/Trazabilidad/components/cultivos/CrearCultivosModal";
 import { CrearTiposDesechosModal } from "../tiposDesechos/CrearTiposDesechosModal";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { Plantaciones } from "@/modules/Trazabilidad/types";
+import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
 
 interface CrearDesechosModalProps {
   onClose: () => void;
+  onCreate: (nuevoDesecho: Desechos) => void
 }
 
 export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null); // Cambiado a número o null
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null); // Cambiado a número o null
   const [fk_TipoDesecho, setFk_TipoDesecho] = useState<number | null>(null); 
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
   //Creacion modales 
-  const [cultivoModal, setCultivoModal] = useState(false)
+  const [plantacionModal, setPlantacionModal] = useState(false)
   const [tipoDesechosModal, setTiposDesechosModal] = useState(false)
 
   const { data: tiposDesechos, isLoading: isLoadingTiposDesechos,refetch:refretchTiposDesechos } = useGetTiposDesechos();
-  const { data: cultivos, isLoading: isLoadingCultivos,refetch:refretchCultivo } = useGetCultivos();
+  const { data: plantaciones, isLoading: isLoadingPlantaciones,refetch:refretchPlantaciones } = useGetPlantaciones();
   const { mutate, isPending } = usePostDesecho();
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || !fk_TipoDesecho || !nombre || !descripcion) {
+    if (!fk_Plantacion || !fk_TipoDesecho || !nombre || !descripcion) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      { fk_Cultivo, fk_TipoDesecho, nombre, descripcion },
+      { id:0 ,fk_Plantacion, fk_TipoDesecho, nombre, descripcion },
       {
         onSuccess: () => {
           onClose();
-          setFk_Cultivo(null);
+          setFk_Plantacion(null);
           setFk_TipoDesecho(null);
           setNombre("");
           setDescripcion("");
@@ -52,12 +53,11 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
     setFk_TipoDesecho(nuevoTipoDesecho.id)
     setTiposDesechosModal(false)
   }
-  const handleCultivoCreado = (nuevoCultivo:Cultivos)=>{
-    refretchCultivo()
-    setFk_TipoDesecho(nuevoCultivo.id)
-    setCultivoModal(false)
+  const handlePlantacionCreada = (nuevaPlantacion:Plantaciones)=>{
+    refretchPlantaciones()
+    setFk_Plantacion(nuevaPlantacion.id)
+    setPlantacionModal(false)
   }
-
   return (
     <>
 
@@ -75,7 +75,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
         ]}
       >
         <Input
-          label="Nombre"
+          label="Nombre desecho"
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
@@ -91,31 +91,31 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
         />
 
         {/* Selector de Cultivos */}
-        {isLoadingCultivos ? (
-          <p>Cargando cultivos...</p>
+        {isLoadingPlantaciones ? (
+          <p>Cargando plantaciones...</p>
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <Select
-                label="Cultivo"
-                placeholder="Selecciona un cultivo"
-                selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []} // HeroUI espera un array de strings
-                onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0]; // HeroUI devuelve un Set
-                  setFk_Cultivo(selectedKey ? Number(selectedKey) : null); // Actualiza el estado con el nuevo ID
-                }}
-              >
-                {(cultivos || []).map((cultivo) => (
-                  <SelectItem key={cultivo.id.toString()}>
-                    {cultivo.nombre}
-                  </SelectItem>
-                ))}
-              </Select>
+            <Select
+            label="Plantacion"
+            placeholder="Selecciona una Plantacion"
+            selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} // HeroUI espera un array de strings
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0]; // HeroUI devuelve un Set
+              setFk_Plantacion(selectedKey ? Number(selectedKey) : null); // Actualiza el estado con el nuevo ID
+            }}
+          >
+            {(plantaciones || []).map((plantacion) => (
+              <SelectItem key={plantacion.id.toString()}>
+                {`Plantación cultivo: ${plantacion.fk_Cultivo.nombre}`}
+              </SelectItem>
+            ))}
+          </Select>
             </div>
             <Button
-            onPress={()=> setCultivoModal(true)}
+            onPress={()=> setPlantacionModal(true)}
             color="success"
-            title="Crear Cultivo"
+            title="Crear plantacion"
             size="sm"
             >
                 <Plus className="w-5 h-5 text-white"/>
@@ -156,10 +156,10 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
           </div>
         )}
       </ModalComponent>
-      {cultivoModal && (
-        <CrearCultivoModal
-        onClose={()=>{setCultivoModal(false)}}
-        onCreate={handleCultivoCreado}
+      {plantacionModal && (
+        <CrearPlantacionModal
+        onClose={()=>{setPlantacionModal(false)}}
+        onCreate={handlePlantacionCreada}
         />
       )}
       {tipoDesechosModal && (

@@ -5,6 +5,7 @@ import { Cosechas } from '../../types';
 import { Input, Select, SelectItem } from '@heroui/react';
 import { useGetCultivos } from '@/modules/Trazabilidad/hooks/cultivos/useGetCultivos';  // Cambié el hook
 import { useGetUnidadesMedida } from '../../hooks/unidadesMedida/useGetUnidadesMedida';
+import { useGetPlantaciones } from '@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones';
 
 interface EditarCosechaModalProps {
   cosecha: Cosechas; // La cosecha que se está editando
@@ -12,17 +13,17 @@ interface EditarCosechaModalProps {
 }
 
 const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClose }) => {
-  const [cantidad, setCantidad] = useState<number>(cosecha.cantidad);
+  const [cantidad, setCantidad] = useState<number | null>(cosecha.cantidad);
   const [fecha, setFecha] = useState<string>(cosecha.fecha);
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(cosecha.fk_Cultivo ?? null); // Estado para el ID del cultivo
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(cosecha.fk_Plantacion ?? null); // Estado para el ID del cultivo
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(cosecha.fk_UnidadMedida ?? null); // Estado para el ID del cultivo
 
-  const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();  // Obtener los cultivos
+  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  // Obtener los cultivos
   const { data: unidadesMedida, isLoading: isLoadingUnidadMedida } = useGetUnidadesMedida();  // Obtener los cultivos
   const { mutate, isPending } = usePatchCosechas();  // Mutación para actualizar las cosechas
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || cantidad <= 0 || !fk_UnidadMedida || !fecha) {
+    if (!fk_Plantacion || !cantidad || !fk_UnidadMedida || !fecha) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -34,7 +35,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
         data: {
           cantidad,
           fecha,
-          fk_Cultivo,  // Envía solo el ID del cultivo
+          fk_Plantacion,  // Envía solo el ID del cultivo
           fk_UnidadMedida,
         },
       },
@@ -75,21 +76,21 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
 
 
       {/* Selector de Cultivos */}
-      {isLoadingCultivos ? (
-        <p>Cargando cultivos...</p>
+      {isLoadingPlantaciones ? (
+        <p>Cargando Plantaciones...</p>
       ) : (
         <Select
-          label="Cultivo"
-          placeholder="Selecciona un cultivo"
-          selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}  // HeroUI espera un array de strings
+          label="Plantaciones"
+          placeholder="Selecciona una plantacion"
+          selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}  // HeroUI espera un array de strings
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];  // HeroUI devuelve un Set
-            setFk_Cultivo(selectedKey ? Number(selectedKey) : null);  // Actualiza el estado con el nuevo ID
+            setFk_Plantacion(selectedKey ? Number(selectedKey) : null);  // Actualiza el estado con el nuevo ID
           }}
         >
-          {(cultivos || []).map((cultivo) => (
-            <SelectItem key={cultivo.id.toString()}>
-              {cultivo.nombre}
+          {(plantaciones || []).map((plantacion) => (
+            <SelectItem key={plantacion.id.toString()}>
+              {plantacion.fk_Cultivo.nombre}
             </SelectItem>
           ))}
         </Select>
