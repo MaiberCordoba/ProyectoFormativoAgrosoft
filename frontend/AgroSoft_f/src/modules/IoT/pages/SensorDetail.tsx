@@ -3,9 +3,34 @@ import { useNavigate } from "react-router-dom";
 import { Button, Select, SelectItem, Chip } from "@heroui/react";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, Legend,
-  CartesianGrid, ResponsiveContainer, ReferenceLine
+  CartesianGrid, ResponsiveContainer
 } from "recharts";
-import { SensorData, SENSOR_TYPES, SensorConExtras } from "../types/sensorTypes";
+
+// types.ts
+export interface SensorData {
+  id?: number;
+  fk_lote?: number | null;
+  fk_eras?: number | null;
+  fecha: string;
+  tipo: "TEM" | "LUM" | "HUM_A" | "VIE" | "HUM_T" | "PH";
+  valor: number;
+  umbral_minimo?: number | null;
+  umbral_maximo?: number | null;
+}
+
+export const SENSOR_TYPES = [
+  { key: "TEM", label: "Temperatura" },
+  { key: "LUM", label: "Iluminación" },
+  { key: "HUM_A", label: "Humedad Ambiental" },
+  { key: "VIE", label: "Velocidad del Viento" },
+  { key: "HUM_T", label: "Humedad del Terreno" },
+  { key: "PH", label: "Nivel de PH" },
+];
+
+export interface SensorConExtras extends SensorData {
+  unidad: string;
+  alerta: boolean;
+}
 
 const SENSOR_COLORS: Record<string, string> = {
   TEM: "#8884d8",
@@ -39,7 +64,8 @@ export default function AllSensorsDashboard() {
   const [allSensorsData, setAllSensorsData] = useState<SensorConExtras[]>([]);
   const [realTimeData, setRealTimeData] = useState<SensorConExtras[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedSensors, setSelectedSensors] = useState<string[]>([]);
   const [selectedLotes, setSelectedLotes] = useState<number[]>([]);
   const [selectedEras, setSelectedEras] = useState<number[]>([]);
   const [availableLotes, setAvailableLotes] = useState<{id: number, nombre: string}[]>([]);
@@ -48,21 +74,21 @@ export default function AllSensorsDashboard() {
   const [showErasSelect, setShowErasSelect] = useState(true);
 
   useEffect(() => {
-    if (selectedTypes.length === 0) {
+    if (selectedType === "") {
       setShowLotesSelect(true);
       setShowErasSelect(true);
       return;
     }
 
-    const hasLoteSensors = selectedTypes.some(t => LOTES_ONLY.includes(t));
-    const hasEraSensors = selectedTypes.some(t => ERAS_ONLY.includes(t));
+    const hasLoteSensors = LOTES_ONLY.includes(selectedType);
+    const hasEraSensors = ERAS_ONLY.includes(selectedType);
 
     setShowLotesSelect(hasLoteSensors);
     setShowErasSelect(hasEraSensors);
 
     if (!hasLoteSensors) setSelectedLotes([]);
     if (!hasEraSensors) setSelectedEras([]);
-  }, [selectedTypes]);
+  }, [selectedType]);
 
   const checkForAlerts = (sensor: SensorData): boolean => {
     if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
@@ -71,29 +97,27 @@ export default function AllSensorsDashboard() {
     return false;
   };
 
-  const getSensorPrefix = (sensor: SensorConExtras): string => {
-    const locationId = sensor.fk_lote_id || sensor.fk_eras_id;
-    return `${sensor.tipo}-${locationId}`;
-  };
-
   const getLocationName = (sensor: SensorConExtras): string => {
-    if (sensor.fk_lote_id) {
-      const lote = availableLotes.find(l => l.id === sensor.fk_lote_id);
-      return lote ? `Lote: ${lote.nombre}` : `Lote ${sensor.fk_lote_id}`;
+    if (sensor.fk_lote) {
+      const lote = availableLotes.find(l => l.id === sensor.fk_lote);
+      return lote ? `Lote ${lote.nombre}` : `Lote ID:${sensor.fk_lote}`;
     }
-    if (sensor.fk_eras_id) {
-      const era = availableEras.find(e => e.id === sensor.fk_eras_id);
-      const loteName = era?.fk_lote_id ? ` (Lote ${era.fk_lote_id})` : '';
-      return era ? `Era: ${era.nombre}${loteName}` : `Era ${sensor.fk_eras_id}`;
+    if (sensor.fk_eras) {
+      const era = availableEras.find(e => e.id === sensor.fk_eras);
+      if (era) {
+        const lote = availableLotes.find(l => l.id === era.fk_lote_id);
+        return `Era ${era.id}${lote ? ` (Lote ${lote.nombre})` : ''}`;
+      }
+      return `Era ID:${sensor.fk_eras}`;
     }
-    return "Ubicación desconocida";
+    return "Sin ubicación";
   };
 
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const sensorsResponse = await fetch(`http://127.0.0.1:8000/api/sensor/?limit=100`);
+        const sensorsResponse = await fetch("http://127.0.0.1:8000/api/sensor/?limit=100");
         if (!sensorsResponse.ok) throw new Error("Error al obtener sensores");
         const sensorsData: SensorData[] = await sensorsResponse.json();
 
@@ -166,54 +190,42 @@ export default function AllSensorsDashboard() {
 
   const filteredSensors = useMemo(() => {
     return combinedData.filter(sensor => {
-      const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(sensor.tipo);
+      const typeMatch = !selectedType || sensor.tipo === selectedType;
+      const sensorMatch = selectedSensors.length === 0 || 
+        (sensor.id && selectedSensors.includes(sensor.id.toString()));
       const loteMatch = selectedLotes.length === 0 || 
-        (sensor.fk_lote_id && selectedLotes.includes(sensor.fk_lote_id));
+        (sensor.fk_lote && selectedLotes.includes(sensor.fk_lote));
       const eraMatch = selectedEras.length === 0 || 
-        (sensor.fk_eras_id && selectedEras.includes(sensor.fk_eras_id));
+        (sensor.fk_eras && selectedEras.includes(sensor.fk_eras));
 
-      return typeMatch && (loteMatch || eraMatch);
+      return typeMatch && sensorMatch && (loteMatch || eraMatch);
     });
-  }, [combinedData, selectedTypes, selectedLotes, selectedEras]);
+  }, [combinedData, selectedType, selectedSensors, selectedLotes, selectedEras]);
 
   const chartData = useMemo(() => {
-    const groupedByTime: Record<string, SensorConExtras[]> = {};
+    const groupedByTime: Record<string, Record<string, number>> = {};
 
     combinedData.forEach(sensor => {
       const timeKey = new Date(sensor.fecha).toLocaleTimeString();
       if (!groupedByTime[timeKey]) {
-        groupedByTime[timeKey] = [];
+        groupedByTime[timeKey] = { timestamp: timeKey };
       }
-      groupedByTime[timeKey].push(sensor);
+      if (sensor.id) {
+        groupedByTime[timeKey][`${sensor.id}_valor`] = sensor.valor;
+      }
     });
 
-    return Object.entries(groupedByTime).map(([timestamp, sensors]) => {
-      const point: any = { timestamp };
-      sensors.forEach(sensor => {
-        const prefix = getSensorPrefix(sensor);
-        point[`${prefix}_valor`] = sensor.valor;
-        point[`${prefix}_alerta`] = sensor.alerta;
-        point[`${prefix}_unidad`] = sensor.unidad;
-      });
-      return point;
-    });
+    return Object.values(groupedByTime);
   }, [combinedData]);
 
   const linesToShow = useMemo(() => {
-    const uniqueSensors = new Map<string, {type: string, locationId?: number, color: string}>();
-
-    filteredSensors.forEach(sensor => {
-      const key = `${sensor.tipo}-${sensor.fk_lote_id || sensor.fk_eras_id}`;
-      if (!uniqueSensors.has(key)) {
-        uniqueSensors.set(key, {
-          type: sensor.tipo,
-          locationId: sensor.fk_lote_id || sensor.fk_eras_id,
-          color: SENSOR_COLORS[sensor.tipo]
-        });
-      }
-    });
-
-    return Array.from(uniqueSensors.values());
+    return filteredSensors.map(sensor => ({
+      id: sensor.id?.toString() ?? '',
+      type: sensor.tipo,
+      location: getLocationName(sensor),
+      color: SENSOR_COLORS[sensor.tipo],
+      unit: SENSOR_UNITS[sensor.tipo]
+    }));
   }, [filteredSensors]);
 
   return (
@@ -228,36 +240,60 @@ export default function AllSensorsDashboard() {
       </Button>
 
       <h1 className="text-2xl font-bold text-center mb-6">
-       Todos los Sensores
+        Todos los Sensores
       </h1>
 
-      {/* Filtros con accesibilidad corregida */}
       <div className="bg-white p-6 shadow-md rounded-lg mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label id="sensor-type-label" className="block text-sm font-medium text-gray-700 mb-2">
-            Tipos de Sensor
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Tipo de Sensor
           </label>
           <Select
-            aria-labelledby="sensor-type-label"
-            selectionMode="multiple"
-            selectedKeys={selectedTypes}
-            onSelectionChange={(keys) => setSelectedTypes(Array.from(keys) as string[])}
+            selectedKeys={selectedType ? [selectedType] : []}
+            onSelectionChange={(keys) => {
+              const newType = Array.from(keys)[0] as string;
+              setSelectedType(newType);
+              setSelectedSensors([]);
+            }}
           >
             {SENSOR_TYPES.map(type => (
-              <SelectItem key={type.key}>
+              <SelectItem key={type.key} value={type.key}>
                 {type.label}
               </SelectItem>
             ))}
           </Select>
         </div>
 
+        {selectedType && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Sensores {dict(SENSOR_TYPES).get(selectedType)}
+            </label>
+            <Select
+              selectionMode="multiple"
+              selectedKeys={selectedSensors}
+              onSelectionChange={(keys) => setSelectedSensors(Array.from(keys) as string[])}
+            >
+              {combinedData
+                .filter(sensor => sensor.tipo === selectedType)
+                .map(sensor => (
+                  <SelectItem 
+                    key={sensor.id?.toString() ?? ''} 
+                    value={sensor.id?.toString() ?? ''}
+                  >
+                    {`${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`}
+                  </SelectItem>
+                ))}
+            </Select>
+          </div>
+        )}
+
         {showLotesSelect && (
           <div>
-            <label id="lotes-label" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Lotes
             </label>
             <Select
-              aria-labelledby="lotes-label"
               selectionMode="multiple"
               selectedKeys={selectedLotes.map(String)}
               onSelectionChange={(keys) => setSelectedLotes(Array.from(keys).map(Number))}
@@ -270,35 +306,8 @@ export default function AllSensorsDashboard() {
             </Select>
           </div>
         )}
-
-        {showErasSelect && (
-          <div>
-            <label id="eras-label" className="block text-sm font-medium text-gray-700 mb-2">
-              Eras
-            </label>
-            <Select
-              aria-labelledby="eras-label"
-              selectionMode="multiple"
-              selectedKeys={selectedEras.map(String)}
-              onSelectionChange={(keys) => setSelectedEras(Array.from(keys).map(Number))}
-            >
-              {availableEras.map(era => (
-                <SelectItem key={String(era.id)}>
-                  Era {era.fk_lote_id}{era.id}
-                </SelectItem>
-              ))}
-            </Select>
-          </div>
-        )}
-
-        {selectedTypes.length > 0 && !showLotesSelect && !showErasSelect && (
-          <div className="col-span-2 flex items-center text-sm text-gray-500">
-            Los tipos seleccionados no requieren ubicación específica
-          </div>
-        )}
       </div>
 
-      {/* Gráfica */}
       <div className="bg-white p-6 shadow-md rounded-lg mb-6">
         <h2 className="text-lg font-semibold mb-4">Datos de Sensores</h2>
         {isLoading ? (
@@ -315,7 +324,7 @@ export default function AllSensorsDashboard() {
                   variant="dot"
                   style={{ backgroundColor: line.color }}
                 >
-                  {dict(SENSOR_TYPES).get(line.type, 'Desconocido')} {line.locationId ? `(${line.locationId})` : ''}
+                  {dict(SENSOR_TYPES).get(line.type)} - {line.location}
                 </Chip>
               ))}
             </div>
@@ -340,87 +349,93 @@ export default function AllSensorsDashboard() {
                     border: 'none'
                   }}
                   formatter={(value: number, name: string) => {
-                    const prefix = name.split('_')[0];
-                    const unit = SENSOR_UNITS[prefix.split('-')[0]] || '';
-                    return [`${value} ${unit}`, dict(SENSOR_TYPES).get(prefix.split('-')[0], 'Desconocido')];
+                    const sensorId = name.split('_')[0];
+                    const sensor = linesToShow.find(s => s.id === sensorId);
+                    return [`${value} ${sensor?.unit}`, `${dict(SENSOR_TYPES).get(sensor?.type ?? '')} - ${sensor?.location}`];
                   }}
                   labelFormatter={(label) => `Hora: ${label}`}
                 />
                 <Legend 
                   formatter={(value) => {
-                    const prefix = value.split('_')[0];
-                    const type = prefix.split('-')[0];
-                    const location = prefix.split('-')[1];
-                    return `${dict(SENSOR_TYPES).get(type, 'Desconocido')}${location ? ` (${location})` : ''}`;
+                    const sensorId = value.split('_')[0];
+                    const sensor = linesToShow.find(s => s.id === sensorId);
+                    return `${dict(SENSOR_TYPES).get(sensor?.type ?? '')} - ${sensor?.location}`;
                   }}
                 />
                 
-                {linesToShow.map((line, index) => {
-                  const prefix = `${line.type}-${line.locationId}`;
-                  return (
-                    <Line
-                      key={index}
-                      type="monotone"
-                      dataKey={`${prefix}_valor`}
-                      name={`${prefix}_valor`}
-                      stroke={line.color}
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6, stroke: line.color, strokeWidth: 2 }}
-                    />
-                  );
-                })}
-                
-                {/* Líneas de referencia para umbrales */}
-                {filteredSensors
-                  .filter(s => s.alerta && s.umbral_maximo !== null)
-                  .map((sensor, index) => (
-                    <ReferenceLine
-                      key={`max-${index}`}
-                      y={sensor.umbral_maximo}
-                      stroke="red"
-                      strokeDasharray="3 3"
-                      ifOverflow="extendDomain"
-                    />
-                  ))}
+                {linesToShow.map((sensor) => (
+                  <Line
+                    key={sensor.id}
+                    type="monotone"
+                    dataKey={`${sensor.id}_valor`}
+                    name={`${sensor.id}_valor`}
+                    stroke={sensor.color}
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    activeDot={{ r: 6 }}
+                  />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           </>
         )}
       </div>
 
-      {/* Tabla de alertas */}
       <div className="bg-white p-6 shadow-md rounded-lg">
         <h2 className="text-lg font-semibold mb-4">Alertas Recientes</h2>
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 gap-4">
           {filteredSensors
             .filter(sensor => sensor.alerta)
             .slice(0, 5)
             .map((sensor, index) => (
-              <div key={index} className="p-4 border rounded-lg bg-red-50 border-red-200">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="font-medium">{dict(SENSOR_TYPES).get(sensor.tipo, 'Desconocido')}</span>
-                    <span className="text-gray-600 ml-2">({getLocationName(sensor)})</span>
+              <div 
+                key={index} 
+                className="p-4 border rounded-lg bg-red-50 border-red-200 hover:bg-red-100 transition-colors"
+              >
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-lg">
+                        {dict(SENSOR_TYPES).get(sensor.tipo)}
+                      </span>
+                      <Chip color="danger" size="sm">Alerta</Chip>
+                    </div>
+                    
+                    <div className="mt-1">
+                      <span className="text-gray-600 font-medium">
+                        Ubicación: {getLocationName(sensor)}
+                      </span>
+                    </div>
                   </div>
-                  <Chip color="danger" size="sm">Alerta</Chip>
-                </div>
-                <div className="mt-2">
-                  <span className="text-lg font-bold">
-                    {sensor.valor} {sensor.unidad}
-                  </span>
-                  {sensor.umbral_minimo !== null && sensor.umbral_maximo !== null && (
-                    <span className="text-gray-600 ml-2">
-                      (Umbral: {sensor.umbral_minimo}-{sensor.umbral_maximo} {sensor.unidad})
+                  
+                  <div className="flex flex-col items-end">
+                    <span className="text-xl font-bold text-red-600">
+                      {sensor.valor} {sensor.unidad}
                     </span>
-                  )}
+                    {sensor.umbral_minimo !== null && sensor.umbral_maximo !== null && (
+                      <span className="text-sm text-gray-600">
+                        Rango esperado: {sensor.umbral_minimo}-{sensor.umbral_maximo} {sensor.unidad}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              
-                <div className="text-sm text-gray-500 mt-1">
-                  {new Date(sensor.fecha).toLocaleString()}
+                
+                <div className="mt-2 flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    <span className="font-medium">Fecha:</span> {new Date(sensor.fecha).toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    <span className="font-medium">ID Sensor:</span> {sensor.id}
+                  </div>
                 </div>
               </div>
             ))}
+            
+          {filteredSensors.filter(sensor => sensor.alerta).length === 0 && (
+            <div className="p-4 border rounded-lg bg-green-50 border-green-200 text-center">
+              No hay alertas activas en los filtros seleccionados
+            </div>
+          )}
         </div>
       </div>
     </div>
