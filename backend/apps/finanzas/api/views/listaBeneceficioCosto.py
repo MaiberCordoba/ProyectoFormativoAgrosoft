@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum, Q, Prefetch
+from django.db.models import Sum, Prefetch
 from apps.finanzas.api.models.cultivos import Cultivos
 from apps.finanzas.api.models.actividades import Actividades
 from apps.sanidad.api.models.controlesModel import Controles
@@ -25,44 +25,37 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
     def resumen_economico(self, request):
         """
         Obtiene un listado con los resúmenes económicos básicos de todos los cultivos
-        ---
-        Retorna:
-        - Lista de cultivos con:
-          * ID
-          * Nombre de especie
-          * Nombre del cultivo
-          * Fecha de siembra
-          * Costos totales
-          * Ventas totales
-          * Beneficio
-          * Relación B/C
         """
         try:
-            # Optimización de queries con prefetch_related y select_related
+            # Prefetch de objetos relacionados correctamente configurado
+            prefetch_plantaciones = Prefetch(
+                'plantaciones_set',
+                queryset=Plantaciones.objects.prefetch_related(
+                    Prefetch('cosechas_set', queryset=Cosechas.objects.all())
+                )
+            )
+            
             cultivos = Cultivos.objects.select_related(
                 'fk_Especie'
             ).prefetch_related(
-                Prefetch('actividades_set', queryset=Actividades.objects.all()),
-                Prefetch('semilleros_set', queryset=Semilleros.objects.all()),
-                Prefetch('plantaciones_set', 
-                    queryset=Plantaciones.objects.prefetch_related(
-                        Prefetch('cosechas_set', queryset=Cosechas.objects.all())
-                    )
+                'actividades_set',
+                'semilleros_set',
+                prefetch_plantaciones
             ).all()
-            )
+            
             resumenes = []
             
             for cultivo in cultivos:
-                # 1. Obtener nombre de la especie y del cultivo
+                # 1. Obtener información básica del cultivo
                 nombre_especie = cultivo.fk_Especie.nombre if cultivo.fk_Especie else None
                 
-                # 2. Obtener actividades relacionadas al cultivo
+                # 2. Obtener actividades relacionadas
                 actividades = cultivo.actividades_set.all()
                 
-                # 3. Obtener plantaciones del cultivo
+                # 3. Obtener plantaciones relacionadas
                 plantaciones = cultivo.plantaciones_set.all()
                 
-                # 4. Obtener controles relacionados a través de afecciones en plantaciones
+                # 4. Obtener controles relacionados a través de afecciones
                 afecciones_ids = Afecciones.objects.filter(
                     fk_Plantacion__in=plantaciones
                 ).values_list('id', flat=True)
@@ -91,7 +84,7 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
                 
                 total_mano_obra = int(round(mano_obra_actividades + mano_obra_controles))
                 
-                # 7. Calcular ventas totales (ahora a través de plantaciones -> cosechas -> ventas)
+                # 7. Calcular ventas totales (a través de plantaciones->cosechas->ventas)
                 cosechas_ids = Cosechas.objects.filter(
                     fk_Plantacion__in=plantaciones
                 ).values_list('id', flat=True)
@@ -100,14 +93,14 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
                     fk_Cosecha__id__in=cosechas_ids
                 ).aggregate(total=Sum('valorTotal'))['total'] or 0
                 
-                # 8. Calcular métricas básicas
+                # 8. Calcular métricas financieras
                 total_costos = total_insumos + total_mano_obra
                 beneficio = total_ventas - total_costos
                 relacion_bc = round(total_ventas / total_costos, 2) if total_costos > 0 else 0
                 
-                # 9. Obtener fecha de siembra (del primer semillero o primera plantación)
+                # 9. Obtener fecha de siembra (del semillero o plantación más antigua)
                 primer_semillero = cultivo.semilleros_set.order_by('fechasiembra').first()
-                primera_plantacion = cultivo.plantaciones_set.order_by('fechaSiembra').first()
+                primera_plantacion = plantaciones.order_by('fechaSiembra').first()
                 
                 fecha_siembra = (
                     primer_semillero.fechasiembra if primer_semillero else
@@ -115,7 +108,7 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
                     None
                 )
                 
-                # 10. Estructurar respuesta
+                # 10. Construir respuesta
                 resumen = {
                     "cultivo_id": cultivo.id,
                     "nombre_especie": nombre_especie,
