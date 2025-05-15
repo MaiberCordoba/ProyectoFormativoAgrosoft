@@ -146,7 +146,7 @@ urlpatterns = [
     path('api/',include(routerListBeneficioCosto.urls)),
     
      #Usuarios
-    path('api/',include(router_usuarios.urls)),
+    path('api/', include('apps.users.urls')),
     path("api/solicitar-recuperacion/", solicitar_recuperacion, name="solicitar_recuperacion"),
     path("api/resetear-contrasena/", resetear_contraseña, name="resetear_contraseña"),
 
