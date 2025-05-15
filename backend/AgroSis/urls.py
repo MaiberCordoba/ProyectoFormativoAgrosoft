@@ -50,7 +50,6 @@ schema_view = get_schema_view(
 from apps.electronica.api.routers.era_router import router_era
 from apps.electronica.api.routers.lote_router import router_Lote
 from apps.electronica.api.routers.sensor_router import router_sensor 
-from apps.electronica.api.routers.umbral_router import router_umbral
 from apps.electronica.api.routers.evapotranspiracion_router import urlpatterns as evapotranspiracion_urls
 
 #Trazabilidad
@@ -106,7 +105,6 @@ urlpatterns = [
     path('api/',include(router_era.urls)),
     path('api/',include(router_Lote.urls)),
     path('api/',include(router_sensor.urls)),
-    path('api/',include(router_umbral.urls)),
     path('api/',include(evapotranspiracion_urls)),
     
     #Trazabilidad
