@@ -48,7 +48,7 @@ const SENSOR_UNITS: Record<string, string> = {
 export default function IoTPages() {
   const navigate = useNavigate();
   const [loteId, setLoteId] = useState<number>(1);
-    const [lotes, setLotes] = useState<Array<{ id: number; nombre: string }>>([]);
+  const [lotes, setLotes] = useState<Array<{ id: number; nombre: string }>>([]);
   const [eras, setEras] = useState<Array<{ id: number; nombre: string; fk_lote_id: number }>>([]);
   const [cultivoId, setCultivoId] = useState<number | string>("");
   const { data: etHistorica = [], isLoading: isLoadingHistoric } = useEvapotranspiracionHistorica(
@@ -345,7 +345,7 @@ export default function IoTPages() {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 sm:gap-12 justify-center items-center w-full max-w-6xl mx-auto">
       <div className="flex gap-2 w-full max-w-md">
         <Select
-          label="Cultivo a calcular evapotranspiración"
+          label="Cultivo a calcular evapotranspiracion"
           placeholder="Selecciona un cultivo"
           selectedKeys={cultivoId !== "" ? [String(cultivoId)] : []}
           onSelectionChange={(keys) => {
@@ -418,8 +418,11 @@ export default function IoTPages() {
             setFilters(prev => ({...prev, loteId: selected || ""}));
           }}
         >
-          <SelectItem key="1">Lote 1</SelectItem>
-          <SelectItem key="2">Lote 2</SelectItem>
+          {lotes.map(lote => (
+            <SelectItem key={String(lote.id)}>
+              {lote.nombre}
+            </SelectItem>
+          ))}
         </Select>
 
         <Select
@@ -431,8 +434,11 @@ export default function IoTPages() {
             setFilters(prev => ({...prev, eraId: selected || ""}));
           }}
         >
-          <SelectItem key="1">Era 1</SelectItem>
-          <SelectItem key="2">Era 2</SelectItem>
+          {eras.map(era => (
+            <SelectItem key={String(era.id)}>
+              Era {era.id}
+            </SelectItem>
+          ))}
         </Select>
 
         <Select
@@ -447,6 +453,8 @@ export default function IoTPages() {
           <SelectItem key="6">Últimas 6 horas</SelectItem>
           <SelectItem key="24">Últimas 24 horas</SelectItem>
           <SelectItem key="168">Última semana</SelectItem>
+          <SelectItem key="720">Último mes</SelectItem>
+          <SelectItem key="4320">Último año</SelectItem>
         </Select>
       </div>
       <br />

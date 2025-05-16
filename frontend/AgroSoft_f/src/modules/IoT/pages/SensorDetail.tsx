@@ -490,7 +490,7 @@ export default function AllSensorsDashboard() {
         </Button>
         
         <Button 
-          color="primary" 
+          color="success" 
           onClick={generatePDFReport}
           isDisabled={isLoading || isGeneratingReport}
           isLoading={isGeneratingReport}
@@ -517,7 +517,7 @@ export default function AllSensorsDashboard() {
             }}
           >
             {SENSOR_TYPES.map(type => (
-              <SelectItem key={type.key} value={type.key}>
+              <SelectItem key={type.key}>
                 {type.label}
               </SelectItem>
             ))}
@@ -538,8 +538,7 @@ export default function AllSensorsDashboard() {
                 .filter(sensor => sensor.tipo === selectedType)
                 .map(sensor => (
                   <SelectItem 
-                    key={sensor.id?.toString() ?? ''} 
-                    value={sensor.id?.toString() ?? ''}
+                    key={sensor.id?.toString() ?? ''}
                   >
                     {`${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`}
                   </SelectItem>
