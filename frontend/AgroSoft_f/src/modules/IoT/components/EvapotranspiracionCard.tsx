@@ -18,13 +18,13 @@ interface Props {
 
 export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) {
   return (
-    <div className="bg-[#85929e] rounded-2xl shadow-md p-6 w-full max-w-md flex items-center justify-between">
+    <div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-md flex items-center justify-between">
       <div>
         <h2 className="text-xl font-bold text-green-700 mb-4">Evapotranspiración</h2>
-        <p><strong>ETc (mm/día):</strong> {etReal}</p>
-        <p><strong>Kc:</strong> {kc}</p>
+        <p className="text-gray-800"><strong>ETc (mm/día):</strong> {etReal}</p>
+        <p className="text-gray-800"><strong>Kc:</strong> {kc}</p>
         <p className="mt-4 font-semibold text-gray-700">Datos utilizados:</p>
-        <ul className="list-none text-sm text-gray-600 space-y-2 mt-2">
+        <ul className="list-none text-sm text-gray-700 space-y-2 mt-2">
           <li className="flex items-center gap-2">
             <WiThermometer size={24} className="text-red-500" />
             Temperatura: {detalles.temperatura} °C
@@ -43,7 +43,7 @@ export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) 
           </li>
         </ul>
       </div>
-      
+
       <div className="flex justify-center mt-4">
         <img
           src="/AGROPECUARIAS_Agronomia.png"
@@ -54,5 +54,3 @@ export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) 
     </div>
   );
 }
-
-  

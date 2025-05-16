@@ -7,20 +7,22 @@ interface DataPoint {
   kc?: number;
   temperatura?: number;
   humedad?: number;
+  fase_crecimiento?: string;
+  dias_desde_siembra?: number;
 }
 
 interface Props {
   nuevoDato: DataPoint | null;
+  showAdditionalInfo?: boolean;
 }
 
 const LOCAL_STORAGE_KEY = 'evapotranspiracion_data';
 
-export default function EvapotranspiracionChart({ nuevoDato }: Props) {
+export default function EvapotranspiracionChart({ nuevoDato, showAdditionalInfo = false }: Props) {
   const [data, setData] = useState<DataPoint[]>([]);
 
   // Cargar y guardar datos en localStorage
   useEffect(() => {
-    // Cargar datos existentes al montar el componente
     const loadData = () => {
       const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (savedData) {
@@ -75,6 +77,32 @@ export default function EvapotranspiracionChart({ nuevoDato }: Props) {
     new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
   );
 
+  // Tooltip personalizado
+  const renderTooltip = (props: any) => {
+    const { active, payload, label } = props;
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white p-4 border border-gray-200 rounded shadow-lg">
+          <p className="font-semibold">{new Date(label).toLocaleDateString()}</p>
+          <p className="text-green-600">ET: {data.et_mm_dia.toFixed(2)} mm/día</p>
+          <p>Kc: {data.kc?.toFixed(2) || 'N/A'}</p>
+          {showAdditionalInfo && (
+            <>
+              <p>Fase: {data.fase_crecimiento || 'N/A'}</p>
+              <p>Días desde siembra: {data.dias_desde_siembra || 'N/A'}</p>
+            </>
+          )}
+          <p className="text-gray-500 text-sm">
+            Temp: {data.temperatura?.toFixed(1) || 'N/A'}°C | 
+            Hum: {data.humedad?.toFixed(1) || 'N/A'}%
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md p-4 w-full max-w-3xl mt-6">
       <h3 className="text-lg font-semibold text-center text-green-800 mb-4">
@@ -98,10 +126,7 @@ export default function EvapotranspiracionChart({ nuevoDato }: Props) {
               tickFormatter={(fecha) => new Date(fecha).toLocaleDateString()}
             />
             <YAxis />
-            <Tooltip 
-              formatter={(value: number) => [`${value} mm/día`, 'Evapotranspiración']}
-              labelFormatter={(fecha) => `Fecha: ${new Date(fecha).toLocaleDateString()}`}
-            />
+            <Tooltip content={renderTooltip} />
           </LineChart>
         </ResponsiveContainer>
       ) : (
