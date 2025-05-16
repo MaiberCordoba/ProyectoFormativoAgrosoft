@@ -11,7 +11,7 @@ export const usePatchSensor = () => {
       console.log("Enviando datos para editar sensor:", id, data);
       return patch(id, data);
     },
-    onSuccess: (updatedSensor, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sensor'] });
 
       addToast({

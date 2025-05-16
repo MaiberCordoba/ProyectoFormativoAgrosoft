@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import ModalComponent from "@/components/Modal";
 import { usePatchSensor } from "../../hooks/sensor/usePachtSensor";
-import { SensorData, SENSOR_TYPES } from "../../types/sensorTypes";
-import { Input, Select, SelectItem } from "@heroui/react";
+import { SensorData } from "../../types/sensorTypes";
+import ModalComponent from "@/components/Modal";
+import { Input } from "@heroui/react";
 
 interface EditarSensorModalProps {
   sensor: SensorData;
@@ -10,27 +10,19 @@ interface EditarSensorModalProps {
 }
 
 const EditarSensorModal: React.FC<EditarSensorModalProps> = ({ sensor, onClose }) => {
-  const [valor, setValor] = useState<number>(sensor.valor);
-  const [fk_lote, setFkLote] = useState<number | null>(sensor.fk_lote);
-  const [fk_eras, setFkEras] = useState<number | null>(sensor.fk_eras);
-  const [tipo, setTipo] = useState<SensorData["tipo"]>(sensor.tipo);
-  const [fecha, setFecha] = useState<string>(sensor.fecha);
+  const [umbral_minimo, setUmbralMinimo] = useState<number | null>(sensor.umbral_minimo ?? null);
+  const [umbral_maximo, setUmbralMaximo] = useState<number | null>(sensor.umbral_maximo ?? null);
 
   const { mutate, isPending } = usePatchSensor();
 
   const handleSubmit = () => {
-    console.log("Editando sensor con ID:", sensor.id, {
-      valor,
-      fk_lote,
-      fk_eras,
-      tipo,
-      fecha,
-    });
-
     mutate(
       {
         id: sensor.id,
-        data: { valor, fk_lote, fk_eras, tipo, fecha },
+        data: {
+          umbral_minimo,
+          umbral_maximo,
+        },
       },
       {
         onSuccess: () => {
@@ -54,23 +46,27 @@ const EditarSensorModal: React.FC<EditarSensorModalProps> = ({ sensor, onClose }
         },
       ]}
     >
-      <Input label="Valor del Sensor" type="number" value={valor} onChange={(e) => setValor(Number(e.target.value))} />
-      <Input label="ID del Lote" type="number" value={fk_lote ?? ""} onChange={(e) => setFkLote(Number(e.target.value))} />
-      <Input label="ID de las Eras" type="number" value={fk_eras ?? ""} onChange={(e) => setFkEras(Number(e.target.value))} />
-      <Input label="Fecha del Registro" type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} />
+      <div className="space-y-4 p-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Umbral Mínimo</label>
+          <Input
+            type="number"
+            value={umbral_minimo ?? ""}
+            onChange={(e) => setUmbralMinimo(Number(e.target.value))}
+            placeholder="Ingrese el umbral mínimo"
+          />
+        </div>
 
-      <Select
-        label="Tipo de Sensor"
-        placeholder="Selecciona un tipo de sensor"
-        selectedKeys={[tipo]}
-        onSelectionChange={(keys) => setTipo(Array.from(keys)[0] as SensorData["tipo"])}
-      >
-        {SENSOR_TYPES.map((sensor) => (
-          <SelectItem key={sensor.key} textValue={sensor.label}>
-            {sensor.label}
-          </SelectItem>
-        ))}
-      </Select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Umbral Máximo</label>
+          <Input
+            type="number"
+            value={umbral_maximo ?? ""}
+            onChange={(e) => setUmbralMaximo(Number(e.target.value))}
+            placeholder="Ingrese el umbral máximo"
+          />
+        </div>
+      </div>
     </ModalComponent>
   );
 };

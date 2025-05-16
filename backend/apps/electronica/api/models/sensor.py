@@ -9,7 +9,8 @@ class Sensor(models.Model):
         ('HUM_A', 'Humedad Ambiental'),
         ('VIE', 'Velocidad del Viento'),
         ('HUM_T', 'Humedad del Terreno'),
-        ('PH', 'Nivel de PH')
+        ('PH', 'Nivel de PH'),
+        ('LLUVIA', 'Lluvia')
     ]
 
     fk_lote = models.ForeignKey(Lote, on_delete=models.SET_NULL, null=True, related_name='sensores', blank=True)
@@ -17,6 +18,10 @@ class Sensor(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     tipo = models.CharField(max_length=6, choices=SENSOR_TYPES)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
+    umbral_maximo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, 
+                                      help_text="Valor máximo permitido para este sensor")
+    umbral_minimo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
+                                      help_text="Valor mínimo permitido para este sensor")
 
     def __str__(self):
         tipo_sensor = dict(self.SENSOR_TYPES).get(self.tipo, 'Desconocido')

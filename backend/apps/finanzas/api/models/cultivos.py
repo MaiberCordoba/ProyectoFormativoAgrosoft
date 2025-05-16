@@ -6,4 +6,11 @@ class Cultivos(models.Model):
     activo = models.BooleanField(default=False, null=False)
     fk_Especie = models.ForeignKey(Especies,on_delete=models.SET_NULL, null=True)
     def __str__(self):
+
         return (str(self.fk_Especie.nombre) + str(" ") + str(self.nombre))
+
+      
+class CoeficienteCultivo(models.Model):
+    cultivo = models.ForeignKey(Cultivos, on_delete=models.CASCADE)
+    fase_crecimiento = models.CharField(max_length=50)
+    kc_valor = models.DecimalField(max_digits=5, decimal_places=2)

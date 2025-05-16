@@ -7,57 +7,107 @@ import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarSensorModal from "./EditarSensorModal";
 import CrearSensorModal from "./CrearSensorModal";
 import EliminarSensorModal from "./EliminarSensorModal";
-import { SensorData, SENSOR_TYPES } from "../../types/sensorTypes"
+import { SensorData, SENSOR_TYPES } from "../../types/sensorTypes";
+import { useNavigate } from "react-router-dom";
 
 export function SensorLista() {
+  const navigate = useNavigate();
+
   const { data, isLoading, error } = useGetSensor();
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    sensorEditado, 
-    handleEditar 
+
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    sensorEditado,
+    handleEditar,
   } = useEditarSensor();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearSensor();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     sensorEliminado,
-    handleEliminar
+    handleEliminar,
   } = useEliminarSensor();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_lote: null, fk_eras: null, fecha: "", tipo: "TEM", valor: 0 });
+    handleCrear({
+      id: 0,
+      fk_lote: null,
+      fk_eras: null,
+      fecha: "",
+      tipo: "TEM",
+      valor: 0,
+      umbral_minimo: null,
+      umbral_maximo: null,
+    });
   };
 
-  // Mapea los tipos de sensores a nombres legibles
+  const irADetalleSensor = (id: number) => {
+    navigate(`/sensores/${id}`);
+  };
+
   const getSensorLabel = (tipo: string) => {
-    const sensor = SENSOR_TYPES.find(s => s.key === tipo);
+    const sensor = SENSOR_TYPES.find((s) => s.key === tipo);
     return sensor ? sensor.label : "Desconocido";
   };
 
-  // Definición de columnas
   const columnas = [
     { name: "Fecha", uid: "fecha", sortable: true },
     { name: "Tipo de Sensor", uid: "tipo" },
     { name: "Valor", uid: "valor" },
+    { name: "Umbral Mínimo", uid: "umbral_minimo" },
+    { name: "Umbral Máximo", uid: "umbral_maximo" },
+    { name: "Ubicación", uid: "ubicacion" }, // Columna Ubicación
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Función de renderizado de celdas
   const renderCell = (item: SensorData, columnKey: React.Key) => {
     switch (columnKey) {
       case "fecha":
-        return <span>{new Date(item.fecha).toLocaleString()}</span>;
+        return (
+          <span
+            onClick={() => irADetalleSensor(item.id)}
+            className="cursor-pointer text-blue-600 hover:underline"
+          >
+            {new Date(item.fecha).toLocaleString()}
+          </span>
+        );
       case "tipo":
-        return <span>{getSensorLabel(item.tipo)}</span>;
+        return (
+          <span
+            onClick={() => irADetalleSensor(item.id)}
+            className="cursor-pointer text-blue-600 hover:underline"
+          >
+            {getSensorLabel(item.tipo)}
+          </span>
+        );
       case "valor":
-        return <span>{item.valor}</span>;
+        return (
+          <span
+            onClick={() => irADetalleSensor(item.id)}
+            className="cursor-pointer text-blue-600 hover:underline"
+          >
+            {item.valor}
+          </span>
+        );
+      case "umbral_minimo":
+        return <span>{item.umbral_minimo ?? "—"}</span>;
+      case "umbral_maximo":
+        return <span>{item.umbral_maximo ?? "—"}</span>;
+      case "ubicacion":
+        if (item.fk_lote !== null && item.fk_lote !== undefined) {
+          return <span className="text-green-600 font-medium">Lote {item.fk_lote}</span>;
+        } else if (item.fk_eras !== null && item.fk_eras !== undefined) {
+          return <span className="text-blue-600 font-medium">Era {item.fk_eras}</span>;
+        } else {
+          return <span className="text-gray-400 italic">No asignado</span>;
+        }
       case "acciones":
         return (
           <AccionesTabla
@@ -84,19 +134,11 @@ export function SensorLista() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && sensorEditado && (
-        <EditarSensorModal
-          sensor={sensorEditado}
-          onClose={closeEditModal}
-        />
+        <EditarSensorModal sensor={sensorEditado} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && (
-        <CrearSensorModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearSensorModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && sensorEliminado && (
         <EliminarSensorModal
