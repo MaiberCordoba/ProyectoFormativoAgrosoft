@@ -47,11 +47,21 @@ const Principal: React.FC = () => {
         </div>
 
         {/* Contenido Principal */}
-        <main className="flex-1 pb-16 pt-0">
-          <div className="p-6">
+        <main className="flex-1 pb-16 pt-0 relative"> {/* Agregamos relative para posicionar el overlay */}
+          <div 
+            className="absolute inset-0 bg-[url('../../public/fondo.jpg')] bg-cover bg-center bg-no-repeat bg-fixed opacity-90" 
+            aria-hidden="true" 
+          />
+
+          {/* Overlay para oscurecer/transparentar el fondo */}
+          <div className="absolute inset-0  backdrop" aria-hidden="true" />
+
+          {/* Contenido principal con posición relativa y z-index para que aparezca sobre el fondo */}
+          <div className="relative z-10 min-h-screen">
             <Outlet />
           </div>
-          <div ref={sentinelRef} className="h-px w-full" />
+
+          <div ref={sentinelRef} className="h-px w-full relative z-10" />
         </main>
       </div>
 
