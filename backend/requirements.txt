@@ -21,3 +21,4 @@ daphne==4.1.2
 django-cors-headers==4.7.0
 pillow==11.2.1
 itsdangerous==2.2.0
+pandas==2.2.3
