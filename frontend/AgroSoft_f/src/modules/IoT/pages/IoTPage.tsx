@@ -15,7 +15,6 @@ import { SensorLista } from "../components/sensor/SensorListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
 import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
 import { useEvapotranspiracionHistorica } from "../hooks/useEvapotranspiracionHistorica";
-import { ReportGenerator } from "../components/Interfaz";
 
 // Define missing types
 type SensorData = {
@@ -497,12 +496,6 @@ export default function IoTPages() {
           <SensorLista />
         </div>
       </div>
-      <br />
-      <ReportGenerator 
-        lotes={lotes} 
-        eras={eras} 
-        sensorTypes={SENSOR_TYPES} 
-      />
     </div>
   );
 }

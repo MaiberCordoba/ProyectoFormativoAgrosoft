@@ -5,6 +5,9 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, Legend,
   CartesianGrid, ResponsiveContainer
 } from "recharts";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import html2canvas from "html2canvas";
 
 // types.ts
 export interface SensorData {
@@ -26,7 +29,6 @@ export const SENSOR_TYPES = [
   { key: "HUM_T", label: "Humedad del Terreno" },
   { key: "PH", label: "Nivel de PH" },
   { key: "LLUVIA", label: "Lluvia" }
-
 ];
 
 export interface SensorConExtras extends SensorData {
@@ -63,6 +65,27 @@ function dict(sensorTypes: {key: string, label: string}[]): Map<string, string> 
   return map;
 }
 
+const formatDateTimeForDisplay = (date: Date | string): string => {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return d.toLocaleString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const formatNumber = (value: unknown): string => {
+  if (typeof value === 'number') {
+    return value.toFixed(2);
+  }
+  if (typeof value === 'string' && !isNaN(Number(value))) {
+    return Number(value).toFixed(2);
+  }
+  return 'N/A';
+};
+
 export default function AllSensorsDashboard() {
   const navigate = useNavigate();
   const [allSensorsData, setAllSensorsData] = useState<SensorConExtras[]>([]);
@@ -76,6 +99,7 @@ export default function AllSensorsDashboard() {
   const [availableEras, setAvailableEras] = useState<{id: number, nombre: string, fk_lote_id: number}[]>([]);
   const [showLotesSelect, setShowLotesSelect] = useState(true);
   const [showErasSelect, setShowErasSelect] = useState(true);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   useEffect(() => {
     if (selectedType === "") {
@@ -232,16 +256,248 @@ export default function AllSensorsDashboard() {
     }));
   }, [filteredSensors]);
 
+  const generatePDFReport = async () => {
+    setIsGeneratingReport(true);
+    
+    try {
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      const margin = 15;
+      let yPosition = margin;
+
+      // Función para agregar nueva página si es necesario
+      const checkPageBreak = (neededSpace: number) => {
+        if (yPosition + neededSpace > 280) {
+          doc.addPage();
+          yPosition = margin;
+          addHeader(false);
+        }
+      };
+
+      // Encabezado
+      const addHeader = (isFirstPage = true) => {
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+        doc.text("Reporte de Sensores Agrícolas", 105, yPosition, { align: "center" });
+        yPosition += 10;
+
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Generado el: ${formatDateTimeForDisplay(new Date())}`, 105, yPosition, { align: "center" });
+        yPosition += 15;
+
+        if (!isFirstPage) {
+          doc.setFontSize(10);
+          doc.setFont("helvetica", "italic");
+          doc.text(`Página ${doc.getNumberOfPages()}`, 195, 15);
+        }
+      };
+
+      addHeader();
+
+      // Sección de Filtros
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Filtros aplicados", margin, yPosition);
+      yPosition += 8;
+
+      let filtersText = "• Todos los sensores";
+      if (selectedType) {
+        filtersText += `\n• Tipo: ${dict(SENSOR_TYPES).get(selectedType)}`;
+      }
+      if (selectedLotes.length > 0) {
+        filtersText += `\n• Lotes: ${selectedLotes.map(id => {
+          const lote = availableLotes.find(l => l.id === id);
+          return lote ? lote.nombre : `ID ${id}`;
+        }).join(", ")}`;
+      }
+      if (selectedEras.length > 0) {
+        filtersText += `\n• Eras: ${selectedEras.map(id => {
+          const era = availableEras.find(e => e.id === id);
+          return era ? era.nombre : `ID ${id}`;
+        }).join(", ")}`;
+      }
+
+      const splitText = doc.splitTextToSize(filtersText, 180);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(splitText, margin, yPosition);
+      yPosition += splitText.length * 5 + 15;
+
+      // Datos de sensores
+      checkPageBreak(30);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("Datos de Sensores", margin, yPosition);
+      yPosition += 10;
+
+      if (filteredSensors.length === 0) {
+        doc.setFontSize(12);
+        doc.text("No hay datos de sensores para los filtros seleccionados", margin, yPosition);
+        yPosition += 10;
+      } else {
+        const tableData = filteredSensors.map(sensor => [
+          sensor.id?.toString() || 'N/A',
+          dict(SENSOR_TYPES).get(sensor.tipo) || sensor.tipo,
+          `${formatNumber(sensor.valor)} ${sensor.unidad}`,
+          sensor.umbral_minimo !== null ? `${formatNumber(sensor.umbral_minimo)} ${sensor.unidad}` : 'N/A',
+          sensor.umbral_maximo !== null ? `${formatNumber(sensor.umbral_maximo)} ${sensor.unidad}` : 'N/A',
+          formatDateTimeForDisplay(sensor.fecha),
+          getLocationName(sensor),
+          sensor.alerta ? 'Sí' : 'No'
+        ]);
+
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['ID', 'Tipo', 'Valor', 'Umbral Mín', 'Umbral Máx', 'Fecha', 'Ubicación', 'Alerta']],
+          body: tableData,
+          margin: { left: margin, right: margin },
+          styles: { 
+            fontSize: 8,
+            cellPadding: 2,
+            overflow: 'linebreak'
+          },
+          headStyles: { 
+            fillColor: [46, 204, 113],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245]
+          },
+          didDrawPage: (data) => {
+            yPosition = data.cursor.y + 10;
+          }
+        });
+
+        yPosition = (doc as any).lastAutoTable.finalY + 10;
+      }
+
+      // Gráficas
+      if (filteredSensors.length > 0) {
+        checkPageBreak(30);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Gráficas de Datos", margin, yPosition);
+        yPosition += 10;
+
+        // Capturar la gráfica del dashboard
+        const chartElement = document.querySelector('.recharts-wrapper');
+        if (chartElement) {
+          try {
+            const canvas = await html2canvas(chartElement as HTMLElement);
+            const imgData = canvas.toDataURL('image/png');
+            
+            const imgWidth = 180;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            checkPageBreak(imgHeight + 10);
+            doc.addImage(imgData, 'PNG', margin, yPosition, imgWidth, imgHeight);
+            yPosition += imgHeight + 10;
+          } catch (error) {
+            console.error("Error al generar gráfica:", error);
+            doc.setFontSize(10);
+            doc.text("No se pudo incluir la gráfica en el reporte", margin, yPosition);
+            yPosition += 10;
+          }
+        }
+      }
+
+      // Alertas
+      const alertas = filteredSensors.filter(sensor => sensor.alerta);
+      if (alertas.length > 0) {
+        checkPageBreak(30);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Alertas (${alertas.length})`, margin, yPosition);
+        yPosition += 10;
+
+        const alertTableData = alertas.map(alert => [
+          alert.id?.toString() || 'N/A',
+          dict(SENSOR_TYPES).get(alert.tipo) || alert.tipo,
+          `${formatNumber(alert.valor)} ${alert.unidad}`,
+          `${alert.umbral_minimo !== null ? formatNumber(alert.umbral_minimo) : 'N/A'} - ${alert.umbral_maximo !== null ? formatNumber(alert.umbral_maximo) : 'N/A'} ${alert.unidad}`,
+          formatDateTimeForDisplay(alert.fecha),
+          getLocationName(alert)
+        ]);
+
+        autoTable(doc, {
+          startY: yPosition,
+          head: [['ID', 'Tipo', 'Valor', 'Rango Normal', 'Fecha', 'Ubicación']],
+          body: alertTableData,
+          margin: { left: margin, right: margin },
+          styles: { 
+            fontSize: 8,
+            cellPadding: 2,
+            overflow: 'linebreak'
+          },
+          headStyles: { 
+            fillColor: [231, 76, 60],
+            textColor: [255, 255, 255],
+            fontStyle: 'bold'
+          },
+          didDrawPage: (data) => {
+            yPosition = data.cursor.y + 10;
+          }
+        });
+      }
+
+      // Pie de página
+      const totalPages = doc.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "italic");
+        doc.setTextColor(150);
+        doc.text(
+          `Página ${i} de ${totalPages}`,
+          105,
+          287,
+          { align: "center" }
+        );
+        doc.text(
+          "© Sistema de Monitoreo Agrícola",
+          195,
+          287,
+          { align: "right" }
+        );
+      }
+
+      // Guardar el PDF
+      const fileName = `Reporte_Sensores_${new Date().toISOString().slice(0, 10)}.pdf`;
+      doc.save(fileName);
+    } catch (error) {
+      console.error("Error al generar el reporte:", error);
+      alert("Ocurrió un error al generar el reporte");
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
   return (
     <div className="p-6">
-      <Button 
-        color="success" 
-        variant="light" 
-        onClick={() => navigate(-1)}
-        className="mb-6"
-      >
-        Regresar
-      </Button>
+      <div className="flex justify-between items-center mb-6">
+        <Button 
+          color="success" 
+          variant="light" 
+          onClick={() => navigate(-1)}
+        >
+          Regresar
+        </Button>
+        
+        <Button 
+          color="primary" 
+          onClick={generatePDFReport}
+          isDisabled={isLoading || isGeneratingReport}
+          isLoading={isGeneratingReport}
+        >
+          Generar Reporte PDF
+        </Button>
+      </div>
 
       <h1 className="text-2xl font-bold text-center mb-6">
         Todos los Sensores
@@ -414,11 +670,11 @@ export default function AllSensorsDashboard() {
                   
                   <div className="flex flex-col items-end">
                     <span className="text-xl font-bold text-red-600">
-                      {sensor.valor} {sensor.unidad}
+                      {formatNumber(sensor.valor)} {sensor.unidad}
                     </span>
                     {sensor.umbral_minimo !== null && sensor.umbral_maximo !== null && (
                       <span className="text-sm text-gray-600">
-                        Rango esperado: {sensor.umbral_minimo}-{sensor.umbral_maximo} {sensor.unidad}
+                        Rango esperado: {formatNumber(sensor.umbral_minimo)}-{formatNumber(sensor.umbral_maximo)} {sensor.unidad}
                       </span>
                     )}
                   </div>
