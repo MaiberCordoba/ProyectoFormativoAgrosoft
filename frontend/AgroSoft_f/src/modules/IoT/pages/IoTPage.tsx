@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Select, SelectItem, addToast, toast } from "@heroui/react";
+import { Input, Select, SelectItem, addToast } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -341,137 +341,145 @@ export default function IoTPages() {
     sensor.title.toLowerCase().includes(searchId.toLowerCase())
   );
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 sm:gap-12 justify-center items-center w-full max-w-6xl mx-auto">
-      <div className="flex gap-2 w-full max-w-md">
-        <Select
-          label="Cultivo a calcular evapotranspiracion"
-          placeholder="Selecciona un cultivo"
-          selectedKeys={cultivoId !== "" ? [String(cultivoId)] : []}
-          onSelectionChange={(keys) => {
-            const selectedCultivoId = Number(Array.from(keys)[0]);
-            setCultivoId(selectedCultivoId);
-          }}
-        >
-          {cultivos.length > 0 ? (
-            cultivos.map((cultivo) => (
-              <SelectItem key={String(cultivo.id)}>{`Cultivo ${cultivo.id}`}</SelectItem>
-            ))
-          ) : (
-            <SelectItem isDisabled>
-              {cultivos.length === 0
-                ? "No hay cultivos disponibles"
-                : "Cargando..."}
-            </SelectItem>
-          )}
-        </Select>
-      </div>
+return (
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-6 justify-center items-center w-full max-w-6xl mx-auto">
+    <br />
+    <div className="flex justify-start gap-2 w-full max-w-xs">
+      <Select
+        label="Cultivo a calcular evapotranspiracion"
+        placeholder="Selecciona un cultivo"
+        selectedKeys={cultivoId !== "" ? [String(cultivoId)] : []}
+        onSelectionChange={(keys) => {
+          const selectedCultivoId = Number(Array.from(keys)[0]);
+          setCultivoId(selectedCultivoId);
+        }}
+        
+      >
+        {cultivos.length > 0 ? (
+          cultivos.map((cultivo) => (
+            <SelectItem key={String(cultivo.id)}>{`Cultivo ${cultivo.id}`}</SelectItem>
+          ))
+        ) : (
+          <SelectItem isDisabled>
+            {cultivos.length === 0
+              ? "No hay cultivos disponibles"
+              : "Cargando..."}
+          </SelectItem>
+        )}
+      </Select>
+    </div>
 
-      <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="flex justify-center">
-          {evapotranspiracion ? (
-              <EvapotranspiracionCard
-              etReal={evapotranspiracion.evapotranspiracion_mm_dia}
-              kc={evapotranspiracion.kc}
-              detalles={evapotranspiracion.sensor_data}
-            />
-          ) : errorET ? (
-            <p className="text-red-500">{errorET}</p>
-          ) : (
-            <p className="text-gray-500">Calculando evapotranspiración...</p>
-          )}
-        </div>
-        <br />
-        {evapotranspiracion && (
-          <div className="flex justify-center">
-            <EvapotranspiracionChart nuevoDato={lastET} />
-          </div>
+
+    <div className="col-span-full grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-4xl mx-auto">
+
+      <div className="flex justify-center scale-90"> 
+        {evapotranspiracion ? (
+          <EvapotranspiracionCard
+            etReal={evapotranspiracion.evapotranspiracion_mm_dia}
+            kc={evapotranspiracion.kc}
+            detalles={evapotranspiracion.sensor_data}
+            
+          />
+        ) : errorET ? (
+          <p className="text-red-500 text-sm">{errorET}</p>
+        ) : (
+          <p className="text-gray-500 text-sm">Calculando evapotranspiración...</p>
         )}
       </div>
-
-      <div className="col-span-full flex justify-center">
-        <button
-          onClick={calcularEvapotranspiracion}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
-        >
-          Recalcular Evapotranspiración
-        </button>
-      </div>
-
-      <div className="flex justify-between items-center w-full col-span-full mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 justify-center">Promedios de Sensores</h2>
-        <Input
-          className="w-1/4"
-          placeholder="Buscar Sensor"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-        />
-      </div>
       
-      <div className="col-span-full flex gap-4 w-full max-w-6xl mx-auto">
-        <Select
-          label="Filtrar por Lote"
-          placeholder="Todos los lotes"
-          selectedKeys={filters.loteId ? [filters.loteId] : []}
-          onSelectionChange={(keys) => {
-            const selected = Array.from(keys)[0] as string;
-            setFilters(prev => ({...prev, loteId: selected || ""}));
-          }}
-        >
-          {lotes.map(lote => (
-            <SelectItem key={String(lote.id)}>
-              {lote.nombre}
-            </SelectItem>
-          ))}
-        </Select>
+      {evapotranspiracion && (
+        <div className="flex justify-center scale-90"> 
+          <EvapotranspiracionChart nuevoDato={lastET} />
+        </div>
+      )}
+    </div>
 
-        <Select
-          label="Filtrar por Era"
-          placeholder="Todas las eras"
-          selectedKeys={filters.eraId ? [filters.eraId] : []}
-          onSelectionChange={(keys) => {
-            const selected = Array.from(keys)[0] as string;
-            setFilters(prev => ({...prev, eraId: selected || ""}));
-          }}
-        >
-          {eras.map(era => (
-            <SelectItem key={String(era.id)}>
-              Era {era.id}
-            </SelectItem>
-          ))}
-        </Select>
 
-        <Select
-          label="Período de tiempo (horas)"
-          selectedKeys={[filters.hours]}
-          onSelectionChange={(keys) => {
-            const selected = Array.from(keys)[0] as string;
-            setFilters(prev => ({...prev, hours: selected || "24"}));
-          }}
-        >
-          <SelectItem key="1">Última hora</SelectItem>
-          <SelectItem key="6">Últimas 6 horas</SelectItem>
-          <SelectItem key="24">Últimas 24 horas</SelectItem>
-          <SelectItem key="168">Última semana</SelectItem>
-          <SelectItem key="720">Último mes</SelectItem>
-          <SelectItem key="4320">Último año</SelectItem>
-        </Select>
-      </div>
-      <br />
-      
-      <div className="grid grid-cols-3 flex flex-wrap gap-4 justify-center items-center w-full max-w-6xl mx-auto">
-        {sensoresFiltrados.length > 0 ? (
-          sensoresFiltrados.map((sensor) => {
-            const averageData = sensorAverages[sensor.tipo] || {};
-            const hasData = averageData.average !== undefined;
-            const isAlert = averageData.min_threshold !== undefined && 
-                         averageData.max_threshold !== undefined &&
-                         (averageData.average < averageData.min_threshold || 
-                          averageData.average > averageData.max_threshold);
-            
-            return (
+    <div className="col-span-full flex justify-center">
+      <button
+        onClick={calcularEvapotranspiracion}
+        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm"
+      >
+        Recalcular Evapotranspiración
+      </button>
+    </div>
+    <br />
+
+    {/* Título y búsqueda - con texto blanco */}
+<div className="flex justify-between items-center w-full max-w-6xl mx-auto px-4 mb-2">
+  <h2 className="text-lg font-semibold text-white">Promedios de Sensores</h2>
+  <Input
+    className="w-1/4 text-sm h-8"
+    placeholder="Buscar Sensor"
+    value={searchId}
+    onChange={(e) => setSearchId(e.target.value)}
+    size="sm"
+  />
+</div>
+
+<div className="col-span-full flex gap-4 w-full max-w-6xl mx-auto px-4">
+  <Select
+    label="Filtrar por Lote"
+    placeholder="Todos los lotes"
+    selectedKeys={filters.loteId ? [filters.loteId] : []}
+    onSelectionChange={(keys) => {
+      const selected = Array.from(keys)[0] as string;
+      setFilters(prev => ({...prev, loteId: selected || ""}));
+    }}
+    size="sm"
+  >
+    {lotes.map(lote => (
+      <SelectItem key={String(lote.id)}>{lote.nombre}</SelectItem>
+    ))}
+  </Select>
+
+  <Select
+    label="Filtrar por Era"
+    placeholder="Todas las eras"
+    selectedKeys={filters.eraId ? [filters.eraId] : []}
+    onSelectionChange={(keys) => {
+      const selected = Array.from(keys)[0] as string;
+      setFilters(prev => ({...prev, eraId: selected || ""}));
+    }}
+    size="sm"
+  >
+    {eras.map(era => (
+      <SelectItem key={String(era.id)}>Era {era.id}</SelectItem>
+    ))}
+  </Select>
+
+  <Select
+    label="Período de tiempo (horas)"
+    selectedKeys={[filters.hours]}
+    onSelectionChange={(keys) => {
+      const selected = Array.from(keys)[0] as string;
+      setFilters(prev => ({...prev, hours: selected || "24"}));
+    }}
+    size="sm"
+  >
+    <SelectItem key="1">Última hora</SelectItem>
+    <SelectItem key="6">Últimas 6 horas</SelectItem>
+    <SelectItem key="24">Últimas 24 horas</SelectItem>
+    <SelectItem key="168">Última semana</SelectItem>
+    <SelectItem key="720">Último mes</SelectItem>
+    <SelectItem key="4320">Último año</SelectItem>
+  </Select>
+</div>
+<br />
+
+<div className="grid grid-cols-3 flex flex-wrap gap-3 justify-center items-center w-full max-w-6xl mx-auto">
+      {sensoresFiltrados.length > 0 ? (
+        sensoresFiltrados.map((sensor) => {
+          const averageData = sensorAverages[sensor.tipo] || {};
+          const hasData = averageData.average !== undefined;
+          const isAlert = averageData.min_threshold !== undefined && 
+                       averageData.max_threshold !== undefined &&
+                       (averageData.average < averageData.min_threshold || 
+                        averageData.average > averageData.max_threshold);
+          
+          return (
+            <div key={sensor.id} className="scale-90">
               <SensorCard
-                key={sensor.id}
                 icon={sensor.icon}
                 title={sensor.title}
                 value={
@@ -489,21 +497,20 @@ export default function IoTPages() {
                 alert={isAlert}
                 onClick={() => navigate(`/sensores/${sensor.id}`)}
               />
-            );
-          })
-        ) : (
-          <p className="text-gray-500">No se encontraron sensores</p>
-        )}
-      </div>
-      <br />
-      <br />
+            </div>
+          );
+        })
+      ) : (
+        <p className="text-gray-500 text-sm">No se encontraron sensores</p>
+      )}
+    </div>
 
-      <div className="flex gap-6 col-span-full">
-        <div className="w-full">
-          <h2 className="flex justify-center col-span-full text-xl font-semibold text-gray-800 ">Lista de Sensores</h2>
-          <SensorLista />
-        </div>
+    <div className="flex gap-4 col-span-full">
+      <div className="w-full">
+        <h2 className="flex justify-center col-span-full text-lg font-semibold text-white">Lista de Sensores</h2>
+        <SensorLista />
       </div>
     </div>
-  );
+  </div>
+);
 }
