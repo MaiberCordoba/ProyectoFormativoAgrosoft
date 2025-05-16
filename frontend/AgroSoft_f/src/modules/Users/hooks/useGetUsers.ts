@@ -4,9 +4,13 @@ import { getUsers } from "../api/usersApi";
 
 
 export const useGetUsers = () => {
-  return useQuery<User[], Error>({
+  const query = useQuery<User[], Error>({
     queryKey: ["users"], 
     queryFn: getUsers, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

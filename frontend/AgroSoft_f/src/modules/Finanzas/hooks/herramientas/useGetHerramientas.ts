@@ -3,9 +3,13 @@ import { getHerramientas } from "../../api/herramientasApi";
 import { Herramientas } from "../../types";
 
 export const useGetHerramientas = () => {
-  return useQuery<Herramientas[], Error>({
+    const query = useQuery<Herramientas[], Error>({
     queryKey: ["herramientas"], 
     queryFn: getHerramientas, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

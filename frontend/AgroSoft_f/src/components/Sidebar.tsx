@@ -11,6 +11,7 @@ import {
   Wrench,
   ShieldCheck,
   ChevronDown,
+  ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -79,22 +80,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           {
             title: "Cultivos",
             icon: Leaf,
-            submenus: ["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie", "Plantaciones"],
+            submenus: ["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie","Informacion Cultivos Sembrados"],
           },
           {
             title: "Actividades",
             icon: Wrench,
-            submenus: ["Actividades", "Usos herramientas", "Herramientas", "Usos productos"],
+            submenus: ["Actividades", "Tipos Actividad","Tiempo actividad control","Unidades medida","Unidades tiempo"],
           },
           {
             title: "Finanzas",
             icon: DollarSign,
-            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas"],
+            submenus: ["Ventas", "Cosechas", "Desechos", "Tipos de desechos","resumen finanzas","Salarios"],
+          },
+          {
+            title: "Inventario",
+            icon: ClipboardList,
+            submenus: ["Insumos","Herramientas","Usos Herramientas","Usos Insumos","Movimientos Inventario"],
           },
           {
             title: "Gestión Fitosanitaria",
             icon: ShieldCheck,
-            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles"],
+            submenus: ["Tipos de afectaciones", "Afectaciones", "Afectaciones en cultivos", "tipos de control", "Controles", "Seguimiento de afectaciones"],
             className: "text-left",
           },
         ].map((menu) => (

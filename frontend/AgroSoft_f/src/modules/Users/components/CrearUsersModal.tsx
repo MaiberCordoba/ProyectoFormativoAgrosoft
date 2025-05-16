@@ -60,7 +60,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     }
 
     mutate(userData, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         onClose();
         setUserData({
           id:0,

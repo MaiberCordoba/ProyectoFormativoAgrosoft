@@ -2,7 +2,6 @@ import { useGetPlantaciones } from "../../hooks/plantaciones/useGetPlantaciones"
 import { useEditarPlantaciones } from "../../hooks/plantaciones/useEditarPlantaciones";
 import { useCrearPlantaciones } from "../../hooks/plantaciones/useCrearPlantaciones";
 import { useEliminarPlantaciones } from "../../hooks/plantaciones/useEliminarPlantaciones";
-import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarPlantacionModal from "./EditarPlantacionesModal";
@@ -12,35 +11,42 @@ import { Plantaciones } from "../../types";
 
 export function PlantacionesList() {
   const { data, isLoading, error } = useGetPlantaciones();
-  const { data: cultivos, isLoading: loadingCultivos } = useGetCultivos();
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    PlantacionesEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    PlantacionesEditada,
+    handleEditar,
   } = useEditarPlantaciones();
 
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearPlantaciones();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     PlantacionesEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarPlantaciones();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0, fk_Era: 0 });
+    handleCrear({
+      id: 0,
+      fk_Cultivo: { nombre: "" },
+      fk_semillero: { unidades: 0, fechasiembra: "" },
+      fk_Era: { id: 0 },
+    });
   };
 
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
     { name: "Cultivo", uid: "fk_Cultivo", sortable: true },
+    { name: "Semillero", uid: "fk_semillero", sortable: false },
+    { name: "Unidades", uid: "unidades", sortable: true },
+    { name: "Fecha Siembra", uid: "fechasiembra", sortable: true },
     { name: "Era", uid: "fk_Era", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -50,10 +56,21 @@ export function PlantacionesList() {
       case "id":
         return <span>{item.id}</span>;
       case "fk_Cultivo":
-        const cultivo = cultivos?.find(c => c.id === item.fk_Cultivo);
-        return <span>{cultivo ? cultivo.nombre : "Desconocido"}</span>;
+        return <span>{item.fk_Cultivo?.nombre || "Sin nombre"}</span>;
+      case "fk_semillero":
+        return (
+          <span>
+            {item.fk_semillero
+              ? `Semillero del cultivo: ${item.fk_Cultivo?.nombre}`
+              : "No asignado"}
+          </span>
+        );
+      case "unidades":
+        return <span>{item.fk_semillero?.unidades ?? "N/A"}</span>;
+      case "fechasiembra":
+        return <span>{item.fk_semillero?.fechasiembra ?? "N/A"}</span>;
       case "fk_Era":
-        return <span>{item.fk_Era}</span>;
+        return <span>{item.fk_Era?.id ?? "N/A"}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -66,7 +83,7 @@ export function PlantacionesList() {
     }
   };
 
-  if (isLoading || loadingCultivos) return <p>Cargando...</p>;
+  if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las plantaciones</p>;
 
   return (
@@ -80,7 +97,6 @@ export function PlantacionesList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && PlantacionesEditada && (
         <EditarPlantacionModal
           plantacion={PlantacionesEditada}
@@ -89,9 +105,7 @@ export function PlantacionesList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearPlantacionModal
-          onClose={closeCreateModal}
-        />
+        <CrearPlantacionModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && PlantacionesEliminada && (

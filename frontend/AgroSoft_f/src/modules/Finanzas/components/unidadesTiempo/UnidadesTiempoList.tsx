@@ -33,12 +33,12 @@ export function UnidadesTiempoList() {
   } = useEliminarUnidadesTiempo();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", equivalenciabase: 0 });
+    handleCrear({ id: 0, nombre: "", equivalenciaMinutos: 0 });
   };
 
   const columnas = [
-    { name: "Nombre", uid: "nombre", sortable: true },
-    { name: "Equivalencia Base", uid: "equivalenciabase" },
+    { name: "Nombre", uid: "nombre"},
+    { name: "Equivalencia minutos", uid: "equivalenciaMinutos" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -46,8 +46,8 @@ export function UnidadesTiempoList() {
     switch (columnKey) {
       case "nombre":
         return <span>{item.nombre}</span>;
-      case "equivalenciabase":
-        return <span>{item.equivalenciabase}</span>;
+      case "equivalenciaMinutos":
+        return <span>{item.equivalenciaMinutos}</span>;
       case "acciones":
         return (
           <AccionesTabla

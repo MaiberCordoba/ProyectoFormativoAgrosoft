@@ -1,66 +1,81 @@
-export interface TiposEspecie{
+export interface TiposEspecie {
   id: number;
   nombre: string;
   descripcion: string;
   img: string;
 }
 
-export interface Especies{
-    id: number;
-    nombre: string;
-    descripcion: string;
-    img?: string;
-    tiempocrecimiento: number;
-    TiposEspecie?: TiposEspecie;
-    fk_tipoespecie?: number | null;
-    tipo_especie_nombre?: string | null;
+export interface Especies {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  img?: string;
+  tiempocrecimiento: string;
+  tiposEspecie: TiposEspecie;
+  fk_tipoespecie: number;
 }
 
-export interface Semilleros{
+export interface Cultivo {
+  id: number;
+  nombre: string;
+  activo: boolean;
+  especies: Especies;
+  fk_Especie: number;
+}
+
+export interface Semillero {
   id: number;
   unidades: number;
   fechasiembra: string;
   fechaestimada: string;
-  Especies?: Especies;
-  fk_especie: number;
+  cultivo: Cultivo;
+  fk_Cultivo: number;
 }
 
-export interface Cultivos{
-  id?: number;
-  nombre: string;
-  unidades: number;
-  activo: boolean;
-  fechaSiembra: string;
-  Especies?: Especies;
-  fk_Especie: number;
-}
-
-export interface Lotes{
-  id?: number;
+export interface Lotes {
+  id: number;
   nombre: string;
   descripcion: string;
-  tamX: number;
-  tamY: number;
-  estado: boolean;
-  posX: number;
-  posY: number;
+  latI1: number | null;
+  longI1: number | null;
+  latS1: number | null;
+  longS1: number | null;
+  latI2: number | null;
+  longI2: number | null;
+  latS2: number | null;
+  longS2: number | null;
+  estado: boolean | null;
 }
 
-export interface Eras{
-  id?: number;
-  tamX: number;
-  tamY: number;
-  posX: number;
-  posY: number;
-  tipo: string;
-  Lotes?: Lotes;
-  fk_lote_id: number; 
-}
-
-export interface Plantaciones{
+export interface Eras {
   id: number;
-  Cultivos?: Cultivos;
-  fk_Cultivo: number;
-  Eras?: Eras;
-  fk_Era: number;
+  tipo: string;
+  fk_lote: Lotes ;
+  latI1: number | null;
+  longI1: number | null;
+  latS1: number | null;
+  longS1: number | null;
+  latI2: number | null;
+  longI2: number | null;
+  latS2: number | null;
+  longS2: number | null;
 }
+
+export interface Plantaciones {
+  id: number;
+  fk_Cultivo: { nombre: string };
+  fk_semillero: { unidades: number; fechasiembra: string };
+  fk_Era: { id: number };
+}
+
+
+export interface PlantacionCreate {
+  fk_Cultivo: number;
+  fk_Era: number;
+  fk_semillero: number;
+  unidades: number;
+  fechaSiembra: string;
+}
+
+
+

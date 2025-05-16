@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchCultivos } from "../../hooks/cultivos/usePatchCultivos";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 
 interface EditarCultivoModalProps {
-  cultivo: Cultivos;
+  cultivo: Cultivo;
   onClose: () => void;
 }
 
 const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClose }) => {
   const [nombre, setNombre] = useState<string>(cultivo.nombre);
-  const [unidades, setUnidades] = useState<number>(cultivo.unidades);
-  const [fechaSiembra, setFechaSiembra] = useState<string>(cultivo.fechaSiembra);
-  const [fk_Especie, setFk_Especie] = useState<number>(cultivo.fk_Especie);
+  const [fk_Especie, setFk_Especie] = useState<{ nombre: string }>(cultivo.fk_Especie);
   const [activo, setActivo] = useState<boolean>(cultivo.activo);
 
   const { mutate, isPending } = usePatchCultivos();
@@ -31,8 +29,6 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         id: cultivo.id,
         data: {
           nombre,
-          unidades,
-          fechaSiembra,
           fk_Especie,
           activo,
         },
@@ -61,21 +57,8 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
     >
       <Input
         value={nombre}
-        label="Nombre"
-        type="text"
+        label="Nombre del Cultivo"
         onChange={(e) => setNombre(e.target.value)}
-      />
-      <Input
-        value={unidades.toString()}
-        label="Unidades"
-        type="number"
-        onChange={(e) => setUnidades(Number(e.target.value))}
-      />
-      <Input
-        value={fechaSiembra}
-        label="Fecha de Siembra"
-        type="date"
-        onChange={(e) => setFechaSiembra(e.target.value)}
       />
 
       {isLoadingEspecies ? (
@@ -84,16 +67,16 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         <Select
           label="Especie"
           placeholder="Selecciona una especie"
-          selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
+          selectedKeys={fk_Especie?.nombre ? [fk_Especie.nombre] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            if (selectedKey) {
-              setFk_Especie(Number(selectedKey));
+            const selectedName = Array.from(keys)[0];
+            if (selectedName) {
+              setFk_Especie({ nombre: selectedName });
             }
           }}
         >
           {(especies || []).map((especie) => (
-            <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
+            <SelectItem key={especie.nombre}>{especie.nombre}</SelectItem>
           ))}
         </Select>
       )}

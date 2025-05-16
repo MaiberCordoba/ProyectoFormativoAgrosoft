@@ -1,87 +1,168 @@
 import { useState } from "react";
 import { usePostCosecha } from "../../hooks/cosechas/usePostCosechas";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem } from "@heroui/react";
-import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
+import { Input, Select, SelectItem, Button } from "@heroui/react";
+import { Plus } from "lucide-react";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+import { Cosechas, UnidadesMedida } from "../../types";
+import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { Plantaciones } from "@/modules/Trazabilidad/types";
+import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
 
 interface CrearCosechasModalProps {
   onClose: () => void;
+  onCreate: (nuevaCosecha:Cosechas) => void;
 }
 
 export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
-  const [unidades, setUnidades] = useState<number>(0);  // Inicializado en 0
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
+  const [cantidad, setCantidad] = useState<number | null>(null);  // Inicializado en 0
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
 
-  const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
+//Creacion de estados para abrir modales
+  const [unidadMedidaModal,setUnidadMedidaModal] = useState(false)
+  const [PlantacionModal,setPlantacionModal] = useState(false)
+
+  const { data: plantaciones, isLoading: isLoadingPlantaciones, refetch: refetchPlantaciones } = useGetPlantaciones()
+  const { data: UnidadMedida, isLoading: isLoadingUnidadMedida, refetch: refetchUnidadMedida  } = useGetUnidadesMedida();
   const { mutate, isPending } = usePostCosecha();
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || unidades <= 0 || !fecha) {
+    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha ) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
 
     mutate(
-      { fk_Cultivo, unidades, fecha },
+      { fk_Plantacion, cantidad, fk_UnidadMedida, fecha},
       {
         onSuccess: () => {
           onClose();
-          setFk_Cultivo(null);
-          setUnidades(0);  // Restablecer a 0
+          setFk_Plantacion(null);
+          setCantidad(null)
+          setFk_UnidadMedida(null) // Restablecer a 0
           setFecha("");
         },
       }
     );
   };
+  const handlePlantacionCreada = (nuevaPlantacion : Plantaciones) =>{
+    refetchPlantaciones()
+    setFk_Plantacion(nuevaPlantacion.id)
+    setPlantacionModal(false)
+  }
+  const handleUnidadMedidaCreada = (nuevaUnidadMedida : UnidadesMedida) =>{
+    refetchUnidadMedida()
+    setFk_UnidadMedida(nuevaUnidadMedida.id)
+    setUnidadMedidaModal(false)
+  }
 
   return (
-    <ModalComponent
-      isOpen={true}
-      onClose={onClose}
-      title="Registro de Cosechas"
-      footerButtons={[
-        {
-          label: isPending ? "Guardando..." : "Guardar",
-          color: "success",
-          variant: "light",
-          onClick: handleSubmit,
-        },
-      ]}
-    >
-      <Input
-        label="Unidades"
-        type="number"
-        value={unidades}
-        onChange={(e) => setUnidades(Number(e.target.value))}  // Convertir a número
-        required
-      />
+    <>
+      <ModalComponent
+        isOpen={true}
+        onClose={onClose}
+        title="Registro de Cosechas"
+        footerButtons={[
+          {
+            label: isPending ? "Guardando..." : "Guardar",
+            color: "success",
+            variant: "light",
+            onClick: handleSubmit,
+          },
+        ]}
+      >
 
-      <Input
-        label="Fecha"
-        type="date"
-        value={fecha}
-        onChange={(e) => setFecha(e.target.value)}
-        required
-      />
+        <Input
+          label="Fecha de Cosecha"
+          type="date"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
+          required
+        />
+        <Input
+          label="Cantidad cosechada"
+          type="number"
+          value={cantidad}
+          onChange={(e) => setCantidad(Number(e.target.value))}
+          required
+        />
 
-      {isLoadingCultivos ? (
-        <p>Cargando cultivos...</p>
-      ) : (
-        <Select
-          label="Cultivo"
-          placeholder="Selecciona un cultivo"
-          selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []} 
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0]; 
-            setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
-          }}
-        >
-          {(cultivos || []).map((cultivo) => (
-            <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
-          ))}
-        </Select>
+        {isLoadingPlantaciones ? (
+          <p>Cargando plantaciones...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Plantacion"
+                placeholder="Selecciona una plantacion"
+                selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0]; 
+                  setFk_Plantacion(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(plantaciones || []).map((plantacion) => (
+                  <SelectItem key={plantacion.id.toString()}>{plantacion.fk_Cultivo.nombre}</SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button
+            onPress={() => setPlantacionModal(true)}
+            color="success"
+            title="Crear nueva plantacion"
+            radius="full"
+            size="sm"
+            >
+              <Plus className="w-5 h-5 text-white"/>
+            </Button>
+          </div>
+        )}
+        {isLoadingUnidadMedida ? (
+          <p>Cargando unidades de medida...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Unidad de medida"
+                placeholder="Selecciona una unidad de medida"
+                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []} 
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0]; 
+                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(UnidadMedida || []).map((unidadesMedida) => (
+                  <SelectItem key={unidadesMedida.id.toString()}>{unidadesMedida.nombre}</SelectItem>
+                ))}
+              </Select>
+            </div>
+             <Button
+            onPress={() => setUnidadMedidaModal(true)}
+            color="success"
+            title="Crear nueva Unidad de Medida"
+            radius="full"
+            size="sm"
+            >
+              <Plus className="w-5 h-5 text-white"/>
+            </Button>
+          </div>
+        )}
+      </ModalComponent>
+      {PlantacionModal && (
+        <CrearPlantacionModal
+        onClose={() => setPlantacionModal(false)}
+        onCreate={handlePlantacionCreada}
+        />
       )}
-    </ModalComponent>
+      {unidadMedidaModal && (
+        <CrearUnidadesMedidaModal
+        onClose={() => setUnidadMedidaModal(false)}
+        onCreate={handleUnidadMedidaCreada}
+        />
+      )}
+    </>
   );
 };

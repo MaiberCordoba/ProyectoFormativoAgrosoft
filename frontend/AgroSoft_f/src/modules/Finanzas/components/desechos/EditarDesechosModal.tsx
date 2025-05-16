@@ -4,7 +4,7 @@ import { usePatchDesechos } from '../../hooks/desechos/usePatchDesechos';  // Ca
 import { Desechos } from '../../types';
 import { Input, Textarea, Select, SelectItem } from '@heroui/react';
 import { useGetTiposDesechos } from '../../hooks/tiposDesechos/useGetTiposDesechos';  // Cambié el hook
-import { useGetCultivos } from '@/modules/Trazabilidad/hooks/cultivos/useGetCultivos';  // Cambié el hook
+import { useGetPlantaciones } from '@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones';
 
 interface EditarDesechoModalProps {
   desecho: Desechos; // El desecho que se está editando
@@ -14,11 +14,11 @@ interface EditarDesechoModalProps {
 const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClose }) => {
   const [nombre, setNombre] = useState<string>(desecho.nombre);
   const [descripcion, setDescripcion] = useState<string>(desecho.descripcion);
-  const [fk_Cultivo, setFk_Cultivo] = useState<number>(desecho.cultivo.id);  // Estado para el ID del cultivo
-  const [fk_TipoDesecho, setFk_TipoDesecho] = useState<number>(desecho.tipoDesecho.id); // Estado para el ID del tipo de desecho
+  const [fk_Plantacion, setFk_Plantacion] = useState<number>(desecho.fk_Plantacion);  // Estado para el ID del cultivo
+  const [fk_TipoDesecho, setFk_TipoDesecho] = useState<number>(desecho.fk_TipoDesecho); // Estado para el ID del tipo de desecho
 
   const { data: tiposDesechos, isLoading: isLoadingTiposDesechos } = useGetTiposDesechos();  // Obtener los tipos de desechos
-  const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();  // Obtener los cultivos
+  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  // Obtener los cultivos
   const { mutate, isPending } = usePatchDesechos();  // Mutación para actualizar los desechos
 
   const handleSubmit = () => {
@@ -29,7 +29,7 @@ const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClos
         data: {
           nombre,
           descripcion,
-          fk_Cultivo,  // Envía solo el ID del cultivo
+          fk_Plantacion,  // Envía solo el ID del cultivo
           fk_TipoDesecho,  // Envía solo el ID del tipo de desecho
         },
       },
@@ -57,7 +57,7 @@ const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClos
     >
       <Input
         value={nombre}
-        label="Nombre"
+        label="Nombre desecho"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
@@ -69,24 +69,24 @@ const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClos
       />
 
       {/* Selector de Cultivos */}
-      {isLoadingCultivos ? (
-        <p>Cargando cultivos...</p>
+      {isLoadingPlantaciones ? (
+        <p>Cargando plantaciones...</p>
       ) : (
         <Select
-          label="Cultivo"
-          placeholder="Selecciona un cultivo"
-          selectedKeys={[fk_Cultivo.toString()]}  // HeroUI espera un array de strings
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];  // HeroUI devuelve un Set
-            setFk_Cultivo(Number(selectedKey));  // Actualiza el estado con el nuevo ID
-          }}
-        >
-          {(cultivos || []).map((cultivo) => (
-            <SelectItem key={cultivo.id.toString()}>
-              {cultivo.nombre}
-            </SelectItem>
-          ))}
-        </Select>
+            label="Plantacion"
+            placeholder="Selecciona una Plantacion"
+            selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} // HeroUI espera un array de strings
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0]; // HeroUI devuelve un Set
+              setFk_Plantacion(selectedKey ? Number(selectedKey) : null); // Actualiza el estado con el nuevo ID
+            }}
+          >
+            {(plantaciones || []).map((plantacion) => (
+              <SelectItem key={plantacion.id.toString()}>
+                {`Plantación cultivo: ${plantacion.fk_Cultivo.nombre}`}
+              </SelectItem>
+            ))}
+          </Select>
       )}
 
       {/* Selector de Tipos de Desechos */}

@@ -2,41 +2,54 @@ import { useState } from "react";
 import { usePostCultivos } from "../../hooks/cultivos/usePostCultivos";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem, Switch, Button } from "@heroui/react";
+import { Plus } from "lucide-react";
+import { CrearEspecieModal } from "../especies/CrearEspecieModal";
+import { Cultivo } from "../../types";
+
 
 interface CrearCultivoModalProps {
   onClose: () => void;
+  onCreate: (nuevoCultivo:Cultivo) => void;
 }
 
-export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
+export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) => {
   const [nombre, setNombre] = useState<string>("");
-  const [unidades, setUnidades] = useState<number | "">("");
-  const [fechaSiembra, setFechaSiembra] = useState<string>("");
-  const [fk_Especie, setFk_Especie] = useState<number | null>(null);
-  const [activo, setActivo] = useState<boolean>(true); // Por defecto activo
+  const [activo, setActivo] = useState<boolean>(true);
+  const [fk_Especie, setFk_Especie] = useState<{ nombre: string } | null>(null);
+
+  const [mostrarModalEspecie, setMostrarModalEspecie] = useState(false);
 
   const { mutate, isPending } = usePostCultivos();
-  const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
+  const {
+    data: especies,
+    isLoading: isLoadingEspecies,
+    refetch: refetchEspecies,
+  } = useGetEspecies();
 
   const handleSubmit = () => {
-    if (!nombre || !unidades || !fechaSiembra || !fk_Especie) {
+    if (!nombre || !fk_Especie?.nombre) {
       console.log("Por favor, completa todos los campos obligatorios.");
       return;
     }
+
+    const especie = especies?.find((e) => e.nombre === fk_Especie.nombre);
+    if (!especie) {
+      console.log("Especie no encontrada.");
+      return;
+    }
+
     mutate(
       {
         nombre,
-        unidades: Number(unidades),
-        fechaSiembra,
-        fk_Especie,
         activo,
+        fk_Especie: especie.id, 
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           onClose();
+          onCreate(data)
           setNombre("");
-          setUnidades("");
-          setFechaSiembra("");
           setFk_Especie(null);
           setActivo(true);
         },
@@ -44,68 +57,84 @@ export const CrearCultivoModal = ({ onClose }: CrearCultivoModalProps) => {
     );
   };
 
+  const handleEspecieCreada = (nuevaEspecie: { id: number; nombre: string }) => {
+    refetchEspecies();
+    setFk_Especie({ nombre: nuevaEspecie.nombre });
+    setMostrarModalEspecie(false);
+  };
+
   return (
-    <ModalComponent
-      isOpen={true}
-      onClose={onClose}
-      title="Registro de Cultivo"
-      footerButtons={[
-        {
-          label: isPending ? "Guardando..." : "Guardar",
-          color: "success",
-          variant: "light",
-          onClick: handleSubmit,
-        },
-      ]}
-    >
-      <Input
-        label="Nombre del Cultivo"
-        type="text"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        required
-      />
-
-      <Input
-        label="Unidades"
-        type="number"
-        value={unidades.toString()}
-        onChange={(e) => setUnidades(Number(e.target.value))}
-        required
-      />
-
-      <Input
-        label="Fecha de Siembra"
-        type="date"
-        value={fechaSiembra}
-        onChange={(e) => setFechaSiembra(e.target.value)}
-        required
-      />
-
-      {isLoadingEspecies ? (
-        <p>Cargando especies...</p>
-      ) : (
-        <Select
-          label="Especie"
-          placeholder="Selecciona una especie"
-          selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_Especie(Number(selectedKey));
-          }}
-        >
-          {(especies || []).map((especie) => (
-            <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
-          ))}
-        </Select>
-      )}
-
+    <>
+      <ModalComponent
+        isOpen={true}
+        onClose={onClose}
+        title="Registro de Cultivo"
+        footerButtons={[
+          {
+            label: isPending ? "Guardando..." : "Guardar",
+            color: "success",
+            variant: "light",
+            onClick: handleSubmit,
+          },
+        ]}
+      >
         <Input
-          type="checkbox"
-          checked={activo}
-          onChange={(event) => setActivo(event.target.checked)} 
+          label="Nombre del Cultivo"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
         />
 
-    </ModalComponent>
+        <div className="flex items-center gap-2 mt-4">
+          <div className="flex-1">
+            {isLoadingEspecies ? (
+              <p>Cargando especies...</p>
+            ) : (
+              <Select
+                label="Especie"
+                placeholder="Selecciona una especie"
+                selectedKeys={fk_Especie ? [fk_Especie.nombre] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  if (selectedKey) {
+                    setFk_Especie({ nombre: selectedKey.toString() });
+                  }
+                }}
+              >
+                {(especies || []).map((especie) => (
+                  <SelectItem key={especie.nombre}>{especie.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          </div>
+          <Button
+            onPress={() => setMostrarModalEspecie(true)}
+            color="success"
+            radius="full"
+            size="sm"
+            title="Agregar nueva especie"
+          >
+            <Plus className="w-5 h-5 text-white" />
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-4 mt-4">
+          <Switch
+            checked={activo}
+            onChange={(e) => setActivo(e.target.checked)}
+            color="success"
+          >
+            {activo ? "Activo" : "Inactivo"}
+          </Switch>
+        </div>
+      </ModalComponent>
+
+      {mostrarModalEspecie && (
+        <CrearEspecieModal
+          onClose={() => setMostrarModalEspecie(false)}
+          onCreate={handleEspecieCreada}
+        />
+      )}
+    </>
   );
 };

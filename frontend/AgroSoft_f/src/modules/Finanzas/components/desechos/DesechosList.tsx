@@ -8,12 +8,12 @@ import EditarDesechosModal from "./EditarDesechosModal";
 import { CrearDesechosModal } from "./CrearDesechosModal";
 import EliminarDesechoModal from "./EliminarDesechos";
 import { Desechos } from "../../types";
-import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetTiposDesechos } from "../../hooks/tiposDesechos/useGetTiposDesechos";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 
 export function DesechosList() {
   const { data, isLoading, error } = useGetDesechos();
-  const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
+  const { data : plantacion, isLoading: loadingPlantacion } = useGetPlantaciones()
   const { data : tiposDesechos, isLoading: loadingTiposDesechos } = useGetTiposDesechos()
 
   const { 
@@ -37,12 +37,12 @@ export function DesechosList() {
   } = useEliminarDesecho();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0,fk_TipoDesecho: 0,nombre: "", descripcion: ""});
+    handleCrear({ id: 0, fk_Plantacion: 0,fk_TipoDesecho: 0,nombre: "", descripcion: ""});
   };
 
   // Definición de columnas movida aquí
   const columnas = [
-    { name: "Cultivo", uid: "cultivo"  },
+    { name: "Plantacion", uid: "plantacion"  },
     { name: "Tipo Desecho", uid: "tipoDesecho" },
     { name: "Nombre", uid: "nombre" },
     { name: "Descripcion", uid: "descripcion" },
@@ -52,11 +52,11 @@ export function DesechosList() {
   // Función de renderizado movida aquí
   const renderCell = (item: Desechos, columnKey: React.Key) => {
     switch (columnKey) {
-      case "cultivo":
-        const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
-        return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
+      case "plantacion":
+        const plantaciones = plantacion?.find((c) => c.id === item.fk_Plantacion);
+        return <span>Plantacion de: {plantaciones ? plantaciones.fk_Cultivo.nombre : "No definido"}</span>;
       case "tipoDesecho":
-        const tipoDesecho = tiposDesechos?.find((c) => c.id === item.fk_Cultivo);
+        const tipoDesecho = tiposDesechos?.find((c) => c.id === item.fk_TipoDesecho);
         return <span>{tipoDesecho ? tipoDesecho.nombre : "No definido"}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
@@ -74,7 +74,7 @@ export function DesechosList() {
     }
   };
 
-  if (isLoading || loadingCultivo || loadingTiposDesechos) return <p>Cargando...</p>;
+  if (isLoading || loadingPlantacion || loadingTiposDesechos) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Desechos</p>;
 
   return (

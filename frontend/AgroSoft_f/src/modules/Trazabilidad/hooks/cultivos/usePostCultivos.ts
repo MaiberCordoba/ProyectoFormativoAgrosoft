@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postCultivos } from "../../api/cultivosApi";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 import { addToast } from "@heroui/toast";
 
 export const usePostCultivos = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Cultivos, Error, Cultivos>({
+  return useMutation<Cultivo, Error, Cultivo>({
     mutationKey: ['crearCultivos'],
     mutationFn: postCultivos,
     onSuccess: (data) => {

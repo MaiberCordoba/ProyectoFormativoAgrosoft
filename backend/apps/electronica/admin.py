@@ -1,9 +1,8 @@
-'''from django.contrib import admin
-from apps.electronica.models import Lote, Eras, Sensor, HumedadTerreno, PH
+from django.contrib import admin
+from apps.electronica.api.models.lote import Lote
+from apps.electronica.api.models.era import Eras
+
 # Register your models here.
 
 admin.site.register(Lote)
 admin.site.register(Eras)
-admin.site.register(Sensor)
-admin.site.register(HumedadTerreno)
-admin.site.register(PH)'''

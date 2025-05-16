@@ -11,4 +11,4 @@ class Afecciones(models.Model):
     estado = models.CharField(max_length=30, choices=estado_choises, default="ST")
 
     def __str__(self):
-        return self.estado
+        return ("Plaga: " +str(self.fk_Plaga.nombre) + " cultivo: " + str(self.fk_Plantacion.fk_Cultivo) + " Era: " + str(self.fk_Plantacion.fk_Era))

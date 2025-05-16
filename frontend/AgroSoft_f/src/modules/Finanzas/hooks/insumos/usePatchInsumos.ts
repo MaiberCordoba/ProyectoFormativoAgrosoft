@@ -6,10 +6,9 @@ import { addToast } from "@heroui/react";
 export const usePatchInsumos = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Insumos, Error, { id: number; data: Partial<Insumos> }>({
+  return useMutation<Insumos, Error,{ id: number; data: FormData }>({
     mutationFn: ({ id, data }) => patchInsumos(id, data),
     onSuccess: (updatedInsumos, variables) => {
-      // Actualiza la caché después de una mutación exitosa
       queryClient.setQueryData<Insumos[]>(['insumos'], (oldData) => {
         if (!oldData) return oldData;
         return oldData.map((insumo) =>

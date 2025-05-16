@@ -5,6 +5,7 @@ import { Actividades } from '../../types';
 import { Input, Textarea, Select, SelectItem } from '@heroui/react';
 import { useGetCultivos } from '@/modules/Trazabilidad/hooks/cultivos/useGetCultivos'; 
 import { useGetUsers } from '@/modules/Users/hooks/useGetUsers';
+import { useGetTipoActividad } from '../../hooks/tipoActividad/useGetTiposActividad';
 
 interface EditarActividadesModalProps {
   actividad: Actividades; // La actividad que se está editando
@@ -18,14 +19,16 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
   const [estado, setEstado] = useState<"AS" | "CO" | "CA">(actividad.estado);
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(actividad.fk_Cultivo || null);  
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(actividad.fk_Usuario || null); 
+  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(actividad.fk_TipoActividad || null); 
 
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
   const { data: users, isLoading: isLoadingUsers } = useGetUsers();
+  const { data:tiposActividad, isLoading: isLoadingTiposActividad} = useGetTipoActividad()
   const { mutate, isPending } = usePatchActividades();  
 
   const handleSubmit = () => {
     // Verificar que todos los campos estén completos
-    if (!fk_Cultivo || !fk_Usuario || !titulo || !descripcion || !fecha || !estado) {
+    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -39,7 +42,8 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
           fecha,
           estado,
           fk_Cultivo,  
-          fk_Usuario,  
+          fk_Usuario, 
+          fk_TipoActividad, 
         },
       },
       {
@@ -134,6 +138,23 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         >
           {(users || []).map((usuario) => (
             <SelectItem key={usuario.id.toString()}>{usuario.nombre}</SelectItem>
+          ))}
+        </Select>
+      )}
+      {isLoadingTiposActividad ? (
+        <p>Cargando tipos de actividad...</p>
+      ) : (
+        <Select
+          label="Tipos de actividad"
+          placeholder="Selecciona el tipo de actividad"
+          selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []} 
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];  
+            setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);  
+          }}
+        >
+          {(tiposActividad || []).map((tipoActividad) => (
+            <SelectItem key={tipoActividad.id.toString()}>{tipoActividad.nombre}</SelectItem>
           ))}
         </Select>
       )}

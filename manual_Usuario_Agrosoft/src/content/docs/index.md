@@ -48,7 +48,7 @@ description: Guía completa para nuevos usuarios
   }
 </style>
 
-# 🌱 Bienvenido al Manual de Usuario de AgroSoft  
+# Bienvenido al Manual de Usuario de AgroSoft  
 
 Este manual te acompañará en tu primer contacto con **AgroSoft**, la plataforma diseñada para simplificar la gestión agrícola. Aquí encontrarás:  
 

@@ -1,5 +1,4 @@
 import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
-import { useGetEspecies } from "../../hooks/especies/useGetEpecies"; // Nuevo hook para obtener especies
 import { useEditarCultivos } from "../../hooks/cultivos/useEditarCultivos";
 import { useCrearCultivos } from "../../hooks/cultivos/useCrearCultivos";
 import { useEliminarCultivos } from "../../hooks/cultivos/useEliminarCultivos";
@@ -8,11 +7,10 @@ import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarCultivoModal from "./EditarCultivosModal";
 import { CrearCultivoModal } from "./CrearCultivosModal";
 import EliminarCultivoModal from "./EliminarCultivo";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
-  const { data: especies } = useGetEspecies(); // Obtener las especies
 
   const { 
     isOpen: isEditModalOpen, 
@@ -35,39 +33,28 @@ export function CultivosList() {
   } = useEliminarCultivos();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", fk_Especie: 0, unidades: 0, fechaSiembra: "", activo: true });
+    handleCrear({
+      nombre: "",
+      activo: true,
+      fk_Especie: { nombre: "" },
+    });
   };
 
-  // Crear un mapa de especies para obtener el nombre por ID
-  const especiesMap = especies?.reduce((map, especie) => {
-    map[especie.id] = especie.nombre;
-    return map;
-  }, {} as Record<number, string>) || {};
-
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
-    { name: "Especie", uid: "fk_especie", sortable: true },
-    { name: "Unidades", uid: "unidades" },
-    { name: "Fecha de Siembra", uid: "fechasiembra", sortable: true },
-    { name: "Activo", uid: "activo", sortable: true },
+    { name: "Especie", uid: "especies", sortable: false }, // corregido
+    { name: "Estado", uid: "activo", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
-
-  const renderCell = (item: Cultivos, columnKey: React.Key) => {
+  
+  const renderCell = (item: Cultivo, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
-      case "fk_especie":
-        return <span>{especiesMap[item.fk_Especie] || "Desconocido"}</span>; // Muestra el nombre en lugar del ID
-      case "unidades":
-        return <span>{item.unidades}</span>;
-      case "fechasiembra":
-        return <span>{item.fechaSiembra}</span>;
+      case "especies":
+        return <span>{item.especies?.nombre || "Sin especie"}</span>;
       case "activo":
-        return <span>{item.activo ? "Sí" : "No"}</span>;
+        return <span>{item.activo ? "Activo" : "Inactivo"}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -76,9 +63,10 @@ export function CultivosList() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof Cultivos])}</span>;
+        return <span>{String(item[columnKey as keyof Cultivo])}</span>;
     }
   };
+  
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los cultivos</p>;
@@ -94,7 +82,6 @@ export function CultivosList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && CultivosEditada && (
         <EditarCultivoModal
           cultivo={CultivosEditada}

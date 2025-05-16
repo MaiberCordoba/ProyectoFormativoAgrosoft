@@ -4,7 +4,7 @@ import { Especies } from "../../types";
 
 export const useGetEspecies = () => {
   return useQuery<Especies[], Error>({
-    queryKey: ["Especies"], 
+    queryKey: ["especies"], 
     queryFn: getEspecies, 
   });
 };

@@ -3,8 +3,12 @@ import { getVentas } from "../../api/ventasApi";
 import { Ventas } from "../../types";
 
 export const useGetVentas = () => {
-  return useQuery<Ventas[], Error>({
+  const query = useQuery<Ventas[], Error>({
     queryKey: ["ventas"], 
     queryFn: getVentas, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };

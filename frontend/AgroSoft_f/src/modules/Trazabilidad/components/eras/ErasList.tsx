@@ -1,4 +1,5 @@
 import { useGetEras } from "../../hooks/eras/useGetEras";
+import { useGetLotes } from "../../hooks/lotes/useGetLotes";
 import { useEditarEras } from "../../hooks/eras/useEditarEras";
 import { useCrearEras } from "../../hooks/eras/useCrearEras";
 import { useEliminarEras } from "../../hooks/eras/useEliminarEras";
@@ -10,59 +11,94 @@ import EliminarEraModal from "./EliminarEras";
 import { Eras } from "../../types";
 
 export function EraList() {
-  const { data, isLoading, error } = useGetEras();
+  const { data: eras, isLoading, error } = useGetEras();
+  const { data: lotes } = useGetLotes();
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    ErasEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    ErasEditada,
+    handleEditar,
   } = useEditarEras();
 
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearEras();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     ErasEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarEras();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_lote_id: 0, tamX: 0, tamY: 0, posX: 0, posY: 0, tipo: "" });
+    handleCrear({
+      id: 0,
+      tipo: "",
+      fk_lote: { nombre: "" },
+      latI1: null,
+      longI1: null,
+      latS1: null,
+      longS1: null,
+      latI2: null,
+      longI2: null,
+      latS2: null,
+      longS2: null,
+    });
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "Lote", uid: "fk_lote_id", sortable: true },
-    { name: "Tipo", uid: "tipo" },
-    { name: "Tamaño X", uid: "tamX" },
-    { name: "Tamaño Y", uid: "tamY" },
-    { name: "Posición X", uid: "posX" },
-    { name: "Posición Y", uid: "posY" },
+    { name: "Numero #", uid: "tipo", sortable: true },
+    { name: "Lote", uid: "fk_lote", sortable: true },
+    { name: "LatI1", uid: "latI1" },
+    { name: "LongI1", uid: "longI1" },
+    { name: "LatS1", uid: "latS1" },
+    { name: "LongS1", uid: "longS1" },
+    { name: "LatI2", uid: "latI2" },
+    { name: "LongI2", uid: "longI2" },
+    { name: "LatS2", uid: "latS2" },
+    { name: "LongS2", uid: "longS2" },
     { name: "Acciones", uid: "acciones" },
   ];
 
+  const getLoteNombre = (fk_lote: any): string => {
+    // Si ya viene el nombre desde el backend
+    if (typeof fk_lote === "object" && fk_lote?.nombre) return fk_lote.nombre;
+
+    // Si solo viene un ID, lo buscamos en los lotes
+    if (typeof fk_lote === "number" && lotes) {
+      const loteEncontrado = lotes.find((l) => l.id === fk_lote);
+      return loteEncontrado?.nombre ?? "Sin asignar";
+    }
+
+    return "Sin asignar";
+  };
+
   const renderCell = (item: Eras, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
-      case "fk_lote_id":
-        return <span>{item.fk_lote?.nombre ?? "Sin asignar"}</span>; // 🔥 CORREGIDO AQUÍ
       case "tipo":
         return <span>{item.tipo}</span>;
-      case "tamX":
-        return <span>{item.tamX}</span>;
-      case "tamY":
-        return <span>{item.tamY}</span>;
-      case "posX":
-        return <span>{item.posX}</span>;
-      case "posY":
-        return <span>{item.posY}</span>;
+      case "fk_lote":
+        return <span>{getLoteNombre(item.fk_lote)}</span>;
+      case "latI1":
+        return <span>{item.latI1}</span>;
+      case "longI1":
+        return <span>{item.longI1}</span>;
+      case "latS1":
+        return <span>{item.latS1}</span>;
+      case "longS1":
+        return <span>{item.longS1}</span>;
+      case "latI2":
+        return <span>{item.latI2}</span>;
+      case "longI2":
+        return <span>{item.longI2}</span>;
+      case "latS2":
+        return <span>{item.latS2}</span>;
+      case "longS2":
+        return <span>{item.longS2}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -81,27 +117,19 @@ export function EraList() {
   return (
     <div className="p-4">
       <TablaReutilizable
-        datos={data || []}
+        datos={eras || []}
         columnas={columnas}
-        claveBusqueda="id"
-        placeholderBusqueda="Buscar por ID"
+        claveBusqueda="tipo"
+        placeholderBusqueda="Buscar por numero de era"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && ErasEditada && (
-        <EditarEraModal
-          era={ErasEditada}
-          onClose={closeEditModal}
-        />
+        <EditarEraModal era={ErasEditada} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && (
-        <CrearEraModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearEraModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && ErasEliminada && (
         <EliminarEraModal

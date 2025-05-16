@@ -5,8 +5,9 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
     class Meta:
         model = MovimientoInventario
         fields = '__all__'
+        read_only_fields = ['tipo','fk_Insumo','fk_Herramienta','fk_UsoInsumo','fk_UsoHerramienta','unidades']
 
-    def validate(self, data):
+    """ def validate(self, data):
         relacionados = [
             data.get('fk_Insumo'),
             data.get('fk_Herramienta'),
@@ -62,4 +63,4 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                 cosecha.cantidadDisponible -= cantidad
             cosecha.save()
 
-        return super().create(validated_data)
+        return super().create(validated_data) """

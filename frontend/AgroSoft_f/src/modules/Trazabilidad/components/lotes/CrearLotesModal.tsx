@@ -1,26 +1,32 @@
 import { useState } from "react";
-import { usePostLotes } from "../../hooks/lotes/usePostLotes"; // Hook para registrar lotes
+import { usePostLotes } from "../../hooks/lotes/usePostLotes";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
+import { Lotes } from "../../types";
 
 interface CrearLoteModalProps {
   onClose: () => void;
+  onCreate: (nuevoLote: Lotes) => void;
 }
 
-export const CrearLoteModal = ({ onClose }: CrearLoteModalProps) => {
+export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [tamX, setTamX] = useState<number | null>(null);
-  const [tamY, setTamY] = useState<number | null>(null);
-  const [posX, setPosX] = useState<number | null>(null);
-  const [posY, setPosY] = useState<number | null>(null);
-  const [estado, setEstado] = useState<string>("di"); // "di" por defecto
+  const [latI1, setLatI1] = useState<number | null>(null);
+  const [longI1, setLongI1] = useState<number | null>(null);
+  const [latS1, setLatS1] = useState<number | null>(null);
+  const [longS1, setLongS1] = useState<number | null>(null);
+  const [latI2, setLatI2] = useState<number | null>(null);
+  const [longI2, setLongI2] = useState<number | null>(null);
+  const [latS2, setLatS2] = useState<number | null>(null);
+  const [longS2, setLongS2] = useState<number | null>(null);
+  const [estado, setEstado] = useState<string>("di"); // "di" = disponible
 
   const { mutate, isPending } = usePostLotes();
 
   const handleSubmit = () => {
-    if (!nombre || tamX === null || tamY === null || posX === null || posY === null) {
-      console.log("Por favor, completa todos los campos obligatorios.");
+    if (!nombre) {
+      console.log("El nombre es obligatorio.");
       return;
     }
 
@@ -28,21 +34,31 @@ export const CrearLoteModal = ({ onClose }: CrearLoteModalProps) => {
       {
         nombre,
         descripcion,
-        tamX,
-        tamY,
-        posX,
-        posY,
-        estado: estado === "di", // Convertir "di" a `true` y "oc" a `false`
+        latI1,
+        longI1,
+        latS1,
+        longS1,
+        latI2,
+        longI2,
+        latS2,
+        longS2,
+        estado: estado === "di",
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          onCreate(data);
           onClose();
+          // reset form
           setNombre("");
           setDescripcion("");
-          setTamX(null);
-          setTamY(null);
-          setPosX(null);
-          setPosY(null);
+          setLatI1(null);
+          setLongI1(null);
+          setLatS1(null);
+          setLongS1(null);
+          setLatI2(null);
+          setLongI2(null);
+          setLatS2(null);
+          setLongS2(null);
           setEstado("di");
         },
       }
@@ -78,37 +94,19 @@ export const CrearLoteModal = ({ onClose }: CrearLoteModalProps) => {
         onChange={(e) => setDescripcion(e.target.value)}
       />
 
-      <Input
-        label="Tamaño X"
-        type="number"
-        value={tamX !== null ? tamX.toString() : ""}
-        onChange={(e) => setTamX(e.target.value === "" ? null : Number(e.target.value))}
-        required
-      />
+<div className="grid grid-cols-2 gap-2 mt-2">
+          <Input label="Lat. Inf. Izquierda" type="number" value={(latI1 ?? "").toString()} onChange={(e) => setLatI1(Number(e.target.value))} />
+          <Input label="Long. Inf. Izquierda" type="number" value={(longI1 ?? "").toString()} onChange={(e) => setLongI1(Number(e.target.value))} />
 
-      <Input
-        label="Tamaño Y"
-        type="number"
-        value={tamY !== null ? tamY.toString() : ""}
-        onChange={(e) => setTamY(e.target.value === "" ? null : Number(e.target.value))}
-        required
-      />
+          <Input label="Lat. Sup. Izquierda" type="number" value={(latS1 ?? "").toString()} onChange={(e) => setLatS1(Number(e.target.value))} />
+          <Input label="Long. Sup. Izquierda" type="number" value={(longS1 ?? "").toString()} onChange={(e) => setLongS1(Number(e.target.value))} />
 
-      <Input
-        label="Posición X"
-        type="number"
-        value={posX !== null ? posX.toString() : ""}
-        onChange={(e) => setPosX(e.target.value === "" ? null : Number(e.target.value))}
-        required
-      />
+          <Input label="Lat. Inf. Derecha" type="number" value={(latI2 ?? "").toString()} onChange={(e) => setLatI2(Number(e.target.value))} />
+          <Input label="Long. Inf. Derecha" type="number" value={(longI2 ?? "").toString()} onChange={(e) => setLongI2(Number(e.target.value))} />
 
-      <Input
-        label="Posición Y"
-        type="number"
-        value={posY !== null ? posY.toString() : ""}
-        onChange={(e) => setPosY(e.target.value === "" ? null : Number(e.target.value))}
-        required
-      />
+          <Input label="Lat. Sup. Derecha" type="number" value={(latS2 ?? "").toString()} onChange={(e) => setLatS2(Number(e.target.value))} />
+          <Input label="Long. Sup. Derecha" type="number" value={(longS2 ?? "").toString()} onChange={(e) => setLongS2(Number(e.target.value))} />
+        </div>
 
       <Select
         label="Estado"

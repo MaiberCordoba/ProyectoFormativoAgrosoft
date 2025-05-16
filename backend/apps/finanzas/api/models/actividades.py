@@ -2,6 +2,7 @@ from django.db import models
 from apps.finanzas.api.models.cultivos import Cultivos
 from apps.finanzas.api.models.tipoActividad import TipoActividad
 from apps.users.models import Usuario
+from apps.trazabilidad.api.models.PlantacionesModel import Plantaciones
 
 class Actividades(models.Model):
     ESTADO_CHOICES = [
@@ -10,6 +11,7 @@ class Actividades(models.Model):
         ('CA',"Cancelada")
     ]
     fk_Cultivo = models.ForeignKey(Cultivos, on_delete = models.SET_NULL, null= True)
+    fk_Plantacion = models.ForeignKey(Plantaciones, on_delete = models.SET_NULL, null= True)
     fk_Usuario=models.ForeignKey(Usuario, on_delete= models.SET_NULL,null=True)
     fk_TipoActividad=models.ForeignKey(TipoActividad, on_delete= models.SET_NULL,null=True)
     titulo = models.CharField(max_length=50)
@@ -17,4 +19,4 @@ class Actividades(models.Model):
     fecha =models.DateField(auto_now=False)
     estado=models.CharField(max_length=3,choices=ESTADO_CHOICES,default='AS')
     def __str__(self):
-        return self.titulo
+        return ("fecha: " + str(self.fecha) + " titulo: " + str(self.titulo) + " encargado: " + str(self.fk_Usuario.nombre))

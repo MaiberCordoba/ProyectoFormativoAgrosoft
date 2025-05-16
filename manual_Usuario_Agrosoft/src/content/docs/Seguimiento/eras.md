@@ -3,11 +3,11 @@ title: Eras
 description: Guía para gestionar eras en el sistema
 ---
 
-## 🏞️ Uso de Eras
+## Uso de Eras
 
 El módulo **Eras** permite registrar y administrar áreas específicas de cultivo dentro del sistema, facilitando su control y planificación. **debe existir al menos un lote registrado en el sistema**.
 
-### 1️⃣ **Acceder a la sección de Eras**
+### **Acceder a la sección de Eras**
 Para gestionar las eras, sigue estos pasos:
 1. Inicia sesión en el sistema.
 2. En el menú de navegación, selecciona **Seguimiento de Cultivos**.
@@ -16,7 +16,7 @@ Para gestionar las eras, sigue estos pasos:
 ## Página de eras
 ![Captura de pantalla eras](../../../../public/eras.png)
 
-### 2️⃣ **Registrar una nueva Era**
+### **Registrar una nueva Era**
 Para agregar una nueva era:
 1. Dentro de la pantalla de **Eras**, haz clic en el botón **"Agregar"**.
 2. Completa los siguientes campos:
@@ -30,7 +30,7 @@ Para agregar una nueva era:
    - **Posición Y:** Ubicación en el eje Y dentro del lote.
 3. Haz clic en **"Guardar"** para registrar la era.
 
-### 3️⃣ **Consultar, editar y eliminar eras existentes**
+### **Consultar, editar y eliminar eras existentes**
 - Para ver la información de una era, usa la lista disponible en la sección.
 ## Lista de eras
 ![Captura de pantalla](../../../../public/listaeras.png)

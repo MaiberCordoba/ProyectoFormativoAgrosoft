@@ -11,4 +11,4 @@ class Ventas(models.Model):
     valorTotal = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return str(self.fecha)
+        return 'FECHA VENTA: ' + str(self.fecha) + ' COSECHA: ' + str(self.fk_Cosecha)

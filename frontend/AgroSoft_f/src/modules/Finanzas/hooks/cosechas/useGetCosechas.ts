@@ -3,9 +3,13 @@ import { getCosechas } from "../../api/cosechasApi";
 import { Cosechas } from "../../types";
 
 export const useGetCosechas = () => {
-  return useQuery<Cosechas[], Error>({
+    const query = useQuery<Cosechas[], Error>({
     queryKey: ["cosechas"], 
     queryFn: getCosechas, 
   });
+  return{
+    ...query,
+    refetch : query.refetch
+  }
 };
 

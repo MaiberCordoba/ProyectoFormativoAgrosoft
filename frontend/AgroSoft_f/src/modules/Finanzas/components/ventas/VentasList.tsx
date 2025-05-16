@@ -9,10 +9,12 @@ import { CrearVentasModal } from "./CrearVentasModal";
 import EliminarVentaModal from "./EliminarVentas";
 import { Ventas } from "../../types";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 
 export function VentasList() {
   const { data, isLoading, error } = useGetVentas();
   const { data : cosechas, isLoading : loadingCosechas } = useGetCosechas();
+  const { data : unidadesMedida, isLoading : loadingUnidadesMedida } = useGetUnidadesMedida();
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -34,13 +36,16 @@ export function VentasList() {
   } = useEliminarVenta();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cosecha: 0, precioUnitario: 0, fecha: "" });
+    handleCrear({ id: 0, fk_Cosecha: 0, precioUnitario: 0, fecha: "", fk_UnidadMedida: 0,cantidad:0,valorTotal:0});
   };
 
   const columnas = [
-    { name: "fecha de Cosecha", uid: "cosecha" },
-    { name: "Precio Unitario", uid: "precioUnitario" },
     { name: "Fecha Venta", uid: "fecha" },
+    { name: "fecha de Cosecha", uid: "cosecha" },
+    { name: "Unidad de medida", uid: "unidadMedida" },
+    { name: "Cantidad", uid: "cantidad" },
+    { name: "Precio Unitario", uid: "precioUnitario" },
+    { name: "Valor Total de venta", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -53,6 +58,13 @@ export function VentasList() {
         return <span>{item.precioUnitario}</span>;
       case "fecha":
         return <span>{item.fecha}</span>;
+      case "unidadMedida":
+        const unidadMedida = unidadesMedida?.find((c) => c.id === item.fk_UnidadMedida);
+        return <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>;
+      case "cantidad":
+          return <span>{item.cantidad}</span>;
+      case "valorTotal":
+          return <span>{item.valorTotal}</span>;
       case "acciones":
         return (
           <AccionesTabla
@@ -65,7 +77,7 @@ export function VentasList() {
     }
   };
 
-  if (isLoading || loadingCosechas) return <p>Cargando...</p>;
+  if (isLoading || loadingCosechas || loadingUnidadesMedida) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las Ventas</p>;
 
   return (

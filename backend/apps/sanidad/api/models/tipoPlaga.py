@@ -1,7 +1,7 @@
 from django.db import models
 
 class tipoPlaga(models.Model):
-    nombre = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=30,null=False,unique=True)
     descripcion = models.TextField()
     img = models.ImageField(upload_to='tipoPlaga/', null=True, blank=True)
 

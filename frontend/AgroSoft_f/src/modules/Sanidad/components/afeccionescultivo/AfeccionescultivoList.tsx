@@ -9,7 +9,7 @@ import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarAfeccionCultivoModal from "./EditarAfeccionescultivoModal";
 import {CrearAfeccionCultivoModal } from "./CrearAfeccionescultivoModal";
 import EliminarAfeccionCultivoModal from "./EliminarAfeccionescultivo";
-import { AfeccionesCultivo } from "../../types";
+import { AfeccionesCultivo, EstadoAfeccion } from "../../types";
 
 export function AfeccionesCultivoList() {
   const { data, isLoading, error } = useGetAfeccionesCultivo();
@@ -36,28 +36,39 @@ export function AfeccionesCultivoList() {
   } = useEliminarAfeccionCultivo();
 
   const handleCrearNuevo = () => {
-    handleCrear({ fk_Plantacion: 0, fk_Plaga: 0, fechaEncuentro: "", estado: "" });
+    handleCrear({ fk_Plantacion: 0, fk_Plaga: 0, fechaEncuentro: "", estado: "ST" });
   };
 
-  const columnas = [
-    { name: "Plantación", uid: "fk_Plantacion", sortable: true },
-    { name: "afecciones", uid: "fk_Plaga" },
-    { name: "Fecha Encuentro", uid: "fechaEncuentro" },
+   const columnas = [
+    { name: "Cultivo", uid: "cultivo", sortable: true },
+    { name: "Especie", uid: "especie" },
+    { name: "Era", uid: "era" },
+    { name: "Lote", uid: "lote" },
+    { name: "Plaga", uid: "plaga" },
+    { name: "Tipo Plaga", uid: "tipoPlaga" },
+    { name: "Fecha Detección", uid: "fechaEncuentro" },
     { name: "Estado", uid: "estado" },
     { name: "Acciones", uid: "acciones" },
   ];
 
-  const renderCell = (item: AfeccionesCultivo, columnKey: React.Key) => {
+   const renderCell = (item: AfeccionesCultivo, columnKey: React.Key) => {
     switch (columnKey) {
-      case "fk_Plantacion":
-        return <span>{item.fk_Plantacion || "No definido"}</span>;
-      case "fk_Plaga":
-        const afeccionesNombre = afecciones?.find(t => t.id === item.fk_Plaga)?.nombre || "No definido";
-        return <span>{afeccionesNombre}</span>;
+      case "cultivo":
+        return <span>{item.plantaciones?.cultivo?.nombre || "No definido"}</span>;
+      case "especie":
+        return <span>{item.plantaciones?.cultivo?.especies?.nombre || "No definido"}</span>;
+      case "era":
+        return <span>{item.plantaciones?.eras?.tipo || "No definido"}</span>;
+      case "lote":
+        return <span>{item.plantaciones?.eras?.Lote?.nombre || "No definido"}</span>;
+      case "plaga":
+        return <span>{item.plagas?.nombre || "No definido"}</span>;
+      case "tipoPlaga":
+        return <span>{item.plagas?.tipoPlaga?.nombre || "No definido"}</span>;
       case "fechaEncuentro":
         return <span>{item.fechaEncuentro}</span>;
       case "estado":
-        return <span>{item.estado}</span>;
+        return <span>{item.estado ? EstadoAfeccion[item.estado] : "No definido"}</span>;
       case "acciones":
         return (
           <AccionesTabla

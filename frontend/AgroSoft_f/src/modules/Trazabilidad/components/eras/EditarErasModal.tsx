@@ -11,18 +11,30 @@ interface EditarEraModalProps {
 }
 
 const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
-  const [fk_lote_id, setFkLoteId] = useState<number | null>(era.fk_lote_id ?? null);
-  const [tipo, setTipo] = useState<string>(era.tipo ?? "");
-  const [tamX, setTamX] = useState<number>(era.tamX ?? 0);
-  const [tamY, setTamY] = useState<number>(era.tamY ?? 0);
-  const [posX, setPosX] = useState<number>(era.posX ?? 0);
-  const [posY, setPosY] = useState<number>(era.posY ?? 0);
+  const [fk_lote, setFkLoteId] = useState<number | null>(era.fk_lote?.id ?? null);
+  const [tipo, setTipo] = useState(era.tipo ?? "");
+
+  const [latI1, setLatI1] = useState<number | null>(era.latI1 ?? null);
+  const [longI1, setLongI1] = useState<number | null>(era.longI1 ?? null);
+  const [latS1, setLatS1] = useState<number | null>(era.latS1 ?? null);
+  const [longS1, setLongS1] = useState<number | null>(era.longS1 ?? null);
+  const [latI2, setLatI2] = useState<number | null>(era.latI2 ?? null);
+  const [longI2, setLongI2] = useState<number | null>(era.longI2 ?? null);
+  const [latS2, setLatS2] = useState<number | null>(era.latS2 ?? null);
+  const [longS2, setLongS2] = useState<number | null>(era.longS2 ?? null);
 
   const { mutate, isPending } = usePatchEras();
   const { data: lotes, isLoading: isLoadingLotes } = useGetLotes();
 
   const handleSubmit = () => {
-    if (fk_lote_id === null || tipo.trim() === "" || tamX === null || tamY === null || posX === null || posY === null) {
+    if (
+      fk_lote === null ||
+      tipo.trim() === "" ||
+      latI1 === null || longI1 === null ||
+      latS1 === null || longS1 === null ||
+      latI2 === null || longI2 === null ||
+      latS2 === null || longS2 === null
+    ) {
       console.error("⚠️ Error: Todos los campos son obligatorios.");
       return;
     }
@@ -31,12 +43,16 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
       {
         id: era.id ?? 0,
         data: {
-          fk_lote_id,
+          fk_lote,
           tipo,
-          tamX,
-          tamY,
-          posX,
-          posY,
+          latI1,
+          longI1,
+          latS1,
+          longS1,
+          latI2,
+          longI2,
+          latS2,
+          longS2,
         },
       },
       {
@@ -67,7 +83,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         <Select
           label="Lote"
           placeholder="Selecciona un lote"
-          selectedKeys={fk_lote_id ? [fk_lote_id.toString()] : []}
+          selectedKeys={fk_lote ? [fk_lote.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
             setFkLoteId(Number(selectedKey) || null);
@@ -79,45 +95,21 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         </Select>
       )}
 
-      <Input
-        label="Tipo"
-        type="text"
-        value={tipo}
-        onChange={(e) => setTipo(e.target.value)}
-        required
-      />
+      <Input label="Tipo" value={tipo} onChange={(e) => setTipo(e.target.value)} required />
 
-      <Input
-        label="Tamaño X"
-        type="number"
-        value={tamX !== null ? tamX.toString() : ""}
-        onChange={(e) => setTamX(Number(e.target.value) || 0)}
-        required
-      />
+      <div className="grid grid-cols-2 gap-2 mt-2">
+        <Input label="Lat. Inf. Izquierda" type="number" value={(latI1 ?? "").toString()} onChange={(e) => setLatI1(Number(e.target.value))} />
+        <Input label="Long. Inf. Izquierda" type="number" value={(longI1 ?? "").toString()} onChange={(e) => setLongI1(Number(e.target.value))} />
 
-      <Input
-        label="Tamaño Y"
-        type="number"
-        value={tamY !== null ? tamY.toString() : ""}
-        onChange={(e) => setTamY(Number(e.target.value) || 0)}
-        required
-      />
+        <Input label="Lat. Sup. Izquierda" type="number" value={(latS1 ?? "").toString()} onChange={(e) => setLatS1(Number(e.target.value))} />
+        <Input label="Long. Sup. Izquierda" type="number" value={(longS1 ?? "").toString()} onChange={(e) => setLongS1(Number(e.target.value))} />
 
-      <Input
-        label="Posición X"
-        type="number"
-        value={posX !== null ? posX.toString() : ""}
-        onChange={(e) => setPosX(Number(e.target.value) || 0)}
-        required
-      />
+        <Input label="Lat. Inf. Derecha" type="number" value={(latI2 ?? "").toString()} onChange={(e) => setLatI2(Number(e.target.value))} />
+        <Input label="Long. Inf. Derecha" type="number" value={(longI2 ?? "").toString()} onChange={(e) => setLongI2(Number(e.target.value))} />
 
-      <Input
-        label="Posición Y"
-        type="number"
-        value={posY !== null ? posY.toString() : ""}
-        onChange={(e) => setPosY(Number(e.target.value) || 0)}
-        required
-      />
+        <Input label="Lat. Sup. Derecha" type="number" value={(latS2 ?? "").toString()} onChange={(e) => setLatS2(Number(e.target.value))} />
+        <Input label="Long. Sup. Derecha" type="number" value={(longS2 ?? "").toString()} onChange={(e) => setLongS2(Number(e.target.value))} />
+      </div>
     </ModalComponent>
   );
 };
