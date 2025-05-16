@@ -77,41 +77,50 @@ export default function CalendarioActividades() {
       .catch((err) => console.error("Error cargando datos:", err));
   }, []);
 
+  const containerStyle: React.CSSProperties = {
+    backgroundColor: "white",
+    padding: "16px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+  };
+
   return (
-    <Calendar
-      localizer={localizer}
-      events={eventos}
-      startAccessor="start"
-      endAccessor="end"
-      messages={messages}
-      culture="es"
-      style={{ height: 600 }}
-      views={["month", "agenda"]}
-      components={{
-        agenda: {
-          time: () => null,
-        },
-      }}
-      eventPropGetter={(event) => {
-        const backgroundColor = event.tipo === "actividad" ? "#12A34A" : "#06202B";
-        return {
-          style: {
-            backgroundColor,
-            color: "white",
-            borderRadius: "5px",
-            padding: "2px 5px",
+    <div style={containerStyle}>
+      <Calendar
+        localizer={localizer}
+        events={eventos}
+        startAccessor="start"
+        endAccessor="end"
+        messages={messages}
+        culture="es"
+        style={{ height: 600 }}
+        views={["month", "agenda"]}
+        components={{
+          agenda: {
+            time: () => null,
           },
-        };
-      }}
-      dayPropGetter={(date) => {
-        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-        return {
-          style: {
-            backgroundColor: isWeekend ? "#f9fcff" : "#f9fcff",
-            border: "1px solid #e0e0e0",
-          },
-        };
-      }}
-    />
+        }}
+        eventPropGetter={(event) => {
+          const backgroundColor = event.tipo === "actividad" ? "#12A34A" : "#06202B";
+          return {
+            style: {
+              backgroundColor,
+              color: "white",
+              borderRadius: "5px",
+              padding: "2px 5px",
+            },
+          };
+        }}
+        dayPropGetter={(date) => {
+          const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+          return {
+            style: {
+              backgroundColor: isWeekend ? "#f9fcff" : "#f9fcff",
+              border: "1px solid #e0e0e0",
+            },
+          };
+        }}
+      />
+    </div>
   );
 }
