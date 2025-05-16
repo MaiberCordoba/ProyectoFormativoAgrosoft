@@ -1,19 +1,17 @@
 import React from "react";
-import { 
-  Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, 
-  Button, Chip, SortDescriptor 
+import {
+  Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
+  Button, Chip, SortDescriptor
 } from "@heroui/react";
 import { useFiltrado } from "../../../hooks/useFiltrado";
 import { useFilasPorPagina } from "../../../hooks/useFilasPorPagina";
 import { usePaginacion } from "../../../hooks/usePaginacion";
-import { useColumnasVisibles } from "@/hooks/useColumnasVisibles"; 
+import { useColumnasVisibles } from "@/hooks/useColumnasVisibles";
 import { FiltrosTabla } from "./FiltrosTabla";
 import { FilasPorPagina } from "./filasPorPagina";
 import { PaginacionTabla } from "./PaginacionTabla";
 import { PlusIcon } from "lucide-react";
 import { SelectorColumnas } from "./SelectorDeColumnas";
-
-
 
 interface TablaReutilizableProps<T extends { [key: string]: any }> {
   datos: T[];
@@ -71,80 +69,70 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
     return [...datosPaginados].sort((a: T, b: T) => {
       const first = a[sortDescriptor.column as keyof T];
       const second = b[sortDescriptor.column as keyof T];
-      
+
       // Comparación básica para strings/numbers
       const cmp = String(first).localeCompare(String(second));
-      
+
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [datosPaginados, sortDescriptor]);
 
   return (
-    <div className="flex flex-col gap-3 max-w-4xl mx-auto p-4 bg-white rounded-lg shadow">
-    {/* Barra superior de controles - ESTRUCTURA CORREGIDA */}
-    <div className="flex flex-col sm:flex-row justify-between gap-3 items-center"> {/* Cambiado a items-center */}
-      {/* Grupo izquierdo: Búsqueda + Filas por página */}
-      <div className="flex flex-col sm:flex-row gap-3 flex-1 items-center">
-        <FiltrosTabla
-          valorFiltro={valorFiltro}
-          onCambiarBusqueda={setValorFiltro}
-          onLimpiarBusqueda={() => setValorFiltro("")}
-          opcionesEstado={opcionesEstado}
-          filtroEstado={filtroEstado}
-          onCambiarFiltroEstado={setFiltroEstado}
-          placeholderBusqueda={placeholderBusqueda}
-        />
-        
-        <FilasPorPagina
-          filasPorPagina={filasPorPagina}
-          onChange={handleChangeFilasPorPagina}
-        />
-      </div>
-
-      {/* Grupo derecho: SelectorColumnas + Agregar */}
-      <div className="flex gap-3 items-center"> {/* Añadido items-center aquí */}
-      
-
-        <SelectorColumnas 
-          columnas={columnas}
-          visibleColumns={visibleColumns}
-          setVisibleColumns={setVisibleColumns}
-        />
-        
-        <Button
-          color="success"
-          size="sm" // Tamaño pequeño
-          endContent={<PlusIcon size={16} />}
-          onPress={onCrearNuevo}
-          className="self-end text-white" // Alineación individual
-        >
-          Agregar
-        </Button>
-
-        {
-          onRegistroMasivo !== undefined &&
+    <div className="min-w-[800px] flex flex-col gap-3 max-w-4xl mx-auto p-4 bg-white rounded-lg shadow"> {/* Mantenemos el min-w en el contenedor */}
+      {/* Barra superior de controles - ESTRUCTURA CORREGIDA */}
+      <div className="flex flex-col sm:flex-row justify-between gap-3 items-center">
+        <div className="flex flex-col sm:flex-row gap-3 flex-1 items-center">
+          <FiltrosTabla
+            valorFiltro={valorFiltro}
+            onCambiarBusqueda={setValorFiltro}
+            onLimpiarBusqueda={() => setValorFiltro("")}
+            opcionesEstado={opcionesEstado}
+            filtroEstado={filtroEstado}
+            onCambiarFiltroEstado={setFiltroEstado}
+            placeholderBusqueda={placeholderBusqueda}
+          />
+          <FilasPorPagina
+            filasPorPagina={filasPorPagina}
+            onChange={handleChangeFilasPorPagina}
+          />
+        </div>
+        <div className="flex gap-3 items-center">
+          <SelectorColumnas
+            columnas={columnas}
+            visibleColumns={visibleColumns}
+            setVisibleColumns={setVisibleColumns}
+          />
           <Button
             color="success"
-            size="sm" // Tamaño pequeño
+            size="sm"
             endContent={<PlusIcon size={16} />}
-            onPress={onRegistroMasivo}
-            className="self-end text-white" // Alineación individual
+            onPress={onCrearNuevo}
+            className="self-end text-white"
           >
-            Registro masivo
+            Agregar
           </Button>
-
-        }
-
-        {renderReporteAction && renderReporteAction(datos)}
+          {onRegistroMasivo !== undefined && (
+            <Button
+              color="success"
+              size="sm"
+              endContent={<PlusIcon size={16} />}
+              onPress={onRegistroMasivo}
+              className="self-end text-white"
+            >
+              Registro masivo
+            </Button>
+          )}
+          {renderReporteAction && renderReporteAction(datos)}
+        </div>
       </div>
-    </div>
 
-      {/* Tabla con nuevas funcionalidades */}
+      {/* Tabla con estilos */}
       <div className="overflow-auto">
         <Table
           aria-label="Tabla reutilizable"
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
+          className="min-w-full table-auto border-collapse bg-white shadow-md rounded-lg"
         >
           <TableHeader columns={headerColumns}>
             {(column) => (
@@ -152,13 +140,13 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
                 key={column.uid}
                 align={column.uid === "actions" ? "center" : "start"}
                 allowsSorting={column.sortable}
-                className="bg-gray-50 px-4 py-2 text-sm font-medium"
+                className="bg-gray-100 text-left font-semibold text-gray-700 py-3 px-4"
               >
                 {column.name}
               </TableColumn>
             )}
           </TableHeader>
-          <TableBody 
+          <TableBody
             emptyContent={
               <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
                 <p className="text-gray-500 text-sm mb-2">No se encontraron registros</p>
@@ -169,22 +157,13 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
             }
           >
             {sortedItems.map((item) => (
-              <TableRow 
-                key={item.id} 
-                className="hover:bg-gray-50 transition-colors"
-              >
+              <TableRow key={item.id} className="hover:bg-gray-50 transition-colors">
                 {(columnKey) => (
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="py-3 px-4 border-b text-gray-700">
                     {columnKey === "status" && item.status ? (
-                      <Chip 
-                        
-                      >
-                        {item.status}
-                      </Chip>
+                      <Chip>{item.status}</Chip>
                     ) : (
-                      renderCell(item, columnKey
-                        
-                      )
+                      renderCell(item, columnKey)
                     )}
                   </TableCell>
                 )}
