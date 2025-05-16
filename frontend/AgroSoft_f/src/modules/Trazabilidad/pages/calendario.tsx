@@ -5,7 +5,7 @@ export default function CalendarioPage() {
     <div style={{ padding: "16px" }}>
       <div
         style={{
-          backgroundColor: "white",
+          backgroundColor: "#12A34A", // Color de fondo verde
           padding: "12px 24px",
           borderRadius: "8px",
           margin: "0 auto 20px",
@@ -14,7 +14,7 @@ export default function CalendarioPage() {
           textAlign: "center",
         }}
       >
-        <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#000", margin: 0 }}>
+        <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#FFFFFF", margin: 0 }}>
           Calendario de Actividades
         </h1>
       </div>

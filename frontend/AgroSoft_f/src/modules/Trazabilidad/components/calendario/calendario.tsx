@@ -82,6 +82,8 @@ export default function CalendarioActividades() {
     padding: "16px",
     borderRadius: "8px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    maxWidth: "900px", // ancho reducido
+    margin: "0 auto",  // centrado horizontal
   };
 
   return (
@@ -93,7 +95,7 @@ export default function CalendarioActividades() {
         endAccessor="end"
         messages={messages}
         culture="es"
-        style={{ height: 600 }}
+        style={{ height: 450 }} // altura reducida
         views={["month", "agenda"]}
         components={{
           agenda: {
@@ -115,7 +117,7 @@ export default function CalendarioActividades() {
           const isWeekend = date.getDay() === 0 || date.getDay() === 6;
           return {
             style: {
-              backgroundColor: isWeekend ? "#f9fcff" : "#f9fcff",
+              backgroundColor: "#f9fcff",
               border: "1px solid #e0e0e0",
             },
           };
