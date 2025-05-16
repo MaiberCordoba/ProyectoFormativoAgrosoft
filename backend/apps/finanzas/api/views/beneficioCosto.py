@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Sum, Q
+from django.db.models import Sum, Prefetch
 from apps.finanzas.api.models.cultivos import Cultivos
 from apps.finanzas.api.models.actividades import Actividades
 from apps.sanidad.api.models.controlesModel import Controles
@@ -11,6 +11,7 @@ from apps.finanzas.api.models.usosInsumos import UsosInsumos
 from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadControl
 from apps.finanzas.api.models.cosechas import Cosechas
 from apps.finanzas.api.models.ventas import Ventas
+from apps.trazabilidad.api.models.SemillerosModel import Semilleros
 
 class CultivoEconomicViewSet(viewsets.ViewSet):
     """
@@ -31,84 +32,91 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
         - Información del semillero, especie y variedad
         """
         try:
-            # 1. Obtener el cultivo con su semillero y relaciones anidadas
+            # 1. Obtener el cultivo con su especie
             cultivo = Cultivos.objects.select_related(
-                'fk_Semillero',
-                'fk_Semillero__fk_especie'  # Asumiendo que el semillero tiene FK a Especie
+                'fk_Especie'
+            ).prefetch_related(
+                'semilleros_set',
+                Prefetch('plantaciones_set', 
+                    queryset=Plantaciones.objects.prefetch_related(
+                        Prefetch('cosechas_set', queryset=Cosechas.objects.all())
+                    )
+                )
             ).get(pk=pk)
             
-            # 2. Obtener nombre y variedad directamente de la especie
-            nombre_especie = cultivo.fk_Semillero.fk_especie.nombre if cultivo.fk_Semillero.fk_especie else None
+            # 2. Obtener nombre de la especie
+            nombre_especie = cultivo.fk_Especie.nombre if cultivo.fk_Especie else None
             
-            # 4. Obtener todas las actividades relacionadas al cultivo
+            # 3. Obtener todas las actividades relacionadas al cultivo
             actividades = Actividades.objects.filter(fk_Cultivo=cultivo).select_related(
                 'fk_TipoActividad',
                 'fk_Usuario'
-            ).prefetch_related('tiempoactividadcontrol_set','usosinsumos_set__fk_UnidadMedida')  # ← Relación inversa para tiempos
+            ).prefetch_related(
+                'tiempoactividadcontrol_set',
+                Prefetch('usosinsumos_set', queryset=UsosInsumos.objects.select_related('fk_UnidadMedida'))
+            )
+            
+            # 4. Obtener plantaciones del cultivo
+            plantaciones = cultivo.plantaciones_set.all()
             
             # 5. Obtener controles CON RELACIONES COMPLETAS 
-            #    a. Primero obtenemos las plantaciones del cultivo
-            plantaciones_ids = Plantaciones.objects.filter(fk_Cultivo=cultivo).values_list('id', flat=True)
+            #    a. Obtener afecciones de las plantaciones
+            afecciones_ids = Afecciones.objects.filter(
+                fk_Plantacion__in=plantaciones
+            ).values_list('id', flat=True)
             
-            #    b. Luego obtenemos las afecciones de esas plantaciones
-            afecciones_ids = Afecciones.objects.filter(fk_Plantacion__in=plantaciones_ids).values_list('id', flat=True)
-            
-            #    c. Finalmente obtenemos los controles de esas afecciones
-            controles = Controles.objects.filter(fk_Afeccion__in=afecciones_ids).select_related(
+            #    b. Obtener controles de esas afecciones
+            controles = Controles.objects.filter(
+                fk_Afeccion__in=afecciones_ids
+            ).select_related(
                 'fk_TipoControl', 
                 'fk_Afeccion__fk_Plaga',        
                 'fk_Afeccion__fk_Plaga__fk_Tipo'   
             ).prefetch_related(
-                'usosinsumos_set__fk_UnidadMedida' 
+                Prefetch('usosinsumos_set', queryset=UsosInsumos.objects.select_related('fk_UnidadMedida'))
             )
             
             # 6. Calcular costos de insumos (actividades + controles)
-            #    a. Insumos usados en actividades
             insumos_actividades = UsosInsumos.objects.filter(
-                fk_Actividad__in=actividades,
-                fk_Actividad__isnull=False
+                fk_Actividad__in=actividades
             ).aggregate(total=Sum('costoUsoInsumo'))['total'] or 0
                 
-            #    b. Insumos usados en controles
             insumos_controles = UsosInsumos.objects.filter(
-                fk_Control__in=controles,
-                fk_Control__isnull=False
+                fk_Control__in=controles
             ).aggregate(total=Sum('costoUsoInsumo'))['total'] or 0
             
             total_insumos = int(round(insumos_actividades + insumos_controles))
             
-            # 5. Calcular costos de mano de obra
-            #    a. Mano de obra en actividades
+            # 7. Calcular costos de mano de obra
             mano_obra_actividades = TiempoActividadControl.objects.filter(
-                fk_actividad__in=actividades,
-                fk_actividad__isnull=False
+                fk_actividad__in=actividades
             ).aggregate(total=Sum('valorTotal'))['total'] or 0
             
-            #    b. Mano de obra en controles
             mano_obra_controles = TiempoActividadControl.objects.filter(
-                fk_control__in=controles,
-                fk_control__isnull=False
+                fk_control__in=controles
             ).aggregate(total=Sum('valorTotal'))['total'] or 0
             
             total_mano_obra = int(round(mano_obra_actividades + mano_obra_controles))
             
-            # 6. Calcular ventas totales del cultivo
-            cosechas = Cosechas.objects.filter(fk_Cultivo=cultivo).select_related('fk_UnidadMedida') 
-            ventas = Ventas.objects.filter(fk_Cosecha__in=cosechas).select_related('fk_UnidadMedida')
-            total_ventas = Ventas.objects.filter(
-                fk_Cosecha__in=cosechas
-            ).aggregate(total=Sum('valorTotal'))['total'] or 0
+            # 8. Calcular ventas totales (a través de plantaciones->cosechas->ventas)
+            cosechas_ids = Cosechas.objects.filter(
+                fk_Plantacion__in=plantaciones
+            ).values_list('id', flat=True)
             
-             # 5. Construir detalle de actividades
+            ventas = Ventas.objects.filter(
+                fk_Cosecha__id__in=cosechas_ids
+            ).select_related('fk_UnidadMedida')
+            
+            total_ventas = ventas.aggregate(total=Sum('valorTotal'))['total'] or 0
+            
+            # 9. Construir detalle de actividades
             detalle_actividades = []
             for actividad in actividades:
-                # Tiempos y costos de mano de obra
                 tiempos = actividad.tiempoactividadcontrol_set.all().aggregate(
                     total_tiempo=Sum('tiempo'),
                     total_valor=Sum('valorTotal')
                 )
                 
-                # Insumos usados en la actividad
                 insumos_actividad = []
                 total_insumos_actividad = 0
                 for insumo in actividad.usosinsumos_set.all():
@@ -130,16 +138,14 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                     "total_insumos_actividad": total_insumos_actividad  
                 })
             
-            # 6. Construir detalle de controles
+            # 10. Construir detalle de controles
             detalle_controles = []
             for control in controles:
-                # Tiempos y costos de mano de obra
                 tiempo_control = TiempoActividadControl.objects.filter(fk_control=control).aggregate(
                     total_tiempo=Sum('tiempo'),
                     total_valor=Sum('valorTotal')
                 )
                 
-                # Insumos usados en el control
                 insumos_control = []
                 total_insumos_control = 0
                 for insumo in control.usosinsumos_set.all():
@@ -163,37 +169,52 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                     "total_insumos_control": total_insumos_control  
                 })
             
-            # 7. Construir detalle de cosechas y ventas
-            detalle_cosechas = [{
-                "cantidad": cosecha.cantidad,
-                "unidad": cosecha.fk_UnidadMedida.nombre if cosecha.fk_UnidadMedida else None,
-                "fecha": cosecha.fecha.strftime("%Y-%m-%d")
-            } for cosecha in cosechas]
+            # 11. Construir detalle de cosechas y ventas
+            detalle_cosechas = []
+            for plantacion in plantaciones:
+                for cosecha in plantacion.cosechas_set.all():
+                    detalle_cosechas.append({
+                        "cantidad": cosecha.cantidad,
+                        "unidad": cosecha.fk_UnidadMedida.nombre if cosecha.fk_UnidadMedida else None,
+                        "fecha": cosecha.fecha.strftime("%Y-%m-%d"),
+                        "plantacion_id": plantacion.id
+                    })
             
             detalle_ventas = [{
                 "cantidad": venta.cantidad,
                 "unidad": venta.fk_UnidadMedida.nombre if venta.fk_UnidadMedida else None,
                 "fecha": venta.fecha.strftime("%Y-%m-%d"),
-                "valor_total": venta.valorTotal
+                "valor_total": venta.valorTotal,
+                "cosecha_id": venta.fk_Cosecha.id if venta.fk_Cosecha else None
             } for venta in ventas]
             
-            # 7. Calcular métricas finales
+            # 12. Calcular métricas finales
             total_costos = total_insumos + total_mano_obra
             beneficio = total_ventas - total_costos
-            relacion_bc = round(total_ventas / total_costos,2) if total_costos > 0 else 0
+            relacion_bc = round(total_ventas / total_costos, 2) if total_costos > 0 else 0
             
-            # 8. Estructurar respuesta
+            # 13. Obtener fecha de siembra (del semillero o plantación más antigua)
+            primer_semillero = cultivo.semilleros_set.order_by('fechasiembra').first()
+            primera_plantacion = plantaciones.order_by('fechaSiembra').first()
+            
+            fecha_siembra = (
+                primer_semillero.fechasiembra if primer_semillero else
+                primera_plantacion.fechaSiembra if primera_plantacion else
+                None
+            )
+            
+            # 14. Estructurar respuesta
             data = {
                 "cultivo_id": cultivo.id,
-                "fecha_siembra": cultivo.fechaSiembra.strftime("%Y-%m-%d") if cultivo.fechaSiembra else None,
-                "unidades": cultivo.unidades,
-                "nombre": nombre_especie,
+                "nombre_especie": nombre_especie,
+                "nombre_cultivo": cultivo.nombre,
+                "fecha_siembra": fecha_siembra.strftime("%Y-%m-%d") if fecha_siembra else None,
                 "total_insumos": total_insumos,
-                "total_mano_obra": round (total_mano_obra,2),
+                "total_mano_obra": total_mano_obra,
                 "total_costos": total_costos,
-                "total_ventas": total_ventas,
-                "beneficio": beneficio,
-                "relacion_beneficio_costo": round(relacion_bc, 2),
+                "total_ventas": int(round(total_ventas)),
+                "beneficio": int(round(beneficio)),
+                "relacion_beneficio_costo": relacion_bc,
                 "detalle": {
                     "actividades": {
                         "total": actividades.count(),
@@ -203,12 +224,12 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
                         "total": controles.count(),
                         "controles_detallados": detalle_controles
                     },
-                    "cosechas":{
-                        "total":cosechas.count(),
-                        "cosechas_detalladas": detalle_cosechas, 
+                    "cosechas": {
+                        "total": len(detalle_cosechas),
+                        "cosechas_detalladas": detalle_cosechas
                     },
-                    "ventas":{
-                        "total":ventas.count(),
+                    "ventas": {
+                        "total": ventas.count(),
                         "ventas_detalladas": detalle_ventas
                     }
                 }
@@ -223,6 +244,6 @@ class CultivoEconomicViewSet(viewsets.ViewSet):
             )
         except Exception as e:
             return Response(
-                {"error": str(e)}, 
+                {"error": f"Error al obtener resumen: {str(e)}"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
