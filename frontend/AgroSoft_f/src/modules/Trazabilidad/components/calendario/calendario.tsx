@@ -48,8 +48,23 @@ export default function CalendarioActividades() {
   const [eventos, setEventos] = useState<EventoCalendario[]>([]);
 
   useEffect(() => {
-    const fetchActividades = fetch("http://127.0.0.1:8000/api/actividades/")
-      .then((res) => res.json())
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("No hay token disponible. Inicia sesión.");
+      return;
+    }
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const fetchActividades = fetch("http://127.0.0.1:8000/api/actividades/", {
+      headers,
+    })
+      .then((res) => {
+        if (res.status === 401) throw new Error("No autorizado");
+        return res.json();
+      })
       .then((data: Actividades[]) =>
         data.map((actividad) => ({
           title: `Actividad: ${actividad.titulo} ${actividad.usuario ? "- " + actividad.usuario.nombre : ""}`,
@@ -59,8 +74,13 @@ export default function CalendarioActividades() {
         }))
       );
 
-    const fetchControles = fetch("http://127.0.0.1:8000/api/controles/")
-      .then((res) => res.json())
+    const fetchControles = fetch("http://127.0.0.1:8000/api/controles/", {
+      headers,
+    })
+      .then((res) => {
+        if (res.status === 401) throw new Error("No autorizado");
+        return res.json();
+      })
       .then((data: Controles[]) =>
         data.map((control) => ({
           title: `Control: ${control.descripcion} ${control.usuario ? "- " + control.usuario.nombre : ""}`,
@@ -74,7 +94,14 @@ export default function CalendarioActividades() {
       .then(([eventosActividades, eventosControles]) => {
         setEventos([...eventosActividades, ...eventosControles]);
       })
-      .catch((err) => console.error("Error cargando datos:", err));
+      .catch((err) => {
+        console.error("Error cargando datos:", err);
+        if (err.message === "No autorizado") {
+          alert("Sesión expirada. Por favor inicia sesión nuevamente.");
+          // Puedes redirigir al login si tienes routing
+          // window.location.href = "/login";
+        }
+      });
   }, []);
 
   const containerStyle: React.CSSProperties = {
@@ -82,8 +109,8 @@ export default function CalendarioActividades() {
     padding: "16px",
     borderRadius: "8px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "900px", // ancho reducido
-    margin: "0 auto",  // centrado horizontal
+    maxWidth: "900px",
+    margin: "0 auto",
   };
 
   return (
@@ -95,7 +122,7 @@ export default function CalendarioActividades() {
         endAccessor="end"
         messages={messages}
         culture="es"
-        style={{ height: 450 }} // altura reducida
+        style={{ height: 450 }}
         views={["month", "agenda"]}
         components={{
           agenda: {

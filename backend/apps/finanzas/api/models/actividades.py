@@ -6,17 +6,18 @@ from apps.trazabilidad.api.models.PlantacionesModel import Plantaciones
 
 class Actividades(models.Model):
     ESTADO_CHOICES = [
-        ('AS',"Asignada"),
-        ('CO',"Completada"),
-        ('CA',"Cancelada")
+        ('AS', "Asignada"),
+        ('CO', "Completada"),
+        ('CA', "Cancelada")
     ]
-    fk_Cultivo = models.ForeignKey(Cultivos, on_delete = models.SET_NULL, null= True)
-    fk_Plantacion = models.ForeignKey(Plantaciones, on_delete = models.SET_NULL, null= True)
-    fk_Usuario=models.ForeignKey(Usuario, on_delete= models.SET_NULL,null=True)
-    fk_TipoActividad=models.ForeignKey(TipoActividad, on_delete= models.SET_NULL,null=True)
+    fk_Cultivo = models.ForeignKey(Cultivos, on_delete=models.SET_NULL, null=True)
+    fk_Plantacion = models.ForeignKey(Plantaciones, on_delete=models.SET_NULL, null=True)
+    fk_Usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+    fk_TipoActividad = models.ForeignKey(TipoActividad, on_delete=models.SET_NULL, null=True)
     titulo = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=200)
-    fecha =models.DateField(auto_now=False)
-    estado=models.CharField(max_length=3,choices=ESTADO_CHOICES,default='AS')
+    fecha = models.DateField(auto_now=False)
+    estado = models.CharField(max_length=3, choices=ESTADO_CHOICES, default='AS')
+
     def __str__(self):
-        return ("fecha: " + str(self.fecha) + " titulo: " + str(self.titulo) + " encargado: " + str(self.fk_Usuario.nombre))
+        return f"fecha: {self.fecha} titulo: {self.titulo} encargado: {self.fk_Usuario.nombre if self.fk_Usuario else 'Sin asignar'}"
