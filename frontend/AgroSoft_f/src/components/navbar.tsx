@@ -1,54 +1,69 @@
 import { useNavigate } from "react-router-dom";
 import { Search, Bell, User, LogOut, Menu, X } from "lucide-react";
 import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext"; // Importar el contexto de autenticación
+import { AuthContext } from "@/context/AuthContext";
 
 interface NavbarProps {
-  toggleSidebar: () => void;
   onMobileMenuToggle: () => void;
   isMobileMenuOpen: boolean;
+  toggleSidebar: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onMobileMenuToggle, isMobileMenuOpen }) => {
-  const { logout } = useContext(AuthContext); // Obtenemos la función logout del contexto
-  const navigate = useNavigate(); // Accedemos a la función navigate
+const Navbar: React.FC<NavbarProps> = ({
+  onMobileMenuToggle,
+  isMobileMenuOpen,
+  toggleSidebar,
+}) => {
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (logout) {
-      logout(); // Llamamos a la función logout del contexto
-      navigate("/login"); // Redirigimos a la página de login después de hacer logout
-    }
+    logout?.();
+    navigate("/login");
   };
 
   return (
-    <nav className="flex flex-wrap items-center justify-between bg-sena-green p-2 text-white w-full sticky top-0 z-40 shadow-lg">
-
-      <div className="flex items-center gap-2 flex-1 md:flex-none">
-        <button 
-          onClick={toggleSidebar} 
-          className="p-2 rounded-full hover:bg-[#25a902]"
+    <nav className="flex items-center justify-between h-full px-4 md:px-6 text-white">
+      {/* Lado izquierdo - Logos y menú móvil */}
+      <div className="flex items-center gap-4">
+        {/* Botón móvil solo en versión mobile */}
+        <button
+          className="p-2 rounded-full hover:bg-[#25a902] md:hidden"
+          onClick={toggleSidebar}
         >
-          <Menu />
+          <Menu size={24} />
         </button>
 
-        <input
-          type="text-sm"
-          placeholder="Buscar..."
-          className="px-8 py-1 rounded-full text-black focus:outline-none"
-        />
-        <Search className="text-white cursor-pointer" />
+        {/* Logos */}
+        <div className="flex items-center gap-3">
+          <img src="/sena.png" alt="SENA" className="h-10" />
+          <div className="h-8 w-px bg-white/30" />
+          <img src="/logoAgrosoft.png" alt="Agrosoft" className="h-8" />
+        </div>
       </div>
-     {/* Lado derecho */}
-      <div className="flex items-center gap-3 text-sm">
-        {/* Elementos desktop */}
+
+      {/* Lado derecho - Elementos de navegación */}
+      <div className="flex items-center gap-4">
+        {/* Barra de búsqueda desktop */}
+        <div className="hidden md:flex items-center gap-2 bg-white/20 rounded-full px-4 py-1.5">
+          <Search size={20} className="text-white/80" />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="bg-transparent outline-none placeholder-white/80 text-sm w-40"
+          />
+        </div>
+
+        {/* Iconos desktop */}
         <div className="hidden md:flex items-center gap-4">
-          <Bell className="cursor-pointer" />
-          <User className="cursor-pointer" />
+          <Bell size={20} className="cursor-pointer hover:text-gray-200" />
+          <User size={20} className="cursor-pointer hover:text-gray-200" />
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1 cursor-pointer hover:underline"
+            className="flex items-center gap-1 hover:text-gray-200"
           >
-            <LogOut size={16} /> Cerrar sesión
+            <LogOut size={18} />
+            <span className="text-sm">Cerrar sesión</span>
           </button>
         </div>
 
@@ -60,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onMobileMenuToggle, isMo
           >
             {isMobileMenuOpen ? <X size={24} /> : <User size={24} />}
           </button>
-          
+
           {isMobileMenuOpen && (
             <div className="absolute right-0 top-12 bg-white text-black rounded-lg shadow-xl w-48">
               <div className="p-2 space-y-2">
@@ -70,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onMobileMenuToggle, isMo
                 <button className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded">
                   <User size={18} /> Perfil
                 </button>
-                <button 
+                <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded text-red-600"
                 >
