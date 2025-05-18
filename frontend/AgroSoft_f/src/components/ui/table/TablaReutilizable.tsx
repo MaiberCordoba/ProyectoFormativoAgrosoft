@@ -139,15 +139,13 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
       </div>
 
       {/* Tabla con estilos */}
-      <div className="overflow-x-auto pb-2 -mx-2 px-2">
+      <div className="overflow-x-auto pb-2 -mx-4 px-4">
         <Table
+          className="min-w-[600px]"
           aria-label="Tabla reutilizable"
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-            className="w-full min-w-[600px] table-auto border-collapse
-            [&_th]:px-3 [&_th]:py-2.5 [&_th]:bg-gray-100 [&_th]:text-left
-            [&_td]:px-3 [&_td]:py-2 [&_td]:max-w-[150px] [&_td]:truncate
-            [&_tr:hover]:bg-gray-50 [&_th]:text-sm [&_td]:text-sm"
+            
         >
           <TableHeader columns={headerColumns}>
             {(column) => (

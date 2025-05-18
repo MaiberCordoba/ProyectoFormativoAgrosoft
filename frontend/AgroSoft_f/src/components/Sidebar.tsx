@@ -29,9 +29,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   return (
     <>
     <aside
-       className={`bg-white p-2 shadow-lg min-h-screen flex flex-col gap-1 transition-all duration-300 overflow-y-auto max-h-[calc(100vh-100px)]  ${
-        isOpen ? "w-48 rounded-r-3xl " : "w-0 hidden"
-      }`}
+      className={`fixed h-full bg-white shadow-lg z-30 
+       ${isOpen ? 'w-48 rounded-r-lg' : 'w-0'} 
+       transition-all duration-300`}
     >
       {isOpen && (
         <div className=" flex justify-center items-center gap-2 mb-1  top-0 bg-white z-10 py-2">
