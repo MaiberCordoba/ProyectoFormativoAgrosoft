@@ -78,69 +78,84 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   }, [datosPaginados, sortDescriptor]);
 
   return (
-    <div className="min-w-[800px] flex flex-col gap-3 max-w-4xl mx-auto p-4 bg-white rounded-lg shadow"> {/* Mantenemos el min-w en el contenedor */}
+    <div className="w-full max-w-full flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
       {/* Barra superior de controles - ESTRUCTURA CORREGIDA */}
-      <div className="flex flex-col sm:flex-row justify-between gap-3 items-center">
-        <div className="flex flex-col sm:flex-row gap-3 flex-1 items-center">
-          <FiltrosTabla
-            valorFiltro={valorFiltro}
-            onCambiarBusqueda={setValorFiltro}
-            onLimpiarBusqueda={() => setValorFiltro("")}
-            opcionesEstado={opcionesEstado}
-            filtroEstado={filtroEstado}
-            onCambiarFiltroEstado={setFiltroEstado}
-            placeholderBusqueda={placeholderBusqueda}
-          />
-          <FilasPorPagina
-            filasPorPagina={filasPorPagina}
-            onChange={handleChangeFilasPorPagina}
-          />
+      <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[150px]">
+
+          <div className="[&>div]:w-full">
+            <FiltrosTabla
+              valorFiltro={valorFiltro}
+              onCambiarBusqueda={setValorFiltro}
+              onLimpiarBusqueda={() => setValorFiltro("")}
+              opcionesEstado={opcionesEstado}
+              filtroEstado={filtroEstado}
+              onCambiarFiltroEstado={setFiltroEstado}
+              placeholderBusqueda={placeholderBusqueda}
+              />
+          </div>
+
+          <div className="[&>div]:w-full">
+            <FilasPorPagina
+              filasPorPagina={filasPorPagina}
+              onChange={handleChangeFilasPorPagina}
+              />
+          </div>
         </div>
-        <div className="flex gap-3 items-center">
-          <SelectorColumnas
-            columnas={columnas}
-            visibleColumns={visibleColumns}
-            setVisibleColumns={setVisibleColumns}
-          />
+
+         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[120px]">
+          <div className="[&>div]:w-full">
+            <SelectorColumnas
+              columnas={columnas}
+              visibleColumns={visibleColumns}
+              setVisibleColumns={setVisibleColumns}
+              />
+          </div>
+
+          <div className="flex flex-wrap gap-2 [&>button]:flex-1 [&>button]:sm:flex-none">
           <Button
             color="success"
             size="sm"
             endContent={<PlusIcon size={16} />}
             onPress={onCrearNuevo}
             className="self-end text-white"
-          >
+            >
             Agregar
           </Button>
           {onRegistroMasivo !== undefined && (
             <Button
-              color="success"
-              size="sm"
-              endContent={<PlusIcon size={16} />}
-              onPress={onRegistroMasivo}
-              className="self-end text-white"
+            color="success"
+            size="sm"
+            endContent={<PlusIcon size={16} />}
+            onPress={onRegistroMasivo}
+            className="self-end text-white"
             >
               Registro masivo
             </Button>
           )}
           {renderReporteAction && renderReporteAction(datos)}
+          </div>
         </div>
       </div>
 
       {/* Tabla con estilos */}
-      <div className="overflow-auto">
+      <div className="overflow-x-auto pb-2 -mx-2 px-2">
         <Table
           aria-label="Tabla reutilizable"
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-          className="min-w-full table-auto border-collapse bg-white shadow-md rounded-lg"
+            className="w-full min-w-[600px] table-auto border-collapse
+            [&_th]:px-3 [&_th]:py-2.5 [&_th]:bg-gray-100 [&_th]:text-left
+            [&_td]:px-3 [&_td]:py-2 [&_td]:max-w-[150px] [&_td]:truncate
+            [&_tr:hover]:bg-gray-50 [&_th]:text-sm [&_td]:text-sm"
         >
           <TableHeader columns={headerColumns}>
             {(column) => (
               <TableColumn
                 key={column.uid}
+                className="sticky left-0 z-10 bg-gray-100"
                 align={column.uid === "actions" ? "center" : "start"}
                 allowsSorting={column.sortable}
-                className="bg-gray-100 text-left font-semibold text-gray-700 py-3 px-4"
               >
                 {column.name}
               </TableColumn>
@@ -174,11 +189,13 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
       </div>
 
       {/* Paginación */}
-      <PaginacionTabla
-        paginaActual={paginaActual}
-        totalPaginas={totalPaginas}
-        onCambiarPagina={setPaginaActual}
-      />
+      <div className="[&>div]:justify-center [&>div]:sm:justify-between">
+        <PaginacionTabla
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          onCambiarPagina={setPaginaActual}
+          />
+      </div>
     </div>
   );
 };
