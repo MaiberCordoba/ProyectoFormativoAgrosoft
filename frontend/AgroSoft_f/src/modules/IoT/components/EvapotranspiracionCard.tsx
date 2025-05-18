@@ -48,7 +48,7 @@ export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) 
         <img
           src="/AGROPECUARIAS_Agronomia.png"
           alt="evapotranspiracion"
-          className="w-[50px] h-[50px]" 
+          className="w-[50px] h-[50px] grayscale brightness-90 opacity-80"
         />
       </div>
     </div>

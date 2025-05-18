@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { post } from "../../api/sensor";
-import { SensorData, SensorCreateData } from "../../types/sensorTypes";
+import { SensorData } from "../../types/sensorTypes";
 import { addToast } from "@heroui/toast";
 import { AxiosError } from "axios";
 
 export const usePostSensor = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<SensorData, AxiosError<{ message?: string }>, SensorCreateData>({
+  return useMutation<SensorData, AxiosError<{ message?: string }>>({
     mutationKey: ["crearSensor"],
     mutationFn: post,
     onSuccess: (data) => {

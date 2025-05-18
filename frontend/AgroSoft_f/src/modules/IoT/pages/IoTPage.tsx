@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Select, SelectItem, addToast, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
+import { Input, Select, SelectItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -14,6 +14,7 @@ import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
 import EvapotranspiracionChart from "../components/EvapotranspiracionChart";
+import { addToast } from "@heroui/toast";
 
 type SensorData = {
   tipo: string;
@@ -190,7 +191,6 @@ export default function IoTPages() {
   }
 };
 
-  // Resto de funciones auxiliares...
   const checkForAlerts = (sensor: SensorData): boolean => {
     if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
       return sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo;
@@ -211,10 +211,11 @@ export default function IoTPages() {
     }
 
     addToast({
-      title: "🚨 Alerta de Sensor",
+      title: "Alerta de Sensor",
       description: message,
       variant: "flat",
-      color: "danger",
+      color: "primary",
+
     });
   };
 
@@ -258,7 +259,6 @@ export default function IoTPages() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-6 justify-center items-center w-full max-w-6xl mx-auto">
-      {/* Botón para abrir el formulario de cálculo */}
       <br />
       <div className="col-span-full flex justify-center">
         <Button 
@@ -270,7 +270,6 @@ export default function IoTPages() {
         </Button>
       </div>
 
-      {/* Modal del formulario de cálculo */}
       <Modal isOpen={showETForm} onClose={() => setShowETForm(false)} size="lg">
         <ModalContent>
           <ModalHeader className="text-xl font-semibold text-green-800">
@@ -302,7 +301,7 @@ export default function IoTPages() {
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0] as string;
                   setLoteId(selected);
-                  setEraId(""); // Reset era al cambiar lote
+                  setEraId("");
                 }}
                 className="w-full"
               >
@@ -347,7 +346,6 @@ export default function IoTPages() {
         </ModalContent>
       </Modal>
 
-      {/* Resultados del cálculo */}
       {evapotranspiracion && (
         <div className="col-span-full bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm">
           <h2 className="text-xl font-semibold text-blue-800 mb-4">
@@ -374,10 +372,9 @@ export default function IoTPages() {
         </div>
       )}
 
-      {/* Sección de Sensores (igual que antes) */}
       <div className="col-span-full">
         <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-4 mb-2">
-          <h2 className="text-lg font-semibold text-gray-800">Promedios de Sensores</h2>
+          <h2 className="text-lg font-semibold text-gray-800 text-white">Promedios de Sensores</h2>
           <Input
             className="w-1/4 text-sm h-8"
             placeholder="Buscar Sensor"
@@ -472,7 +469,7 @@ export default function IoTPages() {
               );
             })
           ) : (
-            <p className="text-gray-500 text-sm col-span-full">No se encontraron sensores</p>
+            <p className="text-gray-500 text-sm col-span-full text-white">No se encontraron sensores</p>
           )}
         </div>
       </div>
@@ -480,7 +477,7 @@ export default function IoTPages() {
       {/* Lista completa de sensores */}
       <div className="flex gap-4 col-span-full mt-6">
         <div className="w-full">
-          <h2 className="flex justify-center col-span-full text-lg font-semibold text-gray-800 mb-4">
+          <h2 className="flex justify-center col-span-full text-lg font-semibold text-gray-800 text-white mb-4">
             Lista Completa de Sensores
           </h2>
           <SensorLista />
