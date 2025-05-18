@@ -65,6 +65,13 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
     );
   };
 
+  const handleNumberInput = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<number | null>>
+  ) => {
+    setter(value === "" ? null : Number(value));
+  };
+
   return (
     <ModalComponent
       isOpen={true}
@@ -94,19 +101,59 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
         onChange={(e) => setDescripcion(e.target.value)}
       />
 
-<div className="grid grid-cols-2 gap-2 mt-2">
-          <Input label="Lat. Inf. Izquierda" type="number" value={(latI1 ?? "").toString()} onChange={(e) => setLatI1(Number(e.target.value))} />
-          <Input label="Long. Inf. Izquierda" type="number" value={(longI1 ?? "").toString()} onChange={(e) => setLongI1(Number(e.target.value))} />
+      <div className="grid grid-cols-2 gap-2 mt-2">
+        <Input
+          label="Lat. Inf. Izquierda"
+          type="number"
+          value={latI1 !== null ? latI1.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLatI1)}
+        />
+        <Input
+          label="Long. Inf. Izquierda"
+          type="number"
+          value={longI1 !== null ? longI1.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLongI1)}
+        />
 
-          <Input label="Lat. Sup. Izquierda" type="number" value={(latS1 ?? "").toString()} onChange={(e) => setLatS1(Number(e.target.value))} />
-          <Input label="Long. Sup. Izquierda" type="number" value={(longS1 ?? "").toString()} onChange={(e) => setLongS1(Number(e.target.value))} />
+        <Input
+          label="Lat. Sup. Izquierda"
+          type="number"
+          value={latS1 !== null ? latS1.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLatS1)}
+        />
+        <Input
+          label="Long. Sup. Izquierda"
+          type="number"
+          value={longS1 !== null ? longS1.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLongS1)}
+        />
 
-          <Input label="Lat. Inf. Derecha" type="number" value={(latI2 ?? "").toString()} onChange={(e) => setLatI2(Number(e.target.value))} />
-          <Input label="Long. Inf. Derecha" type="number" value={(longI2 ?? "").toString()} onChange={(e) => setLongI2(Number(e.target.value))} />
+        <Input
+          label="Lat. Inf. Derecha"
+          type="number"
+          value={latI2 !== null ? latI2.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLatI2)}
+        />
+        <Input
+          label="Long. Inf. Derecha"
+          type="number"
+          value={longI2 !== null ? longI2.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLongI2)}
+        />
 
-          <Input label="Lat. Sup. Derecha" type="number" value={(latS2 ?? "").toString()} onChange={(e) => setLatS2(Number(e.target.value))} />
-          <Input label="Long. Sup. Derecha" type="number" value={(longS2 ?? "").toString()} onChange={(e) => setLongS2(Number(e.target.value))} />
-        </div>
+        <Input
+          label="Lat. Sup. Derecha"
+          type="number"
+          value={latS2 !== null ? latS2.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLatS2)}
+        />
+        <Input
+          label="Long. Sup. Derecha"
+          type="number"
+          value={longS2 !== null ? longS2.toString() : ""}
+          onChange={(e) => handleNumberInput(e.target.value, setLongS2)}
+        />
+      </div>
 
       <Select
         label="Estado"

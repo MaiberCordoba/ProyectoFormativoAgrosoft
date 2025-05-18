@@ -83,7 +83,9 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         <Select
           label="Lote"
           placeholder="Selecciona un lote"
-          selectedKeys={fk_lote ? [fk_lote.toString()] : []}
+          selectedKeys={
+            fk_lote !== null ? new Set([fk_lote.toString()]) : new Set()
+          }
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
             setFkLoteId(Number(selectedKey) || null);
