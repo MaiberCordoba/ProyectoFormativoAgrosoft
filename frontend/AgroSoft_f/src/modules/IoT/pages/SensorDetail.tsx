@@ -9,7 +9,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 
-// types.ts
+// Tipos de datos
 export interface SensorData {
   id?: number;
   fk_lote?: number | null;
@@ -59,12 +59,14 @@ const SENSOR_UNITS: Record<string, string> = {
 const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE", "LLUVIA"];
 const ERAS_ONLY = ["HUM_T", "PH"];
 
+// Función auxiliar para crear un diccionario
 function dict(sensorTypes: {key: string, label: string}[]): Map<string, string> {
   const map = new Map();
   sensorTypes.forEach(type => map.set(type.key, type.label));
   return map;
 }
 
+// Formateadores
 const formatDateTimeForDisplay = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleString('es-ES', {
@@ -88,7 +90,10 @@ const formatNumber = (value: unknown): string => {
 
 export default function AllSensorsDashboard() {
   const navigate = useNavigate();
-  const [allSensorsData, setAllSensorsData] = useState<SensorConExtras[]>([]);
+  const [allSensorsData, setAllSensorsData] = useState<SensorConExtras[]>(() => {
+    const savedData = localStorage.getItem('sensorData');
+    return savedData ? JSON.parse(savedData) : [];
+  });
   const [realTimeData, setRealTimeData] = useState<SensorConExtras[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<string>("");
@@ -101,6 +106,7 @@ export default function AllSensorsDashboard() {
   const [showErasSelect, setShowErasSelect] = useState(true);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
+  // Efecto para manejar la visibilidad de los selectores
   useEffect(() => {
     if (selectedType === "") {
       setShowLotesSelect(true);
@@ -141,6 +147,7 @@ export default function AllSensorsDashboard() {
     return "Sin ubicación";
   };
 
+  // Carga inicial de datos
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
@@ -156,6 +163,7 @@ export default function AllSensorsDashboard() {
             alerta: checkForAlerts(item)
           }));
           setAllSensorsData(enrichedData);
+          localStorage.setItem('sensorData', JSON.stringify(enrichedData));
 
           const [lotesResponse, erasResponse] = await Promise.all([
             fetch("http://127.0.0.1:8000/api/lote/"),
@@ -186,18 +194,49 @@ export default function AllSensorsDashboard() {
     fetchInitialData();
   }, []);
 
+  // Persistencia de datos
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8000/ws/sensor/all/");
+    const handleBeforeUnload = () => {
+      localStorage.setItem('sensorData', JSON.stringify(allSensorsData));
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [allSensorsData]);
+
+  // WebSocket para datos en tiempo real
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8000/ws/sensor/");
 
     socket.onmessage = (event) => {
       try {
-        const data: SensorData = JSON.parse(event.data);
-        const enrichedData: SensorConExtras = {
-          ...data,
-          unidad: SENSOR_UNITS[data.tipo],
-          alerta: checkForAlerts(data)
-        };
-        setRealTimeData(prev => [...prev, enrichedData]);
+        const message = JSON.parse(event.data);
+        
+        if (message.type === "sensor.update" || message.type === "sensor.global_update") {
+          const sensorData = message.message;
+          const enrichedData: SensorConExtras = {
+            id: sensorData.sensor_id,
+            tipo: sensorData.sensor_type,
+            valor: sensorData.value,
+            fecha: sensorData.timestamp,
+            fk_lote: sensorData.location?.lote_id || null,
+            fk_eras: sensorData.location?.era_id || null,
+            umbral_minimo: sensorData.thresholds?.min || null,
+            umbral_maximo: sensorData.thresholds?.max || null,
+            unidad: SENSOR_UNITS[sensorData.sensor_type],
+            alerta: message.type === "sensor.update" ? message.message.alert : message.is_alert
+          };
+
+          setRealTimeData(prev => {
+            const newData = [...prev, enrichedData]
+              .filter((item, index, self) => 
+                index === self.findIndex(t => 
+                  t.id === item.id && t.fecha === item.fecha
+                )
+              );
+            return newData.slice(-100);
+          });
+        }
       } catch (error) {
         console.error("Error al procesar datos del WebSocket:", error);
       }
@@ -212,10 +251,12 @@ export default function AllSensorsDashboard() {
     };
   }, []);
 
+  // Combinar datos
   const combinedData = useMemo(() => {
     return [...allSensorsData, ...realTimeData];
   }, [allSensorsData, realTimeData]);
 
+  // Filtrar sensores
   const filteredSensors = useMemo(() => {
     return combinedData.filter(sensor => {
       const typeMatch = !selectedType || sensor.tipo === selectedType;
@@ -230,30 +271,116 @@ export default function AllSensorsDashboard() {
     });
   }, [combinedData, selectedType, selectedSensors, selectedLotes, selectedEras]);
 
-  const chartData = useMemo(() => {
-    const groupedByTime: Record<string, Record<string, number>> = {};
-
-    combinedData.forEach(sensor => {
-      const timeKey = new Date(sensor.fecha).toLocaleTimeString();
-      if (!groupedByTime[timeKey]) {
-        groupedByTime[timeKey] = { timestamp: timeKey };
+  // Preparar datos para el gráfico
+  const prepareChartData = useMemo(() => {
+    // Agrupar por sensor ID
+    const sensorGroups = new Map<string, SensorConExtras[]>();
+    
+    filteredSensors.forEach(sensor => {
+      if (!sensor.id) return;
+      
+      const sensorId = sensor.id.toString();
+      if (!sensorGroups.has(sensorId)) {
+        sensorGroups.set(sensorId, []);
       }
+      sensorGroups.get(sensorId)?.push(sensor);
+    });
+    
+    // Ordenar cada grupo por fecha
+    sensorGroups.forEach((values) => {
+      values.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+    });
+    
+    // Crear estructura para el gráfico
+    const chartData: any[] = [];
+    
+    // Para cada sensor, agregar sus puntos al gráfico
+    sensorGroups.forEach((sensorReadings, sensorId) => {
+      const sensorType = sensorReadings[0]?.tipo;
+      const color = SENSOR_COLORS[sensorType] || '#8884d8';
+      const unit = SENSOR_UNITS[sensorType] || '';
+      
+      sensorReadings.forEach(reading => {
+        const timeKey = new Date(reading.fecha).toISOString();
+        
+        let dataPoint = chartData.find(point => point.timestamp === timeKey);
+        
+        if (!dataPoint) {
+          dataPoint = { 
+            timestamp: timeKey,
+            formattedTime: new Date(reading.fecha).toLocaleTimeString('es-ES', {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })
+          };
+          chartData.push(dataPoint);
+        }
+        
+        dataPoint[`${sensorId}_valor`] = reading.valor;
+        dataPoint[`${sensorId}_color`] = color;
+        dataPoint[`${sensorId}_unit`] = unit;
+        dataPoint[`${sensorId}_type`] = sensorType;
+      });
+    });
+    
+    chartData.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    
+    return chartData;
+  }, [filteredSensors]);
+
+  // Renderizar líneas del gráfico
+  const renderChartLines = useMemo(() => {
+    const uniqueSensorIds = new Set(
+      filteredSensors.map(sensor => sensor.id?.toString()).filter(Boolean)
+    );
+    
+    return Array.from(uniqueSensorIds).map(sensorId => {
+      const sensor = filteredSensors.find(s => s.id?.toString() === sensorId);
+      if (!sensor) return null;
+      
+      return (
+        <Line
+          key={sensorId}
+          type="monotone"
+          dataKey={`${sensorId}_valor`}
+          stroke={SENSOR_COLORS[sensor.tipo] || '#8884d8'}
+          strokeWidth={2}
+          dot={{ r: 4 }}
+          activeDot={{ r: 6 }}
+          name={sensorId}
+          isAnimationActive={true}
+          connectNulls={true}
+        />
+      );
+    }).filter(Boolean);
+  }, [filteredSensors]);
+
+  const linesToShow = useMemo(() => {
+    const uniqueSensors = new Map<string, {
+      id: string,
+      type: string,
+      location: string,
+      color: string,
+      unit: string
+    }>();
+
+    filteredSensors.forEach(sensor => {
       if (sensor.id) {
-        groupedByTime[timeKey][`${sensor.id}_valor`] = sensor.valor;
+        const sensorId = sensor.id.toString();
+        if (!uniqueSensors.has(sensorId)) {
+          uniqueSensors.set(sensorId, {
+            id: sensorId,
+            type: sensor.tipo,
+            location: getLocationName(sensor),
+            color: SENSOR_COLORS[sensor.tipo],
+            unit: SENSOR_UNITS[sensor.tipo]
+          });
+        }
       }
     });
 
-    return Object.values(groupedByTime);
-  }, [combinedData]);
-
-  const linesToShow = useMemo(() => {
-    return filteredSensors.map(sensor => ({
-      id: sensor.id?.toString() ?? '',
-      type: sensor.tipo,
-      location: getLocationName(sensor),
-      color: SENSOR_COLORS[sensor.tipo],
-      unit: SENSOR_UNITS[sensor.tipo]
-    }));
+    return Array.from(uniqueSensors.values());
   }, [filteredSensors]);
 
   const generatePDFReport = async () => {
@@ -269,17 +396,14 @@ export default function AllSensorsDashboard() {
       const margin = 15;
       let yPosition = margin;
 
-      // Función para agregar nueva página si es necesario
       const checkPageBreak = (neededSpace: number) => {
         if (yPosition + neededSpace > 280) {
           doc.addPage();
           yPosition = margin;
-          addHeader(false);
         }
       };
 
-      // Encabezado
-      const addHeader = (isFirstPage = true) => {
+      const addHeader = () => {
         doc.setFontSize(18);
         doc.setFont("helvetica", "bold");
         doc.text("Reporte de Sensores Agrícolas", 105, yPosition, { align: "center" });
@@ -289,17 +413,10 @@ export default function AllSensorsDashboard() {
         doc.setFont("helvetica", "normal");
         doc.text(`Generado el: ${formatDateTimeForDisplay(new Date())}`, 105, yPosition, { align: "center" });
         yPosition += 15;
-
-        if (!isFirstPage) {
-          doc.setFontSize(10);
-          doc.setFont("helvetica", "italic");
-          doc.text(`Página ${doc.getNumberOfPages()}`, 195, 15);
-        }
       };
 
       addHeader();
 
-      // Sección de Filtros
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
       doc.text("Filtros aplicados", margin, yPosition);
@@ -328,7 +445,6 @@ export default function AllSensorsDashboard() {
       doc.text(splitText, margin, yPosition);
       yPosition += splitText.length * 5 + 15;
 
-      // Datos de sensores
       checkPageBreak(30);
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
@@ -377,7 +493,6 @@ export default function AllSensorsDashboard() {
         yPosition = (doc as any).lastAutoTable.finalY + 10;
       }
 
-      // Gráficas
       if (filteredSensors.length > 0) {
         checkPageBreak(30);
         doc.setFontSize(14);
@@ -385,7 +500,6 @@ export default function AllSensorsDashboard() {
         doc.text("Gráficas de Datos", margin, yPosition);
         yPosition += 10;
 
-        // Capturar la gráfica del dashboard
         const chartElement = document.querySelector('.recharts-wrapper');
         if (chartElement) {
           try {
@@ -407,7 +521,6 @@ export default function AllSensorsDashboard() {
         }
       }
 
-      // Alertas
       const alertas = filteredSensors.filter(sensor => sensor.alerta);
       if (alertas.length > 0) {
         checkPageBreak(30);
@@ -446,7 +559,6 @@ export default function AllSensorsDashboard() {
         });
       }
 
-      // Pie de página
       const totalPages = doc.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
@@ -467,7 +579,6 @@ export default function AllSensorsDashboard() {
         );
       }
 
-      // Guardar el PDF
       const fileName = `Reporte_Sensores_${new Date().toISOString().slice(0, 10)}.pdf`;
       doc.save(fileName);
     } catch (error) {
@@ -483,7 +594,6 @@ export default function AllSensorsDashboard() {
       <div className="flex justify-between items-center mb-6">
         <Button 
           color="success" 
-          variant="light" 
           onClick={() => navigate(-1)}
         >
           Regresar
@@ -499,7 +609,7 @@ export default function AllSensorsDashboard() {
         </Button>
       </div>
 
-      <h1 className="text-2xl font-bold text-center mb-6">
+      <h1 className="text-2xl font-bold text-center text-white mb-6">
         Todos los Sensores
       </h1>
 
@@ -589,12 +699,16 @@ export default function AllSensorsDashboard() {
             </div>
             
             <ResponsiveContainer width="100%" height={500}>
-              <LineChart data={chartData}>
+              <LineChart 
+                data={prepareChartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis 
-                  dataKey="timestamp" 
+                  dataKey="formattedTime" 
                   tick={{ fill: '#6b7280' }}
                   tickMargin={10}
+                  interval="preserveStartEnd"
                 />
                 <YAxis 
                   tick={{ fill: '#6b7280' }}
@@ -607,33 +721,24 @@ export default function AllSensorsDashboard() {
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                     border: 'none'
                   }}
-                  formatter={(value: number, name: string) => {
+                  formatter={(value: number, name: string, props: any) => {
                     const sensorId = name.split('_')[0];
-                    const sensor = linesToShow.find(s => s.id === sensorId);
-                    return [`${value} ${sensor?.unit}`, `${dict(SENSOR_TYPES).get(sensor?.type ?? '')} - ${sensor?.location}`];
+                    const unit = props.payload[`${sensorId}_unit`] || '';
+                    const type = props.payload[`${sensorId}_type`] || '';
+                    return [`${value} ${unit}`, `${dict(SENSOR_TYPES).get(type)}`];
                   }}
                   labelFormatter={(label) => `Hora: ${label}`}
                 />
                 <Legend 
                   formatter={(value) => {
-                    const sensorId = value.split('_')[0];
-                    const sensor = linesToShow.find(s => s.id === sensorId);
-                    return `${dict(SENSOR_TYPES).get(sensor?.type ?? '')} - ${sensor?.location}`;
+                    const sensorId = value;
+                    const sensor = filteredSensors.find(s => s.id?.toString() === sensorId);
+                    if (!sensor) return value;
+                    return `${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`;
                   }}
                 />
                 
-                {linesToShow.map((sensor) => (
-                  <Line
-                    key={sensor.id}
-                    type="monotone"
-                    dataKey={`${sensor.id}_valor`}
-                    name={`${sensor.id}_valor`}
-                    stroke={sensor.color}
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                    activeDot={{ r: 6 }}
-                  />
-                ))}
+                {renderChartLines}
               </LineChart>
             </ResponsiveContainer>
           </>

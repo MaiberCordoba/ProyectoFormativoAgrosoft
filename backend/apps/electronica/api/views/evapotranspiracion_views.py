@@ -12,6 +12,7 @@ class CalcularEvapotranspiracionView(APIView):
     def get(self, request):
         cultivo_id = request.query_params.get('cultivo_id')
         lote_id = request.query_params.get('lote_id')
+        kc_param = request.query_params.get('kc')
 
         if not cultivo_id or not lote_id:
             return Response(
@@ -20,12 +21,17 @@ class CalcularEvapotranspiracionView(APIView):
             )
 
         try:
-            # Obtener datos del cultivo
             cultivo = Cultivos.objects.get(pk=cultivo_id)
-            kc = CoeficienteCultivo.objects.filter(cultivo=cultivo).last()
-            kc_valor = kc.kc_valor if kc else 0.7
 
-            # Obtener promedios de las últimas 24 horas
+            if kc_param:
+                try:
+                    kc_valor = float(kc_param)
+                except ValueError:
+                    return Response({'error': 'Kc debe ser un número válido'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                kc = CoeficienteCultivo.objects.filter(cultivo=cultivo).last()
+                kc_valor = kc.kc_valor if kc else 0.7
+
             ahora = now()
             hace_24_horas = ahora - timedelta(hours=24)
 
@@ -38,7 +44,6 @@ class CalcularEvapotranspiracionView(APIView):
 
             datos = {item['tipo']: item['promedio'] for item in promedios}
 
-            # Verificar que tenemos todos los datos necesarios
             tipos_requeridos = ['TEM', 'VIE', 'LUM', 'HUM_A']
             if not all(tipo in datos for tipo in tipos_requeridos):
                 return Response(
@@ -46,7 +51,6 @@ class CalcularEvapotranspiracionView(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            # Fórmula mejorada
             eto = (
                 0.408 * float(datos['TEM']) + 
                 0.124 * float(datos['LUM']) + 
@@ -55,7 +59,6 @@ class CalcularEvapotranspiracionView(APIView):
             )
             et_real = eto * float(kc_valor)
 
-            # Formatear fecha para el frontend
             fecha_calculo = localtime(ahora).strftime('%Y-%m-%dT%H:%M:%S')
 
             return Response({
@@ -71,12 +74,6 @@ class CalcularEvapotranspiracionView(APIView):
             })
 
         except Cultivos.DoesNotExist:
-            return Response(
-                {'error': 'Cultivo no encontrado'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({'error': 'Cultivo no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response(
-                {'error': f'Error inesperado: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            return Response({'error': f'Error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

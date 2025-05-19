@@ -14,3 +14,10 @@ class CoeficienteCultivo(models.Model):
     cultivo = models.ForeignKey(Cultivos, on_delete=models.CASCADE)
     fase_crecimiento = models.CharField(max_length=50)
     kc_valor = models.DecimalField(max_digits=5, decimal_places=2)
+    dias_desde_siembra = models.IntegerField(help_text="Días desde siembra para esta fase")
+    
+    class Meta:
+        ordering = ['dias_desde_siembra']
+    
+    def __str__(self):
+        return f"{self.cultivo.nombre} - {self.fase_crecimiento} (Kc: {self.kc_valor})"

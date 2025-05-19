@@ -1,7 +1,3 @@
-import { SensorData } from "../types/sensorTypes";
-
-const SOCKET_URL = "ws://127.0.0.1:8000/ws/sensor/";
-
 interface WebSocketMessage {
   type: string;
   [key: string]: any;
@@ -12,9 +8,15 @@ export const connectWebSocket = (
   onAlert?: (alert: WebSocketMessage) => void,
   onError?: (error: string) => void
 ) => {
-  const socket = new WebSocket(SOCKET_URL);
+  const socket = new WebSocket("ws://127.0.0.1:8000/ws/sensor/");
 
-  socket.onopen = () => console.log("✅ WebSocket conectado");
+  socket.onopen = () => {
+    console.log("✅ WebSocket conectado");
+    socket.send(JSON.stringify({
+      action: "register",
+      device: "frontend"
+    }));
+  };
 
   socket.onmessage = (event) => {
     try {
@@ -24,11 +26,15 @@ export const connectWebSocket = (
         case "sensor.alert":
           onAlert?.(data);
           break;
+        case "sensor.update":
+        case "sensor.global_update":
+          onMessage(data);
+          break;
         case "error":
           onError?.(data.message);
           break;
         default:
-          onMessage(data);
+          console.warn("Tipo de mensaje no manejado:", data.type);
       }
     } catch (error) {
       console.error("❌ Error al parsear JSON:", error);
@@ -41,37 +47,27 @@ export const connectWebSocket = (
     onError?.("Error de conexión con el servidor");
   };
 
-  socket.onclose = () => {
-    console.warn("⚠️ WebSocket cerrado. Reconectando...");
-    setTimeout(() => connectWebSocket(onMessage, onAlert, onError), 5000);
+  socket.onclose = (event) => {
+    if (event.wasClean) {
+      console.log("WebSocket cerrado limpiamente");
+    } else {
+      console.warn("⚠️ WebSocket cerrado abruptamente. Reconectando...");
+      setTimeout(() => connectWebSocket(onMessage, onAlert, onError), 5000);
+    }
   };
 
   return {
-    close: () => socket.close(),
-    send: (data: any) => socket.send(JSON.stringify(data))
+    close: () => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+    },
+    send: (data: any) => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(data));
+      } else {
+        console.warn("WebSocket no está conectado. No se puede enviar mensaje.");
+      }
+    }
   };
-};
-
-export const fetchSensorHistory = async (params: {
-  hours?: number;
-  type?: string;
-  lote_id?: number;
-  era_id?: number;
-  limit?: number;
-}): Promise<SensorData[]> => {
-  const queryParams = new URLSearchParams();
-  
-  if (params.hours) queryParams.append('hours', params.hours.toString());
-  if (params.type) queryParams.append('type', params.type);
-  if (params.lote_id) queryParams.append('lote_id', params.lote_id.toString());
-  if (params.era_id) queryParams.append('era_id', params.era_id.toString());
-  if (params.limit) queryParams.append('limit', params.limit.toString());
-
-  const response = await fetch(`http://127.0.0.1:8000/api/sensor/history/?${queryParams}`);
-  
-  if (!response.ok) {
-    throw new Error("Error al obtener el historial de sensores");
-  }
-
-  return await response.json();
 };
