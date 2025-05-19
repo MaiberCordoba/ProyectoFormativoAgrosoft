@@ -51,8 +51,6 @@ const Navbar: React.FC<NavbarProps> = ({
       <div className="flex items-center gap-4">
         {/* Versión desktop - Solo se muestra en pantallas grandes */}
         <div className="hidden md:flex items-center gap-4">
-          <Bell size={25} className="cursor-pointer hover:text-gray-200" />
-
           {user?.nombre && (
             <div className="flex items-center gap-2">
               <span className="font-medium">{user.nombre}</span>
@@ -61,6 +59,8 @@ const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
           )}
+
+          <Bell size={25} className="cursor-pointer hover:text-gray-200" />
 
           <button
             onClick={handleLogout}
