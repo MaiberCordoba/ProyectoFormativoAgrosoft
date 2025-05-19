@@ -6,6 +6,8 @@ import { Outlet } from "react-router-dom";
 
 const Principal: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isHoveringSidebar, setIsHoveringSidebar] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -17,7 +19,7 @@ const Principal: React.FC = () => {
       {
         root: null,
         threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
+        rootMargin: "0px 0px -50px 0px",
       }
     );
 
@@ -34,46 +36,87 @@ const Principal: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-48' : 'w-0'} fixed h-full z-30 transition-all duration-300`}>
-        <Sidebar isOpen={isSidebarOpen} />
+      {/* Navbar fijo */}
+      <div className="fixed top-0 w-full z-50 shadow-lg h-16 bg-sena-green">
+        <Navbar
+          onMobileMenuToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          isMobileMenuOpen={isMobileMenuOpen}
+          toggleSidebar={() => setIsSidebarOpen(true)}
+        />
       </div>
 
-      {/* Contenedor Principal */}
-      <div className={`flex flex-col flex-1 ${isSidebarOpen ? 'ml-48' : 'ml-0'} transition-all duration-300`}>
-        {/* Navbar */}
-        <div className="sticky top-0 z-40 bg-white shadow-sm">
-          <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-        </div>
+      {/* Sidebar desktop */}
+      <div
+        className={`
+          fixed left-0 top-16 h-[calc(100vh-4rem)] z-40 transition-all duration-300
+          ${isSidebarOpen ? "w-48" : "w-20"}
+          hidden md:block group/sidebar
+        `}
+        onMouseEnter={() => setIsHoveringSidebar(true)}
+        onMouseLeave={() => setIsHoveringSidebar(false)}
+      >
+        <Sidebar
+          isOpen={isSidebarOpen}
+          isHovering={isHoveringSidebar}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
+      </div>
 
-        {/* Contenido Principal */}
-        <main className="flex-1 pb-16 pt-0 relative"> {/* Agregamos relative para posicionar el overlay */}
-          <div 
-            className="absolute inset-0 bg-[url('../../public/fondo.jpg')] bg-cover bg-center bg-no-repeat bg-fixed opacity-90" 
-            aria-hidden="true" 
+      {/* Sidebar móvil con overlay */}
+      <div
+        className={`md:hidden fixed inset-0 z-40 bg-black/50 transition-opacity
+        ${isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Sidebar móvil */}
+      <div
+        className={`
+          md:hidden fixed h-full z-50 transition-transform duration-300
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          w-64
+        `}
+      >
+        <Sidebar isOpen={true} />
+      </div>
+
+      {/* Contenido Principal */}
+      <div
+        className={`
+          flex flex-col flex-1 mt-16
+          transition-all duration-300
+          ${isSidebarOpen ? "md:ml-48" : "md:ml-20"}
+          min-w-0
+        `}
+      >
+        <main className="flex-1 pb-16 relative">
+          <div
+            className="fixed inset-0 bg-[url('../../public/fondo.jpg')] 
+            bg-cover bg-center bg-no-repeat opacity-90"
+            aria-hidden="true"
           />
 
-          {/* Overlay para oscurecer/transparentar el fondo */}
-          <div className="absolute inset-0  backdrop" aria-hidden="true" />
-
-          {/* Contenido principal con posición relativa y z-index para que aparezca sobre el fondo */}
           <div className="relative z-10 min-h-screen">
-            <Outlet />
+            <div className="max-w-full overflow-x-hidden">
+              <Outlet />
+            </div>
           </div>
 
           <div ref={sentinelRef} className="h-px w-full relative z-10" />
         </main>
       </div>
 
-      {/* Footer - Versión corregida */}
+      {/* Footer */}
       <div
-        className={`fixed bottom-0 ${
-          isSidebarOpen ? 'left-48' : 'left-0'
-        } right-0 transition-all duration-300 ${
-          isFooterVisible ? 'translate-y-0' : 'translate-y-full'
-        } z-20`}
+        className={`
+          fixed bottom-0 transition-transform duration-300
+          ${isFooterVisible ? "translate-y-0" : "translate-y-full"}
+          ${isSidebarOpen ? "md:left-48" : "md:left-20"}
+          right-0 left-0 md:left-20
+          z-20
+        `}
       >
-        <Footer isSidebarOpen={isSidebarOpen}/>
+        <Footer isSidebarOpen={isSidebarOpen} />
       </div>
     </div>
   );
