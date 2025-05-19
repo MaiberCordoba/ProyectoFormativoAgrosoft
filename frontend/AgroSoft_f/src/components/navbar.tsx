@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Search, Bell, User, LogOut, Menu, X } from "lucide-react";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { Bell, User, LogOut, Menu, X } from "lucide-react";
+import { useAuth } from "@/hooks/UseAuth";
 
 interface NavbarProps {
   onMobileMenuToggle: () => void;
@@ -14,7 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({
   isMobileMenuOpen,
   toggleSidebar,
 }) => {
-  const { logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,11 +21,18 @@ const Navbar: React.FC<NavbarProps> = ({
     navigate("/login");
   };
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
-    <nav className="flex items-center justify-between h-full px-4 md:px-6 text-white">
+    <nav className="flex items-center justify-between h-full px-4 md:px-6 text-white bg-sena-green">
       {/* Lado izquierdo - Logos y menú móvil */}
       <div className="flex items-center gap-4">
-        {/* Botón móvil solo en versión mobile */}
         <button
           className="p-2 rounded-full hover:bg-[#25a902] md:hidden"
           onClick={toggleSidebar}
@@ -34,50 +40,58 @@ const Navbar: React.FC<NavbarProps> = ({
           <Menu size={24} />
         </button>
 
-        {/* Logos */}
         <div className="flex items-center gap-3">
-          <img src="/sena.png" alt="SENA" className="h-10" />
+          <img src="/logoSenaW.png" alt="SENA" className="h-10" />
           <div className="h-8 w-px bg-white/30" />
-          <img src="/logoAgrosoft.png" alt="Agrosoft" className="h-8" />
+          <img src="/logoAgrosofWB.png" alt="Agrosoft" className="h-9" />
         </div>
       </div>
 
       {/* Lado derecho - Elementos de navegación */}
       <div className="flex items-center gap-4">
-        {/* Barra de búsqueda desktop */}
-        <div className="hidden md:flex items-center gap-2 bg-white/20 rounded-full px-4 py-1.5">
-          <Search size={20} className="text-white/80" />
-          <input
-            type="text"
-            placeholder="Buscar..."
-            className="bg-transparent outline-none placeholder-white/80 text-sm w-40"
-          />
-        </div>
-
-        {/* Iconos desktop */}
+        {/* Versión desktop - Solo se muestra en pantallas grandes */}
         <div className="hidden md:flex items-center gap-4">
-          <Bell size={20} className="cursor-pointer hover:text-gray-200" />
-          <User size={20} className="cursor-pointer hover:text-gray-200" />
+          <Bell size={25} className="cursor-pointer hover:text-gray-200" />
+
+          {user?.nombre && (
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{user.nombre}</span>
+              <div className="w-8 h-8 rounded-full bg-white text-sena-green flex items-center justify-center font-semibold">
+                {getInitials(user.nombre)}
+              </div>
+            </div>
+          )}
+
           <button
             onClick={handleLogout}
             className="flex items-center gap-1 hover:text-gray-200"
           >
-            <LogOut size={18} />
-            <span className="text-sm">Cerrar sesión</span>
+            <LogOut size={25} />
           </button>
         </div>
 
-        {/* Menú móvil */}
+        {/* Versión móvil - Solo se muestra en pantallas pequeñas */}
         <div className="md:hidden relative">
           <button
             onClick={onMobileMenuToggle}
             className="p-2 rounded-full hover:bg-[#25a902]"
           >
-            {isMobileMenuOpen ? <X size={24} /> : <User size={24} />}
+            {user?.nombre ? (
+              <div className="w-8 h-8 rounded-full bg-white text-sena-green flex items-center justify-center font-semibold">
+                {getInitials(user.nombre)}
+              </div>
+            ) : (
+              <User size={24} />
+            )}
           </button>
 
           {isMobileMenuOpen && (
-            <div className="absolute right-0 top-12 bg-white text-black rounded-lg shadow-xl w-48">
+            <div className="absolute right-0 top-12 bg-white text-black rounded-lg shadow-xl w-48 z-50">
+              {user?.nombre && (
+                <div className="px-3 py-2 font-medium border-b">
+                  {user.nombre}
+                </div>
+              )}
               <div className="p-2 space-y-2">
                 <button className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded">
                   <Bell size={18} /> Notificaciones
