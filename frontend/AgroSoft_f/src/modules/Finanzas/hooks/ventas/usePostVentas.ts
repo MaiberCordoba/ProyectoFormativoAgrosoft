@@ -26,7 +26,7 @@ export const usePostVentas = () => {
       addToast({
         title: 'Error al crear la venta',
         description: 'No fue posible registrar nueva venta',
-        color: 'success'
+        color: 'danger'
       })
     },
   });
