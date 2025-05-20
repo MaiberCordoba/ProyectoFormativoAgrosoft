@@ -32,10 +32,14 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
     if (
       fk_lote === null ||
       tipo.trim() === "" ||
-      latI1 === null || longI1 === null ||
-      latS1 === null || longS1 === null ||
-      latI2 === null || longI2 === null ||
-      latS2 === null || longS2 === null
+      latI1 === null ||
+      longI1 === null ||
+      latS1 === null ||
+      longS1 === null ||
+      latI2 === null ||
+      longI2 === null ||
+      latS2 === null ||
+      longS2 === null
     ) {
       console.error("⚠️ Error: Todos los campos son obligatorios.");
       return;
@@ -51,7 +55,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
       latI2,
       longI2,
       latS2,
-      longS2
+      longS2,
     };
 
     mutate(payload, {
@@ -59,10 +63,14 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
         onClose();
         setFkLoteId(null);
         setTipo("");
-        setLatI1(null); setLongI1(null);
-        setLatS1(null); setLongS1(null);
-        setLatI2(null); setLongI2(null);
-        setLatS2(null); setLongS2(null);
+        setLatI1(null);
+        setLongI1(null);
+        setLatS1(null);
+        setLongS1(null);
+        setLatI2(null);
+        setLongI2(null);
+        setLatS2(null);
+        setLongS2(null);
       },
     });
   };
@@ -104,7 +112,9 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
               >
                 {(lotes ?? []).map((lote) =>
                   lote?.id !== undefined ? (
-                    <SelectItem key={lote.id.toString()}>{lote.nombre}</SelectItem>
+                    <SelectItem key={lote.id.toString()}>
+                      {lote.nombre}
+                    </SelectItem>
                   ) : null
                 )}
               </Select>
@@ -121,30 +131,72 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
           </div>
         )}
 
-        <Input label="Numero de era #" value={tipo} onChange={(e) => setTipo(e.target.value)} required />
+        <Input
+          label="Numero de era #"
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value)}
+          required
+        />
 
-        <div className="grid grid-cols-2 gap-2 mt-4 border rounded-xl p-2 bg-green-50">
-          <h4 className="col-span-2 font-semibold text-sm text-green-800">Coordenadas - Esquina Inferior Izquierda</h4>
-          <Input label="Latitud" type="number" value={(latI1 ?? "").toString()} onChange={(e) => setLatI1(Number(e.target.value))} />
-          <Input label="Longitud" type="number" value={(longI1 ?? "").toString()} onChange={(e) => setLongI1(Number(e.target.value))} />
-        </div>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          <Input
+            label="Lat. Inf. Izquierda"
+            type="text"
+            inputMode="decimal"
+            value={latI1 !== null ? latI1.toString() : ""}
+            onChange={(e) => setLatI1(Number(e.target.value))}
+          />
+          <Input
+            label="Long. Inf. Izquierda"
+            type="text"
+            inputMode="decimal"
+            value={longI1 !== null ? longI1.toString() : ""}
+            onChange={(e) => setLongI1(Number(e.target.value))}
+          />
 
-        <div className="grid grid-cols-2 gap-2 mt-2 border rounded-xl p-2 bg-blue-50">
-          <h4 className="col-span-2 font-semibold text-sm text-blue-800">Coordenadas - Esquina Superior Izquierda</h4>
-          <Input label="Latitud" type="number" value={(latS1 ?? "").toString()} onChange={(e) => setLatS1(Number(e.target.value))} />
-          <Input label="Longitud" type="number" value={(longS1 ?? "").toString()} onChange={(e) => setLongS1(Number(e.target.value))} />
-        </div>
+          <Input
+            label="Lat. Sup. Izquierda"
+            type="text"
+            inputMode="decimal"
+            value={latS1 !== null ? latS1.toString() : ""}
+            onChange={(e) => setLatS1(Number(e.target.value))}
+          />
+          <Input
+            label="Long. Sup. Izquierda"
+            type="text"
+            inputMode="decimal"
+            value={longS1 !== null ? longS1.toString() : ""}
+            onChange={(e) => setLongS1(Number(e.target.value))}
+          />
+          <Input
+            label="Lat. Inf. Derecha"
+            type="text"
+            inputMode="decimal"
+            value={latI2 !== null ? latI2.toString() : ""}
+            onChange={(e) => setLatI2(Number(e.target.value))}
+          />
+          <Input
+            label="Long. Inf. Derecha"
+            type="text"
+            inputMode="decimal"
+            value={longI2 !== null ? longI2.toString() : ""}
+            onChange={(e) => setLongI2(Number(e.target.value))}
+          />
 
-        <div className="grid grid-cols-2 gap-2 mt-2 border rounded-xl p-2 bg-yellow-50">
-          <h4 className="col-span-2 font-semibold text-sm text-yellow-800">Coordenadas - Esquina Inferior Derecha</h4>
-          <Input label="Latitud" type="number" value={(latI2 ?? "").toString()} onChange={(e) => setLatI2(Number(e.target.value))} />
-          <Input label="Longitud" type="number" value={(longI2 ?? "").toString()} onChange={(e) => setLongI2(Number(e.target.value))} />
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 mt-2 border rounded-xl p-2 bg-pink-50">
-          <h4 className="col-span-2 font-semibold text-sm text-pink-800">Coordenadas - Esquina Superior Derecha</h4>
-          <Input label="Latitud" type="number" value={(latS2 ?? "").toString()} onChange={(e) => setLatS2(Number(e.target.value))} />
-          <Input label="Longitud" type="number" value={(longS2 ?? "").toString()} onChange={(e) => setLongS2(Number(e.target.value))} />
+          <Input
+            label="Lat. Sup. Derecha"
+            type="text"
+            inputMode="decimal"
+            value={latS2 !== null ? latS2.toString() : ""}
+            onChange={(e) => setLatS2(Number(e.target.value))}
+          />
+          <Input
+            label="Long. Sup. Derecha"
+            type="text"
+            inputMode="decimal"
+            value={longS2 !== null ? longS2.toString() : ""}
+            onChange={(e) => setLongS2(Number(e.target.value))}
+          />
         </div>
       </ModalComponent>
 
