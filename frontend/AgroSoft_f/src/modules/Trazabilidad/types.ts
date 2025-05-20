@@ -63,10 +63,22 @@ export interface Eras {
 
 export interface Plantaciones {
   id: number;
-  fk_Cultivo: { nombre: string };
-  fk_semillero: { unidades: number; fechasiembra: string };
-  fk_Era: { id: number };
-}
+  fk_Cultivo: {
+    nombre: string;
+    fk_Especie?: {
+      nombre: string;
+    };
+  };
+  fk_semillero: {
+    id: number;
+    unidades: number;
+    fechasiembra: string;
+  };
+  fk_Era: {
+    id: number;
+    tipo?: string;
+  };
+};  
 
 
 export interface PlantacionCreate {
