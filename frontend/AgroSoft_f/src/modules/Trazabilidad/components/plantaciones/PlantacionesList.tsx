@@ -9,6 +9,11 @@ import { CrearPlantacionModal } from "./CrearPlantacionesModal";
 import EliminarPlantacionModal from "./EliminarPlantaciones";
 import { Plantaciones } from "../../types";
 
+// 🔽 Importaciones para el reporte PDF
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ReportePdfPlantaciones } from "./ReportePdfPlantaciones";
+import { Download } from "lucide-react";
+
 export function PlantacionesList() {
   const { data, isLoading, error } = useGetPlantaciones();
 
@@ -87,7 +92,7 @@ export function PlantacionesList() {
   if (error) return <p>Error al cargar las plantaciones</p>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-4">
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
@@ -95,6 +100,27 @@ export function PlantacionesList() {
         placeholderBusqueda="Buscar por ID"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
+        // 🔽 Botón de reporte PDF
+renderReporteAction={(data) => (
+  <PDFDownloadLink
+    document={<ReportePdfPlantaciones plantaciones={data} />}
+    fileName="reporte_plantaciones.pdf"
+  >
+    {({ loading }) => (
+      <button
+        className="p-2 rounded-full hover:bg-red-100 transition-colors"
+        title="Descargar reporte"
+      >
+        {loading ? (
+          <Download className="h-4 w-4 animate-spin text-blue-500" />
+        ) : (
+          <Download className="h-5 w-5 text-red-600" />
+        )}
+      </button>
+    )}
+  </PDFDownloadLink>
+)}
+
       />
 
       {isEditModalOpen && PlantacionesEditada && (

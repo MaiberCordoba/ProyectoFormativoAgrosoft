@@ -12,6 +12,10 @@ import { Chip } from "@heroui/react";
 import { CrearUsersModal } from "./CrearUsersModal";
 import RegistroMasivoModal from "./registroMasivoModal";
 
+// 🔽 Importaciones para el reporte PDF
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ReportePdfUsuarios } from "./ReportePdfUsuarios";
+import { Download } from "lucide-react";
 
 export function UsersList() {
   const { data, isLoading, error } = useGetUsers();
@@ -35,7 +39,6 @@ export function UsersList() {
     handleEliminar,
   } = useEliminarUsers();
 
-  // ✅ Estado para modal de registro masivo
   const [isRegistroMasivoOpen, setIsRegistroMasivoOpen] = useState(false);
 
   const handleCrearNuevo = () => {
@@ -105,20 +108,38 @@ export function UsersList() {
 
   return (
     <div className="p-4 space-y-4">
-      
-      {/* Tabla */}
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
         claveBusqueda="nombre"
         placeholderBusqueda="Buscar por nombre o email"
-        onRegistroMasivo={() =>setIsRegistroMasivoOpen(true)}
+        onRegistroMasivo={() => setIsRegistroMasivoOpen(true)}
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
         opcionesEstado={[
           { uid: "activo", nombre: "Activo" },
           { uid: "inactivo", nombre: "Inactivo" },
         ]}
+        // 🔽 Botón para exportar PDF
+        renderReporteAction={(data) => (
+          <PDFDownloadLink
+            document={<ReportePdfUsuarios data={data} />}
+            fileName="reporte_usuarios.pdf"
+          >
+            {({ loading }) => (
+              <button
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                title="Descargar reporte"
+              >
+                {loading ? (
+                  <Download className="h-4 w-4 animate-spin text-blue-500" />
+                ) : (
+                  <Download className="h-5 w-5 text-red-600" />
+                )}
+              </button>
+            )}
+          </PDFDownloadLink>
+        )}
       />
 
       {/* Modales */}
@@ -136,7 +157,7 @@ export function UsersList() {
         />
       )}
 
-      {/* ✅ Modal de registro masivo */}
+      {/* Modal de registro masivo */}
       <RegistroMasivoModal
         isOpen={isRegistroMasivoOpen}
         onClose={() => setIsRegistroMasivoOpen(false)}
