@@ -17,10 +17,9 @@ class NotificationViewSet(ModelViewSet):
     @action(detail=False, methods=['patch'])
     def mark_all_as_read(self, request):
         updated = Notification.objects.filter(
-            user=request.user, 
+            user=request.user,
             is_read=False
         ).update(is_read=True)
-        
         return Response({'status': 'success', 'updated_count': updated})
 
     @action(detail=True, methods=['patch'])
@@ -29,5 +28,4 @@ class NotificationViewSet(ModelViewSet):
         if not notification.is_read:
             notification.is_read = True
             notification.save()
-        
         return Response({'status': 'success'})

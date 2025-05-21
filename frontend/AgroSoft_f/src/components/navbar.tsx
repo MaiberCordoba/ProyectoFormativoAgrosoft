@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({
   toggleSidebar,
 }) => {
   const { user, logout } = useAuth();
-  const { notificaciones, marcarLeida, marcarTodasLeidas } = useNotificaciones();
+  const { notificaciones } = useNotificaciones(); // Eliminamos marcarLeida y marcarTodasLeidas
   const navigate = useNavigate();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -41,10 +41,13 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const unreadCount = notificaciones.filter((n) => !n.is_read).length;
 
+  // Depuración
+  console.log("Notificaciones en Navbar:", notificaciones);
+  console.log("Unread Count:", unreadCount);
+
   return (
     <>
       <nav className="flex items-center justify-between h-full px-4 md:px-6 text-white bg-sena-green">
-        {/* Lado izquierdo - Logos y menú móvil */}
         <div className="flex items-center gap-4">
           <button
             className="p-2 rounded-full hover:bg-[#25a902] md:hidden"
@@ -52,17 +55,13 @@ const Navbar: React.FC<NavbarProps> = ({
           >
             <Menu size={24} />
           </button>
-
           <div className="flex items-center gap-3">
             <img src="/logoSenaW.png" alt="SENA" className="h-10" />
             <div className="h-8 w-px bg-white/30" />
             <img src="/logoAgrosofWB.png" alt="Agrosoft" className="h-9" />
           </div>
         </div>
-
-        {/* Lado derecho - Elementos de navegación */}
         <div className="flex items-center gap-4">
-          {/* Versión desktop - Solo se muestra en pantallas grandes */}
           {user && (
             <div className="hidden md:flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -71,7 +70,6 @@ const Navbar: React.FC<NavbarProps> = ({
                   {getInitials(user.nombre)}
                 </div>
               </div>
-
               <div className="relative">
                 <button
                   onClick={toggleNotifications}
@@ -85,7 +83,6 @@ const Navbar: React.FC<NavbarProps> = ({
                   )}
                 </button>
               </div>
-
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1 hover:text-gray-200"
@@ -94,8 +91,6 @@ const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
           )}
-
-          {/* Versión móvil - Solo se muestra en pantallas pequeñas */}
           <div className="md:hidden relative">
             <button
               onClick={onMobileMenuToggle}
@@ -109,7 +104,6 @@ const Navbar: React.FC<NavbarProps> = ({
                 <User size={24} />
               )}
             </button>
-
             {isMobileMenuOpen && (
               <div className="absolute right-0 top-12 bg-white text-black rounded-lg shadow-xl w-48 z-50">
                 {user?.nombre && (
@@ -158,7 +152,6 @@ const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       </nav>
-
       {user && (
         <NotificationsModal
           isOpen={isNotificationsOpen}
