@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { Notificacion } from "../types";
 import { useAuth } from "@/hooks/UseAuth";
 
-const WS_URL = import.meta.env.REACT_APP_WS_URL || "ws://localhost:8000";
+const WS_URL = import.meta.env. REACT_APP_WS_URL || "ws://localhost:8000";
 console.log("URL del WebSocket:", WS_URL);
 
 export const useSocketNotificaciones = (onNotificacion: (noti: Notificacion) => void) => {

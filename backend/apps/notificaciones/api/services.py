@@ -4,14 +4,31 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import Q
+from datetime import timedelta
+from django.utils import timezone
 
 class NotificationService:
     @staticmethod
     def create_notification(user, title, message, notification_type, 
                           related_object=None, metadata=None, send_email=True):
         """
-        Crea una notificación y la envía por WebSocket y/o email
+        Crea una notificación y la envía por WebSocket y/o email, evitando duplicados
         """
+        # Verificar si ya existe una notificación similar en los últimos 5 minutos
+        recent_time = timezone.now() - timedelta(minutes=5)
+        existing_notification = Notification.objects.filter(
+            user=user,
+            title=title,
+            message=message,
+            notification_type=notification_type,
+            created_at__gte=recent_time
+        ).first()
+
+        if existing_notification:
+            print(f"Notificación duplicada detectada para usuario {user.id}, título: {title}")
+            return existing_notification
+
         # Crear notificación en la base de datos
         notification = Notification.objects.create(
             user=user,
@@ -46,11 +63,21 @@ class NotificationService:
                 user_group,
                 {
                     "type": "send_notification",
-                    "notification": notification_data,
-                    "email": user.correoElectronico if send_email else None
+                    "notification": notification_data
                 }
             )
 
-            
-        
+        # Enviar correo electrónico si es necesario
+        if send_email and user.correoElectronico:
+            try:
+                send_mail(
+                    subject=title,
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.correoElectronico],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error enviando email a {user.correoElectronico}: {e}")
+
         return notification

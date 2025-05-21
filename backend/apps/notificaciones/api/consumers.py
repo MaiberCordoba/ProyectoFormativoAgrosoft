@@ -1,8 +1,6 @@
 # apps/notifications/consumers.py
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.core.mail import send_mail
-from django.conf import settings
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -24,25 +22,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.user_group, self.channel_name)
 
     async def send_notification(self, event):
-        """Envía notificación al usuario."""
+        """Envía notificación al usuario por WebSocket."""
         notification = event["notification"]
-        email = event.get("email")
         
         # Envía la notificación por WebSocket
         await self.send(text_data=json.dumps({
             "type": "notification",
             "notification": notification
         }))
-        
-        # Si hay email, envía también por correo
-        if email and notification.get("send_email", True):
-            try:
-                send_mail(
-                    subject=notification.get("title", "Nueva notificación"),
-                    message=notification.get("message", ""),
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                print(f"Error enviando email: {e}")
