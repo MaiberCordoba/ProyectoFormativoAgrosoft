@@ -9,9 +9,9 @@ export const useDeleteMovimientoInventario = () => {
     return useMutation<MovimientoInventario, Error, { id: number }, { previousMovimientoInventario?: MovimientoInventario[] }>({
         mutationFn: ({ id }) => deleteMovimientoInventario(id),
         onMutate: async (variables) => {
-            await queryClient.cancelQueries({ queryKey: ['movimientosInventario'] });
-            const previousMovimientoInventario = queryClient.getQueryData<MovimientoInventario[]>(['movimientosInventario']);
-            queryClient.setQueryData<MovimientoInventario[]>(['movimientosInventario'], (old) => 
+            await queryClient.cancelQueries({ queryKey: ['movimientos'] });
+            const previousMovimientoInventario = queryClient.getQueryData<MovimientoInventario[]>(['movimientos']);
+            queryClient.setQueryData<MovimientoInventario[]>(['movimientos'], (old) => 
                 old?.filter(movimiento => movimiento.id !== variables.id) || []
             );
             return { previousMovimientoInventario };
@@ -25,11 +25,11 @@ export const useDeleteMovimientoInventario = () => {
             
             if (context?.previousMovimientoInventario) {
                 console.error(error)
-                queryClient.setQueryData(['movimientosInventario'], context.previousMovimientoInventario);
+                queryClient.setQueryData(['movimientos'], context.previousMovimientoInventario);
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['movimientosInventario'] });
+            queryClient.invalidateQueries({ queryKey: ['movimientos'] });
             
             addToast({
                 title: "Operación exitosa",

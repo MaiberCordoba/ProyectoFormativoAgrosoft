@@ -155,13 +155,13 @@ export interface MovimientoInventario {
     id : number,
     tipo : "entrada" | "salida" ,
     unidades : number,
-    fk_Insumo : number,
-    insumo : Insumos,
-    fk_UsoInsumo:number,
+    fk_Insumo? : number,
+    insumo? : Insumos,
+    fk_UsoInsumo?:number,
     usoInsumo : UsosInsumos,
-    fk_Herramienta : number,
+    fk_Herramienta? : number,
     herramienta : Herramientas,
-    fk_UsoHerramienta : number,
+    fk_UsoHerramienta? : number,
     usoHerramienta : UsosHerramientas
     /* fk_Cosecha : number,
     cosecha : Cosechas, */
