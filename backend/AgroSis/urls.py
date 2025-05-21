@@ -92,6 +92,8 @@ from apps.finanzas.api.routers.routerListBeneficioCosto import routerListBenefic
 from apps.users.urls import router_usuarios
 from apps.users.api.forgotPassword import solicitar_recuperacion, resetear_contraseña
 
+#Notificaciones
+from apps.notificaciones.api.routers import router_notificaciones
 
 urlpatterns = [
     #SWAGGER Y ADMIN
@@ -150,6 +152,9 @@ urlpatterns = [
     path('api/', include('apps.users.urls')),
     path("api/solicitar-recuperacion/", solicitar_recuperacion, name="solicitar_recuperacion"),
     path("api/resetear-contrasena/", resetear_contraseña, name="resetear_contraseña"),
+
+     #notificaciones
+    path('api/',include(router_notificaciones.urls)),
 
     # Ruta para obtener el token JWT
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),

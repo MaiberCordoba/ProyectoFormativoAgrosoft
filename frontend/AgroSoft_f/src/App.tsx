@@ -59,6 +59,7 @@ import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
 import CalendarioPage from "./modules/Trazabilidad/pages/calendario";
+import NotificationsPage from "./modules/Notificaciones/pages/notificationsPage";
 
 
 
@@ -146,6 +147,9 @@ function App() {
 
             {/*test*/}
             <Route path="/testeo" element={<Testeo/>}></Route>
+
+            {/*test*/}
+            <Route path="/notificaciones" element={<NotificationsPage/>}></Route>
 
             {/* si hay token y ruta no existe redirige a home */}
             <Route path="*" 

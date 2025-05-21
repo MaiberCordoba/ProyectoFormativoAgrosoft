@@ -6,6 +6,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.mail import send_mail
 from django.conf import settings
+from apps.notificaciones.api.services import NotificationService
 
 class ViewActividades(ModelViewSet):
     serializer_class = SerializerActividades
@@ -52,28 +53,15 @@ class ViewActividades(ModelViewSet):
                     f"{ubicacion_info}"
                 )
 
-                # Enviar correo
-                email = actividad.fk_Usuario.correoElectronico
-                send_mail(
-                    subject=f"Nueva actividad: {actividad.titulo}",
+                # Usar el servicio de notificaciones
+                NotificationService.create_notification(
+                    user=actividad.fk_Usuario,
+                    title=f"Nueva actividad: {actividad.titulo}",
                     message=mensaje,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
+                    notification_type="activity",
+                    related_object=actividad,
+                    send_email=True
                 )
 
-                # Notificación WebSocket
-                channel_layer = get_channel_layer()
-                if channel_layer is not None:
-                    user_group = f"notificaciones_{actividad.fk_Usuario.id}"
-                    async_to_sync(channel_layer.group_send)(
-                        user_group,
-                        {
-                            "type": "send_notification",
-                            "message": mensaje,
-                            "email": email
-                        }
-                    )
-
             except Exception as e:
-                print(f"Error general en el envío de notificación: {e}")
+                print(f"Error en el envío de notificación: {e}")
