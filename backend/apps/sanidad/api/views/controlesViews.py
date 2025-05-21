@@ -6,7 +6,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.mail import send_mail
 from django.conf import settings
-
+from apps.notificaciones.api.services import NotificationService
 class ControleslModelViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ControlesModelSerializer
@@ -26,23 +26,13 @@ class ControleslModelViewSet(ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
-        control = serializer.save()  # Guarda el control en la base de datos
+        control = serializer.save()
 
         if control.fk_Usuario is not None:
             try:
-                channel_layer = get_channel_layer()
-                if channel_layer is None:
-                    print("Error: No se pudo obtener el canal de WebSockets")
-                    return
-
-                user_group = f"controles_notificaciones_{control.fk_Usuario.id}"
-                email = control.fk_Usuario.correoElectronico
-
                 fecha_control = control.fechaControl.strftime("%d/%m/%Y")
                 descripcion = control.descripcion
-
                 afeccion_nombre = control.fk_Afeccion.fk_Plaga.nombre if control.fk_Afeccion and control.fk_Afeccion.fk_Plaga else "Sin especificar"
-
                 tipo_afeccion = control.fk_Afeccion.fk_Plaga.fk_Tipo.nombre if (
                     control.fk_Afeccion and
                     control.fk_Afeccion.fk_Plaga and
@@ -67,30 +57,15 @@ class ControleslModelViewSet(ModelViewSet):
                     f"Tipo de control: {tipo_control}"
                 )
 
-                notification_data = {
-                    "message": mensaje,
-                    "email": email
-                }
-
-                async_to_sync(channel_layer.group_send)(
-                    user_group,
-                    {
-                        "type": "send_notification",
-                        "message": notification_data["message"],
-                        "email": email
-                    }
+                # Usar el servicio de notificaciones
+                NotificationService.create_notification(
+                    user=control.fk_Usuario,
+                    title=f"Nuevo control asignado - {fecha_control}",
+                    message=mensaje,
+                    notification_type="control",
+                    related_object=control,
+                    send_email=True
                 )
 
-                try:
-                    send_mail(
-                        subject=f"Nuevo control asignado - {fecha_control}",
-                        message=notification_data["message"],
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[email],
-                        fail_silently=False,
-                    )
-                except Exception as e:
-                    print(f"Error enviando email desde la vista: {e}")
-
             except Exception as e:
-                print(f"Error enviando la notificación: {e}")
+                print(f"Error en el envío de notificación: {e}")
