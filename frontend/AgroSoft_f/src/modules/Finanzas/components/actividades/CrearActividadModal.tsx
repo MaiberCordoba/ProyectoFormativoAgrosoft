@@ -26,6 +26,8 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
   const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
+  //manejo de errores
+  const [mensajeError, setMensajeError] = useState("")
   //Creacion de modales 
   const [tipoActividadModal, setTipoActividadModal] = useState(false)
   const [usuarioModal, setUsuarioModal] = useState(false)
@@ -39,9 +41,10 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
 
   const handleSubmit = () => {
     if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
-      console.log("Por favor, completa todos los campos.");
+      setMensajeError("Por favor, completa todos los campos.");
       return;
     }
+    setMensajeError("")
 
     mutate(
       {fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
@@ -55,6 +58,7 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           setDescripcion("");
           setFecha("");
           setEstado("");
+          setMensajeError("");
         },
       }
     );
@@ -92,6 +96,10 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           },
         ]}
       >
+        {mensajeError &&(
+          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
+        )}
+        
         <Input
           label="Titulo"
           type="text"
@@ -112,6 +120,7 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           type="date"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}
+          min={new Date().toISOString().split("T")[0]}
           required
         />
 
