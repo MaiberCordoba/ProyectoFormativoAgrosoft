@@ -1,11 +1,11 @@
+# AgroSis/routing.py (este es el archivo principal)
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import path
-from apps.finanzas.websocket.routing import websocket_urlpatterns as actividades_routing
+from apps.notificaciones.api.routing import websocket_urlpatterns as notificaciones_routing
 from apps.electronica.api.consumers.routing import websocket_urlpatterns as electronica_routing
-from apps.sanidad.api.websocket.routing import websocket_urlpatterns as sanidad_routing
 
-#routers de los webSockets
-websocket_urlpatterns = actividades_routing + electronica_routing + sanidad_routing
+# Combina todos los patrones de WebSocket
+websocket_urlpatterns = notificaciones_routing + electronica_routing
 
 application = ProtocolTypeRouter({
     "websocket": URLRouter(websocket_urlpatterns),
