@@ -26,7 +26,7 @@ export const usePostTiempoActividadControl = () => {
       addToast({
         title: 'Error al crear el tiempo de actividad',
         description: 'No fue posible  registrar un tiempo de actividad',
-        color: 'success'
+        color: 'danger'
       })
     },
   });
