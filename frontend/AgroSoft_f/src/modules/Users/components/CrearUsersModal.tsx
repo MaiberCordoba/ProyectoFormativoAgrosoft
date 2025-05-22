@@ -35,6 +35,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
   });
 
   const { mutate, isPending } = usePostUsers();
+  const today = new Date().toISOString().split('T')[0];
 
   // Maneja cambios en inputs normales
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>, field: keyof Omit<UserFormState, 'admin'>) => {
@@ -77,6 +78,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
       }
     });
   };
+  
 
   return (
     <ModalComponent
@@ -121,6 +123,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           type="date"
           value={userData.fechaNacimiento}
           onChange={(e) => handleInputChange(e, 'fechaNacimiento')}
+           max={today}
         />
 
         <Input
