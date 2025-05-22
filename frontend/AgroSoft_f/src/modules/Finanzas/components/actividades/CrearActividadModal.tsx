@@ -18,7 +18,9 @@ interface CrearActividadesModalProps {
   onCreate: (nuevaActividad: Actividades) => void;
 }
 
-export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) => {
+export const CrearActividadesModal = ({
+  onClose,
+}: CrearActividadesModalProps) => {
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(null);
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
@@ -27,28 +29,44 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
   const [fecha, setFecha] = useState("");
   const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
   //manejo de errores
-  const [mensajeError, setMensajeError] = useState("")
-  //Creacion de modales 
-  const [tipoActividadModal, setTipoActividadModal] = useState(false)
-  const [usuarioModal, setUsuarioModal] = useState(false)
-  const [cultivoModal, setCultivoModal] = useState(false)
-
+  const [mensajeError, setMensajeError] = useState("");
+  //Creacion de modales
   const [tipoActividadModal, setTipoActividadModal] = useState(false);
   const [usuarioModal, setUsuarioModal] = useState(false);
   const [cultivoModal, setCultivoModal] = useState(false);
 
-  const { data: cultivos, isLoading: isLoadingCultivos, refetch: refetchCultivo } = useGetCultivos();
-  const { data: users, isLoading: isLoadingUsers, refetch: refetchUsuario } = useGetUsers();
-  const { data: tiposActividad, isLoading: isLoadingTiposActividad, refetch: refetchTipoActividad } = useGetTipoActividad();
+  const {
+    data: cultivos,
+    isLoading: isLoadingCultivos,
+    refetch: refetchCultivo,
+  } = useGetCultivos();
+  const {
+    data: users,
+    isLoading: isLoadingUsers,
+    refetch: refetchUsuario,
+  } = useGetUsers();
+  const {
+    data: tiposActividad,
+    isLoading: isLoadingTiposActividad,
+    refetch: refetchTipoActividad,
+  } = useGetTipoActividad();
   const { mutate, isPending } = usePostActividades();
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
+    if (
+      !fk_Cultivo ||
+      !fk_Usuario ||
+      !fk_TipoActividad ||
+      !titulo ||
+      !descripcion ||
+      !fecha ||
+      !estado
+    ) {
       setMensajeError("Por favor, completa todos los campos.");
 
       return;
     }
-    setMensajeError("")
+    setMensajeError("");
 
     mutate(
       { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, estado },
@@ -101,10 +119,10 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           },
         ]}
       >
-        {mensajeError &&(
+        {mensajeError && (
           <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
         )}
-        
+
         <Input
           label="Titulo"
           type="text"
@@ -128,7 +146,6 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           min={new Date().toISOString().split("T")[0]}
           required
         />
-
 
         <Select
           label="Estado"
@@ -159,7 +176,9 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
                 }}
               >
                 {(cultivos || []).map((cultivo) => (
-                  <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
+                  <SelectItem key={cultivo.id.toString()}>
+                    {cultivo.nombre}
+                  </SelectItem>
                 ))}
               </Select>
             </div>
@@ -190,7 +209,9 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
                 }}
               >
                 {(users || []).map((usuario) => (
-                  <SelectItem key={usuario.id.toString()}>{usuario.nombre}</SelectItem>
+                  <SelectItem key={usuario.id.toString()}>
+                    {usuario.nombre}
+                  </SelectItem>
                 ))}
               </Select>
             </div>
@@ -214,14 +235,18 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
               <Select
                 label="Tipo Actividad"
                 placeholder="Seleccione el tipo de actividad"
-                selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
+                selectedKeys={
+                  fk_TipoActividad ? [fk_TipoActividad.toString()] : []
+                }
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
                   setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
                 }}
               >
                 {(tiposActividad || []).map((tipoActividad) => (
-                  <SelectItem key={tipoActividad.id.toString()}>{tipoActividad.nombre}</SelectItem>
+                  <SelectItem key={tipoActividad.id.toString()}>
+                    {tipoActividad.nombre}
+                  </SelectItem>
                 ))}
               </Select>
             </div>

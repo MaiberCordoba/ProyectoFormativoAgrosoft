@@ -5,7 +5,6 @@ from apps.finanzas.api.models.historialBeneficioCosto import HistorialBeneficioC
 from apps.finanzas.api.models.actividades import Actividades
 from apps.finanzas.api.models.cultivos import CoeficienteCultivo
 from apps.finanzas.api.models.cosechas import Cosechas
-from apps.finanzas.api.models.cosechaVenta import CosechaVenta
 from apps.finanzas.api.models.cultivos import Cultivos
 from apps.finanzas.api.models.desechos import Desechos
 from apps.finanzas.api.models.insumos import Insumos
