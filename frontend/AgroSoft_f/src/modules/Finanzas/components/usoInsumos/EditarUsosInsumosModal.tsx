@@ -6,6 +6,7 @@ import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
 
 interface EditarUsoInsumoModalProps {
   usoInsumo: UsosInsumos;
@@ -17,20 +18,28 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
   const [fk_Actividad, setFk_Actividad] = useState<number>(usoInsumo.fk_Actividad || 0);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number>(usoInsumo.fk_UnidadMedida || 0);
   const [cantidadProducto, setCantidadProducto] = useState<number>(usoInsumo.cantidadProducto);
+  const [fk_Control, setFk_Control] = useState<number>(usoInsumo.fk_Control || 0);
+  const [error,setError] = useState("")
 
   const { data: insumos, isLoading: isLoadingInsumos } = useGetInsumos();
   const { data: actividades, isLoading: isLoadingActividades } = useGetActividades();
   const { data: unidadesMedida, isLoading: isLoadingUnidades } = useGetUnidadesMedida();
+  const { data: control, isLoading: isLoadingControl } = useGetControles();
 
   const { mutate, isPending } = usePatchUsosInsumos();
 
   const handleSubmit = () => {
+    if (fk_Actividad && fk_Control){
+      setError("Puede elegir una actividad o un control, no ambos")
+      return
+    }
     mutate(
       {
         id: usoInsumo.id,
         data: {
           fk_Insumo,
           fk_Actividad,
+          fk_Control,
           fk_UnidadMedida,
           cantidadProducto,
         },
@@ -57,6 +66,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Cantidad Usada"
         value={cantidadProducto}
@@ -99,6 +109,23 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
         >
           {(actividades || []).map((actividad) => (
             <SelectItem key={actividad.id.toString()}>{actividad.titulo}</SelectItem>
+          ))}
+        </Select>
+      )}
+      {isLoadingControl ? (
+        <p>Cargando controles...</p>
+      ) : (
+        <Select
+          label="Control"
+          placeholder="Selecciona un control"
+          selectedKeys={[fk_Control.toString()]}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];
+            setFk_Control(Number(selectedKey));
+          }}
+        >
+          {(control || []).map((c) => (
+            <SelectItem key={c.id.toString()}>{c.descripcion}</SelectItem>
           ))}
         </Select>
       )}
