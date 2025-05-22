@@ -14,14 +14,17 @@ export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
   const [monto, setMonto] = useState<number | "">("");
   const [horas, setHoras] = useState<number | "">("");
   const [estado, setEstado] = useState<"activo" | "inactivo" | "">("");
+  
+  const [error, setError] = useState("");
 
   const { mutate, isPending } = usePostSalario();
 
   const handleSubmit = () => {
     if (!nombre || monto === "" || horas === "" || !estado) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       {
@@ -38,6 +41,7 @@ export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
           setMonto("");
           setHoras("");
           setEstado("");
+          setError("")
         },
       }
     );
@@ -57,6 +61,7 @@ export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Nombre Salario"
         type="text"

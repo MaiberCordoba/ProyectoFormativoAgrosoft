@@ -20,6 +20,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fecha, setFecha] = useState("");
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [cantidad, setCantidad] = useState<number>(0);
+  const [error,setError] = useState("")
 
   const [CosechaModal, setCosechaModal] = useState(false);
   const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
@@ -30,9 +31,10 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Cosecha || !precioUnitario || !fecha || !fk_UnidadMedida || !cantidad) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       { fk_Cosecha, precioUnitario, fecha, fk_UnidadMedida, cantidad },
@@ -44,6 +46,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           setFecha("");
           setFk_UnidadMedida(null);
           setCantidad(0);
+          setError("")
         },
       }
     );
@@ -73,6 +76,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           },
         ]}
       >
+        <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Precio Unitario"
           type="number"

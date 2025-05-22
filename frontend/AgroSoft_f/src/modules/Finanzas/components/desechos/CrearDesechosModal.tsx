@@ -21,6 +21,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
+  const [error,setError] = useState("")
   //Creacion modales 
   const [plantacionModal, setPlantacionModal] = useState(false)
   const [tipoDesechosModal, setTiposDesechosModal] = useState(false)
@@ -31,9 +32,10 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Plantacion || !fk_TipoDesecho || !nombre || !descripcion) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       { id:0 ,fk_Plantacion, fk_TipoDesecho, nombre, descripcion },
@@ -44,6 +46,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
           setFk_TipoDesecho(null);
           setNombre("");
           setDescripcion("");
+          setError("")
         },
       }
     );
@@ -74,6 +77,9 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
           },
         ]}
       >
+        {error &&(
+          <p className="text-red-500 text-sm mb-2">{error}</p>
+        )}
         <Input
           label="Nombre desecho"
           type="text"

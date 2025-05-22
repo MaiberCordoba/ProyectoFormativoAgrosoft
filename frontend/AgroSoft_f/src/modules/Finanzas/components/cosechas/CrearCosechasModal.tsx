@@ -21,6 +21,8 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
 
+  const [mensajeError, setMensajeError] = useState("")
+
 //Creacion de estados para abrir modales
   const [unidadMedidaModal,setUnidadMedidaModal] = useState(false)
   const [PlantacionModal,setPlantacionModal] = useState(false)
@@ -31,9 +33,10 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha ) {
-      console.log("Por favor, completa todos los campos.");
+      setMensajeError("Por favor, completa todos los campos.");
       return;
     }
+    setMensajeError("")
 
     mutate(
       { fk_Plantacion, cantidad, fk_UnidadMedida, fecha},
@@ -44,6 +47,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           setCantidad(null)
           setFk_UnidadMedida(null) // Restablecer a 0
           setFecha("");
+          setMensajeError("")
         },
       }
     );
@@ -74,6 +78,9 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           },
         ]}
       >
+        {mensajeError &&(
+          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
+        )}
 
         <Input
           label="Fecha de Cosecha"

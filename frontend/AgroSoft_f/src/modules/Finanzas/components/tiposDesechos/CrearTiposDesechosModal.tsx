@@ -12,14 +12,16 @@ interface CrearTiposDesechosModalProps {
 export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [error,setError] = useState("")
 
   const { mutate, isPending } = usePostTiposDesechos();
 
   const handleSubmit = () => {
     if (!nombre || !descripcion) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
     mutate(
       {id:0 ,nombre, descripcion }, // Envía el ID del tipo de plaga
       {
@@ -27,8 +29,8 @@ export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProp
           onClose();
           setNombre("");
           setDescripcion("");
+          setError("")
         },
-        
       }
     );
   };
@@ -47,6 +49,7 @@ export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProp
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Nombre"
         type="text"

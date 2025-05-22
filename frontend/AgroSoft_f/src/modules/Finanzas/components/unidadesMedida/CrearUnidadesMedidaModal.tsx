@@ -14,14 +14,16 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
   const [abreviatura, setAbreviatura] = useState("");
   const [tipo, setTipo] = useState<"MASA" | "VOLUMEN" | "">("");
   const [equivalenciabase, setEquivalenciabase] = useState(0);
+  const  [error,setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesMedida();
 
   const handleSubmit = () => {
     if (!nombre || !abreviatura || !tipo || equivalenciabase <= 0) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       { id:0,nombre, abreviatura, tipo, equivalenciabase },
@@ -32,6 +34,7 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
           setAbreviatura("");
           setTipo("");
           setEquivalenciabase(0);
+          setError("")
         },
       }
     );
@@ -51,6 +54,7 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Nombre"
         type="text"

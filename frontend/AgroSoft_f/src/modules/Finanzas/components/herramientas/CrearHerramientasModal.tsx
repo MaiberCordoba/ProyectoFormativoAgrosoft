@@ -19,15 +19,18 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
   const [descripcion, setDescripcion] = useState("");
   const [unidades, setUnidades] = useState<number | null>(null);
 
+  const [error,setError] = useState("")
+
   const [lotesModal, setLotesModal] = useState(false)
   const { data: lotes, isLoading: isLoadingLotes, refetch: refetchLotes } = useGetLotes();
   const { mutate, isPending } = usePostHerramienta();
 
   const handleSubmit = () => {
     if (!fk_Lote || !nombre.trim() || !descripcion.trim() || !unidades) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       { id:0,fk_Lote, unidades, nombre, descripcion },
@@ -38,6 +41,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
           setUnidades(null);
           setNombre("");
           setDescripcion("");
+          setError("")
         },
       }
     );
@@ -62,6 +66,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
           },
         ]}
         >
+          <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Nombre"
           type="text"
