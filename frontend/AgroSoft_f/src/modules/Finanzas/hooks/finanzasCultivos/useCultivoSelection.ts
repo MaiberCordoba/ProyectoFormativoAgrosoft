@@ -3,7 +3,9 @@ import { useState } from "react";
 import { useResumenEconomico } from "./useGetResumenEconomico";
 
 export const useCultivoSelection = () => {
-  const [selectedCultivoId, setSelectedCultivoId] = useState<number | null>(null);
+  const [selectedCultivoId, setSelectedCultivoId] = useState<number | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Usamos el hook existente para obtener el detalle completo

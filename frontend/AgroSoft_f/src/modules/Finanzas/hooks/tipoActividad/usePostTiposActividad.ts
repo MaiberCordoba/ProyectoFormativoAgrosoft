@@ -26,7 +26,7 @@ export const usePostTipoActividad = () => {
       addToast({
         title: 'Error al crear el tipo de actividad',
         description: 'No fue posible  registrar un tipo de actividad',
-        color: 'success'
+        color: 'danger'
       })
     },
   });

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "apps.sanidad",
     "apps.trazabilidad",
     "apps.users",
+    "apps.notificaciones",
     'rest_framework_simplejwt.token_blacklist'
 ]
 

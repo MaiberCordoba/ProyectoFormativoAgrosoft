@@ -4,7 +4,7 @@ import { MovimientoInventario } from "../../types";
 
 export const useGetMovimientoInventario = () => {
   return useQuery<MovimientoInventario[], Error>({
-    queryKey: ["movimientosInventario"], 
+    queryKey: ["movimientos"], 
     queryFn: getMovimientoInventario, 
   });
 };

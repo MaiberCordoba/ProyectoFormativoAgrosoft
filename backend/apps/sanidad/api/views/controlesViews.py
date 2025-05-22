@@ -1,3 +1,4 @@
+# apps/sanidad/api/views.py
 from rest_framework.viewsets import ModelViewSet
 from apps.sanidad.api.serializers.controlesSerializer import ControlesModelSerializer
 from apps.sanidad.api.models.controlesModel import Controles
@@ -6,6 +7,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.mail import send_mail
 from django.conf import settings
+from apps.notificaciones.api.services import NotificationService
 
 class ControleslModelViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -13,36 +15,24 @@ class ControleslModelViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        print(f"[DEBUG] Usuario autenticado: {user}")
-        print(f"[DEBUG] is_staff: {user.is_staff}, is_superuser: {user.is_superuser}")
-
-        if user.is_superuser or user.is_staff:
+        print(f"[DEBUG] Usuario autenticado: {user}, admin: {user.admin}")  # Añadido para depuración
+        # Si el usuario tiene admin=True, devuelve todos los controles
+        if user.admin:  # Cambiado de is_superuser/is_staff a admin
             qs = Controles.objects.all()
-            print(f"[DEBUG] Admin o staff - controles totales: {qs.count()}")
+            print(f"[DEBUG] Admin - controles totales: {qs.count()}")
             return qs
-
+        # Si no, devuelve solo sus controles
         qs = Controles.objects.filter(fk_Usuario=user)
         print(f"[DEBUG] Usuario normal - controles propios: {qs.count()}")
         return qs
 
     def perform_create(self, serializer):
-        control = serializer.save()  # Guarda el control en la base de datos
-
+        control = serializer.save()
         if control.fk_Usuario is not None:
             try:
-                channel_layer = get_channel_layer()
-                if channel_layer is None:
-                    print("Error: No se pudo obtener el canal de WebSockets")
-                    return
-
-                user_group = f"controles_notificaciones_{control.fk_Usuario.id}"
-                email = control.fk_Usuario.correoElectronico
-
                 fecha_control = control.fechaControl.strftime("%d/%m/%Y")
                 descripcion = control.descripcion
-
                 afeccion_nombre = control.fk_Afeccion.fk_Plaga.nombre if control.fk_Afeccion and control.fk_Afeccion.fk_Plaga else "Sin especificar"
-
                 tipo_afeccion = control.fk_Afeccion.fk_Plaga.fk_Tipo.nombre if (
                     control.fk_Afeccion and
                     control.fk_Afeccion.fk_Plaga and
@@ -67,30 +57,13 @@ class ControleslModelViewSet(ModelViewSet):
                     f"Tipo de control: {tipo_control}"
                 )
 
-                notification_data = {
-                    "message": mensaje,
-                    "email": email
-                }
-
-                async_to_sync(channel_layer.group_send)(
-                    user_group,
-                    {
-                        "type": "send_notification",
-                        "message": notification_data["message"],
-                        "email": email
-                    }
+                NotificationService.create_notification(
+                    user=control.fk_Usuario,
+                    title=f"Nuevo control asignado - {fecha_control}",
+                    message=mensaje,
+                    notification_type="control",
+                    related_object=control,
+                    send_email=True
                 )
-
-                try:
-                    send_mail(
-                        subject=f"Nuevo control asignado - {fecha_control}",
-                        message=notification_data["message"],
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[email],
-                        fail_silently=False,
-                    )
-                except Exception as e:
-                    print(f"Error enviando email desde la vista: {e}")
-
             except Exception as e:
-                print(f"Error enviando la notificación: {e}")
+                print(f"Error en el envío de notificación: {e}")

@@ -26,7 +26,7 @@ export const usePostTiposDesechos = () => {
       addToast({
         title: 'Error al crear el tipo de desecho',
         description: 'No fue posible  registrar un tipo de desecho',
-        color: 'success'
+        color: 'danger'
       })
     },
   });

@@ -1,66 +1,106 @@
 from rest_framework import serializers
 from apps.finanzas.api.models.movimientosInventario import MovimientoInventario
+from apps.finanzas.api.models.insumos import Insumos
+from apps.trazabilidad.api.models.HerramientasModel import Herramientas
 
 class SerializerMovimientoInventario(serializers.ModelSerializer):
     class Meta:
         model = MovimientoInventario
         fields = '__all__'
-        read_only_fields = ['tipo','fk_Insumo','fk_Herramienta','fk_UsoInsumo','fk_UsoHerramienta','unidades']
 
-    """ def validate(self, data):
-        relacionados = [
-            data.get('fk_Insumo'),
-            data.get('fk_Herramienta'),
-            data.get('fk_Cosecha'),
-        ]
-        cantidad_no_nulos = sum(1 for x in relacionados if x is not None)
+    def validate(self, data):
+        tipo = data.get('tipo')
+        insumo = data.get('fk_Insumo')
+        herramienta = data.get('fk_Herramienta')
+        uso_insumo = data.get('fk_UsoInsumo')
+        uso_herramienta = data.get('fk_UsoHerramienta')
 
-        if cantidad_no_nulos > 1:
-            raise serializers.ValidationError(
-                "Solo puedes seleccionar uno: Insumo, Herramienta o Cosecha."
-            )
-        if cantidad_no_nulos == 0:
-            raise serializers.ValidationError(
-                "Debes seleccionar al menos uno: Insumo, Herramienta o Cosecha."
-            )
+        if insumo and herramienta:
+            raise serializers.ValidationError("Solo se puede registrar un insumo o una herramienta, no ambos.")
+
+        if not (uso_insumo or uso_herramienta):
+            if not tipo:
+                raise serializers.ValidationError("El tipo es obligatorio para movimientos manuales.")
+            if 'unidades' not in data:
+                raise serializers.ValidationError("Las unidades son obligatorias para movimientos manuales.")
 
         return data
 
     def create(self, validated_data):
         tipo = validated_data.get('tipo')
-        cantidad = validated_data.get('cantidad')
-
+        unidades = validated_data.get('unidades')
         insumo = validated_data.get('fk_Insumo')
         herramienta = validated_data.get('fk_Herramienta')
-        cosecha = validated_data.get('fk_Cosecha')
 
-        if insumo:
-            if tipo == 'entrada':
-                insumo.cantidadTotal += cantidad
-                insumo.cantidadDisponible += cantidad
-            elif tipo == 'salida':
-                if insumo.cantidadDisponible < cantidad:
-                    raise serializers.ValidationError("No hay suficiente stock disponible en insumos.")
-                insumo.cantidadTotal -= cantidad
-                insumo.cantidadDisponible -= cantidad
+        if not validated_data.get('fk_UsoInsumo') and not validated_data.get('fk_UsoHerramienta'):
+            if insumo:
+                insumo_obj = Insumos.objects.get(pk=insumo.id)
+                if tipo == 'entrada':
+                    insumo_obj.unidades += unidades
+                elif tipo == 'salida':
+                    if unidades > insumo_obj.unidades:
+                        raise serializers.ValidationError("No hay suficientes unidades en stock.")
+                    insumo_obj.unidades -= unidades
+                insumo_obj.save()
+
+            elif herramienta:
+                herramienta_obj = Herramientas.objects.get(pk=herramienta.id)
+                if tipo == 'entrada':
+                    herramienta_obj.unidades += unidades
+                elif tipo == 'salida':
+                    if unidades > herramienta_obj.unidades:
+                        raise serializers.ValidationError("No hay suficientes unidades en stock.")
+                    herramienta_obj.unidades -= unidades
+                herramienta_obj.save()
+
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Guardar datos antiguos para revertir el movimiento
+        tipo_anterior = instance.tipo
+        unidades_anteriores = instance.unidades
+        insumo_anterior = instance.fk_Insumo
+        herramienta_anterior = instance.fk_Herramienta
+
+        # Revertir el movimiento anterior
+        if insumo_anterior:
+            insumo = Insumos.objects.get(pk=insumo_anterior.id)
+            if tipo_anterior == 'entrada':
+                insumo.unidades -= unidades_anteriores
+            elif tipo_anterior == 'salida':
+                insumo.unidades += unidades_anteriores
             insumo.save()
-
-        elif herramienta:
-            if tipo == 'entrada':
-                herramienta.unidades += cantidad
-            elif tipo == 'salida':
-                if herramienta.unidades < cantidad:
-                    raise serializers.ValidationError("No hay suficientes unidades disponibles.")
-                herramienta.unidades -= cantidad
+        elif herramienta_anterior:
+            herramienta = Herramientas.objects.get(pk=herramienta_anterior.id)
+            if tipo_anterior == 'entrada':
+                herramienta.unidades -= unidades_anteriores
+            elif tipo_anterior == 'salida':
+                herramienta.unidades += unidades_anteriores
             herramienta.save()
 
-        elif cosecha:
-            if tipo == 'entrada':
-                cosecha.cantidadDisponible += cantidad
-            elif tipo == 'salida':
-                if cosecha.cantidadDisponible < cantidad:
-                    raise serializers.ValidationError("No hay suficiente cantidad disponible en la cosecha.")
-                cosecha.cantidadDisponible -= cantidad
-            cosecha.save()
+        # Aplicar el nuevo movimiento
+        tipo_nuevo = validated_data.get('tipo', instance.tipo)
+        unidades_nuevas = validated_data.get('unidades', instance.unidades)
+        insumo_nuevo = validated_data.get('fk_Insumo', instance.fk_Insumo)
+        herramienta_nueva = validated_data.get('fk_Herramienta', instance.fk_Herramienta)
 
-        return super().create(validated_data) """
+        if insumo_nuevo:
+            insumo = Insumos.objects.get(pk=insumo_nuevo.id)
+            if tipo_nuevo == 'entrada':
+                insumo.unidades += unidades_nuevas
+            elif tipo_nuevo == 'salida':
+                if unidades_nuevas > insumo.unidades:
+                    raise serializers.ValidationError("No hay suficientes unidades en stock.")
+                insumo.unidades -= unidades_nuevas
+            insumo.save()
+        elif herramienta_nueva:
+            herramienta = Herramientas.objects.get(pk=herramienta_nueva.id)
+            if tipo_nuevo == 'entrada':
+                herramienta.unidades += unidades_nuevas
+            elif tipo_nuevo == 'salida':
+                if unidades_nuevas > herramienta.unidades:
+                    raise serializers.ValidationError("No hay suficientes unidades en stock.")
+                herramienta.unidades -= unidades_nuevas
+            herramienta.save()
+
+        return super().update(instance, validated_data)

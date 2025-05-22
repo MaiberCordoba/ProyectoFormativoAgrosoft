@@ -26,7 +26,7 @@ export const usePostSalario = () => {
       addToast({
         title: 'Error al crear el salario',
         description: 'No fue posible registrar un nuevo salario',
-        color: 'success'
+        color: 'danger'
       })
     },
   });

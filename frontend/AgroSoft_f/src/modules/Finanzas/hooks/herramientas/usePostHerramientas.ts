@@ -26,7 +26,7 @@ export const usePostHerramienta = () => {
       addToast({
         title: 'Error al crear la herramienta',
         description: 'No fue posible registrar nueva herramienta',
-        color: 'success'
+        color: 'danger'
       })
     },
   });
