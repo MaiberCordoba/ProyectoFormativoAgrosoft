@@ -16,7 +16,7 @@ interface CrearControlModalProps {
 }
 
 export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps) => {
-  const [fechaControl, setFechaControl] = useState("");
+  //const [fechaControl, setFechaControl] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Afeccion, setFk_Afeccion] = useState<number | null>(null);
   const [fk_TipoControl, setFk_TipoControl] = useState<number | null>(null);
@@ -31,18 +31,18 @@ export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps)
   const [mostrarModalAfeccionCultivo, setMostrarModalAfeccionCultivo] = useState(false);
 
   const handleSubmit = () => {
-    if (!fechaControl || !descripcion || !fk_Afeccion || !fk_TipoControl || !fk_Usuario) {
+    if ( !descripcion || !fk_Afeccion || !fk_TipoControl || !fk_Usuario) {
       console.log("Faltan campos obligatorios.");
       return;
     }
 
     mutate(
-      { id: 0, fechaControl, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
+      { id: 0, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
       {
         onSuccess: (data) => {
           onClose();
           onCreate(data);
-          setFechaControl("");
+          //setFechaControl("");
           setDescripcion("");
           setFk_Afeccion(null);
           setFk_TipoControl(null);
@@ -66,7 +66,7 @@ export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps)
             onClick: handleSubmit,
           },
         ]}
-      >
+      >{/*
         <Input
           label="Fecha del Control"
           type="date"
@@ -74,7 +74,7 @@ export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps)
           onChange={(e) => setFechaControl(e.target.value)}
           required
         />
-
+*/}
         <Input
           label="Descripción"
           type="text"
