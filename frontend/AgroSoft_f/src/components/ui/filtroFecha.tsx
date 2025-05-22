@@ -22,7 +22,6 @@ export const FiltroFecha: React.FC<FiltroFechaProps> = ({
       <Popover isOpen={mostrarPopover} onOpenChange={setMostrarPopover}>
         <PopoverTrigger>
           <Button
-            variant="flat"
             size="sm"
             endContent={<Calendar className="text-gray-400" width={16} height={16} />}
           >

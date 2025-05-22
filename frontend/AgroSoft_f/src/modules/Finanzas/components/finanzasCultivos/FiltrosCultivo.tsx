@@ -86,7 +86,6 @@ export const FiltrosCultivos = ({
           {/* Botón para resetear filtros */}
           <div> {/* Quitamos el col-span-1 y justify-end para que se alinee con los demás */}
             <Button
-              variant="flat"
               color="default"
               onPress={onReset}
               isDisabled={!tipoEspecieId && !especieId && !fechaInicio && !fechaFin}

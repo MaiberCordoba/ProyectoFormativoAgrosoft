@@ -63,10 +63,10 @@ const ResumenFinancieroPage = () => {
   };
 
   return (
-    <div className="pt-0 p-2">
+    <div className="pt-0 px-4 py-2">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Resumen Financiero de Cultivos</h1>
-        <Button color="primary" onPress={() => handleOpenHistorial()}>
+        <h1 className="text-2xl font-bold text-white">Resumen Financiero de Cultivos</h1>
+        <Button className="mt-4" color="primary" onPress={() => handleOpenHistorial()}>
           Ver Historial General
         </Button>
       </div>
