@@ -1,4 +1,5 @@
 import React, { useState, useMemo, memo, useEffect } from "react";
+import { es } from "date-fns/locale";
 import {
   Modal,
   ModalContent,
@@ -97,9 +98,13 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
     if (!historial || historial.length === 0) return { datasets: [] };
 
     const datasets = cultivosIds.map((id, index) => {
-      const cultivoData = historial.filter(
-        (registro) => registro.cultivo_id === id
-      );
+      const cultivoData = historial
+        .filter((registro) => registro.cultivo_id === id)
+        .sort(
+          (a, b) =>
+            new Date(a.fecha_registro).getTime() -
+            new Date(b.fecha_registro).getTime()
+        );
       const cultivo = cultivos?.find((c: Cultivo) => c.id === id);
 
       return {
@@ -128,9 +133,35 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
           type: "time",
           time: {
             unit: "day",
-            displayFormats: { day: "MMM d yyyy" },
+            displayFormats: {
+              day: "dd MMM",
+              week: "dd MMM",
+              month: "MMM yyyy",
+            },
+            tooltipFormat: "dd MMM yyyy - HH:mm",
           },
-          title: { display: true, text: "Fecha" },
+          adapters: {
+            date: {
+              locale: es,
+            },
+          },
+          title: {
+            display: true,
+            text: "Fecha",
+            font: { weight: "bold" },
+          },
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 8,
+            source: "auto",
+            color: "#666",
+            font: {
+              size: 12,
+            },
+          },
+          grid: {
+            color: "#f0f0f0",
+          },
         },
         y: {
           type: "linear",
@@ -139,8 +170,27 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
         },
       },
       plugins: {
-        legend: { display: !cultivoId }, // Hide legend for single cultivo
-        tooltip: { enabled: false },
+        legend: { display: !cultivoId },
+        tooltip: {
+          enabled: true, // Habilitar tooltips
+          mode: "nearest",
+          intersect: false,
+          callbacks: {
+            title: (context) => {
+              const date = new Date(context[0].parsed.x);
+              return date.toLocaleDateString("es-ES", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+            },
+            label: (context) => {
+              return `Relación B/C: ${context.parsed.y.toFixed(2)}`;
+            },
+          },
+        },
       },
       events: [],
       animation: false,
