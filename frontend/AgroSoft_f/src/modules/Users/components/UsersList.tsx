@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import { useGetUsers } from "../hooks/useGetUsers";
 import { useEditarUsers } from "../hooks/useEditarUsers";
 import { useCrearUsers } from "../hooks/useCrearUsers";
 import { useEliminarUsers } from "../hooks/useEliminarUsers";
+import { useReporteUsuarios } from "../hooks/useReporteUsuarios";
 import { User } from "../types";
 import EditarUserModal from "./EditarUsersModal";
 import EliminarUserModal from "./EliminarUsersModal";
@@ -12,7 +13,6 @@ import { Chip } from "@heroui/react";
 import { CrearUsersModal } from "./CrearUsersModal";
 import RegistroMasivoModal from "./registroMasivoModal";
 
-// 🔽 Importaciones para el reporte PDF
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ReportePdfUsuarios } from "./ReportePdfUsuarios";
 import { Download } from "lucide-react";
@@ -25,13 +25,11 @@ export function UsersList() {
     UsersEditada,
     handleEditar,
   } = useEditarUsers();
-
   const {
     isOpen: isCreateModalOpen,
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUsers();
-
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
@@ -40,6 +38,16 @@ export function UsersList() {
   } = useEliminarUsers();
 
   const [isRegistroMasivoOpen, setIsRegistroMasivoOpen] = useState(false);
+  const {
+    data: reporteData,
+    isLoading: loadingReporte,
+    isError: errorReporte,
+  } = useReporteUsuarios();
+
+  // DEBUG: ver en consola cuando reporteData cambie
+  useEffect(() => {
+    console.log("🟣 reporteData en UsersList:", reporteData);
+  }, [reporteData]);
 
   const handleCrearNuevo = () => {
     handleCrear({
@@ -120,35 +128,61 @@ export function UsersList() {
           { uid: "activo", nombre: "Activo" },
           { uid: "inactivo", nombre: "Inactivo" },
         ]}
-        // 🔽 Botón para exportar PDF
-        renderReporteAction={(data) => (
-          <PDFDownloadLink
-            document={<ReportePdfUsuarios data={data} />}
-            fileName="reporte_usuarios.pdf"
-          >
-            {({ loading }) => (
+        renderReporteAction={() => {
+          // Mientras se carga el reporte
+          if (loadingReporte) {
+            return (
+              <button
+                className="p-2 rounded-full bg-gray-100 cursor-not-allowed"
+                title="Cargando reporte…"
+                disabled
+              >
+                <Download className="h-4 w-4 animate-spin text-blue-500" />
+              </button>
+            );
+          }
+          // Si hubo un error
+          if (errorReporte || !reporteData) {
+            return (
               <button
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                title="Descargar reporte"
+                title="Error al cargar reporte"
+                disabled
               >
-                {loading ? (
-                  <Download className="h-4 w-4 animate-spin text-blue-500" />
-                ) : (
-                  <Download className="h-5 w-5 text-red-600" />
-                )}
+                <Download className="h-5 w-5 text-gray-400" />
               </button>
-            )}
-          </PDFDownloadLink>
-        )}
+            );
+          }
+          // Ya tenemos reporteData
+          return (
+            <PDFDownloadLink
+              document={<ReportePdfUsuarios data={reporteData} />}
+              fileName="reporte_usuarios.pdf"
+              style={{ textDecoration: "none" }}
+            >
+              {({ loading }) => (
+                <button
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  title="Descargar reporte"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Download className="h-4 w-4 animate-spin text-blue-500" />
+                  ) : (
+                    <Download className="h-5 w-5 text-red-600" />
+                  )}
+                </button>
+              )}
+            </PDFDownloadLink>
+          );
+        }}
       />
 
       {/* Modales */}
       {isEditModalOpen && UsersEditada && (
         <EditarUserModal user={UsersEditada} onClose={closeEditModal} />
       )}
-
       {isCreateModalOpen && <CrearUsersModal onClose={closeCreateModal} />}
-
       {isDeleteModalOpen && UsersEliminada && (
         <EliminarUserModal
           user={UsersEliminada}
@@ -157,7 +191,6 @@ export function UsersList() {
         />
       )}
 
-      {/* Modal de registro masivo */}
       <RegistroMasivoModal
         isOpen={isRegistroMasivoOpen}
         onClose={() => setIsRegistroMasivoOpen(false)}
