@@ -17,7 +17,6 @@ interface CrearVentasModalProps {
 export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
   const [precioUnitario, setPrecioUnitario] = useState<number | null>(null);
-  const [fecha, setFecha] = useState("");
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [cantidad, setCantidad] = useState<number>(0);
   const [error,setError] = useState("")
@@ -30,20 +29,19 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const { mutate, isPending } = usePostVentas();
 
   const handleSubmit = () => {
-    if (!fk_Cosecha || !precioUnitario || !fecha || !fk_UnidadMedida || !cantidad) {
+    if (!fk_Cosecha || !precioUnitario || !fk_UnidadMedida || !cantidad) {
       setError("Por favor, completa todos los campos.");
       return;
     }
     setError("")
 
     mutate(
-      { fk_Cosecha, precioUnitario, fecha, fk_UnidadMedida, cantidad },
+      { fk_Cosecha, precioUnitario,fk_UnidadMedida, cantidad },
       {
         onSuccess: () => {
           onClose();
           setFk_Cosecha(null);
           setPrecioUnitario(0);
-          setFecha("");
           setFk_UnidadMedida(null);
           setCantidad(0);
           setError("")
@@ -89,14 +87,6 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           type="number"
           value={cantidad}
           onChange={(e) => setCantidad(Number(e.target.value))}
-          required
-        />
-
-        <Input
-          label="Fecha de venta"
-          type="date"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
           required
         />
 
