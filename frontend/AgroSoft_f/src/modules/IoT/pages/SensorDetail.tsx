@@ -126,7 +126,11 @@ export default function AllSensorsDashboard() {
 
   const checkForAlerts = (sensor: SensorData): boolean => {
     if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
-      return sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo;
+      return (
+        sensor.umbral_minimo !== undefined &&
+        sensor.umbral_maximo !== undefined &&
+        (sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo)
+      );
     }
     return false;
   };

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patch } from "../../api/sensor";
 import { SensorData } from "../../types/sensorTypes";
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchSensor = () => {
   const queryClient = useQueryClient();

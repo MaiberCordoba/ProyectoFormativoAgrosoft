@@ -24,13 +24,6 @@ type SensorData = {
   [key: string]: any;
 };
 
-type Cultivo = {
-  id: number;
-  nombre: string;
-  kc_inicial?: number;
-  kc_medio?: number;
-  kc_final?: number;
-};
 
 type Lote = {
   id: number;
@@ -41,6 +34,14 @@ type Era = {
   id: number;
   nombre: string;
   fk_lote_id: number;
+};
+
+type Plantacion = {
+  id: number;
+  fechaSiembra: string;
+  cultivo: string;
+  lote: string;
+  era: string;
 };
 
 const SENSOR_TYPES = [
@@ -66,11 +67,7 @@ const SENSOR_UNITS: Record<string, string> = {
 export default function IoTPages() {
   const navigate = useNavigate();
   const [showETForm, setShowETForm] = useState(false);
-  const [cultivoId, setCultivoId] = useState<number | string>("");
-  const [loteId, setLoteId] = useState<number | string>("");
-  const [eraId, setEraId] = useState<number | string>("");
   const [kcValue, setKcValue] = useState<string>("");
-  const [cultivos, setCultivos] = useState<Cultivo[]>([]);
   const [lotes, setLotes] = useState<Lote[]>([]);
   const [eras, setEras] = useState<Era[]>([]);
   const [filters, setFilters] = useState({
@@ -82,27 +79,27 @@ export default function IoTPages() {
   const [loadingAverages, setLoadingAverages] = useState(false);
   const [searchId, setSearchId] = useState("");
   const [evapotranspiracion, setEvapotranspiracion] = useState<any>(null);
+  const [plantaciones, setPlantaciones] = useState<Plantacion[]>([]);
+  const [selectedPlantacion, setSelectedPlantacion] = useState<number | string>("");
   const [errorET, setErrorET] = useState<string | null>(null);
-  const [lastET, setLastET] = useState<any>(null);
-  const [sensoresData, setSensoresData] = useState<Record<string, string>>({});
 
   // Cargar datos iniciales
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/cultivos/')
-      .then(res => res.json())
-      .then(data => setCultivos(data))
-      .catch(error => console.error("Error cargando cultivos:", error));
+  // Obtener plantaciones
+  fetch('http://127.0.0.1:8000/api/plantaciones/')
+    .then(res => res.json())
+    .then(data => setPlantaciones(data))
+    .catch(error => console.error("Error cargando plantaciones:", error));
 
-    fetch('http://127.0.0.1:8000/api/lote/')
-      .then(res => res.json())
-      .then(data => setLotes(data))
-      .catch(error => console.error("Error cargando lotes:", error));
+  // Mantener fetches de lotes y eras para los filtros
+  fetch('http://127.0.0.1:8000/api/lote/')
+    .then(res => res.json())
+    .then(data => setLotes(data));
 
-    fetch('http://127.0.0.1:8000/api/eras/')
-      .then(res => res.json())
-      .then(data => setEras(data))
-      .catch(error => console.error("Error cargando eras:", error));
-  }, []);
+  fetch('http://127.0.0.1:8000/api/eras/')
+    .then(res => res.json())
+    .then(data => setEras(data));
+}, []);
 
   // Cargar promedios de sensores
   const fetchSensorAverages = async () => {
@@ -150,44 +147,42 @@ export default function IoTPages() {
 
   // Calcular evapotranspiración
   const calcularEvapotranspiracion = async () => {
-  if (!cultivoId || !loteId || !kcValue) {
-    setErrorET("Completa todos los campos requeridos");
+  if (!selectedPlantacion) {
+    setErrorET("Selecciona una plantación");
+    addToast({
+      title: "Error",
+      description: "Debes seleccionar una plantación para calcular la evapotranspiración.",
+      variant: "flat",
+      color: "danger",
+    });
     return;
   }
 
   try {
-    const kc = parseFloat(kcValue);
-    if (isNaN(kc) || kc <= 0) {
-      throw new Error("El valor Kc debe ser un número positivo");
-    }
+    const params = new URLSearchParams({
+      plantacion_id: String(selectedPlantacion)
+    });
+    
+    if (kcValue) params.append('kc', kcValue);
 
-    let url = `http://localhost:8000/api/evapotranspiracion/?cultivo_id=${cultivoId}&lote_id=${loteId}&kc=${kc}`;
-    if (eraId) url += `&era_id=${eraId}`;
-
-    const response = await fetch(url);
+    const response = await fetch(`http://localhost:8000/api/evapotranspiracion/?${params}`);
+    
     if (!response.ok) throw new Error("Error al calcular evapotranspiración");
     
     const data = await response.json();
-    if (!data || !data.sensor_data) {
-      throw new Error("Datos incompletos recibidos del servidor");
-    }
     
-    setEvapotranspiracion(data);
-    setErrorET(null);
-    setShowETForm(false);
-    
-    setLastET({
-      fecha: data.fecha || new Date().toISOString(),
-      et_mm_dia: data.evapotranspiracion_mm_dia || 0,
-      kc: data.kc || 0,
-      temperatura: data.sensor_data.temperatura || 0,
-      humedad: data.sensor_data.humedad || 0
+    setEvapotranspiracion({
+      ...data,
+      // Agregar fecha actual si no viene en la respuesta
+      fecha: data.fecha || new Date().toISOString()
     });
     
+    setErrorET(null);
+    setShowETForm(false);
+    // setLastET removed because it is not defined or used elsewhere
+    
   } catch (error) {
-    console.error("Error:", error);
     setErrorET(error instanceof Error ? error.message : "Error al calcular");
-    setEvapotranspiracion(null);
   }
 };
 
@@ -270,107 +265,110 @@ export default function IoTPages() {
         </Button>
       </div>
 
+      <br />
       <Modal isOpen={showETForm} onClose={() => setShowETForm(false)} size="lg">
-        <ModalContent>
-          <ModalHeader className="text-xl font-semibold text-green-800">
-            Calcular Evapotranspiración
-          </ModalHeader>
-          <ModalBody>
-            <div className="space-y-4">
-              <Select
-                label="Seleccionar Cultivo"
-                placeholder="Selecciona un cultivo"
-                selectedKeys={cultivoId !== "" ? [String(cultivoId)] : []}
-                onSelectionChange={(keys) => {
-                  const selected = Array.from(keys)[0] as string;
-                  setCultivoId(selected);
-                }}
-                className="w-full"
-              >
-                {cultivos.map(cultivo => (
-                  <SelectItem key={String(cultivo.id)}>
-                    {cultivo.nombre}
-                  </SelectItem>
-                ))}
-              </Select>
+  <ModalContent>
+    <ModalHeader className="text-xl font-semibold text-green-800">
+      Calcular Evapotranspiración
+    </ModalHeader>
+    <ModalBody>
+      <div className="space-y-4">
+        <Select
+          label="Seleccionar Plantación"
+          placeholder="Selecciona una plantación"
+          selectedKeys={selectedPlantacion ? [String(selectedPlantacion)] : []}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            setSelectedPlantacion(selected);
+          }}
+          className="w-full"
+        >
+          {plantaciones.map(plantacion => (
+            <SelectItem key={String(plantacion.id)}>
+              {`${plantacion.cultivo} - Lote ${plantacion.lote} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+            </SelectItem>
+          ))}
+        </Select>
 
-              <Select
-                label="Seleccionar Lote"
-                placeholder="Selecciona un lote"
-                selectedKeys={loteId !== "" ? [String(loteId)] : []}
-                onSelectionChange={(keys) => {
-                  const selected = Array.from(keys)[0] as string;
-                  setLoteId(selected);
-                  setEraId("");
-                }}
-                className="w-full"
-              >
-                {lotes.map(lote => (
-                  <SelectItem key={String(lote.id)}>
-                    {lote.nombre}
-                  </SelectItem>
-                ))}
-              </Select>
+        <Input
+          label="Coeficiente de Cultivo (Kc - Opcional)"
+          placeholder="Dejar vacío para cálculo automático"
+          type="number"
+          min="0"
+          step="0.01"
+          value={kcValue}
+          onChange={(e) => setKcValue(e.target.value)}
+          description="Valor numérico que representa el coeficiente del cultivo"
+          className="w-full"
+        />
+      </div>
+    </ModalBody>
+    <ModalFooter>
+      <Button color="default" onClick={() => setShowETForm(false)}>
+        Cancelar
+      </Button>
+      <Button 
+        color="success" 
+        onClick={calcularEvapotranspiracion}
+        disabled={!selectedPlantacion}
+      >
+        Calcular
+      </Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
 
-              <Input
-                label="Coeficiente de Cultivo (Kc)"
-                placeholder="Ingresa el valor Kc"
-                type="number"
-                min="0"
-                step="0.01"
-                value={kcValue}
-                onChange={(e) => setKcValue(e.target.value)}
-                description="Valor numérico que representa el coeficiente del cultivo"
-                className="w-full"
-              />
+{evapotranspiracion && (
+  <div className="col-span-full bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm mt-8">
+    <h2 className="text-2xl font-semibold text-blue-800 mb-6 text-center text-white">
+      Evapotranspiración Real (ETc)
+    </h2>
 
-              {errorET && (
-                <div className="p-2 bg-red-50 text-red-600 rounded text-sm">
-                  {errorET}
-                </div>
-              )}
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="default" onClick={() => setShowETForm(false)}>
-              Cancelar
-            </Button>
-            <Button 
-              color="success" 
-              onClick={calcularEvapotranspiracion}
-              disabled={!cultivoId || !loteId || !kcValue}
-            >
-              Calcular
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {evapotranspiracion && (
-        <div className="col-span-full bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">
-            Resultados de Evapotranspiración
-          </h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="flex justify-center">
-              <EvapotranspiracionCard
-                etReal={evapotranspiracion.evapotranspiracion_mm_dia}
-                kc={evapotranspiracion.kc}
-                detalles={evapotranspiracion.sensor_data}
-              />
-            </div>
-            <br />
-            
-            <div className="flex justify-center">
-              <EvapotranspiracionChart 
-                nuevoDato={lastET} 
-                showAdditionalInfo={true}
-              />
-            </div>
-          </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="flex flex-col gap-4">
+        <div className="bg-white p-6 rounded-xl shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">🌿 Detalles de la Plantación</h3>
+          <p><strong>Cultivo:</strong> {evapotranspiracion.detalles.cultivo}</p>
+          <p><strong>Lote:</strong> {evapotranspiracion.detalles.lote}</p>
+          <p><strong>Fecha Siembra:</strong> {new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</p>
+          <p><strong>Días desde siembra:</strong> {evapotranspiracion.detalles.dias_siembra}</p>
         </div>
-      )}
+
+        <EvapotranspiracionCard
+          etReal={evapotranspiracion.evapotranspiracion_mm_dia}
+          kc={evapotranspiracion.kc}
+          detalles={{
+            temperatura: evapotranspiracion.sensor_data.temperatura,
+            viento: evapotranspiracion.sensor_data.viento,
+            iluminacion: evapotranspiracion.sensor_data.iluminacion,
+            humedad_ambiente: evapotranspiracion.sensor_data.humedad
+          }}
+        />
+      </div>
+
+      <div className="bg-white p-6 rounded-xl shadow-sm">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+           Histórico de Evapotranspiración (mm/día)
+        </h3>
+
+        <EvapotranspiracionChart 
+          plantacionId={selectedPlantacion.toString()}
+          nuevoDato={{
+            fecha: new Date().toISOString(),
+            et_mm_dia: evapotranspiracion.evapotranspiracion_mm_dia,
+            kc: evapotranspiracion.kc,
+            temperatura: evapotranspiracion.sensor_data.temperatura,
+            humedad: evapotranspiracion.sensor_data.humedad,
+            dias_desde_siembra: evapotranspiracion.detalles.dias_siembra
+          }}
+          showAdditionalInfo={true}
+        />
+      </div>
+    </div>
+  </div>
+)}
+
+<br />
 
       <div className="col-span-full">
         <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-4 mb-2">
