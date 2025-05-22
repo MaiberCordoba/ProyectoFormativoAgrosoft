@@ -20,8 +20,8 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
   const [fechaEncuentro, setFechaEncuentro] = useState<string>("");
   const [estado, setEstado] = useState<keyof typeof EstadoAfeccion>("ST");
 
-  const { data: plantacionesData } = useGetPlantaciones();
-  const { data: tiposPlagaData } = useGetAfecciones();
+  const { data: plantacionesData, refetch: refetchPlantaciones } = useGetPlantaciones();
+  const { data: tiposPlagaData, refetch: refetchAfecciones } = useGetAfecciones();
   const { mutate, isPending } = usePostAfeccionCultivo();
 
   const [plantaciones, setPlantaciones] = useState<any[]>([]);
@@ -63,16 +63,24 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
     });
   };
 
-  const handleNuevaAfeccion = (afeccion: { id: number; nombre: string }) => {
-    setTiposPlaga((prev) => [...prev, afeccion]);
-    setFk_Plaga(afeccion.id);
-    setMostrarModalAfeccion(false);
+  const handleNuevaAfeccion = async () => {
+    await refetchAfecciones();
+    const nuevas = await useGetAfecciones().data;
+    if (nuevas && nuevas.length > 0) {
+      const nueva = nuevas[nuevas.length - 1];
+      setTiposPlaga(nuevas);
+      setFk_Plaga(nueva.id);
+    }
   };
 
-  const handleNuevaPlantacion = (plantacion: { id: number }) => {
-    setPlantaciones((prev) => [...prev, plantacion]);
-    setFk_Plantacion(plantacion.id);
-    setMostrarModalPlantacion(false);
+  const handleNuevaPlantacion = async () => {
+    await refetchPlantaciones();
+    const nuevas = await useGetPlantaciones().data;
+    if (nuevas && nuevas.length > 0) {
+      const nueva = nuevas[nuevas.length - 1];
+      setPlantaciones(nuevas);
+      setFk_Plantacion(nueva.id);
+    }
   };
 
   return (
