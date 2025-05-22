@@ -1,3 +1,4 @@
+# apps/finanzas/api/views.py
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from apps.finanzas.api.serializers.serializerActividades import SerializerActividades
@@ -14,11 +15,9 @@ class ViewActividades(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-
-        # Si el usuario es admin o staff, devuelve todas las actividades
-        if user.is_superuser or user.is_staff:
+        # Si el usuario tiene admin=True, devuelve todas las actividades
+        if user.admin:  # Cambiado de is_superuser/is_staff a admin
             return Actividades.objects.all()
-
         # Si no, devuelve solo sus actividades
         return Actividades.objects.filter(fk_Usuario=user)
 

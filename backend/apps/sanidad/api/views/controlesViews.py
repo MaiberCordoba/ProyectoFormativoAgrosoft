@@ -1,3 +1,4 @@
+# apps/sanidad/api/views.py
 from rest_framework.viewsets import ModelViewSet
 from apps.sanidad.api.serializers.controlesSerializer import ControlesModelSerializer
 from apps.sanidad.api.models.controlesModel import Controles
@@ -7,27 +8,26 @@ from channels.layers import get_channel_layer
 from django.core.mail import send_mail
 from django.conf import settings
 from apps.notificaciones.api.services import NotificationService
+
 class ControleslModelViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ControlesModelSerializer
 
     def get_queryset(self):
         user = self.request.user
-        print(f"[DEBUG] Usuario autenticado: {user}")
-        print(f"[DEBUG] is_staff: {user.is_staff}, is_superuser: {user.is_superuser}")
-
-        if user.is_superuser or user.is_staff:
+        print(f"[DEBUG] Usuario autenticado: {user}, admin: {user.admin}")  # Añadido para depuración
+        # Si el usuario tiene admin=True, devuelve todos los controles
+        if user.admin:  # Cambiado de is_superuser/is_staff a admin
             qs = Controles.objects.all()
-            print(f"[DEBUG] Admin o staff - controles totales: {qs.count()}")
+            print(f"[DEBUG] Admin - controles totales: {qs.count()}")
             return qs
-
+        # Si no, devuelve solo sus controles
         qs = Controles.objects.filter(fk_Usuario=user)
         print(f"[DEBUG] Usuario normal - controles propios: {qs.count()}")
         return qs
 
     def perform_create(self, serializer):
         control = serializer.save()
-
         if control.fk_Usuario is not None:
             try:
                 fecha_control = control.fechaControl.strftime("%d/%m/%Y")
@@ -57,7 +57,6 @@ class ControleslModelViewSet(ModelViewSet):
                     f"Tipo de control: {tipo_control}"
                 )
 
-                # Usar el servicio de notificaciones
                 NotificationService.create_notification(
                     user=control.fk_Usuario,
                     title=f"Nuevo control asignado - {fecha_control}",
@@ -66,6 +65,5 @@ class ControleslModelViewSet(ModelViewSet):
                     related_object=control,
                     send_email=True
                 )
-
             except Exception as e:
                 print(f"Error en el envío de notificación: {e}")

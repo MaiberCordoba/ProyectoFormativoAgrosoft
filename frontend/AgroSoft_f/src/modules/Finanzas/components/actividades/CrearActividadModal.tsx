@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePostActividades } from "../../hooks/actividades/usePostActividades";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem,Button } from "@heroui/react";
+import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
@@ -15,7 +15,7 @@ import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 
 interface CrearActividadesModalProps {
   onClose: () => void;
-  onCreate:(nuevaActividad : Actividades) => void
+  onCreate: (nuevaActividad: Actividades) => void;
 }
 
 export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) => {
@@ -33,21 +33,25 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
   const [usuarioModal, setUsuarioModal] = useState(false)
   const [cultivoModal, setCultivoModal] = useState(false)
 
+  const [tipoActividadModal, setTipoActividadModal] = useState(false);
+  const [usuarioModal, setUsuarioModal] = useState(false);
+  const [cultivoModal, setCultivoModal] = useState(false);
 
-  const { data: cultivos, isLoading: isLoadingCultivos,refetch:refetchCultivo } = useGetCultivos();
-  const { data: users, isLoading: isLoadingUsers, refetch:refetchUsuario } = useGetUsers();
-  const { data: tiposActividad, isLoading: isLoadingTiposActividad, refetch:refetchTipoActividad  } = useGetTipoActividad();
+  const { data: cultivos, isLoading: isLoadingCultivos, refetch: refetchCultivo } = useGetCultivos();
+  const { data: users, isLoading: isLoadingUsers, refetch: refetchUsuario } = useGetUsers();
+  const { data: tiposActividad, isLoading: isLoadingTiposActividad, refetch: refetchTipoActividad } = useGetTipoActividad();
   const { mutate, isPending } = usePostActividades();
 
   const handleSubmit = () => {
     if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
       setMensajeError("Por favor, completa todos los campos.");
+
       return;
     }
     setMensajeError("")
 
     mutate(
-      {fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, fecha, estado },
+      { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, estado },
       {
         onSuccess: () => {
           onClose();
@@ -63,23 +67,24 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
       }
     );
   };
-  //Funciones para nuevos datos creados de modales 
-  const handleTipoActividadCreada = (nuevoTipoActividad : TipoActividad) => {
-    refetchTipoActividad()
-    setFk_TipoActividad(nuevoTipoActividad.id)
-    setTipoActividadModal(false)
-  }
-  const handleCultivoCreado = (nuevoCultivo : Cultivo) => {
-    refetchCultivo()
-    setFk_Cultivo(nuevoCultivo.id)
-    setCultivoModal(false)
-  }
-  const handleUsuarioCreado = (nuevoUsuario : User) => {
-    refetchUsuario()
-    setFk_Usuario(nuevoUsuario.id)
-    setUsuarioModal(false)
-  }
-  
+
+  const handleTipoActividadCreada = (nuevoTipoActividad: TipoActividad) => {
+    refetchTipoActividad();
+    setFk_TipoActividad(nuevoTipoActividad.id);
+    setTipoActividadModal(false);
+  };
+
+  const handleCultivoCreado = (nuevoCultivo: Cultivo) => {
+    refetchCultivo();
+    setFk_Cultivo(nuevoCultivo.id);
+    setCultivoModal(false);
+  };
+
+  const handleUsuarioCreado = (nuevoUsuario: User) => {
+    refetchUsuario();
+    setFk_Usuario(nuevoUsuario.id);
+    setUsuarioModal(false);
+  };
 
   return (
     <>
@@ -124,10 +129,10 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           required
         />
 
-        {/* Selector de Estado con valores fijos */}
+
         <Select
           label="Estado"
-          value={estado}
+          selectedKeys={[estado]}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0] as "AS" | "CO" | "CA";
             setEstado(selectedKey);
@@ -139,7 +144,6 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           <SelectItem key="CA">Cancelado</SelectItem>
         </Select>
 
-        {/* Selector de Cultivos */}
         {isLoadingCultivos ? (
           <p>Cargando cultivos...</p>
         ) : (
@@ -159,19 +163,18 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
                 ))}
               </Select>
             </div>
-            <Button 
-            onPress={() => setCultivoModal(true)}
-            color="success"
-            title="Crear nuevo cultivo"
-            radius="full"
-            size="sm"
+            <Button
+              onPress={() => setCultivoModal(true)}
+              color="success"
+              title="Crear nuevo cultivo"
+              radius="full"
+              size="sm"
             >
-              <Plus className="w-5 h-5 text-white"/>
+              <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
         )}
 
-        {/* Selector de Usuarios (corregido) */}
         {isLoadingUsers ? (
           <p>Cargando usuarios...</p>
         ) : (
@@ -192,64 +195,65 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
               </Select>
             </div>
             <Button
-            onPress={() => setUsuarioModal(true)}
-            color="success"
-            title="Crear Usuario"
-            radius="full"
-            size="sm"
+              onPress={() => setUsuarioModal(true)}
+              color="success"
+              title="Crear Usuario"
+              radius="full"
+              size="sm"
             >
-              <Plus className="w-5 h-5 text-white"/>
+              <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
         )}
 
         {isLoadingTiposActividad ? (
           <p>Cargando tipos de actividad...</p>
-        ): (
+        ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
-              label="Tipo Actividad"
-              placeholder="Seleccione el tipo de actividad"
-              selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
-              onSelectionChange={(keys) => {
-                const selectedKey = Array.from(keys)[0];
-                setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
-              }}
-            >
-              {(tiposActividad || []).map((tipoActividad) => (
-                <SelectItem key={tipoActividad.id.toString()}>{tipoActividad.nombre}</SelectItem>
-              ))}
-            </Select>
+                label="Tipo Actividad"
+                placeholder="Seleccione el tipo de actividad"
+                selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(tiposActividad || []).map((tipoActividad) => (
+                  <SelectItem key={tipoActividad.id.toString()}>{tipoActividad.nombre}</SelectItem>
+                ))}
+              </Select>
             </div>
             <Button
-            onPress={() => setTipoActividadModal(true)}
-            color="success"
-            title="Crear nuevo tipo de actividad"
-            radius="full"
-            size="sm"
+              onPress={() => setTipoActividadModal(true)}
+              color="success"
+              title="Crear nuevo tipo de actividad"
+              radius="full"
+              size="sm"
             >
-              <Plus className="w-5 h-5 text-white"/>
+              <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
         )}
       </ModalComponent>
+
       {tipoActividadModal && (
-        <CrearTipoActividadModal 
-        onClose={() => setTipoActividadModal(false)}
-        onCreate={handleTipoActividadCreada}
+        <CrearTipoActividadModal
+          onClose={() => setTipoActividadModal(false)}
+          onCreate={handleTipoActividadCreada}
         />
       )}
       {cultivoModal && (
         <CrearCultivoModal
-        onClose={() => setCultivoModal(false)}
-        onCreate={handleCultivoCreado}
+          onClose={() => setCultivoModal(false)}
+          onCreate={handleCultivoCreado}
         />
       )}
       {usuarioModal && (
         <CrearUsersModal
-        onClose={() => setUsuarioModal(false)}
-        onCreate={handleUsuarioCreado}
+          onClose={() => setUsuarioModal(false)}
+          onCreate={handleUsuarioCreado}
         />
       )}
     </>

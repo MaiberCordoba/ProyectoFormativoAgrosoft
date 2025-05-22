@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteSensor } from "../../api/sensor";
 import { SensorData } from "../../types/sensorTypes";
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const useDeleteSensor = () => {
     const queryClient = useQueryClient();
 
-    return useMutation<SensorData, Error, { id: number }, { previousSensores?: SensorData[] }>({
+    return useMutation<void, Error, { id: number }, { previousSensores?: SensorData[] }>({
         mutationFn: ({ id }) => deleteSensor(id),
         onMutate: async (variables) => {
             await queryClient.cancelQueries({ queryKey: ['sensor'] });

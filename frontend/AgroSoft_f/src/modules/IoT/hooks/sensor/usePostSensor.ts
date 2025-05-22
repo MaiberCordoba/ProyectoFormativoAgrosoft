@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 export const usePostSensor = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<SensorData, AxiosError<{ message?: string }>>({
+  return useMutation<SensorData, AxiosError<{ message?: string }>, SensorData>({
     mutationKey: ["crearSensor"],
     mutationFn: post,
     onSuccess: (data) => {

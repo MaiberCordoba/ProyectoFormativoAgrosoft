@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { usePatchActividades } from '../../hooks/actividades/usePatchActividades'; // Hook para actualizar actividades
+import { usePatchActividades } from '../../hooks/actividades/usePatchActividades';
 import { Actividades } from '../../types';
 import { Input, Textarea, Select, SelectItem } from '@heroui/react';
 import { useGetCultivos } from '@/modules/Trazabilidad/hooks/cultivos/useGetCultivos'; 
@@ -8,14 +8,13 @@ import { useGetUsers } from '@/modules/Users/hooks/useGetUsers';
 import { useGetTipoActividad } from '../../hooks/tipoActividad/useGetTiposActividad';
 
 interface EditarActividadesModalProps {
-  actividad: Actividades; // La actividad que se está editando
-  onClose: () => void; // Función para cerrar el modal
+  actividad: Actividades;
+  onClose: () => void;
 }
 
 const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ actividad, onClose }) => {
   const [titulo, setTitulo] = useState<string>(actividad.titulo);
   const [descripcion, setDescripcion] = useState<string>(actividad.descripcion);
-  const [fecha, setFecha] = useState<string>(actividad.fecha);
   const [estado, setEstado] = useState<"AS" | "CO" | "CA">(actividad.estado);
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(actividad.fk_Cultivo || null);  
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(actividad.fk_Usuario || null); 
@@ -25,13 +24,14 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
   //
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
   const { data: users, isLoading: isLoadingUsers } = useGetUsers();
-  const { data:tiposActividad, isLoading: isLoadingTiposActividad} = useGetTipoActividad()
+  const { data: tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad();
   const { mutate, isPending } = usePatchActividades();  
 
   const handleSubmit = () => {
     // Verificar que todos los campos estén completos
     if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
       setMensajeError("Por favor, completa todos los campos.");
+
       return;
     }
     setMensajeError("")
@@ -42,11 +42,10 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         data: {
           titulo,
           descripcion,
-          fecha,
           estado,
           fk_Cultivo,  
           fk_Usuario, 
-          fk_TipoActividad, 
+          fk_TipoActividad,
         },
       },
       {
@@ -87,15 +86,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         onChange={(e) => setDescripcion(e.target.value)}
         required
       />
-      <Input
-        value={fecha}
-        label="Fecha"
-        type="date"
-        onChange={(e) => setFecha(e.target.value)}
-        required
-      />
 
-      {/* Selector de Estado */}
       <Select
         label="Estado"
         value={estado}
@@ -110,7 +101,6 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         <SelectItem key="CA">Cancelado</SelectItem>
       </Select>
 
-      {/* Selector de Cultivos */}
       {isLoadingCultivos ? (
         <p>Cargando cultivos...</p>
       ) : (
@@ -129,7 +119,6 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         </Select>
       )}
 
-      {/* Selector de Usuarios */}
       {isLoadingUsers ? (
         <p>Cargando usuarios...</p>
       ) : (
@@ -147,6 +136,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
           ))}
         </Select>
       )}
+
       {isLoadingTiposActividad ? (
         <p>Cargando tipos de actividad...</p>
       ) : (

@@ -7,15 +7,19 @@ import { useGetEspecies } from "@/modules/Trazabilidad/hooks/especies/useGetEpec
 import { useFiltrosCultivos } from "../hooks/finanzasCultivos/useFiltrosCultivo";
 import { useFiltrarResumenes } from "../hooks/finanzasCultivos/usefitrarResumenes";
 import { DetalleCultivoModal } from "../components/finanzasCultivos/DetalleCultivoModal";
+import HistorialBeneficioCostoModal from "../components/finanzasCultivos/HistorialBeneficioCostoModal";
+import { ResumenEconomicoListado } from "../types";
+import { useState } from "react";
+import { Button } from "@heroui/react";
 
 const ResumenFinancieroPage = () => {
-   // Obtener datos
-   const { data: resumenes, isLoading } = useResumenesEconomicos();
-   const { data: tiposEspecie } = useGetTiposEspecie();
-   const { data: especies } = useGetEspecies();
- 
-   // Manejar filtros
-   const {
+  // Obtener datos
+  const { data: resumenes, isLoading } = useResumenesEconomicos();
+  const { data: tiposEspecie } = useGetTiposEspecie();
+  const { data: especies } = useGetEspecies();
+
+  // Manejar filtros
+  const {
     tipoEspecieId,
     especieId,
     fechaInicio,
@@ -25,30 +29,50 @@ const ResumenFinancieroPage = () => {
     handleFechaChange,
     resetFiltros,
   } = useFiltrosCultivos();
- 
-   // Filtrar resúmenes
+
+  // Filtrar resúmenes
   const resumenesFiltrados = useFiltrarResumenes(
     resumenes || [],
     tipoEspecieId,
     especieId,
     fechaInicio,
     fechaFin
-   );
- 
-   // Manejar selección de cultivo
-   const {
-    selectedCultivo,
-    isModalOpen,
-    handleSelectCultivo,
-    closeModal,
-  } = useCultivoSelection();
- 
-   return (
-     <div className="pt-0 p-2">
-       <h1 className="text-2xl font-bold mb-6 text-center">Resumen Financiero de Cultivos</h1>
-       
-       {/* Filtros */}
-       <FiltrosCultivos
+  );
+
+  // Manejar selección de cultivo
+  const { selectedCultivo, isModalOpen, handleSelectCultivo, closeModal } =
+    useCultivoSelection();
+
+  const [showHistorialGlobal, setShowHistorialGlobal] = useState(false);
+  const [selectedCultivoHistorial, setSelectedCultivoHistorial] = useState<{
+    id?: number;
+    nombre?: string;
+  } | null>(null);
+
+  // Nuevo handler
+  const handleOpenHistorial = (cultivo?: ResumenEconomicoListado) => {
+    if (cultivo) {
+      setSelectedCultivoHistorial({
+        id: cultivo.id,
+        nombre: cultivo.nombre,
+      });
+    } else {
+      setSelectedCultivoHistorial({}); // Modal en modo global
+    }
+    setShowHistorialGlobal(true);
+  };
+
+  return (
+    <div className="pt-0 p-2">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Resumen Financiero de Cultivos</h1>
+        <Button color="primary" onPress={() => handleOpenHistorial()}>
+          Ver Historial General
+        </Button>
+      </div>
+
+      {/* Filtros */}
+      <FiltrosCultivos
         tiposEspecie={tiposEspecie || []}
         especies={especies || []}
         tipoEspecieId={tipoEspecieId}
@@ -60,21 +84,33 @@ const ResumenFinancieroPage = () => {
         onFechaChange={handleFechaChange}
         onReset={resetFiltros}
       />
-       
-       {/* Listado de cultivos */}
-       <CultivoResumenList 
-         resumenes={resumenesFiltrados} 
-         loading={isLoading}
-         onSelectCultivo={handleSelectCultivo}
-       />
-       
-       {/* Modal de detalle */}
-       <DetalleCultivoModal
-         isOpen={isModalOpen}
-         onClose={closeModal}
-         cultivo={selectedCultivo}
-       />
-     </div>
+
+      {/* Listado de cultivos */}
+      <CultivoResumenList
+        resumenes={resumenesFiltrados}
+        loading={isLoading}
+        onSelectCultivo={handleSelectCultivo}
+        onOpenHistorial={handleOpenHistorial}
+      />
+
+      {/* Modal de detalle */}
+      <DetalleCultivoModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        cultivo={selectedCultivo}
+      />
+
+      <HistorialBeneficioCostoModal
+        isOpen={showHistorialGlobal}
+        onClose={() => {
+          setShowHistorialGlobal(false);
+          setSelectedCultivoHistorial(null);
+        }}
+        cultivoId={selectedCultivoHistorial?.id}
+        cultivoNombre={selectedCultivoHistorial?.nombre}
+        key={selectedCultivoHistorial?.id || "global"}
+      />
+    </div>
   );
 };
 

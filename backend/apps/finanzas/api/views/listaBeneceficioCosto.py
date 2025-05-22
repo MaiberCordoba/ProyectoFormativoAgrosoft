@@ -12,29 +12,25 @@ from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadContr
 from apps.finanzas.api.models.cosechas import Cosechas
 from apps.finanzas.api.models.ventas import Ventas
 from apps.trazabilidad.api.models.SemillerosModel import Semilleros
+from apps.finanzas.api.models.historialBeneficioCosto import HistorialBeneficioCosto
 
 class ListCultivoEconomicViewSet(viewsets.ViewSet):
     """
     ViewSet para operaciones económicas de cultivos
     Incluye endpoints para:
     - Listado de resúmenes económicos de todos los cultivos
-    - Resumen económico detallado de un cultivo específico
+    - Historial de beneficio-costo con filtros
     """
     
     @action(detail=False, methods=['get'])
     def resumen_economico(self, request):
-        """
-        Obtiene un listado con los resúmenes económicos básicos de todos los cultivos
-        """
         try:
-            # Prefetch de objetos relacionados correctamente configurado
             prefetch_plantaciones = Prefetch(
                 'plantaciones_set',
                 queryset=Plantaciones.objects.prefetch_related(
                     Prefetch('cosechas_set', queryset=Cosechas.objects.all())
                 )
             )
-            
             cultivos = Cultivos.objects.select_related(
                 'fk_Especie'
             ).prefetch_related(
@@ -42,73 +38,82 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
                 'semilleros_set',
                 prefetch_plantaciones
             ).all()
-            
             resumenes = []
-            
             for cultivo in cultivos:
-                # 1. Obtener información básica del cultivo
                 nombre_especie = cultivo.fk_Especie.nombre if cultivo.fk_Especie else None
-                
-                # 2. Obtener actividades relacionadas
                 actividades = cultivo.actividades_set.all()
-                
-                # 3. Obtener plantaciones relacionadas
                 plantaciones = cultivo.plantaciones_set.all()
-                
-                # 4. Obtener controles relacionados a través de afecciones
                 afecciones_ids = Afecciones.objects.filter(
                     fk_Plantacion__in=plantaciones
                 ).values_list('id', flat=True)
-                
                 controles = Controles.objects.filter(fk_Afeccion__in=afecciones_ids)
-                
-                # 5. Calcular costos de insumos
                 insumos_actividades = UsosInsumos.objects.filter(
                     fk_Actividad__in=actividades
                 ).aggregate(total=Sum('costoUsoInsumo'))['total'] or 0
-                
                 insumos_controles = UsosInsumos.objects.filter(
                     fk_Control__in=controles
                 ).aggregate(total=Sum('costoUsoInsumo'))['total'] or 0
-                
                 total_insumos = int(round(insumos_actividades + insumos_controles))
-                
-                # 6. Calcular costos de mano de obra
                 mano_obra_actividades = TiempoActividadControl.objects.filter(
                     fk_actividad__in=actividades
                 ).aggregate(total=Sum('valorTotal'))['total'] or 0
-                
                 mano_obra_controles = TiempoActividadControl.objects.filter(
                     fk_control__in=controles
                 ).aggregate(total=Sum('valorTotal'))['total'] or 0
-                
                 total_mano_obra = int(round(mano_obra_actividades + mano_obra_controles))
-                
-                # 7. Calcular ventas totales (a través de plantaciones->cosechas->ventas)
                 cosechas_ids = Cosechas.objects.filter(
                     fk_Plantacion__in=plantaciones
                 ).values_list('id', flat=True)
-                
                 total_ventas = Ventas.objects.filter(
                     fk_Cosecha__id__in=cosechas_ids
                 ).aggregate(total=Sum('valorTotal'))['total'] or 0
-                
-                # 8. Calcular métricas financieras
                 total_costos = total_insumos + total_mano_obra
                 beneficio = total_ventas - total_costos
-                relacion_bc = round(total_ventas / total_costos, 2) if total_costos > 0 else 0
+                relacion_bc = round(total_ventas / total_costos, 2) if total_costos > 0 else 0.0
                 
-                # 9. Obtener fecha de siembra (del semillero o plantación más antigua)
                 primer_semillero = cultivo.semilleros_set.order_by('fechasiembra').first()
                 primera_plantacion = plantaciones.order_by('fechaSiembra').first()
-                
                 fecha_siembra = (
                     primer_semillero.fechasiembra if primer_semillero else
                     primera_plantacion.fechaSiembra if primera_plantacion else
                     None
                 )
                 
-                # 10. Construir respuesta
+                # Verificar el último registro
+                ultimo_historial = HistorialBeneficioCosto.objects.filter(
+                    fk_Cultivo=cultivo
+                ).order_by('-fecha_registro').first()
+                
+                # Comparar valores con tolerancia para floats
+                crear_registro = True
+                if ultimo_historial:
+                    # Usar tolerancia para relacion_beneficio_costo (float)
+                    from math import isclose
+                    crear_registro = (
+                        ultimo_historial.costo_insumos != total_insumos or
+                        ultimo_historial.total_mano_obra != total_mano_obra or
+                        ultimo_historial.total_costos != total_costos or
+                        ultimo_historial.total_ventas != total_ventas or
+                        ultimo_historial.beneficio != beneficio or
+                        not isclose(ultimo_historial.relacion_beneficio_costo, relacion_bc, rel_tol=1e-5)
+                    )
+                    # Depuración
+                    if not crear_registro:
+                        print(f"No se creó registro para {cultivo.nombre}: valores idénticos")
+                    else:
+                        print(f"Creando registro para {cultivo.nombre}: valores cambiados")
+                
+                if crear_registro:
+                    HistorialBeneficioCosto.objects.create(
+                        fk_Cultivo=cultivo,
+                        costo_insumos=total_insumos,
+                        total_mano_obra=total_mano_obra,
+                        total_costos=total_costos,
+                        total_ventas=total_ventas,
+                        beneficio=beneficio,
+                        relacion_beneficio_costo=relacion_bc
+                    )
+                
                 resumen = {
                     "cultivo_id": cultivo.id,
                     "nombre_especie": nombre_especie,
@@ -121,13 +126,50 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
                     "beneficio": int(round(beneficio)),
                     "relacion_beneficio_costo": relacion_bc
                 }
-                
                 resumenes.append(resumen)
-            
             return Response(resumenes)
-            
         except Exception as e:
             return Response(
                 {"error": f"Error al obtener resúmenes: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+                
+      
+
+    @action(detail=False, methods=['get'], url_path='historial-beneficio-costo')
+    def historial_beneficio_costo(self, request):
+        # Código existente, sin cambios
+        try:
+            cultivos_ids = request.query_params.getlist('cultivos_ids[]', None)
+            fecha_inicio = request.query_params.get('fecha_inicio', None)
+            fecha_fin = request.query_params.get('fecha_fin', None)
+            historial_qs = HistorialBeneficioCosto.objects.select_related('fk_Cultivo')
+            if cultivos_ids:
+                historial_qs = historial_qs.filter(fk_Cultivo__id__in=cultivos_ids)
+            if fecha_inicio:
+                historial_qs = historial_qs.filter(fecha_registro__gte=fecha_inicio)
+            if fecha_fin:
+                historial_qs = historial_qs.filter(fecha_registro__lte=fecha_fin)
+            historial_qs = historial_qs.order_by('fk_Cultivo__id', '-fecha_registro')
+            historial_data = [{
+                "cultivo_id": registro.fk_Cultivo.id,
+                "nombre_cultivo": registro.fk_Cultivo.nombre,
+                "fecha_registro": registro.fecha_registro.strftime("%Y-%m-%d %H:%M:%S"),
+                "costo_insumos": registro.costo_insumos,
+                "total_mano_obra": registro.total_mano_obra,
+                "total_costos": registro.total_costos,
+                "total_ventas": registro.total_ventas,
+                "beneficio": registro.beneficio,
+                "relacion_beneficio_costo": registro.relacion_beneficio_costo
+            } for registro in historial_qs]
+            return Response(historial_data)
+        except Cultivos.DoesNotExist:
+            return Response(
+                {"error": "Uno o más cultivos no encontrados"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Error al obtener historial: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

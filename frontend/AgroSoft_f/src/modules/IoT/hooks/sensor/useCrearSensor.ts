@@ -6,7 +6,7 @@ export const useCrearSensor = () => {
     const { isOpen, openModal, closeModal } = UseModal();
     const [sensorCreado, setSensorCreado] = useState<SensorData | null>(null);
 
-    const handleCrear = (sensorData) => {
+    const handleCrear = (sensorData: SensorData) => {
         const newSensor: SensorData = {
             ...sensorData,
             id: 0, 
