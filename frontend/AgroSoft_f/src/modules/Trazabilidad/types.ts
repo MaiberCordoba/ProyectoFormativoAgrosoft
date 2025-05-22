@@ -64,6 +64,7 @@ export interface Eras {
 export interface Plantaciones {
   id: number;
   fk_Cultivo: { nombre: string };
+  cultivo: Cultivo;
   fk_semillero: { unidades: number; fechasiembra: string };
   fk_Era: { id: number };
 }

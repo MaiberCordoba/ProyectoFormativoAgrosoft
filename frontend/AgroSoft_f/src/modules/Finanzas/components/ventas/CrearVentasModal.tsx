@@ -18,7 +18,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
   const [precioUnitario, setPrecioUnitario] = useState<number | null>(null);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [cantidad, setCantidad] = useState<number>(0);
+  const [cantidad, setCantidad] = useState<number | null>(null);
   const [error,setError] = useState("")
 
   const [CosechaModal, setCosechaModal] = useState(false);
@@ -33,6 +33,20 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       setError("Por favor, completa todos los campos.");
       return;
     }
+    const cosechaSeleccionada = cosechas?.find(c => c.id === fk_Cosecha);
+    const unidadSeleccionada = unidadesMedida?.find(u => u.id === fk_UnidadMedida);
+
+    if (!cosechaSeleccionada || !unidadSeleccionada) {
+      setError("Cosecha o unidad de medida no válidas.");
+      return;
+    }
+
+    const cantidadEnBase = cantidad * unidadSeleccionada.equivalenciabase;
+
+    if (cantidadEnBase > cosechaSeleccionada.cantidadTotal) {
+      setError(`La cantidad ingresada excede la cantidad disponible.`);
+      return;
+    }
     setError("")
 
     mutate(
@@ -43,7 +57,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           setFk_Cosecha(null);
           setPrecioUnitario(0);
           setFk_UnidadMedida(null);
-          setCantidad(0);
+          setCantidad(null);
           setError("")
         },
       }

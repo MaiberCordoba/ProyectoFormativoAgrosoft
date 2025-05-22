@@ -1,4 +1,4 @@
-from django.db import models
+""" from django.db import models
 from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
 from apps.finanzas.api.models.ventas import Ventas
 from apps.finanzas.api.models.cosechas import Cosechas
@@ -16,4 +16,4 @@ class CosechaVenta(models.Model):
         unique_together = ('fk_Venta', 'fk_Cosecha')
 
     def __str__(self):
-        return f"{self.fk_Cosecha} en venta #{self.fk_Venta.id}"
+        return f"{self.fk_Cosecha} en venta #{self.fk_Venta.id}" """
