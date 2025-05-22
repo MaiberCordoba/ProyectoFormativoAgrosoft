@@ -8,14 +8,14 @@ import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { Plus } from "lucide-react";
 import { CrearTipoControlModal } from "../tipocontrol/CrearTipoControlModal";
 import { CrearAfeccionCultivoModal } from "../afeccionescultivo/CrearAfeccionescultivoModal";
-import { Controles } from "../../types";
+import { AfeccionesCultivo, Controles, TipoControl } from "../../types";
 
 interface CrearControlModalProps {
   onClose: () => void;
-  onCreate: (nuevocontrol : Controles) => void
+  onCreate: (nuevoControl: Controles) => void;
 }
 
-export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) => {
+export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps) => {
   const [fechaControl, setFechaControl] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Afeccion, setFk_Afeccion] = useState<number | null>(null);
@@ -41,7 +41,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
       {
         onSuccess: (data) => {
           onClose();
-          onCreate(data)
+          onCreate(data);
           setFechaControl("");
           setDescripcion("");
           setFk_Afeccion(null);
@@ -127,7 +127,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
               selectedKeys={fk_TipoControl ? [fk_TipoControl.toString()] : []}
               onSelectionChange={(keys) => setFk_TipoControl(Number(Array.from(keys)[0]))}
             >
-              {(tiposControl || []).map((tc) => (
+              {(tiposControl || []).map((tc: TipoControl) => (
                 <SelectItem key={tc.id.toString()}>{tc.nombre}</SelectItem>
               ))}
             </Select>
@@ -153,7 +153,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
       {mostrarModalAfeccionCultivo && (
         <CrearAfeccionCultivoModal
           onClose={() => setMostrarModalAfeccionCultivo(false)}
-          onCreate={(nuevaAfeccion) => {
+          onCreate={(nuevaAfeccion: AfeccionesCultivo) => {
             setFk_Afeccion(nuevaAfeccion.id);
           }}
         />

@@ -98,7 +98,15 @@ export function ControlesList() {
         <EditarControlModal control={controlEditado} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && <CrearControlModal onClose={closeCreateModal} />}
+      {isCreateModalOpen && (
+        <CrearControlModal
+          onClose={closeCreateModal}
+          onCreate={(nuevoControl) => {
+            console.log("Control creado desde modal:", nuevoControl);
+            closeCreateModal(); // opcional, ya lo haces dentro del modal
+          }}
+        />
+      )}
 
       {isDeleteModalOpen && controlEliminado && (
         <EliminarControlModal
