@@ -87,6 +87,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           type="date"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}
+          min={new Date().toISOString().split("T")[0]}
           required
         />
         <Input
