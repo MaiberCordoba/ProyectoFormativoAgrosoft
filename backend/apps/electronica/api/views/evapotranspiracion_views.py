@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class CalcularEvapotranspiracionView(APIView):
     SENSORES_REQUERIDOS = ['TEM', 'VIE', 'LUM', 'HUM_A']
-    FACTOR_LUX = 0.0864  
-    FACTOR_VIENTO = 0.277778  
+    FACTOR_LUX = 0.0864
+    FACTOR_VIENTO = 0.277778
 
     def get(self, request):
         plantacion_id = request.query_params.get('plantacion_id')
@@ -23,12 +23,12 @@ class CalcularEvapotranspiracionView(APIView):
         try:
             plantacion = self._obtener_plantacion(plantacion_id)
             self._validar_ubicacion(plantacion)
-            kc = self._determinar_kc(plantacion, kc_param)
+            kc, kc_obj = self._determinar_kc(plantacion, kc_param)
             datos_sensores = self._obtener_datos_sensores(plantacion)
             et_real = self._calcular_evapotranspiracion(datos_sensores, kc)
             
             return Response(
-                self._construir_respuesta(et_real, kc, plantacion, datos_sensores),
+                self._construir_respuesta(et_real, kc, plantacion, datos_sensores, kc_obj),
                 status=status.HTTP_200_OK
             )
 
@@ -57,7 +57,7 @@ class CalcularEvapotranspiracionView(APIView):
     def _determinar_kc(self, plantacion, kc_param):
         if kc_param:
             try:
-                return float(kc_param)
+                return float(kc_param), None
             except ValueError:
                 raise ValueError("Valor Kc inválido, debe ser un número")
         
@@ -67,14 +67,13 @@ class CalcularEvapotranspiracionView(APIView):
                 cultivo=plantacion.fk_Cultivo,
                 dias_desde_siembra__lte=dias_desde_siembra
             ).latest('dias_desde_siembra')
-            return kc_obj.kc_valor
+            return kc_obj.kc_valor, kc_obj
         except CoeficienteCultivo.DoesNotExist:
-            return 0.7 
+            return 0.7, None
 
     def _obtener_datos_sensores(self, plantacion):
         era = plantacion.fk_Era
         lote = era.fk_lote if era else None
-
 
         sensores = Sensor.objects.filter(
             Q(fk_eras=era) | Q(fk_lote=lote),
@@ -105,10 +104,28 @@ class CalcularEvapotranspiracionView(APIView):
             logger.error(f"Dato de sensor faltante: {str(e)}")
             raise ValueError(f"Error en datos de sensores: {str(e)}")
 
-    def _construir_respuesta(self, et_real, kc, plantacion, datos_sensores):
+    def _construir_respuesta(self, et_real, kc, plantacion, datos_sensores, kc_obj):
+        alerta = None
+        if kc_obj:
+            if et_real < kc_obj.et_minima:
+                alerta = {
+                    'tipo': 'advertencia',
+                    'mensaje': f'ET baja ({et_real:.2f}mm) - Posible exceso de riego',
+                    'umbral_min': float(kc_obj.et_minima),
+                    'umbral_max': float(kc_obj.et_maxima)
+                }
+            elif et_real > kc_obj.et_maxima:
+                alerta = {
+                    'tipo': 'peligro',
+                    'mensaje': f'ET alta ({et_real:.2f}mm) - Riesgo de estrés hídrico',
+                    'umbral_min': float(kc_obj.et_minima),
+                    'umbral_max': float(kc_obj.et_maxima)
+                }
+
         return {
             'evapotranspiracion_mm_dia': round(et_real, 2),
             'kc': round(kc, 2),
+            'alerta': alerta,
             'detalles': {
                 'cultivo': plantacion.fk_Cultivo.nombre if plantacion.fk_Cultivo else 'Desconocido',
                 'lote': plantacion.fk_Era.fk_lote.nombre if plantacion.fk_Era else 'Desconocido',

@@ -10,6 +10,7 @@ import {
   WiRain, 
 } from "react-icons/wi";
 import { BiTestTube } from "react-icons/bi";
+import { Sprout } from "lucide-react";
 import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import EvapotranspiracionCard from "../components/EvapotranspiracionCard";
@@ -39,9 +40,17 @@ type Era = {
 type Plantacion = {
   id: number;
   fechaSiembra: string;
-  cultivo: string;
-  lote: string;
-  era: string;
+  fk_Cultivo: {
+    id: string;
+    nombre: string;
+  };
+  fk_Era: {
+    id: string;
+    fk_lote:{
+      id: string;
+      nombre: string;
+    }
+  }
 };
 
 const SENSOR_TYPES = [
@@ -81,7 +90,7 @@ export default function IoTPages() {
   const [evapotranspiracion, setEvapotranspiracion] = useState<any>(null);
   const [plantaciones, setPlantaciones] = useState<Plantacion[]>([]);
   const [selectedPlantacion, setSelectedPlantacion] = useState<number | string>("");
-  const [errorET, setErrorET] = useState<string | null>(null);
+  const [, setErrorET] = useState<string | null>(null);
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -173,7 +182,6 @@ export default function IoTPages() {
     
     setEvapotranspiracion({
       ...data,
-      // Agregar fecha actual si no viene en la respuesta
       fecha: data.fecha || new Date().toISOString()
     });
     
@@ -282,12 +290,13 @@ export default function IoTPages() {
             setSelectedPlantacion(selected);
           }}
           className="w-full"
-        >
-          {plantaciones.map(plantacion => (
-            <SelectItem key={String(plantacion.id)}>
-              {`${plantacion.cultivo} - Lote ${plantacion.lote} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
-            </SelectItem>
-          ))}
+>
+  {plantaciones.map(plantacion => (
+    <SelectItem key={String(plantacion.id)}>
+      {`Cultivo ${plantacion.fk_Cultivo}, Lote ${plantacion.fk_Era} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+    </SelectItem>
+  ))}
+
         </Select>
 
         <Input
@@ -327,7 +336,10 @@ export default function IoTPages() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div className="flex flex-col gap-4">
         <div className="bg-white p-6 rounded-xl shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">🌿 Detalles de la Plantación</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <Sprout className="text-green-700" size={22} style={{ color: "#11751f" }} />
+            Detalles de la Plantación
+            </h3>
           <p><strong>Cultivo:</strong> {evapotranspiracion.detalles.cultivo}</p>
           <p><strong>Lote:</strong> {evapotranspiracion.detalles.lote}</p>
           <p><strong>Fecha Siembra:</strong> {new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</p>
@@ -359,7 +371,7 @@ export default function IoTPages() {
             kc: evapotranspiracion.kc,
             temperatura: evapotranspiracion.sensor_data.temperatura,
             humedad: evapotranspiracion.sensor_data.humedad,
-            dias_desde_siembra: evapotranspiracion.detalles.dias_siembra
+            dias_desde_siembra: evapotranspiracion.detalles.dias_desde_siembra
           }}
           showAdditionalInfo={true}
         />
@@ -372,7 +384,9 @@ export default function IoTPages() {
 
       <div className="col-span-full">
         <div className="flex justify-between items-center w-full max-w-6xl mx-auto px-4 mb-2">
-          <h2 className="text-lg font-semibold text-gray-800 text-white">Promedios de Sensores</h2>
+          <h2 className="text-2xl font-semibold text-blue-800 mb-6 text-center text-white">
+            Promedio de sensores
+          </h2>
           <Input
             className="w-1/4 text-sm h-8"
             placeholder="Buscar Sensor"
@@ -475,8 +489,8 @@ export default function IoTPages() {
       {/* Lista completa de sensores */}
       <div className="flex gap-4 col-span-full mt-6">
         <div className="w-full">
-          <h2 className="flex justify-center col-span-full text-lg font-semibold text-gray-800 text-white mb-4">
-            Lista Completa de Sensores
+          <h2 className="text-2xl font-semibold text-blue-800 mb-6 text-center text-white">
+            Lista de sensores
           </h2>
           <SensorLista />
         </div>
