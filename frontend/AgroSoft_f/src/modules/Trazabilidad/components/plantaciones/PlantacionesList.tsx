@@ -35,42 +35,97 @@ export function PlantacionesList() {
   const handleCrearNuevo = () => {
     handleCrear({
       id: 0,
-      fk_Cultivo: { nombre: "" },
-      fk_semillero: { unidades: 0, fechasiembra: "" },
-      fk_Era: { id: 0 },
+      cultivo: {
+        id: 0,
+        nombre: "",
+        activo: false,
+        especies: {
+          id: 0,
+          nombre: "",
+          descripcion: "",
+          tiempocrecimiento: "",
+          tiposEspecie: { id: 0, nombre: "", descripcion: "", img: "" },
+          fk_tipoespecie: 0,
+        },
+        fk_Especie: 0,
+      },
+      semillero: null,
+      eras: {
+        id: 0,
+        tipo: "",
+        fk_lote: {
+          id: 0,
+          nombre: "",
+          descripcion: "",
+          latI1: 0,
+          longI1: 0,
+          latS1: 0,
+          longS1: 0,
+          latI2: 0,
+          longI2: 0,
+          latS2: 0,
+          longS2: 0,
+          estado: null,
+        },
+        latI1: 0,
+        longI1: 0,
+        latS1: 0,
+        longS1: 0,
+        latI2: 0,
+        longI2: 0,
+        latS2: 0,
+        longS2: 0,
+      },
+      unidades: 0,
+      fechaSiembra: "",
+      creado: "",
+      fk_semillero: null,
+      fk_Cultivo: 0,
+      fk_Era: 0,
     });
   };
 
   const columnas = [
     { name: "ID", uid: "id", sortable: true },
-    { name: "Cultivo", uid: "fk_Cultivo", sortable: true },
-    { name: "Semillero", uid: "fk_semillero", sortable: false },
+    { name: "Cultivo", uid: "cultivo", sortable: true },
+    { name: "Semillero", uid: "semillero", sortable: false },
     { name: "Unidades", uid: "unidades", sortable: true },
-    { name: "Fecha Siembra", uid: "fechasiembra", sortable: true },
-    { name: "Era", uid: "fk_Era", sortable: true },
-    { name: "Acciones", uid: "acciones" },
+    { name: "Fecha Siembra", uid: "fechaSiembra", sortable: true },
+    { name: "Era", uid: "eras", sortable: true },
+    { name: "Acciones", uid: "acciones", sortable: false },
   ];
 
   const renderCell = (item: Plantaciones, columnKey: React.Key) => {
+    // Depuración: Imprimir la clave de la columna
+    console.log("ColumnKey:", columnKey);
+
     switch (columnKey) {
       case "id":
         return <span>{item.id}</span>;
-      case "fk_Cultivo":
-        return <span>{item.fk_Cultivo?.nombre || "Sin nombre"}</span>;
-      case "fk_semillero":
+      case "cultivo":
+        return <span>{item.cultivo?.nombre || "Sin nombre"}</span>;
+      case "semillero":
         return (
           <span>
-            {item.fk_semillero
-              ? `Semillero del cultivo: ${item.fk_Cultivo?.nombre}`
-              : "No asignado"}
+            {item.semillero
+              ? `Semillero: ${item.semillero.cultivo?.nombre || "Sin nombre"}`
+              : "Sin semillero"}
           </span>
         );
       case "unidades":
-        return <span>{item.fk_semillero?.unidades ?? "N/A"}</span>;
-      case "fechasiembra":
-        return <span>{item.fk_semillero?.fechasiembra ?? "N/A"}</span>;
-      case "fk_Era":
-        return <span>{item.fk_Era?.id ?? "N/A"}</span>;
+        return <span>{item.unidades ?? "N/A"}</span>;
+      case "fechaSiembra":
+        return (
+          <span>
+            {item.fechaSiembra
+              ? new Date(item.fechaSiembra).toLocaleDateString("es-CO")
+              : "N/A"}
+          </span>
+        );
+      case "eras":
+        return (
+          <span>{item.eras?.tipo || `Era ${item.eras?.id || "N/A"}`}</span>
+        );
       case "acciones":
         return (
           <AccionesTabla
@@ -79,9 +134,15 @@ export function PlantacionesList() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof Plantaciones])}</span>;
+        console.warn(`Clave de columna no manejada: ${String(columnKey)}`);
+        return (
+          <span>{String(item[columnKey as keyof Plantaciones] ?? "N/A")}</span>
+        );
     }
   };
+
+  // Depuración: Imprimir datos
+  console.log("Plantaciones:", data);
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las plantaciones</p>;
@@ -104,9 +165,7 @@ export function PlantacionesList() {
         />
       )}
 
-      {isCreateModalOpen && (
-        <CrearPlantacionModal onClose={closeCreateModal} />
-      )}
+      {isCreateModalOpen && <CrearPlantacionModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && PlantacionesEliminada && (
         <EliminarPlantacionModal
