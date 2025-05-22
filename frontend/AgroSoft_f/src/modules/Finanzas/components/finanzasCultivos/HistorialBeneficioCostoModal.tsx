@@ -312,7 +312,18 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
                     .map((registro: HistorialBeneficioCosto, index: number) => (
                       <TableRow key={index}>
                         <TableCell>{registro.nombre_cultivo}</TableCell>
-                        <TableCell>{registro.fecha_registro}</TableCell>
+                        <TableCell>
+                          {new Date(registro.fecha_registro).toLocaleDateString(
+                            "es-ES",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </TableCell>
                         <TableCell>
                           ${registro.costo_insumos.toLocaleString()}
                         </TableCell>
