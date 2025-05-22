@@ -1,79 +1,124 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.utils.timezone import now, localtime
-from datetime import timedelta, datetime
-from django.db.models import Avg
+from django.db.models import Avg, Q
+from django.utils import timezone
 from apps.electronica.api.models.sensor import Sensor
-from apps.finanzas.api.models.cultivos import Cultivos, CoeficienteCultivo
-import json
+from apps.finanzas.api.models.cultivos import CoeficienteCultivo
+from django.core.exceptions import ObjectDoesNotExist
+from apps.trazabilidad.api.models.PlantacionesModel import Plantaciones
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CalcularEvapotranspiracionView(APIView):
+    SENSORES_REQUERIDOS = ['TEM', 'VIE', 'LUM', 'HUM_A']
+    FACTOR_LUX = 0.0864  
+    FACTOR_VIENTO = 0.277778  
+
     def get(self, request):
-        cultivo_id = request.query_params.get('cultivo_id')
-        lote_id = request.query_params.get('lote_id')
+        plantacion_id = request.query_params.get('plantacion_id')
         kc_param = request.query_params.get('kc')
 
-        if not cultivo_id or not lote_id:
-            return Response(
-                {'error': 'Se requieren cultivo_id y lote_id'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         try:
-            cultivo = Cultivos.objects.get(pk=cultivo_id)
-
-            if kc_param:
-                try:
-                    kc_valor = float(kc_param)
-                except ValueError:
-                    return Response({'error': 'Kc debe ser un número válido'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                kc = CoeficienteCultivo.objects.filter(cultivo=cultivo).last()
-                kc_valor = kc.kc_valor if kc else 0.7
-
-            ahora = now()
-            hace_24_horas = ahora - timedelta(hours=24)
-
-            promedios = Sensor.objects.filter(
-                fk_lote=lote_id,
-                fecha__range=(hace_24_horas, ahora)
-            ).values('tipo').annotate(
-                promedio=Avg('valor')
+            plantacion = self._obtener_plantacion(plantacion_id)
+            self._validar_ubicacion(plantacion)
+            kc = self._determinar_kc(plantacion, kc_param)
+            datos_sensores = self._obtener_datos_sensores(plantacion)
+            et_real = self._calcular_evapotranspiracion(datos_sensores, kc)
+            
+            return Response(
+                self._construir_respuesta(et_real, kc, plantacion, datos_sensores),
+                status=status.HTTP_200_OK
             )
 
-            datos = {item['tipo']: item['promedio'] for item in promedios}
-
-            tipos_requeridos = ['TEM', 'VIE', 'LUM', 'HUM_A']
-            if not all(tipo in datos for tipo in tipos_requeridos):
-                return Response(
-                    {'error': 'Datos de sensores incompletos'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-
-            eto = (
-                0.408 * float(datos['TEM']) + 
-                0.124 * float(datos['LUM']) + 
-                0.19 * float(datos['VIE']) - 
-                0.15 * float(datos['HUM_A'])
-            )
-            et_real = eto * float(kc_valor)
-
-            fecha_calculo = localtime(ahora).strftime('%Y-%m-%dT%H:%M:%S')
-
-            return Response({
-                'fecha': fecha_calculo,
-                'evapotranspiracion_mm_dia': round(et_real, 2),
-                'kc': float(kc_valor),
-                'sensor_data': {
-                    'temperatura': round(float(datos['TEM']), 2),
-                    'viento': round(float(datos['VIE']), 2),
-                    'iluminacion': round(float(datos['LUM']), 2),
-                    'humedad': round(float(datos['HUM_A']), 2),
-                }
-            })
-
-        except Cultivos.DoesNotExist:
-            return Response({'error': 'Cultivo no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except ObjectDoesNotExist as e:
+            logger.error(f"Objeto no encontrado: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as e:
+            logger.warning(f"Error de validación: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error': f'Error inesperado: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.critical(f"Error interno: {str(e)}", exc_info=True)
+            return Response({'error': f'Error interno: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def _obtener_plantacion(self, plantacion_id):
+        try:
+            return Plantaciones.objects.select_related(
+                'fk_Cultivo', 'fk_Era__fk_lote'
+            ).get(pk=plantacion_id)
+        except Plantaciones.DoesNotExist:
+            raise ObjectDoesNotExist("Plantación no encontrada")
+
+    def _validar_ubicacion(self, plantacion):
+        if not plantacion.fk_Era or not plantacion.fk_Era.fk_lote:
+            raise ValueError("La plantación no tiene una ubicación válida (Lote/Era)")
+
+    def _determinar_kc(self, plantacion, kc_param):
+        if kc_param:
+            try:
+                return float(kc_param)
+            except ValueError:
+                raise ValueError("Valor Kc inválido, debe ser un número")
+        
+        dias_desde_siembra = (timezone.now().date() - plantacion.fechaSiembra).days
+        try:
+            kc_obj = CoeficienteCultivo.objects.filter(
+                cultivo=plantacion.fk_Cultivo,
+                dias_desde_siembra__lte=dias_desde_siembra
+            ).latest('dias_desde_siembra')
+            return kc_obj.kc_valor
+        except CoeficienteCultivo.DoesNotExist:
+            return 0.7 
+
+    def _obtener_datos_sensores(self, plantacion):
+        era = plantacion.fk_Era
+        lote = era.fk_lote if era else None
+
+
+        sensores = Sensor.objects.filter(
+            Q(fk_eras=era) | Q(fk_lote=lote),
+            tipo__in=self.SENSORES_REQUERIDOS
+        ).values('tipo').annotate(promedio=Avg('valor'))
+
+        datos = {s['tipo']: float(s['promedio']) for s in sensores}
+        faltantes = [s for s in self.SENSORES_REQUERIDOS if s not in datos]
+
+        if faltantes:
+            raise ValueError(
+                f"Sensores faltantes: {', '.join(faltantes)}. " 
+                f"Verifique que existen registros para estos sensores."
+            )
+
+        return datos
+
+    def _calcular_evapotranspiracion(self, datos, kc):
+        try:
+            eto = (
+                0.408 * datos['TEM'] + 
+                0.124 * (datos['LUM'] * self.FACTOR_LUX) +
+                0.19 * (datos['VIE'] * self.FACTOR_VIENTO) -
+                0.15 * datos['HUM_A']
+            )
+            return max(eto * kc, 0)
+        except KeyError as e:
+            logger.error(f"Dato de sensor faltante: {str(e)}")
+            raise ValueError(f"Error en datos de sensores: {str(e)}")
+
+    def _construir_respuesta(self, et_real, kc, plantacion, datos_sensores):
+        return {
+            'evapotranspiracion_mm_dia': round(et_real, 2),
+            'kc': round(kc, 2),
+            'detalles': {
+                'cultivo': plantacion.fk_Cultivo.nombre if plantacion.fk_Cultivo else 'Desconocido',
+                'lote': plantacion.fk_Era.fk_lote.nombre if plantacion.fk_Era else 'Desconocido',
+                'fecha_siembra': plantacion.fechaSiembra,
+                'dias_siembra': (timezone.now().date() - plantacion.fechaSiembra).days
+            },
+            'sensor_data': {
+                'temperatura': round(datos_sensores['TEM'], 2),
+                'viento': round(datos_sensores['VIE'], 2),
+                'iluminacion': round(datos_sensores['LUM'], 2),
+                'humedad': round(datos_sensores['HUM_A'], 2)
+            }
+        }

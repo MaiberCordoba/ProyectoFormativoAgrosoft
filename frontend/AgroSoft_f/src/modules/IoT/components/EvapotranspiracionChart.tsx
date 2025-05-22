@@ -11,17 +11,17 @@ interface DataPoint {
   dias_desde_siembra?: number;
 }
 
-interface Props {
-  nuevoDato: DataPoint | null;
+type Props = {
+  plantacionId: string;
+  nuevoDato: any;
   showAdditionalInfo?: boolean;
-}
+};
 
 const LOCAL_STORAGE_KEY = 'evapotranspiracion_data';
 
 export default function EvapotranspiracionChart({ nuevoDato, showAdditionalInfo = false }: Props) {
   const [data, setData] = useState<DataPoint[]>([]);
 
-  // Cargar y guardar datos en localStorage
   useEffect(() => {
     const loadData = () => {
       const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -40,18 +40,15 @@ export default function EvapotranspiracionChart({ nuevoDato, showAdditionalInfo 
     loadData();
   }, []);
 
-  // Actualizar datos cuando llega nueva información
   useEffect(() => {
     if (!nuevoDato) return;
 
     setData(prevData => {
-      // Verificar si ya existe un dato con la misma fecha (mismo día)
       const fechaDia = new Date(nuevoDato.fecha).toISOString().split('T')[0];
       const exists = prevData.some(item => 
         new Date(item.fecha).toISOString().split('T')[0] === fechaDia
       );
 
-      // Si no existe, agregarlo al historial
       const newData = exists 
         ? prevData.map(item => 
             new Date(item.fecha).toISOString().split('T')[0] === fechaDia 
@@ -60,24 +57,20 @@ export default function EvapotranspiracionChart({ nuevoDato, showAdditionalInfo 
           )
         : [...prevData, nuevoDato];
 
-      // Ordenar por fecha y limitar a 30 días
       const sortedData = newData.sort((a, b) => 
         new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
       ).slice(-30);
 
-      // Guardar en localStorage
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sortedData));
 
       return sortedData;
     });
   }, [nuevoDato]);
 
-  // Datos ordenados para la gráfica
   const sortedData = [...data].sort((a, b) => 
     new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
   );
 
-  // Tooltip personalizado
   const renderTooltip = (props: any) => {
     const { active, payload, label } = props;
     if (active && payload && payload.length) {
@@ -89,7 +82,6 @@ export default function EvapotranspiracionChart({ nuevoDato, showAdditionalInfo 
           <p>Kc: {data.kc?.toFixed(2) || 'N/A'}</p>
           {showAdditionalInfo && (
             <>
-              <p>Fase: {data.fase_crecimiento || 'N/A'}</p>
               <p>Días desde siembra: {data.dias_desde_siembra || 'N/A'}</p>
             </>
           )}
