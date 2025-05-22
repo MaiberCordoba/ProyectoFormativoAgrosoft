@@ -24,7 +24,14 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [estado, setEstado] = useState<"AS" | "CO" | "CA">("AS");
+  const [fecha, setFecha] = useState("");
+  const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
+  //manejo de errores
+  const [mensajeError, setMensajeError] = useState("")
+  //Creacion de modales 
+  const [tipoActividadModal, setTipoActividadModal] = useState(false)
+  const [usuarioModal, setUsuarioModal] = useState(false)
+  const [cultivoModal, setCultivoModal] = useState(false)
 
   const [tipoActividadModal, setTipoActividadModal] = useState(false);
   const [usuarioModal, setUsuarioModal] = useState(false);
@@ -36,10 +43,12 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
   const { mutate, isPending } = usePostActividades();
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !estado) {
-      console.log("Por favor, completa todos los campos.");
+    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
+      setMensajeError("Por favor, completa todos los campos.");
+
       return;
     }
+    setMensajeError("")
 
     mutate(
       { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, estado },
@@ -51,7 +60,9 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           setFk_TipoActividad(null);
           setTitulo("");
           setDescripcion("");
-          setEstado("AS");
+          setFecha("");
+          setEstado("");
+          setMensajeError("");
         },
       }
     );
@@ -90,6 +101,10 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           },
         ]}
       >
+        {mensajeError &&(
+          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
+        )}
+        
         <Input
           label="Titulo"
           type="text"
@@ -105,6 +120,15 @@ export const CrearActividadesModal = ({ onClose }: CrearActividadesModalProps) =
           onChange={(e) => setDescripcion(e.target.value)}
           required
         />
+        <Input
+          label="Fecha Asignacion"
+          type="date"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
+          min={new Date().toISOString().split("T")[0]}
+          required
+        />
+
 
         <Select
           label="Estado"

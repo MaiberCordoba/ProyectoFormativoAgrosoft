@@ -17,13 +17,15 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
   const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
 
+  const [error,setError] = useState("")
+
   const { mutate, isPending } = usePostMovimiento();
   const { data: insumos = [], isLoading: cargandoInsumos } = useGetInsumos();
   const { data: herramientas = [], isLoading: cargandoHerramientas } = useGetHerramientas();
 
   const handleSubmit = () => {
     if (!unidades || unidades <= 0) {
-      console.log("Por favor, ingresa una cantidad válida.");
+      setError("Por favor, ingresa una cantidad válida.");
       return;
     }
 
@@ -31,12 +33,12 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
     const tieneHerramienta = fk_Herramienta !== null;
 
     if (tieneInsumo && tieneHerramienta) {
-      console.log("Solo se puede registrar un movimiento para insumo o herramienta, no ambos.");
+      setError("Solo se puede registrar un movimiento para insumo o herramienta, no ambos.");
       return;
     }
 
     if (!tieneInsumo && !tieneHerramienta) {
-      console.log("Debes asociar el movimiento a un insumo o herramienta.");
+      setError("Debes asociar el movimiento a un insumo o herramienta.");
       return;
     }
 
@@ -56,6 +58,7 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
           setUnidades(null);
           setFk_Insumo(null);
           setFk_Herramienta(null);
+          setError("")
         },
       }
     );
@@ -75,6 +78,7 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <div className="space-y-4">
         <Select
           label="Tipo de movimiento"

@@ -19,17 +19,22 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(actividad.fk_Cultivo || null);  
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(actividad.fk_Usuario || null); 
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(actividad.fk_TipoActividad || null); 
-
+  //manejo mensaje de error
+  const [mensajeError, setMensajeError] = useState("")
+  //
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
   const { data: users, isLoading: isLoadingUsers } = useGetUsers();
   const { data: tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad();
   const { mutate, isPending } = usePatchActividades();  
 
   const handleSubmit = () => {
-    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !estado) {
-      console.log("Por favor, completa todos los campos.");
+    // Verificar que todos los campos estén completos
+    if (!fk_Cultivo || !fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
+      setMensajeError("Por favor, completa todos los campos.");
+
       return;
     }
+    setMensajeError("")
 
     mutate(
       {
@@ -65,6 +70,9 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         },
       ]}
     >
+      {mensajeError &&(
+        <p className='text-red-500 text-sm mb-2'>{mensajeError}</p>
+      )}
       <Input
         value={titulo}
         label="Título"

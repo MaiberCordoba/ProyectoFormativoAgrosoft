@@ -17,6 +17,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
   const [fecha, setFecha] = useState<string>(cosecha.fecha);
   const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(cosecha.fk_Plantacion ?? null); // Estado para el ID del cultivo
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(cosecha.fk_UnidadMedida ?? null); // Estado para el ID del cultivo
+  const [mensajeError, setMensajeError] = useState("")
 
   const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  // Obtener los cultivos
   const { data: unidadesMedida, isLoading: isLoadingUnidadMedida } = useGetUnidadesMedida();  // Obtener los cultivos
@@ -24,9 +25,10 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
 
   const handleSubmit = () => {
     if (!fk_Plantacion || !cantidad || !fk_UnidadMedida || !fecha) {
-      console.log("Por favor, completa todos los campos.");
+     setMensajeError("Por favor, completa todos los campos.");
       return;
     }
+    setMensajeError("")
 
     // Llama a la mutación para actualizar la cosecha
     mutate(
@@ -61,6 +63,9 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
         },
       ]}
     >
+      {mensajeError &&(
+          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
+      )}
       <Input
         value={fecha}
         label="Fecha de Cosecha"

@@ -14,14 +14,16 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
   const [monto, setMonto] = useState<number>(salario.monto);
   const [horas, setHoras] = useState<number | null>(salario.horas);
   const [estado, setEstado] = useState<"activo" | "inactivo">(salario.estado);
+  const [error,setError] = useState("")
 
   const { mutate, isPending } = usePatchSalarios();  
 
   const handleSubmit = () => {
     if (!nombre || monto === null || horas === null || !estado) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       {
@@ -55,6 +57,7 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
         },
       ]}
     >
+      <p className='text-red-500 text-sm mb-2'>{error}</p>
       <Input
         value={nombre}
         label="Nombre Salario"

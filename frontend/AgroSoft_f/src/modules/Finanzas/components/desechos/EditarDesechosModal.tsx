@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { usePatchDesechos } from '../../hooks/desechos/usePatchDesechos';  // Cambié el hook
+import { usePatchDesechos } from '../../hooks/desechos/usePatchDesechos';  
 import { Desechos } from '../../types';
 import { Input, Textarea, Select, SelectItem } from '@heroui/react';
-import { useGetTiposDesechos } from '../../hooks/tiposDesechos/useGetTiposDesechos';  // Cambié el hook
+import { useGetTiposDesechos } from '../../hooks/tiposDesechos/useGetTiposDesechos'; 
 import { useGetPlantaciones } from '@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones';
 
 interface EditarDesechoModalProps {
@@ -14,28 +14,28 @@ interface EditarDesechoModalProps {
 const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClose }) => {
   const [nombre, setNombre] = useState<string>(desecho.nombre);
   const [descripcion, setDescripcion] = useState<string>(desecho.descripcion);
-  const [fk_Plantacion, setFk_Plantacion] = useState<number>(desecho.fk_Plantacion);  // Estado para el ID del cultivo
-  const [fk_TipoDesecho, setFk_TipoDesecho] = useState<number>(desecho.fk_TipoDesecho); // Estado para el ID del tipo de desecho
+  const [fk_Plantacion, setFk_Plantacion] = useState<number>(desecho.fk_Plantacion);  
+  const [fk_TipoDesecho, setFk_TipoDesecho] = useState<number>(desecho.fk_TipoDesecho); 
 
-  const { data: tiposDesechos, isLoading: isLoadingTiposDesechos } = useGetTiposDesechos();  // Obtener los tipos de desechos
-  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  // Obtener los cultivos
-  const { mutate, isPending } = usePatchDesechos();  // Mutación para actualizar los desechos
+
+  const { data: tiposDesechos, isLoading: isLoadingTiposDesechos } = useGetTiposDesechos();  
+  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  
+  const { mutate, isPending } = usePatchDesechos(); 
 
   const handleSubmit = () => {
-    // Llama a la mutación para actualizar el desecho
     mutate(
       {
         id: desecho.id,
         data: {
           nombre,
           descripcion,
-          fk_Plantacion,  // Envía solo el ID del cultivo
-          fk_TipoDesecho,  // Envía solo el ID del tipo de desecho
+          fk_Plantacion,  
+          fk_TipoDesecho,  
         },
       },
       {
         onSuccess: () => {
-          onClose();  // Cierra el modal después de guardar
+          onClose();  
         },
       }
     );
