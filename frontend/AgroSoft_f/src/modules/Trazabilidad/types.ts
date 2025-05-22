@@ -75,6 +75,7 @@ export interface Plantaciones {
   fk_Era: number;
 }
 
+
 export interface PlantacionCreate {
   fk_Cultivo: number;
   fk_Era: number;

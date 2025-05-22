@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import { useGetUsers } from "../hooks/useGetUsers";
 import { useEditarUsers } from "../hooks/useEditarUsers";
 import { useCrearUsers } from "../hooks/useCrearUsers";
 import { useEliminarUsers } from "../hooks/useEliminarUsers";
+import { useReporteUsuarios } from "../hooks/useReporteUsuarios";
 import { User } from "../types";
 import EditarUserModal from "./EditarUsersModal";
 import EliminarUserModal from "./EliminarUsersModal";
@@ -12,6 +13,9 @@ import { Chip } from "@heroui/react";
 import { CrearUsersModal } from "./CrearUsersModal";
 import RegistroMasivoModal from "./registroMasivoModal";
 
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ReportePdfUsuarios } from "./ReportePdfUsuarios";
+import { Download } from "lucide-react";
 
 export function UsersList() {
   const { data, isLoading, error } = useGetUsers();
@@ -21,13 +25,11 @@ export function UsersList() {
     UsersEditada,
     handleEditar,
   } = useEditarUsers();
-
   const {
     isOpen: isCreateModalOpen,
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUsers();
-
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
@@ -35,8 +37,17 @@ export function UsersList() {
     handleEliminar,
   } = useEliminarUsers();
 
-  // ✅ Estado para modal de registro masivo
   const [isRegistroMasivoOpen, setIsRegistroMasivoOpen] = useState(false);
+  const {
+    data: reporteData,
+    isLoading: loadingReporte,
+    isError: errorReporte,
+  } = useReporteUsuarios();
+
+  // DEBUG: ver en consola cuando reporteData cambie
+  useEffect(() => {
+    console.log("🟣 reporteData en UsersList:", reporteData);
+  }, [reporteData]);
 
   const handleCrearNuevo = () => {
     handleCrear({
@@ -105,29 +116,73 @@ export function UsersList() {
 
   return (
     <div className="p-4 space-y-4">
-      
-      {/* Tabla */}
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
         claveBusqueda="nombre"
         placeholderBusqueda="Buscar por nombre o email"
-        onRegistroMasivo={() =>setIsRegistroMasivoOpen(true)}
+        onRegistroMasivo={() => setIsRegistroMasivoOpen(true)}
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
         opcionesEstado={[
           { uid: "activo", nombre: "Activo" },
           { uid: "inactivo", nombre: "Inactivo" },
         ]}
+        renderReporteAction={() => {
+          // Mientras se carga el reporte
+          if (loadingReporte) {
+            return (
+              <button
+                className="p-2 rounded-full bg-gray-100 cursor-not-allowed"
+                title="Cargando reporte…"
+                disabled
+              >
+                <Download className="h-4 w-4 animate-spin text-blue-500" />
+              </button>
+            );
+          }
+          // Si hubo un error
+          if (errorReporte || !reporteData) {
+            return (
+              <button
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                title="Error al cargar reporte"
+                disabled
+              >
+                <Download className="h-5 w-5 text-gray-400" />
+              </button>
+            );
+          }
+          // Ya tenemos reporteData
+          return (
+            <PDFDownloadLink
+              document={<ReportePdfUsuarios data={reporteData} />}
+              fileName="reporte_usuarios.pdf"
+              style={{ textDecoration: "none" }}
+            >
+              {({ loading }) => (
+                <button
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  title="Descargar reporte"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Download className="h-4 w-4 animate-spin text-blue-500" />
+                  ) : (
+                    <Download className="h-5 w-5 text-red-600" />
+                  )}
+                </button>
+              )}
+            </PDFDownloadLink>
+          );
+        }}
       />
 
       {/* Modales */}
       {isEditModalOpen && UsersEditada && (
         <EditarUserModal user={UsersEditada} onClose={closeEditModal} />
       )}
-
       {isCreateModalOpen && <CrearUsersModal onClose={closeCreateModal} />}
-
       {isDeleteModalOpen && UsersEliminada && (
         <EliminarUserModal
           user={UsersEliminada}
@@ -136,7 +191,6 @@ export function UsersList() {
         />
       )}
 
-      {/* ✅ Modal de registro masivo */}
       <RegistroMasivoModal
         isOpen={isRegistroMasivoOpen}
         onClose={() => setIsRegistroMasivoOpen(false)}

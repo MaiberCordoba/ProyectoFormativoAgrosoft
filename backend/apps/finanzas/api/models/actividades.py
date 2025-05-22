@@ -10,13 +10,14 @@ class Actividades(models.Model):
         ('CO', "Completada"),
         ('CA', "Cancelada")
     ]
+
     fk_Cultivo = models.ForeignKey(Cultivos, on_delete=models.SET_NULL, null=True)
     fk_Plantacion = models.ForeignKey(Plantaciones, on_delete=models.SET_NULL, null=True)
     fk_Usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
     fk_TipoActividad = models.ForeignKey(TipoActividad, on_delete=models.SET_NULL, null=True)
     titulo = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=200)
-    fecha = models.DateField(auto_now=False)
+    fecha = models.DateField(auto_now_add=True)  # Establece automáticamente la fecha al crear
     estado = models.CharField(max_length=3, choices=ESTADO_CHOICES, default='AS')
 
     def __str__(self):
