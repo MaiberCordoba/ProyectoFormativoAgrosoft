@@ -102,8 +102,8 @@ export interface Actividades {
   tipoActividad: TipoActividad;
   titulo: string;
   descripcion: string;
-  fecha: string;
-  estado: "AS" | "CO" | "CA";
+  fecha?: string;
+  estado?: "AS" | "CO" | "CA";
 }
 
 export interface Cosechas {
