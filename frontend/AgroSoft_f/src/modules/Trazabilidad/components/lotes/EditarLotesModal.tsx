@@ -11,7 +11,9 @@ interface EditarLoteModalProps {
 
 const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
   const [nombre, setNombre] = useState<string>(lote.nombre ?? "");
-  const [descripcion, setDescripcion] = useState<string>(lote.descripcion ?? "");
+  const [descripcion, setDescripcion] = useState<string>(
+    lote.descripcion ?? ""
+  );
   const [latI1, setLatI1] = useState<number | null>(lote.latI1);
   const [longI1, setLongI1] = useState<number | null>(lote.longI1);
   const [latS1, setLatS1] = useState<number | null>(lote.latS1);
@@ -19,7 +21,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
   const [latI2, setLatI2] = useState<number | null>(lote.latI2);
   const [longI2, setLongI2] = useState<number | null>(lote.longI2);
   const [latS2, setLatS2] = useState<number | null>(lote.latS2);
-  const [longS2, setLongS2] = useState<number | null>(lote.longS2);  
+  const [longS2, setLongS2] = useState<number | null>(lote.longS2);
   const [estado, setEstado] = useState<string>(lote.estado ? "di" : "oc");
 
   const { mutate, isPending } = usePatchLotes();
@@ -84,7 +86,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           onChange={(e) => setLatI1(Number(e.target.value))}
         />
         <Input
-          label="Long. Inf. Izquierda"
+          label="Lon. Inf. Izquierda"
           type="number"
           value={(longI1 ?? "").toString()}
           onChange={(e) => setLongI1(Number(e.target.value))}
@@ -97,7 +99,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           onChange={(e) => setLatS1(Number(e.target.value))}
         />
         <Input
-          label="Long. Sup. Izquierda"
+          label="Lon. Sup.Izquierda"
           type="number"
           value={(longS1 ?? "").toString()}
           onChange={(e) => setLongS1(Number(e.target.value))}
@@ -110,7 +112,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           onChange={(e) => setLatI2(Number(e.target.value))}
         />
         <Input
-          label="Long. Inf. Derecha"
+          label="Lon. Inf. Derecha"
           type="number"
           value={(longI2 ?? "").toString()}
           onChange={(e) => setLongI2(Number(e.target.value))}
@@ -123,7 +125,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           onChange={(e) => setLatS2(Number(e.target.value))}
         />
         <Input
-          label="Long. Sup. Derecha"
+          label="Lon. Sup. Derecha"
           type="number"
           value={(longS2 ?? "").toString()}
           onChange={(e) => setLongS2(Number(e.target.value))}
