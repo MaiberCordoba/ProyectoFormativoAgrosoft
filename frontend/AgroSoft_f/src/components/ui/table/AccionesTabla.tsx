@@ -1,5 +1,11 @@
 import React from "react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 import { VerticalDotsIcon } from "./Icons";
 
 interface AccionesTablaProps {
@@ -7,12 +13,15 @@ interface AccionesTablaProps {
   onEliminar: () => void;
 }
 
-export const AccionesTabla: React.FC<AccionesTablaProps> = ({ onEditar, onEliminar }) => {
+export const AccionesTabla: React.FC<AccionesTablaProps> = ({
+  onEditar,
+  onEliminar,
+}) => {
   return (
     <div className="relative flex justify-end items-center gap-2">
       <Dropdown>
         <DropdownTrigger>
-          <Button isIconOnly size="sm" variant="light" className="bg-green-600 hover:bg-green-800 text-white p-2 rounded">
+          <Button isIconOnly size="sm" className="bg-success p-2 rounded">
             <VerticalDotsIcon className="text-default-300" />
           </Button>
         </DropdownTrigger>
@@ -27,4 +36,4 @@ export const AccionesTabla: React.FC<AccionesTablaProps> = ({ onEditar, onElimin
       </Dropdown>
     </div>
   );
-};  
+};
