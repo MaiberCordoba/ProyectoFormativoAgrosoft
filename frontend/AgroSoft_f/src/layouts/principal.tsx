@@ -87,21 +87,10 @@ const Principal: React.FC = () => {
           transition-all duration-300
           ${isSidebarOpen ? "md:ml-48" : "md:ml-20"}
           min-w-0
+          className= bg-[#fffefe]
         `}
       >
         <main className="flex-1 pb-16 relative">
-          <div className="fixed inset-0">
-            {/* Capa de fondo con imagen y opacidad */}
-            <div 
-              className="absolute inset-0 bg-[url('../../public/fondo.jpg')] 
-                        bg-cover bg-center bg-no-repeat "
-              aria-hidden="true"
-            />
-
-            {/* Capa oscura superpuesta para mayor contraste */}
-            <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
-          </div>
-
           <div className="relative z-10 min-h-screen">
             <div className="max-w-full overflow-x-hidden">
               <Outlet />
