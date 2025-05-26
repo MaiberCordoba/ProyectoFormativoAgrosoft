@@ -18,12 +18,12 @@ interface Props {
 
 export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-md flex flex-col justify-between">
+    <div className="bg-white/80 rounded-2xl shadow-md p-6 w-full max-w-md flex flex-col justify-between">
       <div>
         <div className="flex justify-between items-start">
-          <h2 className="text-xl font-bold text-green-700 mb-4">
+          <h3 className="text-lg font-semibold text-center text-green-800 mb-4">
             Evapotranspiración Real (ETc)
-          </h2>
+          </h3>
           <img
             src="/AGROPECUARIAS_Agronomia.png"
             alt="evapotranspiracion"

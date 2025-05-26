@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
-import { Sprout, ChevronLeft } from "lucide-react";
+import { Sprout, Calculator, ArrowLeft } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import EvapotranspiracionCard from "./EvapotranspiracionCard";
 import EvapotranspiracionChart from "./EvapotranspiracionChart";
@@ -95,30 +95,33 @@ export default function EvapotranspiracionC() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-6xl mx-auto p-4 space-y-8">
         {!evapotranspiracion && (
-          <div className="bg-white rounded-xl shadow-sm p-6 max-w-md mx-auto">
-            <h2 className="text-2xl font-semibold text-green-800 mb-6">
+            <div className="bg-white/800 rounded-xl shadow-lg p-6 max-w-md mx-auto">
+            <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center justify-center gap-2 text-center">
+              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#2ECC71" }}/>
               Calculadora de Evapotranspiración
             </h2>
             
             <div className="flex flex-col gap-4">
               <Select
-                label="Seleccionar Plantación"
-                placeholder="Selecciona una plantación"
-                selectedKeys={selectedPlantacion ? [String(selectedPlantacion)] : []}
-                onSelectionChange={(keys) => {
-                  const selected = Array.from(keys)[0] as string;
-                  setSelectedPlantacion(selected);
-                }}
-                className="w-full"
-                errorMessage={errorET}
+              label="Seleccionar Plantación"
+              placeholder="Selecciona una plantación"
+              selectedKeys={selectedPlantacion ? [String(selectedPlantacion)] : []}
+              onSelectionChange={(keys) => {
+                const selected = Array.from(keys)[0] as string;
+                setSelectedPlantacion(selected);
+                setErrorET(null);
+              }}
+              className={`w-full ${errorET ? "border border-red-500" : ""}`}
+              errorMessage={errorET}
+              color={errorET ? "danger" : undefined}
               >
-                {plantaciones.map(plantacion => (
-                  <SelectItem 
-                    key={String(plantacion.id)} 
-                  >
-                    {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Lote ${plantacion.fk_Era|| 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
-                  </SelectItem>
-                ))}
+              {plantaciones.map(plantacion => (
+                <SelectItem 
+                key={String(plantacion.id)} 
+                >
+                {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Lote ${plantacion.fk_Era|| 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+                </SelectItem>
+              ))}
               </Select>
 
               <Input
@@ -148,7 +151,7 @@ export default function EvapotranspiracionC() {
         )}
 
         {evapotranspiracion && (
-          <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 shadow-sm">
+          <div className="bg-blue-50 p-6 rounded-xl">
             <div className="flex justify-between items-center mb-6">
               <button
                 onClick={() => setEvapotranspiracion(null)}
@@ -157,26 +160,41 @@ export default function EvapotranspiracionC() {
                 aria-label="Volver"
                 type="button"
               >
-                <ChevronLeft className="h-6 w-6 text-blue-700" strokeWidth={3} style={{ color: "#2ECC71" }} />
+                <ArrowLeft className="h-6 w-6 text-blue-700" strokeWidth={2} style={{ color: "#2ECC71" }} />
               </button>
-              <h2 className="text-2xl font-semibold text-blue-800 text-center">
-                Evapotranspiración Real (ETc)
-              </h2>
+                <h2 className="text-2xl font-bold text-blue-800 text-center">
+                <strong>Evapotranspiración (ETc)</strong>
+                </h2>
               <div className="w-10"/>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="flex flex-col gap-4">
-                <div className="bg-white p-6 rounded-xl shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <Sprout className="text-green-700" size={22} style={{ color: "#2ECC71" }} />
+              <div className="bg-white/80 rounded-2xl shadow-md p-6 w-full max-w-md flex flex-col justify-between">
+                <h3 className="text-base font-semibold text-black mb-3 flex items-center gap-2">
+                  <Sprout className="text-green-700" size={20} style={{ color: "#2ECC71" }} />
                     Detalles de la Plantación
-                  </h3>
-                  <p><strong>Cultivo:</strong> {evapotranspiracion.detalles.cultivo}</p>
-                  <p><strong>Lote:</strong> {evapotranspiracion.detalles.lote}</p>
-                  <p><strong>Fecha Siembra:</strong> {new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</p>
-                  <p><strong>Días desde siembra:</strong> {evapotranspiracion.detalles.dias_siembra}</p>
+                </h3>
+                <br/>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-black">Cultivo:</span>
+                    <span className="text-black">{evapotranspiracion.detalles.cultivo}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-black">Lote:</span>
+                    <span className="text-black">{evapotranspiracion.detalles.lote}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-black">Fecha Siembra:</span>
+                    <span className="text-black">{new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-black">Días desde siembra:</span>
+                    <span className="text-black">{evapotranspiracion.detalles.dias_siembra}</span>
+                  </div>
                 </div>
+              </div>
 
                 <EvapotranspiracionCard
                   etReal={evapotranspiracion.evapotranspiracion_mm_dia}
@@ -189,12 +207,9 @@ export default function EvapotranspiracionC() {
                   }}
                 />
               </div>
-
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Histórico de Evapotranspiración (mm/día)
-                </h3>
-
+              <div className="p-8 rounded-xl">
+                <br/>
+                <br/>
                 <EvapotranspiracionChart 
                   plantacionId={selectedPlantacion.toString()}
                   nuevoDato={{
