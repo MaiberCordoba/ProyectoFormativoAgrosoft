@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "sena-green": "#254030",
+        "sena-green": "#327d45",
       },
     },
   },
@@ -23,7 +23,7 @@ module.exports = {
         light: {
           colors: {
             success: {
-              DEFAULT: "#254030",
+              DEFAULT: "#327d45",
               foreground: "#ffffff",
             },
           },
@@ -31,7 +31,7 @@ module.exports = {
         dark: {
           colors: {
             success: {
-              DEFAULT: "#254030",
+              DEFAULT: "#327d45",
               foreground: "ffffff",
             },
           },
