@@ -68,6 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <nav className="flex-1 overflow-y-auto p-2">
         {/* Elementos principales */}
         {[
+
           { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
           {
             icon: Users,
@@ -94,6 +95,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Menús con submenús */}
         {[
+        {
+           
+          title: "IoT",
+          icon: Monitor,
+          submenus: [
+            "sensores",
+            "evapotranspiracion"
+          ],
+
+        },
+
           {
             title: "Cultivos",
             icon: Leaf,

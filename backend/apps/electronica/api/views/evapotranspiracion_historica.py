@@ -1,4 +1,3 @@
-# views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 class EvapotranspiracionHistoricaView(APIView):
     def get(self, request):
         plantacion_id = request.query_params.get('plantacion_id')
-        dias = int(request.query_params.get('dias', 30))  # Default 30 días
+        dias = int(request.query_params.get('dias', 30))
 
         if not plantacion_id:
             return Response(
@@ -37,22 +36,26 @@ class EvapotranspiracionHistoricaView(APIView):
             lote = plantacion.fk_Era.fk_lote
             era = plantacion.fk_Era
 
-            dias_desde_siembra = (timezone.now().date() - plantacion.fechaSiembra).days
-            try:
-                kc_obj = CoeficienteCultivo.objects.filter(
-                    cultivo=plantacion.fk_Cultivo,
-                    dias_desde_siembra__lte=dias_desde_siembra
-                ).latest('dias_desde_siembra')
-                kc = kc_obj.kc_valor
-            except CoeficienteCultivo.DoesNotExist:
-                kc = 0.7  
-
             hoy = timezone.now().date()
             resultados = []
 
             for i in range(dias):
                 fecha_consulta = hoy - timedelta(days=i)
+                dias_siembra = (fecha_consulta - plantacion.fechaSiembra).days
                 
+                try:
+                    kc_obj = CoeficienteCultivo.objects.filter(
+                        cultivo=plantacion.fk_Cultivo,
+                        dias_desde_siembra__lte=dias_siembra
+                    ).latest('dias_desde_siembra')
+                    kc = kc_obj.kc_valor
+                    et_min = kc_obj.et_minima
+                    et_max = kc_obj.et_maxima
+                except CoeficienteCultivo.DoesNotExist:
+                    kc = 0.7
+                    et_min = None
+                    et_max = None
+
                 sensores = Sensor.objects.filter(
                     Q(fk_eras=era) | Q(fk_lote=lote),
                     fecha__date=fecha_consulta,
@@ -61,7 +64,7 @@ class EvapotranspiracionHistoricaView(APIView):
                 
                 datos = {s['tipo']: s['promedio'] for s in sensores}
                 
-                if len(datos) == 4:  
+                if len(datos) == 4:
                     eto = (
                         0.408 * datos['TEM'] + 
                         0.124 * (datos['LUM'] * 0.0864) +
@@ -74,9 +77,11 @@ class EvapotranspiracionHistoricaView(APIView):
                         'fecha': fecha_consulta.strftime('%Y-%m-%d'),
                         'et_mm_dia': round(et_real, 2),
                         'kc': round(kc, 2),
+                        'et_minima': float(et_min) if et_min else None,
+                        'et_maxima': float(et_max) if et_max else None,
                         'temperatura': round(datos['TEM'], 2),
                         'humedad': round(datos['HUM_A'], 2),
-                        'dias_siembra': (fecha_consulta - plantacion.fechaSiembra).days
+                        'dias_siembra': dias_siembra
                     })
 
             return Response(sorted(resultados, key=lambda x: x['fecha']))

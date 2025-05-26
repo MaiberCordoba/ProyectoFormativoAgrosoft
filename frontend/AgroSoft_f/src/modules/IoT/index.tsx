@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import IoTPage from "./pages/IoTPage";
+import IoTPage from "./pages/Sensores";
 import SensorDetail from "./pages/SensorDetail";
 
 function App() {
