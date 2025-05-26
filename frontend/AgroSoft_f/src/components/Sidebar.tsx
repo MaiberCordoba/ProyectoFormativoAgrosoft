@@ -76,7 +76,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             text: "Usuarios",
             to: "/usuarios",
           },
-          { icon: Monitor, color: "text-[#254030]", text: "IoT", to: "/iot" },
         ].map((item) => (
           <NavLink
             key={item.to}
