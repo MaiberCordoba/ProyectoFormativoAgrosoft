@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {[
           { icon: Home, text: "Home", to: "/home" },
           { icon: Users, text: "Usuarios", to: "/usuarios" },
-          { icon: Monitor, text: "IoT", to: "/iot" },
+          
         ].map((item) => (
           <NavLink
             key={item.to}
@@ -89,6 +89,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Menús con submenús */}
         {[
+        {
+           
+          title: "IoT",
+          icon: Monitor,
+          submenus: [
+            "sensores",
+            "evapotranspiracion"
+          ],
+
+        },
+
           {
             title: "Cultivos",
             icon: Leaf,
