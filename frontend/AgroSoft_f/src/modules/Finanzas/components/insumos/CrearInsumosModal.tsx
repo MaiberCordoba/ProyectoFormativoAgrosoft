@@ -23,6 +23,8 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
   const [fk_UnidadMedida, setfk_UnidadMedida] = useState<number | null>(null);
   const [preview, setPreview] = useState<string | null>(null)
 
+  const [error,setError] = useState("")
+
   const [unidadMedidaModal, setUnidadeMedidaModal] = useState(false)
 
   const { data: unidadesMedida, isLoading: isLoadingUnidad, refetch: refetchUnidadMedida } = useGetUnidadesMedida();
@@ -38,9 +40,11 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
       unidades === null ||
       fk_UnidadMedida === null
     ) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
+
       const formData = new FormData()
       formData.append("nombre",nombre)
       formData.append("descripcion",descripcion)
@@ -64,6 +68,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           setFichaTecnica(null);
           setUnidades(null);
           setfk_UnidadMedida(null);
+          setError("")
         },
       }
     );
@@ -89,6 +94,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           },
         ]}
         >
+          <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Nombre Insumo"
           type="text"

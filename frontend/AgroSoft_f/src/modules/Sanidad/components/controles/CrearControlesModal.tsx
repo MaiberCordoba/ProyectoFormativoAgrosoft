@@ -8,15 +8,15 @@ import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { Plus } from "lucide-react";
 import { CrearTipoControlModal } from "../tipocontrol/CrearTipoControlModal";
 import { CrearAfeccionCultivoModal } from "../afeccionescultivo/CrearAfeccionescultivoModal";
-import { Controles } from "../../types";
+import { AfeccionesCultivo, Controles, TipoControl } from "../../types";
 
 interface CrearControlModalProps {
   onClose: () => void;
-  onCreate: (nuevocontrol : Controles) => void
+  onCreate: (nuevoControl: Controles) => void;
 }
 
-export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) => {
-  const [fechaControl, setFechaControl] = useState("");
+export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps) => {
+  //const [fechaControl, setFechaControl] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Afeccion, setFk_Afeccion] = useState<number | null>(null);
   const [fk_TipoControl, setFk_TipoControl] = useState<number | null>(null);
@@ -31,18 +31,18 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
   const [mostrarModalAfeccionCultivo, setMostrarModalAfeccionCultivo] = useState(false);
 
   const handleSubmit = () => {
-    if (!fechaControl || !descripcion || !fk_Afeccion || !fk_TipoControl || !fk_Usuario) {
+    if ( !descripcion || !fk_Afeccion || !fk_TipoControl || !fk_Usuario) {
       console.log("Faltan campos obligatorios.");
       return;
     }
 
     mutate(
-      { id: 0, fechaControl, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
+      { id: 0, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
       {
         onSuccess: (data) => {
           onClose();
-          onCreate(data)
-          setFechaControl("");
+          onCreate(data);
+          //setFechaControl("");
           setDescripcion("");
           setFk_Afeccion(null);
           setFk_TipoControl(null);
@@ -66,7 +66,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
             onClick: handleSubmit,
           },
         ]}
-      >
+      >{/*
         <Input
           label="Fecha del Control"
           type="date"
@@ -74,7 +74,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
           onChange={(e) => setFechaControl(e.target.value)}
           required
         />
-
+*/}
         <Input
           label="Descripción"
           type="text"
@@ -127,7 +127,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
               selectedKeys={fk_TipoControl ? [fk_TipoControl.toString()] : []}
               onSelectionChange={(keys) => setFk_TipoControl(Number(Array.from(keys)[0]))}
             >
-              {(tiposControl || []).map((tc) => (
+              {(tiposControl || []).map((tc: TipoControl) => (
                 <SelectItem key={tc.id.toString()}>{tc.nombre}</SelectItem>
               ))}
             </Select>
@@ -153,7 +153,7 @@ export const CrearControlModal = ({ onClose,onCreate }: CrearControlModalProps) 
       {mostrarModalAfeccionCultivo && (
         <CrearAfeccionCultivoModal
           onClose={() => setMostrarModalAfeccionCultivo(false)}
-          onCreate={(nuevaAfeccion) => {
+          onCreate={(nuevaAfeccion: AfeccionesCultivo) => {
             setFk_Afeccion(nuevaAfeccion.id);
           }}
         />

@@ -26,7 +26,7 @@ export const usePostInsumo = () => {
       addToast({
         title: 'Error al crear el insumo',
         description: 'No fue posible registrar un nuevo insumo',
-        color: 'success'
+        color: 'danger'
       })
     },
   });

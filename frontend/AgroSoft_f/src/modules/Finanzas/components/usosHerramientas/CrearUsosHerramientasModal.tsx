@@ -18,6 +18,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
   const [unidades, setUnidades] = useState<number | null>(null)
+  const [error,setError] = useState("")
 
   const [herramientaModal, setHerramientaModal] = useState(false)
   const [actividadModal, setActividadModal] = useState(false)
@@ -28,9 +29,10 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
   const handleSubmit = () => {
     if (!fk_Herramienta || !fk_Actividad || !unidades) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
 
     mutate(
       { fk_Herramienta, fk_Actividad, unidades },
@@ -40,6 +42,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
           setFk_Herramienta(null);
           setFk_Actividad(null);
           setUnidades(null)
+          setError("")
         },
       }
     );
@@ -70,6 +73,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
           },
         ]}
       >
+        <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Cantidad Usada"
           type="number"

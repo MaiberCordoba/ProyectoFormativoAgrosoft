@@ -15,14 +15,16 @@ export const CrearUnidadesTiempoModal = ({
 }: CrearUnidadesTiempoModalProps) => {
   const [nombre, setNombre] = useState("");
   const [equivalenciaMinutos, setEquivalenciaMinutos] = useState(0);
+  const [error,setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesTiempo();
 
   const handleSubmit = () => {
     if (!nombre  || !equivalenciaMinutos) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    setError("")
     mutate(
       { id:0,nombre, equivalenciaMinutos },
       {
@@ -30,6 +32,7 @@ export const CrearUnidadesTiempoModal = ({
           onClose();
           setNombre("");
           setEquivalenciaMinutos(0);
+          setError("")
         },
       }
     );
@@ -49,6 +52,7 @@ export const CrearUnidadesTiempoModal = ({
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input label="Nombre" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
       <Input label="equivalenciaMinutos" type="number" value={equivalenciaMinutos.toString()} onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))} required />
     </ModalComponent>

@@ -26,6 +26,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
   const [fk_Control, setFk_Control] = useState<number | null>(null);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [cantidadProducto, setCantidadProducto] = useState<number | null>(null);
+  const [error,setError] = useState("")
 
   const [insumoModal, setInsumoModal] = useState(false);
   const [actividadModal, setActividadModal] = useState(false);
@@ -45,10 +46,14 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
       !fk_UnidadMedida ||
       cantidadProducto === null
     ) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
-
+    if (fk_Actividad && fk_Control) {
+      setError("Solo puede elegir una actividad o un control,pero no ambos.")
+      return
+    }
+    setError("")
     mutate(
       {
         id: 0,
@@ -66,6 +71,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
           setFk_Control(null);
           setFk_UnidadMedida(null);
           setCantidadProducto(null);
+          setError("")
         },
       }
     );
@@ -107,9 +113,8 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
             onClick: handleSubmit,
           },
         ]}
-        
       >
-        <p><strong>No elegir una actividad y un control a la vez</strong></p>
+        <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Cantidad Usada"
           type="number"

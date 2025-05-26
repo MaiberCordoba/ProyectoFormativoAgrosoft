@@ -1,3 +1,4 @@
+// types.ts
 export interface TiposEspecie {
   id: number;
   nombre: string;
@@ -36,36 +37,42 @@ export interface Lotes {
   id: number;
   nombre: string;
   descripcion: string;
-  latI1: number | null;
-  longI1: number | null;
-  latS1: number | null;
-  longS1: number | null;
-  latI2: number | null;
-  longI2: number | null;
-  latS2: number | null;
-  longS2: number | null;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
   estado: boolean | null;
 }
 
 export interface Eras {
   id: number;
   tipo: string;
-  fk_lote: Lotes ;
-  latI1: number | null;
-  longI1: number | null;
-  latS1: number | null;
-  longS1: number | null;
-  latI2: number | null;
-  longI2: number | null;
-  latS2: number | null;
-  longS2: number | null;
+  fk_lote: Lotes;
+  latI1: number;
+  longI1: number;
+  latS1: number;
+  longS1: number;
+  latI2: number;
+  longI2: number;
+  latS2: number;
+  longS2: number;
 }
 
 export interface Plantaciones {
   id: number;
-  fk_Cultivo: { nombre: string };
-  fk_semillero: { unidades: number; fechasiembra: string };
-  fk_Era: { id: number };
+  semillero: Semillero | null;
+  cultivo: Cultivo;
+  eras: Eras;
+  unidades: number;
+  fechaSiembra: string;
+  creado: string;
+  fk_semillero: number | null;
+  fk_Cultivo: number;
+  fk_Era: number;
 }
 
 
@@ -77,5 +84,6 @@ export interface PlantacionCreate {
   fechaSiembra: string;
 }
 
-
-
+export interface MapComponentProps {
+  filtroEspecie?: string;
+}

@@ -11,13 +11,16 @@ interface CrearTipoActividadModalProps {
 
 export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProps) => {
   const [nombre, setNombre] = useState("");
+  const [error,setError] = useState("")
+
   const { mutate, isPending } = usePostTipoActividad();
 
   const handleSubmit = () => {
     if (!nombre) {
-      console.log("Por favor, completa el campo de nombre.");
+      setError("Por favor, completa el campo de nombre.");
       return;
     }
+    setError("")
 
     mutate(
       { id:0, nombre },
@@ -25,6 +28,7 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
         onSuccess: () => {
           onClose();
           setNombre("");
+          setError("")
         },
       }
     );
@@ -44,6 +48,7 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Nombre del Tipo de Actividad"
         type="text"

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "apps.sanidad",
     "apps.trazabilidad",
     "apps.users",
+    "apps.notificaciones",
     'rest_framework_simplejwt.token_blacklist'
 ]
 
@@ -120,7 +121,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'AgroSisDjango',
         'USER': 'postgres',
-        'PASSWORD': '1234',
+        'PASSWORD': 'adso2024',
         'HOST': 'localhost',
         'PORT': '5432',
     }

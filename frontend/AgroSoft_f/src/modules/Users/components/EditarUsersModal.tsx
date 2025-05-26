@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import ModalComponent from '@/components/Modal';
+import React, { useState } from "react";
+import ModalComponent from "@/components/Modal";
 
-import { Input, Checkbox } from '@heroui/react';
-import { User } from '../types';
-import { usePatchUsers } from '../hooks/usePatchUsers';
+import { Input, Checkbox } from "@heroui/react";
+import { User } from "../types";
+import { usePatchUsers } from "../hooks/usePatchUsers";
 
 interface EditarUserModalProps {
   user: User; // El usuario que se está editando
@@ -19,22 +19,25 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     telefono: user.telefono,
     correoElectronico: user.correoElectronico,
     estado: user.estado,
-    admin: user.admin
+    admin: user.admin,
   });
 
   const { mutate, isPending } = usePatchUsers();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof typeof userData) => {
-    setUserData(prev => ({
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof typeof userData
+  ) => {
+    setUserData((prev) => ({
       ...prev,
-      [field]: e.target.value
+      [field]: e.target.value,
     }));
   };
 
   const handleAdminChange = (isChecked: boolean) => {
-    setUserData(prev => ({
+    setUserData((prev) => ({
       ...prev,
-      admin: isChecked
+      admin: isChecked,
     }));
   };
 
@@ -44,8 +47,8 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
         id: user.id,
         data: {
           ...userData,
-          identificacion: Number(userData.identificacion)
-        }
+          identificacion: Number(userData.identificacion),
+        },
       },
       {
         onSuccess: () => {
@@ -62,9 +65,9 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
       title="Editar Usuario"
       footerButtons={[
         {
-          label: isPending ? 'Guardando...' : 'Guardar',
-          color: 'success',
-          variant: 'light',
+          label: isPending ? "Guardando..." : "Guardar",
+          color: "success",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}
@@ -74,7 +77,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           label="Identificación"
           type="number"
           value={userData.identificacion}
-          onChange={(e) => handleInputChange(e, 'identificacion')}
+          onChange={(e) => handleInputChange(e, "identificacion")}
           required
         />
 
@@ -82,7 +85,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           label="Nombre"
           type="text"
           value={userData.nombre}
-          onChange={(e) => handleInputChange(e, 'nombre')}
+          onChange={(e) => handleInputChange(e, "nombre")}
           required
         />
 
@@ -90,28 +93,28 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           label="Apellidos"
           type="text"
           value={userData.apellidos}
-          onChange={(e) => handleInputChange(e, 'apellidos')}
+          onChange={(e) => handleInputChange(e, "apellidos")}
         />
 
         <Input
           label="Fecha de Nacimiento"
           type="date"
           value={userData.fechaNacimiento}
-          onChange={(e) => handleInputChange(e, 'fechaNacimiento')}
+          onChange={(e) => handleInputChange(e, "fechaNacimiento")}
         />
 
         <Input
           label="Teléfono"
           type="tel"
           value={userData.telefono}
-          onChange={(e) => handleInputChange(e, 'telefono')}
+          onChange={(e) => handleInputChange(e, "telefono")}
         />
 
         <Input
           label="Correo Electrónico"
           type="email"
           value={userData.correoElectronico}
-          onChange={(e) => handleInputChange(e, 'correoElectronico')}
+          onChange={(e) => handleInputChange(e, "correoElectronico")}
           required
         />
 
@@ -119,7 +122,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           label="estado"
           type="text"
           value={userData.estado}
-          onChange={(e) => handleInputChange(e, 'estado')}
+          onChange={(e) => handleInputChange(e, "estado")}
           required
         />
 

@@ -14,7 +14,7 @@ interface EditarControlModalProps {
 }
 
 const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClose }) => {
-  const [fechaControl, setFechaControl] = useState(control.fechaControl);
+  //const [fechaControl, setFechaControl] = useState(control.fechaControl);
   const [descripcion, setDescripcion] = useState(control.descripcion);
   const [fk_Afeccion, setFk_Afeccion] = useState<number>(control.fk_Afeccion || 0);
   const [fk_TipoControl, setFk_TipoControl] = useState<number>(control.fk_TipoControl || 0);
@@ -29,7 +29,7 @@ const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClos
     mutate(
       {
         id: control.id,
-        data: { fechaControl, descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
+        data: {  descripcion, fk_Afeccion, fk_TipoControl, fk_Usuario },
       },
       { onSuccess: onClose }
     );
@@ -41,8 +41,8 @@ const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClos
       onClose={onClose}
       title="Editar Control"
       footerButtons={[{ label: isPending ? "Guardando..." : "Guardar", onClick: handleSubmit }]}
-    >
-      <Input label="Fecha" type="date" value={fechaControl} onChange={(e) => setFechaControl(e.target.value)} />
+    >{/*
+      <Input label="Fecha" type="date" value={fechaControl} onChange={(e) => setFechaControl(e.target.value)} />*/}
       <Textarea label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
 
       <Select

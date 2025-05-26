@@ -26,7 +26,7 @@ export const usePostCosecha = () => {
       addToast({
         title: 'Error al crear la cosecha',
         description: 'No fue posible registrar nueva cosecha',
-        color: 'success'
+        color: 'danger'
       })
     },
   });

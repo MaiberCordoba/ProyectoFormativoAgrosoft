@@ -7,7 +7,7 @@ from .models import Usuario
 from .serializers import UsuarioSerializer
 import pandas as pd
 from rest_framework.parsers import MultiPartParser
-from rest_framework.views import APIView 
+from rest_framework.views import APIView
 
 
 class UsuarioViewSet(ModelViewSet):
@@ -15,15 +15,29 @@ class UsuarioViewSet(ModelViewSet):
     serializer_class = UsuarioSerializer
 
     def get_permissions(self):
-        if self.request.method == "POST":  
+        if self.request.method == "POST":
             return [AllowAny()]  # Permite a cualquier usuario registrarse
-        return [IsAuthenticated()]  
+        return [IsAuthenticated()]
 
     @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
     def me(self, request):
         """Devuelve la información del usuario autenticado"""
         serializer = UsuarioSerializer(request.user)
         return Response(serializer.data)
+
+    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated], url_path='reporte')
+    def reporte_usuarios(self, request):
+        """Devuelve un resumen del total de usuarios, activos e inactivos"""
+        total = Usuario.objects.count()
+        activos = Usuario.objects.filter(estado='activo').count()
+        inactivos = Usuario.objects.filter(estado='inactivo').count()
+
+        return Response({
+            'total_usuarios': total,
+            'usuarios_activos': activos,
+            'usuarios_inactivos': inactivos
+        })
+
 
 class RegistroMasivoUsuariosView(APIView):
     parser_classes = [MultiPartParser]
@@ -44,7 +58,7 @@ class RegistroMasivoUsuariosView(APIView):
 
         errores = []
         for index, row in df.iterrows():
-            fila = index + 2  
+            fila = index + 2  # Para tener en cuenta el encabezado
 
             campos_requeridos = ['nombre', 'apellido', 'email', 'username', 'password']
             faltantes = [campo for campo in campos_requeridos if not row.get(campo)]
@@ -54,7 +68,7 @@ class RegistroMasivoUsuariosView(APIView):
                     'fila': fila,
                     'errores': f"Campos vacíos: {', '.join(faltantes)}"
                 })
-                continue  # saltamos al siguiente
+                continue
 
             data = {
                 'nombre': row.get('nombre'),
@@ -71,7 +85,9 @@ class RegistroMasivoUsuariosView(APIView):
                 errores.append({'fila': fila, 'errores': serializer.errors})
 
         if errores:
-            return Response({'mensaje': 'Algunos usuarios no se pudieron registrar.', 'errores': errores}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'mensaje': 'Todos los usuarios se registraron exitosamente.'}, status=status.HTTP_201_CREATED)
-       
+            return Response({
+                'mensaje': 'Algunos usuarios no se pudieron registrar.',
+                'errores': errores
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'mensaje': 'Todos los usuarios se registraron exitosamente.'}, status=status.HTTP_201_CREATED)

@@ -17,9 +17,9 @@ interface CrearVentasModalProps {
 export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
   const [precioUnitario, setPrecioUnitario] = useState<number | null>(null);
-  const [fecha, setFecha] = useState("");
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [cantidad, setCantidad] = useState<number>(0);
+  const [cantidad, setCantidad] = useState<number | null>(null);
+  const [error,setError] = useState("")
 
   const [CosechaModal, setCosechaModal] = useState(false);
   const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
@@ -29,21 +29,36 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const { mutate, isPending } = usePostVentas();
 
   const handleSubmit = () => {
-    if (!fk_Cosecha || !precioUnitario || !fecha || !fk_UnidadMedida || !cantidad) {
-      console.log("Por favor, completa todos los campos.");
+    if (!fk_Cosecha || !precioUnitario || !fk_UnidadMedida || !cantidad) {
+      setError("Por favor, completa todos los campos.");
+      return;
+    }
+    const cosechaSeleccionada = cosechas?.find(c => c.id === fk_Cosecha);
+    const unidadSeleccionada = unidadesMedida?.find(u => u.id === fk_UnidadMedida);
+
+    if (!cosechaSeleccionada || !unidadSeleccionada) {
+      setError("Cosecha o unidad de medida no válidas.");
       return;
     }
 
+    const cantidadEnBase = cantidad * unidadSeleccionada.equivalenciabase;
+
+    if (cantidadEnBase > cosechaSeleccionada.cantidadTotal) {
+      setError(`La cantidad ingresada excede la cantidad disponible.`);
+      return;
+    }
+    setError("")
+
     mutate(
-      { fk_Cosecha, precioUnitario, fecha, fk_UnidadMedida, cantidad },
+      { fk_Cosecha, precioUnitario,fk_UnidadMedida, cantidad },
       {
         onSuccess: () => {
           onClose();
           setFk_Cosecha(null);
           setPrecioUnitario(0);
-          setFecha("");
           setFk_UnidadMedida(null);
-          setCantidad(0);
+          setCantidad(null);
+          setError("")
         },
       }
     );
@@ -73,6 +88,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           },
         ]}
       >
+        <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Precio Unitario"
           type="number"
@@ -85,14 +101,6 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           type="number"
           value={cantidad}
           onChange={(e) => setCantidad(Number(e.target.value))}
-          required
-        />
-
-        <Input
-          label="Fecha de venta"
-          type="date"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
           required
         />
 

@@ -25,8 +25,18 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
   const { mutate, isPending } = usePostLotes();
 
   const handleSubmit = () => {
+    const campos = [latI1, longI1, latS1, longS1, latI2, longI2, latS2, longS2];
+    const camposInvalidos = campos.some((val) => val === null || isNaN(val));
+
     if (!nombre) {
       console.log("El nombre es obligatorio.");
+      return;
+    }
+
+    if (camposInvalidos) {
+      console.log(
+        "Todos los campos de coordenadas deben tener valores válidos."
+      );
       return;
     }
 
@@ -69,7 +79,9 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
     value: string,
     setter: React.Dispatch<React.SetStateAction<number | null>>
   ) => {
-    setter(value === "" ? null : Number(value));
+    const normalized = value.replace(",", "."); // permite usar coma como decimal
+    const parsed = Number(normalized);
+    setter(normalized === "" || isNaN(parsed) ? null : parsed);
   };
 
   return (
@@ -104,52 +116,60 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
       <div className="grid grid-cols-2 gap-2 mt-2">
         <Input
           label="Lat. Inf. Izquierda"
-          type="number"
+          type="text"
+          inputMode="decimal"
           value={latI1 !== null ? latI1.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLatI1)}
         />
         <Input
-          label="Long. Inf. Izquierda"
-          type="number"
+          label="Lon. Inf. Izquierda"
+          type="text"
+          inputMode="decimal"
           value={longI1 !== null ? longI1.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLongI1)}
         />
 
         <Input
           label="Lat. Sup. Izquierda"
-          type="number"
+          type="text"
+          inputMode="decimal"
           value={latS1 !== null ? latS1.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLatS1)}
         />
         <Input
-          label="Long. Sup. Izquierda"
-          type="number"
+          label="Lon. Sup.Izquierda"
+          type="text"
+          inputMode="decimal"
           value={longS1 !== null ? longS1.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLongS1)}
         />
 
         <Input
           label="Lat. Inf. Derecha"
-          type="number"
+          type="text"
+          inputMode="decimal"
           value={latI2 !== null ? latI2.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLatI2)}
         />
         <Input
-          label="Long. Inf. Derecha"
-          type="number"
+          label="Lon. Inf. Derecha"
+          type="text"
+          inputMode="decimal"
           value={longI2 !== null ? longI2.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLongI2)}
         />
 
         <Input
           label="Lat. Sup. Derecha"
-          type="number"
+          type="text"
+          inputMode="decimal"
           value={latS2 !== null ? latS2.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLatS2)}
         />
         <Input
-          label="Long. Sup. Derecha"
-          type="number"
+          label="Lon. Sup. Derecha"
+          type="text"
+          inputMode="decimal"
           value={longS2 !== null ? longS2.toString() : ""}
           onChange={(e) => handleNumberInput(e.target.value, setLongS2)}
         />

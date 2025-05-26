@@ -30,6 +30,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
   const [unidadTiempoModal, setUnidadTiempoModal] = useState(false)
   const [controlModal, setControlModal] = useState(false)
   const [salarioModal, setSalarioModal] = useState(false)
+  const [error,setError] = useState("")
 
   const { data: actividades, isLoading: isLoadingActividad, refetch: refetchActividad } = useGetActividades();
   const { data: unidadesTiempo, isLoading: isLoadingUnidadTiempo, refetch: refetchUnidadTiempo } = useGetUnidadesTiempo();
@@ -41,20 +42,26 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
     if (
       !tiempo || !fk_unidadTiempo || !fk_salario
     ) {
-      console.log("Por favor, completa todos los campos.");
+      setError("Por favor, completa todos los campos.");
       return;
     }
+    if (fk_control && fk_actividad){
+      setError("Solo puede elegir una actividad o un contro,no ambas.")
+      return
+    }
+    setError("")
 
     mutate(
       {id:0, tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           onClose();
           setTiempo(null);
           setFk_UnidadTiempo(null);
           setFk_Actividad(null);
           setFk_Control(null);
           setFk_Salario(null);
+          setError("")
         },
       }
     );
@@ -95,6 +102,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
           },
         ]}
       >
+        <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Tiempo"
           type="number"

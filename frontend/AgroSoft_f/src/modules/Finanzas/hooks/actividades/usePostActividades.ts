@@ -26,7 +26,7 @@ export const usePostActividades = () => {
       addToast({
         title: 'Error al crear la actividad',
         description: 'No fue posible  registrar nueva actividad',
-        color: 'success'
+        color: 'danger'
       })
     },
   });

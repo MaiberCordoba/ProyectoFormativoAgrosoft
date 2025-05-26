@@ -69,7 +69,7 @@ export function TiempoActividadControlList() {
         return <span>{actividad ? actividad.titulo : "No Aplica"}</span>;
       case "control":
         const control = controles?.find((c) => c.id === item.fk_control);
-        return <span>{control ? control.fechaControl : "No Aplica"}</span>;
+        return <span>{control ? control.descripcion : "No Aplica"}</span>;
       case "salario":
         const salario = salarios?.find((s) => s.id === item.fk_salario);
         return <span>{salario ? salario.nombre : "No definido"}</span>;

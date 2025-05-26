@@ -26,7 +26,7 @@ export const usePostDesecho = () => {
       addToast({
         title: 'Error al crear el desecho',
         description: 'No fue posible registrar nuevo desecho',
-        color: 'success'
+        color: 'danger'
       })
     },
   });
