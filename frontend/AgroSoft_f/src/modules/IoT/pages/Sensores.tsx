@@ -200,17 +200,23 @@ export default function IoTPages() {
     <div className="col-span-full">
       <style>{`
         @keyframes auto-scroll {
-          0% { transform: translateX(0%); }
-          100% { transform: translateX(-100%); }
+          0% { transform: translateX(0); }
+          100% { transform: translateX(calc(-50% - 60px)); }
         }
         .auto-scroll-container {
-          animation: auto-scroll 120s linear infinite;
+          animation: auto-scroll 30s linear infinite;
+          display: flex;
           width: max-content;
+        }
+        .auto-scroll-content {
+          display: flex;
+          gap: 120px; /* Espacio entre elementos duplicados */
         }
         .auto-scroll-container:hover {
           animation-play-state: paused;
         }
       `}</style>
+
 
       {/* Sección de Filtros y Búsqueda */}
       <br /><br />

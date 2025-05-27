@@ -18,7 +18,19 @@ interface Props {
 
 export default function EvapotranspiracionCard({ etReal, kc, detalles }: Props) {
   return (
-    <div className="bg-white/80 rounded-2xl shadow-md p-6 w-full max-w-md flex flex-col justify-between">
+    <div
+      className="rounded-2xl shadow-md w-full max-w-md flex flex-col justify-between mx-auto"
+      style={{
+      background: 'rgba(224, 242, 254, 0.35)', // azul mucho más suave y transparente
+      borderRadius: '0.75rem',
+      boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
+      border: '1px solid #bbf7d0',
+      color: '#166534',
+      fontWeight: 500,
+      fontSize: 14,
+      padding: 24,
+      }}
+    >
       <div>
         <div className="flex justify-between items-start">
           <h3 className="text-lg font-semibold text-center text-green-800 mb-4">

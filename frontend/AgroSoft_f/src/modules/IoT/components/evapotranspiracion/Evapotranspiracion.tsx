@@ -95,9 +95,21 @@ export default function EvapotranspiracionC() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-6xl mx-auto p-4 space-y-8">
         {!evapotranspiracion && (
-            <div className="bg-white/800 rounded-xl shadow-lg p-6 max-w-md mx-auto">
+            <div
+              className="max-w-xl mx-auto"
+              style={{
+              background: '#f0fdf4',
+              borderRadius: '0.75rem',
+              boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
+              border: '1px solid #bbf7d0',
+              color: '#166534',
+              fontWeight: 500,
+              fontSize: 14,
+              padding: 24,
+              }}
+            >
             <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center justify-center gap-2 text-center">
-              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#2ECC71" }}/>
+              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#166534" }}/>
               Calculadora de Evapotranspiración
             </h2>
             
@@ -125,29 +137,29 @@ export default function EvapotranspiracionC() {
               </Select>
 
               <Input
-                label="Coeficiente de Cultivo (Kc - Opcional)"
-                placeholder="Dejar vacío para cálculo automático"
-                type="number"
-                min="0"
-                step="0.01"
-                value={kcValue}
-                onChange={(e) => setKcValue(e.target.value)}
-                description="Valor numérico que representa el coeficiente del cultivo"
-                className="w-full"
+              label="Coeficiente de Cultivo (Kc - Opcional)"
+              placeholder="Dejar vacío para cálculo automático"
+              type="number"
+              min="0"
+              step="0.01"
+              value={kcValue}
+              onChange={(e) => setKcValue(e.target.value)}
+              description="Valor numérico que representa el coeficiente del cultivo"
+              className="w-full"
               />
 
               <div className="flex justify-end gap-4">
-                <Button 
-                  color="success" 
-                  onClick={calcularEvapotranspiracion}
-                  disabled={!selectedPlantacion}
-                  className="w-full sm:w-auto"
-                >
-                  Calcular
-                </Button>
+              <Button 
+                color="success" 
+                onClick={calcularEvapotranspiracion}
+                disabled={!selectedPlantacion}
+                className="w-full sm:w-auto"
+              >
+                Calcular
+              </Button>
               </div>
             </div>
-          </div>
+            </div>
         )}
 
         {evapotranspiracion && (
@@ -165,36 +177,49 @@ export default function EvapotranspiracionC() {
                 <h2 className="text-2xl font-bold text-blue-800 text-center">
                 <strong>Evapotranspiración (ETc)</strong>
                 </h2>
+                
               <div className="w-10"/>
             </div>
-
+            <br/>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="flex flex-col gap-4">
-              <div className="bg-white/80 rounded-2xl shadow-md p-6 w-full max-w-md flex flex-col justify-between">
+                <div
+                  className="rounded-2xl shadow-md w-full max-w-md flex flex-col justify-between mx-auto"
+                  style={{
+                  background: 'rgba(224, 242, 254, 0.35)', // azul mucho más suave y transparente
+                  borderRadius: '0.75rem',
+                  boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
+                  border: '1px solid #bbf7d0',
+                  color: '#166534',
+                  fontWeight: 500,
+                  fontSize: 14,
+                  padding: 24,
+                  }}
+                >
                 <h3 className="text-base font-semibold text-black mb-3 flex items-center gap-2">
                   <Sprout className="text-green-700" size={20} style={{ color: "#2ECC71" }} />
-                    Detalles de la Plantación
+                  Detalles de la Plantación
                 </h3>
                 <br/>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Cultivo:</span>
-                    <span className="text-black">{evapotranspiracion.detalles.cultivo}</span>
+                  <span className="font-medium text-black">Cultivo:</span>
+                  <span className="text-black">{evapotranspiracion.detalles.cultivo}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Lote:</span>
-                    <span className="text-black">{evapotranspiracion.detalles.lote}</span>
+                  <span className="font-medium text-black">Lote:</span>
+                  <span className="text-black">{evapotranspiracion.detalles.lote}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Fecha Siembra:</span>
-                    <span className="text-black">{new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</span>
+                  <span className="font-medium text-black">Fecha Siembra:</span>
+                  <span className="text-black">{new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Días desde siembra:</span>
-                    <span className="text-black">{evapotranspiracion.detalles.dias_siembra}</span>
+                  <span className="font-medium text-black">Días desde siembra:</span>
+                  <span className="text-black">{evapotranspiracion.detalles.dias_siembra}</span>
                   </div>
                 </div>
-              </div>
+                </div>
 
                 <EvapotranspiracionCard
                   etReal={evapotranspiracion.evapotranspiracion_mm_dia}
