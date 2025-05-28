@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
-import { Sprout, Calculator, ArrowLeft } from "lucide-react";
+import { Sprout, Calculator, ArrowLeft, Droplet } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import EvapotranspiracionCard from "./EvapotranspiracionCard";
 import EvapotranspiracionChart from "./EvapotranspiracionChart";
@@ -131,7 +131,7 @@ export default function EvapotranspiracionC() {
                 <SelectItem 
                 key={String(plantacion.id)} 
                 >
-                {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Lote ${plantacion.fk_Era|| 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+                {`Cultivo ${plantacion.fk_Cultivo?.nombre || 'N/D'}, Lote ${plantacion.fk_Era?.fk_lote?.nombre || 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
                 </SelectItem>
               ))}
               </Select>
@@ -186,7 +186,7 @@ export default function EvapotranspiracionC() {
                 <div
                   className="rounded-2xl shadow-md w-full max-w-md flex flex-col justify-between mx-auto"
                   style={{
-                  background: 'rgba(224, 242, 254, 0.35)', // azul mucho más suave y transparente
+                  background: 'rgba(224, 242, 254, 0.35)', 
                   borderRadius: '0.75rem',
                   boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
                   border: '1px solid #bbf7d0',
@@ -218,6 +218,37 @@ export default function EvapotranspiracionC() {
                   <span className="font-medium text-black">Días desde siembra:</span>
                   <span className="text-black">{evapotranspiracion.detalles.dias_siembra}</span>
                   </div>
+                  
+                  {evapotranspiracion.sensor_data.humedad_suelo && (
+                    <div className="pt-3 mt-3 border-t">
+                      <div className="flex justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <Droplet className="text-purple-600" size={18} />
+                          <span className="font-medium text-black">Humedad del Suelo:</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-black">
+                            {evapotranspiracion.sensor_data.humedad_suelo}%
+                          </span>
+                          {evapotranspiracion.alerta_humedad && (
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              evapotranspiracion.alerta_humedad.tipo === 'peligro' 
+                                ? 'bg-red-100 text-red-800' 
+                                : evapotranspiracion.alerta_humedad.tipo === 'advertencia' 
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-green-100 text-green-800'
+                            }`}>
+                              {evapotranspiracion.alerta_humedad.tipo === 'peligro' 
+                                ? 'Crítica' 
+                                : evapotranspiracion.alerta_humedad.tipo === 'advertencia' 
+                                  ? 'Alta'
+                                  : 'Óptima'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 </div>
 
@@ -228,8 +259,10 @@ export default function EvapotranspiracionC() {
                     temperatura: evapotranspiracion.sensor_data.temperatura,
                     viento: evapotranspiracion.sensor_data.viento,
                     iluminacion: evapotranspiracion.sensor_data.iluminacion,
-                    humedad_ambiente: evapotranspiracion.sensor_data.humedad
+                    humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                    humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo
                   }}
+                  estadoHumedad={evapotranspiracion.alerta_humedad?.tipo}
                 />
               </div>
               <div className="p-8 rounded-xl">
@@ -242,8 +275,10 @@ export default function EvapotranspiracionC() {
                     et_mm_dia: evapotranspiracion.evapotranspiracion_mm_dia,
                     kc: evapotranspiracion.kc,
                     temperatura: evapotranspiracion.sensor_data.temperatura,
-                    humedad: evapotranspiracion.sensor_data.humedad,
-                    dias_desde_siembra: evapotranspiracion.detalles.dias_desde_siembra
+                    humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                    humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo,
+                    estado_humedad: evapotranspiracion.alerta_humedad?.tipo,
+                    dias_desde_siembra: evapotranspiracion.detalles.dias_siembra
                   }}
                   showAdditionalInfo={true}
                 />
