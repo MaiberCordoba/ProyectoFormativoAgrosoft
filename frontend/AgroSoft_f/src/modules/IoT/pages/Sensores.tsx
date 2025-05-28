@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Select, SelectItem} from "@heroui/react";
+import { Select, SelectItem, Input } from "@heroui/react";
 import {
   WiStrongWind,
   WiThermometer,
@@ -14,6 +14,7 @@ import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import { addToast } from "@heroui/toast";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import '../components/css/card.css'
 
 
 type SensorData = {
@@ -68,13 +69,11 @@ export default function IoTPages() {
   });
   const [sensorAverages, setSensorAverages] = useState<Record<string, any>>({});
   const [loadingAverages, setLoadingAverages] = useState(false);
-  const [searchId] = useState("");
+  const [searchId, setSearchId] = useState("");
   const [showSensorList, setShowSensorList] = useState<boolean>(false);
 
-  // Cargar datos iniciales
   useEffect(() => {
 
-  // Mantener fetches de lotes y eras para los filtros
   fetch('http://127.0.0.1:8000/api/lote/')
     .then(res => res.json())
     .then(data => setLotes(data));
@@ -84,7 +83,6 @@ export default function IoTPages() {
     .then(data => setEras(data));
 }, []);
 
-  // Cargar promedios de sensores
   const fetchSensorAverages = async () => {
     setLoadingAverages(true);
     try {
@@ -180,7 +178,6 @@ export default function IoTPages() {
     fetchSensorAverages();
   }, []);
 
-  // Configuración de WebSockets...
   const sensoresList = [
     { id: "viento", tipo: "VIE", title: "Viento", icon: <WiStrongWind size={32} style={{ color: "#5DADE2" }} /> },
     { id: "temperatura", tipo: "TEM", title: "Temperatura", icon: <WiThermometer size={32} style={{ color: "#E74C3C" }} /> },
@@ -198,27 +195,6 @@ export default function IoTPages() {
   return (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-6 justify-center items-center w-full max-w-6xl mx-auto">
     <div className="col-span-full">
-      <style>{`
-        @keyframes auto-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(calc(-50% - 60px)); }
-        }
-        .auto-scroll-container {
-          animation: auto-scroll 30s linear infinite;
-          display: flex;
-          width: max-content;
-        }
-        .auto-scroll-content {
-          display: flex;
-          gap: 120px; /* Espacio entre elementos duplicados */
-        }
-        .auto-scroll-container:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
-
-
-      {/* Sección de Filtros y Búsqueda */}
       <br /><br />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full max-w-6xl mx-auto px-4 mb-4 gap-4">
         <h2 className="text-2xl font-bold text-blue-800 text-center md:text-left w-full md:w-auto">
@@ -226,7 +202,6 @@ export default function IoTPages() {
         </h2>
 
       </div><br />
-      {/* Selectores de Filtros Compactos */}
       <div className="col-span-full flex flex-row gap-4 w-full max-w-3xl mx-auto px-4 items-center justify-center">
         <Select
           label=""
@@ -282,10 +257,16 @@ export default function IoTPages() {
           <SelectItem key="720" className="text-base">1 mes</SelectItem>
           <SelectItem key="4320" className="text-base">1 año</SelectItem>
         </Select>
+
+        <Input
+          placeholder="Buscar Sensor"
+          value={searchId}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchId(e.target.value)}
+          size="sm"
+        />
       </div>
       <br />
 
-      {/* Contenedor de Tarjetas con Desplazamiento Automático */}
       <div className="overflow-x-hidden w-full mt-4 relative">
         <div className="auto-scroll-container flex gap-4 pb-4 px-4">
           {[...sensoresFiltrados, ...sensoresFiltrados].map((sensor, index) => {
@@ -326,7 +307,6 @@ export default function IoTPages() {
       </div>
     </div>
           <br /><br />
-    {/* Lista de Sensores Desplegable */}
     <div className="col-span-full mt-6 flex flex-col items-center">
       <button
         className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"

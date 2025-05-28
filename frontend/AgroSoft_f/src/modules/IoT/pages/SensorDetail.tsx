@@ -60,14 +60,12 @@ const SENSOR_UNITS: Record<string, string> = {
 const LOTES_ONLY = ["TEM", "LUM", "HUM_A", "VIE", "LLUVIA"];
 const ERAS_ONLY = ["HUM_T", "PH"];
 
-// Función auxiliar para crear un diccionario
 function dict(sensorTypes: {key: string, label: string}[]): Map<string, string> {
   const map = new Map();
   sensorTypes.forEach(type => map.set(type.key, type.label));
   return map;
 }
 
-// Formateadores
 const formatDateTimeForDisplay = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleString('es-ES', {
@@ -97,62 +95,14 @@ export default function AllSensorsDashboard() {
   });
   const [realTimeData, setRealTimeData] = useState<SensorConExtras[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]); // Cambiado a array para múltiples selecciones
   const [selectedSensors, setSelectedSensors] = useState<string[]>([]);
   const [selectedLotes, setSelectedLotes] = useState<number[]>([]);
   const [selectedEras, setSelectedEras] = useState<number[]>([]);
   const [availableLotes, setAvailableLotes] = useState<{id: number, nombre: string}[]>([]);
   const [availableEras, setAvailableEras] = useState<{id: number, nombre: string, fk_lote_id: number}[]>([]);
-  const [showLotesSelect, setShowLotesSelect] = useState(true);
-  const [showErasSelect, setShowErasSelect] = useState(true);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
-  // Efecto para manejar la visibilidad de los selectores
-  useEffect(() => {
-    if (selectedType === "") {
-      setShowLotesSelect(true);
-      setShowErasSelect(true);
-      return;
-    }
-
-    const hasLoteSensors = LOTES_ONLY.includes(selectedType);
-    const hasEraSensors = ERAS_ONLY.includes(selectedType);
-
-    setShowLotesSelect(hasLoteSensors);
-    setShowErasSelect(hasEraSensors);
-
-    if (!hasLoteSensors) setSelectedLotes([]);
-    if (!hasEraSensors) setSelectedEras([]);
-  }, [selectedType]);
-
-  const checkForAlerts = (sensor: SensorData): boolean => {
-    if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
-      return (
-        sensor.umbral_minimo !== undefined &&
-        sensor.umbral_maximo !== undefined &&
-        (sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo)
-      );
-    }
-    return false;
-  };
-
-  const getLocationName = (sensor: SensorConExtras): string => {
-    if (sensor.fk_lote) {
-      const lote = availableLotes.find(l => l.id === sensor.fk_lote);
-      return lote ? `Lote ${lote.nombre}` : `Lote ID:${sensor.fk_lote}`;
-    }
-    if (sensor.fk_eras) {
-      const era = availableEras.find(e => e.id === sensor.fk_eras);
-      if (era) {
-        const lote = availableLotes.find(l => l.id === era.fk_lote_id);
-        return `Era ${era.id}${lote ? ` (Lote ${lote.nombre})` : ''}`;
-      }
-      return `Era ID:${sensor.fk_eras}`;
-    }
-    return "Sin ubicación";
-  };
-
-  // Carga inicial de datos
   useEffect(() => {
     const fetchInitialData = async () => {
       setIsLoading(true);
@@ -199,7 +149,6 @@ export default function AllSensorsDashboard() {
     fetchInitialData();
   }, []);
 
-  // Persistencia de datos
   useEffect(() => {
     const handleBeforeUnload = () => {
       localStorage.setItem('sensorData', JSON.stringify(allSensorsData));
@@ -209,7 +158,6 @@ export default function AllSensorsDashboard() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [allSensorsData]);
 
-  // WebSocket para datos en tiempo real
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8000/ws/sensor/");
 
@@ -256,29 +204,69 @@ export default function AllSensorsDashboard() {
     };
   }, []);
 
-  // Combinar datos
   const combinedData = useMemo(() => {
     return [...allSensorsData, ...realTimeData];
   }, [allSensorsData, realTimeData]);
 
-  // Filtrar sensores
+  const checkForAlerts = (sensor: SensorData): boolean => {
+    if (sensor.umbral_minimo !== null && sensor.umbral_maximo !== null) {
+      return (
+        sensor.umbral_minimo !== undefined &&
+        sensor.umbral_maximo !== undefined &&
+        (sensor.valor < sensor.umbral_minimo || sensor.valor > sensor.umbral_maximo)
+      );
+    }
+    return false;
+  };
+
+  const getLocationName = (sensor: SensorConExtras): string => {
+    if (sensor.fk_lote) {
+      const lote = availableLotes.find(l => l.id === sensor.fk_lote);
+      return lote ? `Lote ${lote.nombre}` : `Lote ID:${sensor.fk_lote}`;
+    }
+    if (sensor.fk_eras) {
+      const era = availableEras.find(e => e.id === sensor.fk_eras);
+      if (era) {
+        const lote = availableLotes.find(l => l.id === era.fk_lote_id);
+        return `Era ${era.id}${lote ? ` (Lote ${lote.nombre})` : ''}`;
+      }
+      return `Era ID:${sensor.fk_eras}`;
+    }
+    return "Sin ubicación";
+  };
+
   const filteredSensors = useMemo(() => {
     return combinedData.filter(sensor => {
-      const typeMatch = !selectedType || sensor.tipo === selectedType;
-      const sensorMatch = selectedSensors.length === 0 || 
+      const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(sensor.tipo);
+            const sensorMatch = selectedSensors.length === 0 || 
         (sensor.id && selectedSensors.includes(sensor.id.toString()));
-      const loteMatch = selectedLotes.length === 0 || 
-        (sensor.fk_lote && selectedLotes.includes(sensor.fk_lote));
-      const eraMatch = selectedEras.length === 0 || 
-        (sensor.fk_eras && selectedEras.includes(sensor.fk_eras));
-
-      return typeMatch && sensorMatch && (loteMatch || eraMatch);
+      
+      let loteMatch = true;
+      if (selectedLotes.length > 0) {
+        if (LOTES_ONLY.includes(sensor.tipo)) {
+          loteMatch = sensor.fk_lote !== null && sensor.fk_lote !== undefined && selectedLotes.includes(sensor.fk_lote);
+        } else if (ERAS_ONLY.includes(sensor.tipo)) {
+          const era = availableEras.find(e => e.id === sensor.fk_eras);
+          loteMatch = era !== undefined && selectedLotes.includes(era.fk_lote_id);
+        } else {
+          loteMatch = false;
+        }
+      }
+      
+      let eraMatch = true;
+      if (selectedEras.length > 0) {
+        if (ERAS_ONLY.includes(sensor.tipo)) {
+          eraMatch = sensor.fk_eras !== null && sensor.fk_eras !== undefined && selectedEras.includes(sensor.fk_eras);
+        } else {
+          eraMatch = false;
+        }
+      }
+      
+      return typeMatch && sensorMatch && loteMatch && eraMatch;
     });
-  }, [combinedData, selectedType, selectedSensors, selectedLotes, selectedEras]);
+  }, [combinedData, selectedTypes, selectedSensors, selectedLotes, selectedEras, availableEras]);
 
-  // Preparar datos para el gráfico
   const prepareChartData = useMemo(() => {
-    // Agrupar por sensor ID
     const sensorGroups = new Map<string, SensorConExtras[]>();
     
     filteredSensors.forEach(sensor => {
@@ -428,8 +416,10 @@ export default function AllSensorsDashboard() {
       yPosition += 8;
 
       let filtersText = "• Todos los sensores";
-      if (selectedType) {
-        filtersText += `\n• Tipo: ${dict(SENSOR_TYPES).get(selectedType)}`;
+      if (selectedTypes.length > 0) {
+        filtersText += `\n• Tipos: ${selectedTypes.map(type => 
+          dict(SENSOR_TYPES).get(type)
+        ).join(", ")}`;
       }
       if (selectedLotes.length > 0) {
         filtersText += `\n• Lotes: ${selectedLotes.map(id => {
@@ -627,89 +617,85 @@ export default function AllSensorsDashboard() {
         <strong>Todos los Sensores</strong>
       </h1>
 
-      {/* Selectores de Filtros Compactos */}
       <div className="col-span-full flex flex-row gap-4 w-full max-w-3xl mx-auto px-4 items-center justify-center mb-6">
-        {/* Tipo de Sensor */}
         <Select
           label=""
           placeholder="Tipo de sensor"
-          selectedKeys={selectedType ? [selectedType] : []}
+          selectionMode="multiple"
+          selectedKeys={selectedTypes}
           onSelectionChange={(keys) => {
-        const newType = Array.from(keys)[0] as string;
-        setSelectedType(newType);
-        setSelectedSensors([]);
+            setSelectedTypes(Array.from(keys) as string[]);
+            setSelectedSensors([]);
           }}
           size="md"
           className="min-w-[180px] text-base"
         >
           {SENSOR_TYPES.map(type => (
-        <SelectItem key={type.key} className="text-base truncate">
-          {type.label}
-        </SelectItem>
+            <SelectItem key={type.key} className="text-base truncate">
+              {type.label}
+            </SelectItem>
           ))}
         </Select>
 
-        {/* Sensores individuales */}
-        {selectedType && (
+        {selectedTypes.length > 0 && (
           <Select
-        label=""
-        placeholder={`Sensores ${dict(SENSOR_TYPES).get(selectedType)}`}
-        selectionMode="multiple"
-        selectedKeys={selectedSensors}
-        onSelectionChange={(keys) => setSelectedSensors(Array.from(keys) as string[])}
-        size="md"
-        className="min-w-[200px] text-base"
+            label=""
+            placeholder={`Sensores seleccionados`}
+            selectionMode="multiple"
+            selectedKeys={selectedSensors}
+            onSelectionChange={(keys) => setSelectedSensors(Array.from(keys) as string[])}
+            size="md"
+            className="min-w-[200px] text-base"
           >
-        {combinedData
-          .filter(sensor => sensor.tipo === selectedType)
-          .map(sensor => (
-            <SelectItem 
-          key={sensor.id?.toString() ?? ''}
-          className="text-base truncate"
-            >
-          {`${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`}
-            </SelectItem>
-          ))}
+            {Array.from(new Map(
+              combinedData
+                .filter(sensor => selectedTypes.includes(sensor.tipo))
+                .filter(sensor => sensor.id !== undefined)
+                .map(sensor => [sensor.id, sensor])
+            ).values()).map(sensor => (
+              <SelectItem 
+                key={sensor.id.toString()}
+                className="text-base truncate"
+              >
+                {`${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`}
+              </SelectItem>
+            ))}
           </Select>
         )}
 
         {/* Lotes */}
-        {showLotesSelect && (
-          <Select
-        label=""
-        placeholder="Filtrar por lote"
-        selectionMode="multiple"
-        selectedKeys={selectedLotes.map(String)}
-        onSelectionChange={(keys) => setSelectedLotes(Array.from(keys).map(Number))}
-        size="md"
-        className="min-w-[180px] text-base"
-          >
-        {availableLotes.map(lote => (
-          <SelectItem key={String(lote.id)} className="text-base truncate">
-            {lote.nombre}
-          </SelectItem>
-        ))}
-          </Select>
-        )}
+        <Select
+          label=""
+          placeholder="Filtrar por lote"
+          selectionMode="multiple"
+          selectedKeys={selectedLotes.map(String)}
+          onSelectionChange={(keys) => setSelectedLotes(Array.from(keys).map(Number))}
+          size="md"
+          className="min-w-[180px] text-base"
+        >
+          {availableLotes.map(lote => (
+            <SelectItem key={String(lote.id)} className="text-base truncate">
+              {lote.nombre}
+            </SelectItem>
+          ))}
+        </Select>
 
         {/* Eras */}
-        {showErasSelect && (
-          <Select
-        label=""
-        placeholder="Filtrar por era"
-        selectionMode="multiple"
-        selectedKeys={selectedEras.map(String)}
-        onSelectionChange={(keys) => setSelectedEras(Array.from(keys).map(Number))}
-        size="md"
-        className="min-w-[150px] text-base"
-          >
-        {availableEras.map(era => (
-          <SelectItem key={String(era.id)} className="text-base truncate">
-            {era.nombre || `Era ${era.id}`}
-          </SelectItem>
-        ))}
-          </Select>
-        )}
+        <Select
+          label=""
+          placeholder="Filtrar por era"
+          selectionMode="multiple"
+          selectedKeys={selectedEras.map(String)}
+          onSelectionChange={(keys) => setSelectedEras(Array.from(keys).map(Number))}
+          size="md"
+          className="min-w-[150px] text-base"
+        >
+          {availableEras.map(era => (
+            <SelectItem key={String(era.id)} className="text-base truncate">
+              Era {era.id || `Era ${era.id}`}
+            </SelectItem>
+          ))}
+        </Select>
       </div>
 
       <div className="bg-gradient-to-br from-green-50 to-blue-50 p-6 shadow-lg rounded-2xl mb-8 border border-green-100">
@@ -719,165 +705,162 @@ export default function AllSensorsDashboard() {
         </h2>
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-        <p className="text-lg text-gray-500">Cargando datos...</p>
+            <p className="text-lg text-gray-500">Cargando datos...</p>
           </div>
         ) : (
           <>
-        <div className="mb-6 flex flex-wrap gap-2">
-          {linesToShow.map((line, index) => (
-            <Chip 
-          key={index}
-          color="primary"
-          variant="dot"
-          style={{ backgroundColor: line.color, color: "#fff", fontWeight: 600, borderRadius: 8 }}
-          className="shadow-sm px-3 py-1"
-            >
-          {dict(SENSOR_TYPES).get(line.type)} - {line.location}
-            </Chip>
-          ))}
-        </div>
-        <div className="rounded-xl bg-white shadow-inner p-4 border border-gray-100">
-          <ResponsiveContainer width="100%" height={420}>
-            <LineChart 
-          data={prepareChartData}
-          margin={{ top: 30, right: 40, left: 10, bottom: 30 }}
-            >
-          <defs>
-            <linearGradient id="colorGrid" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#e0f2fe" stopOpacity={0.7}/>
-              <stop offset="100%" stopColor="#f0fdf4" stopOpacity={0.3}/>
-            </linearGradient>
-          </defs>
-          <CartesianGrid stroke="url(#colorGrid)" strokeDasharray="4 4" vertical={false} />
-          <XAxis 
-            dataKey="formattedTime" 
-            tick={{ fill: '#4b5563', fontWeight: 500, fontSize: 13 }}
-            tickMargin={12}
-            interval="preserveStartEnd"
-            axisLine={{ stroke: "#a7f3d0" }}
-            tickLine={{ stroke: "#a7f3d0" }}
-          />
-          <YAxis 
-            tick={{ fill: '#4b5563', fontWeight: 500, fontSize: 13 }}
-            tickMargin={12}
-            axisLine={{ stroke: "#a7f3d0" }}
-            tickLine={{ stroke: "#a7f3d0" }}
-          />
-          <Tooltip 
-            contentStyle={{
-              background: 'linear-gradient(135deg, #f0fdf4 60%, #e0f2fe 100%)',
-              borderRadius: '0.75rem',
-              boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
-              border: '1px solid #bbf7d0',
-              color: '#166534',
-              fontWeight: 500,
-              fontSize: 14,
-              padding: 12
-            }}
-            formatter={(value: number, name: string, props: any) => {
-              const sensorId = name.split('_')[0];
-              const unit = props.payload[`${sensorId}_unit`] || '';
-              const type = props.payload[`${sensorId}_type`] || '';
-              return [`${value} ${unit}`, `${dict(SENSOR_TYPES).get(type)}`];
-            }}
-            labelFormatter={(label) => `Hora: ${label}`}
-          />
-          <Legend 
-            iconType="circle"
-            wrapperStyle={{
-              paddingTop: 12,
-              fontWeight: 600,
-              fontSize: 14,
-              color: "#166534"
-            }}
-            formatter={(value) => {
-              const sensorId = value;
-              const sensor = filteredSensors.find(s => s.id?.toString() === sensorId);
-              if (!sensor) return value;
-              return `${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`;
-            }}
-          />
-          {renderChartLines}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+            <div className="mb-6 flex flex-wrap gap-2">
+              {linesToShow.map((line, index) => (
+                <Chip 
+                  key={index}
+                  color="primary"
+                  variant="dot"
+                  style={{ backgroundColor: line.color, color: "#fff", fontWeight: 600, borderRadius: 8 }}
+                  className="shadow-sm px-3 py-1"
+                >
+                  {dict(SENSOR_TYPES).get(line.type)} - {line.location}
+                </Chip>
+              ))}
+            </div>
+            <div className="rounded-xl bg-white shadow-inner p-4 border border-gray-100">
+              <ResponsiveContainer width="100%" height={420}>
+                <LineChart 
+                  data={prepareChartData}
+                  margin={{ top: 30, right: 40, left: 10, bottom: 30 }}
+                >
+                  <defs>
+                    <linearGradient id="colorGrid" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#e0f2fe" stopOpacity={0.7}/>
+                      <stop offset="100%" stopColor="#f0fdf4" stopOpacity={0.3}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="url(#colorGrid)" strokeDasharray="4 4" vertical={false} />
+                  <XAxis 
+                    dataKey="formattedTime" 
+                    tick={{ fill: '#4b5563', fontWeight: 500, fontSize: 13 }}
+                    tickMargin={12}
+                    interval="preserveStartEnd"
+                    axisLine={{ stroke: "#a7f3d0" }}
+                    tickLine={{ stroke: "#a7f3d0" }}
+                  />
+                  <YAxis 
+                    tick={{ fill: '#4b5563', fontWeight: 500, fontSize: 13 }}
+                    tickMargin={12}
+                    axisLine={{ stroke: "#a7f3d0" }}
+                    tickLine={{ stroke: "#a7f3d0" }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      background: 'linear-gradient(135deg, #f0fdf4 60%, #e0f2fe 100%)',
+                      borderRadius: '0.75rem',
+                      boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
+                      border: '1px solid #bbf7d0',
+                      color: '#166534',
+                      fontWeight: 500,
+                      fontSize: 14,
+                      padding: 12
+                    }}
+                    formatter={(value: number, name: string, props: any) => {
+                      const sensorId = name.split('_')[0];
+                      const unit = props.payload[`${sensorId}_unit`] || '';
+                      const type = props.payload[`${sensorId}_type`] || '';
+                      return [`${value} ${unit}`, `${dict(SENSOR_TYPES).get(type)}`];
+                    }}
+                    labelFormatter={(label) => `Hora: ${label}`}
+                  />
+                  <Legend 
+                    iconType="circle"
+                    wrapperStyle={{
+                      paddingTop: 12,
+                      fontWeight: 600,
+                      fontSize: 14,
+                      color: "#166534"
+                    }}
+                    formatter={(value) => {
+                      const sensorId = value;
+                      const sensor = filteredSensors.find(s => s.id?.toString() === sensorId);
+                      if (!sensor) return value;
+                      return `${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`;
+                    }}
+                  />
+                  {renderChartLines}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </>
         )}
       </div>
-        <br/>
       
-      {/* Sección de Alertas Modificada */}
       <div className="bg-gradient-to-br from-red-200 to-red-400 p-6 shadow-lg rounded-2xl border border-red-700 backdrop-blur-sm">
         <h2 className="text-xl font-bold mb-5 text-red-900 flex items-center gap-2">
           <svg width="22" height="22" fill="none" className="inline-block text-red-700">
-        <circle cx="11" cy="11" r="10" stroke="#b91c1c" strokeWidth="2" fill="#fee2e2"/>
-        <rect x="10" y="6" width="2" height="6" rx="1" fill="#b91c1c"/>
-        <circle cx="11" cy="15" r="1.2" fill="#b91c1c"/>
+            <circle cx="11" cy="11" r="10" stroke="#b91c1c" strokeWidth="2" fill="#fee2e2"/>
+            <rect x="10" y="6" width="2" height="6" rx="1" fill="#b91c1c"/>
+            <circle cx="11" cy="15" r="1.2" fill="#b91c1c"/>
           </svg>
           Alertas Recientes
         </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {filteredSensors
-        .filter(sensor => sensor.alerta)
-        .slice(0, 5)
-        .map((sensor, index) => (
-          <div
-            key={index}
-            className="flex flex-col p-3 border border-red-700 rounded-xl bg-red-200 hover:bg-red-300 transition-all shadow-md"
-          >
-            <div className="flex-1 flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-sm text-red-900">
-              {dict(SENSOR_TYPES).get(sensor.tipo)}
-            </span>
-            <Chip 
-              color="danger" 
-              size="sm" 
-              className="uppercase tracking-wide text-xs bg-red-700 text-white border border-red-900 font-bold"
-              style={{ backgroundColor: "#b91c1c ", color: "#fff" }}
-            >
-              Alerta
-            </Chip>
-          </div>
-          
-          <div className="text-red-800 text-xs font-semibold">
-            <span className="font-medium">Ubicación:</span> {getLocationName(sensor)}
-          </div>
-          
-          <div className="flex justify-between items-end mt-1.5">
-            <div className="flex flex-col gap-1 text-xs text-red-800 font-semibold">
-              <span>ID: {sensor.id}</span>
-              <span>{formatDateTimeForDisplay(sensor.fecha)}</span>
-            </div>
-            
-            <div className="flex flex-col items-end">
-              <span
-                className="text-2xl font-extrabold leading-none drop-shadow"
-                style={{ color: "#b91c1c" }}
+            .filter(sensor => sensor.alerta)
+            .slice(0, 5)
+            .map((sensor, index) => (
+              <div
+                key={index}
+                className="flex flex-col p-3 border border-red-700 rounded-xl bg-red-200 hover:bg-red-300 transition-all shadow-md"
               >
-                {formatNumber(sensor.valor)}
-                <span className="text-base font-bold ml-0.5">{sensor.unidad}</span>
-              </span>
-              {sensor.umbral_minimo !== null && sensor.umbral_maximo !== null && (
-            <span className="text-xs font-semibold mt-0.5" style={{ color: "#b91c1c" }}>
-              Rango: {formatNumber(sensor.umbral_minimo)}-{formatNumber(sensor.umbral_maximo)} {sensor.unidad}
-            </span>
-              )}
-            </div>
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-sm text-red-900">
+                      {dict(SENSOR_TYPES).get(sensor.tipo)}
+                    </span>
+                    <Chip 
+                      color="danger" 
+                      size="sm" 
+                      className="uppercase tracking-wide text-xs bg-red-700 text-white border border-red-900 font-bold"
+                      style={{ backgroundColor: "#b91c1c ", color: "#fff" }}
+                    >
+                      Alerta
+                    </Chip>
+                  </div>
+                  
+                  <div className="text-red-800 text-xs font-semibold">
+                    <span className="font-medium">Ubicación:</span> {getLocationName(sensor)}
+                  </div>
+                  
+                  <div className="flex justify-between items-end mt-1.5">
+                    <div className="flex flex-col gap-1 text-xs text-red-800 font-semibold">
+                      <span>ID: {sensor.id}</span>
+                      <span>{formatDateTimeForDisplay(sensor.fecha)}</span>
+                    </div>
+                    
+                    <div className="flex flex-col items-end">
+                      <span
+                        className="text-2xl font-extrabold leading-none drop-shadow"
+                        style={{ color: "#b91c1c" }}
+                      >
+                        {formatNumber(sensor.valor)}
+                        <span className="text-base font-bold ml-0.5">{sensor.unidad}</span>
+                      </span>
+                      {sensor.umbral_minimo !== null && sensor.umbral_maximo !== null && (
+                        <span className="text-xs font-semibold mt-0.5" style={{ color: "#b91c1c" }}>
+                          Rango: {formatNumber(sensor.umbral_minimo)}-{formatNumber(sensor.umbral_maximo)} {sensor.unidad}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
             
           {filteredSensors.filter(sensor => sensor.alerta).length === 0 && (
-            <div className="md:col-span-2 p-3 border rounded-xl bg-green-50/30 border-green-200/50 text-center text-green-700/90 text-sm font-medium backdrop-blur-sm">
-              No hay alertas activas en los filtros seleccionados
+            <div className="md:col-span-2 flex items-center justify-center p-6 bg-red-100 rounded-lg shadow-md">
+              <p className="text-red-800 font-semibold text-lg">No hay alertas recientes</p>
             </div>
           )}
         </div>
       </div>
-        </div>
-
+    </div>
   );
 }
