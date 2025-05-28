@@ -18,6 +18,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [unidades, setUnidades] = useState<number | null>(null);
+  const [precio, setPrecio] = useState<number | null>(null)
 
   const [error,setError] = useState("")
 
@@ -26,14 +27,14 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
   const { mutate, isPending } = usePostHerramienta();
 
   const handleSubmit = () => {
-    if (!fk_Lote || !nombre.trim() || !descripcion.trim() || !unidades) {
+    if (!fk_Lote || !nombre.trim() || !descripcion.trim() || !unidades || !precio) {
       setError("Por favor, completa todos los campos.");
       return;
     }
     setError("")
 
     mutate(
-      { id:0,fk_Lote, unidades, nombre, descripcion },
+      { id:0,fk_Lote, unidades, nombre, descripcion, precio },
       {
         onSuccess: () => {
           onClose();
@@ -41,6 +42,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
           setUnidades(null);
           setNombre("");
           setDescripcion("");
+          setPrecio(null);
           setError("")
         },
       }
@@ -88,6 +90,14 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
           type="number"
           value={unidades}
           onChange={(e) => setUnidades(e.target.value ? Number(e.target.value) : 0)}
+          required
+        />
+
+        <Input
+          label="Precio unidad"
+          type="number"
+          value={precio}
+          onChange={(e) => setPrecio(e.target.value ? Number(e.target.value) : 0)}
           required
         />
 

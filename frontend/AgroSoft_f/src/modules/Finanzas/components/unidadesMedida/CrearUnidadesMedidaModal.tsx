@@ -82,7 +82,7 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
         <SelectItem key="VOLUMEN">Volumen</SelectItem>
       </Select>
       <Input
-        label="Equivalencia base"
+        label="Equivalencia en gramos (g)"
         type="number"
         value={equivalenciabase.toString()}
         onChange={(e) => setEquivalenciabase(Number(e.target.value))}

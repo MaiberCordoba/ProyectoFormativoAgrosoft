@@ -78,7 +78,7 @@ const EditarUnidadesMedidaModal: React.FC<EditarUnidadesMedidaModalProps> = ({
       </Select>
       <Input
         value={equivalenciabase.toString()}
-        label="Equivalencia Base"
+        label="Equivalencia en gramos (g)"
         type="number"
         onChange={(e) => setEquivalenciabase(Number(e.target.value))}
       />

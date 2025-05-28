@@ -54,6 +54,7 @@ export function TiempoActividadControlList() {
 
   const columnas = [
     { name: "Actividad", uid: "actividad" },
+    { name: "Fecha Finalizacion", uid: "fecha" },
     { name: "Control", uid: "control" },
     { name: "Salario", uid: "salario" },
     { name: "Unidad Tiempo", uid: "unidadTiempo" },
@@ -78,6 +79,8 @@ export function TiempoActividadControlList() {
         return <span>{unidad ? unidad.nombre : "No definido"}</span>;
       case "tiempo":
         return <span>{item.tiempo}</span>;
+      case "fecha":
+        return <span>{item.fecha}</span>;
       case "valorTotal":
         return <span>{item.valorTotal}</span>;
       case "acciones":

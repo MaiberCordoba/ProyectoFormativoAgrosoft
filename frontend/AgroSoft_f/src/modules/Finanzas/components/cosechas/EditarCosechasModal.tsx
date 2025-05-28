@@ -1,49 +1,53 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { usePatchCosechas } from '../../hooks/cosechas/usePatchCosechas';  // Cambié el hook
+import { usePatchCosechas } from '../../hooks/cosechas/usePatchCosechas';  
 import { Cosechas } from '../../types';
 import { Input, Select, SelectItem } from '@heroui/react';
-import { useGetCultivos } from '@/modules/Trazabilidad/hooks/cultivos/useGetCultivos';  // Cambié el hook
 import { useGetUnidadesMedida } from '../../hooks/unidadesMedida/useGetUnidadesMedida';
 import { useGetPlantaciones } from '@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones';
 
 interface EditarCosechaModalProps {
-  cosecha: Cosechas; // La cosecha que se está editando
-  onClose: () => void; // Función para cerrar el modal
+  cosecha: Cosechas; 
+  onClose: () => void; 
 }
 
 const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClose }) => {
   const [cantidad, setCantidad] = useState<number | null>(cosecha.cantidad);
   const [fecha, setFecha] = useState<string>(cosecha.fecha);
-  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(cosecha.fk_Plantacion ?? null); // Estado para el ID del cultivo
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(cosecha.fk_UnidadMedida ?? null); // Estado para el ID del cultivo
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(cosecha.fk_Plantacion ?? null); 
+  const [precioUnidad, setPrecioUnidad] = useState<number | null>(cosecha.precioUnidad ??  null)
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(cosecha.fk_UnidadMedida ?? null); 
   const [mensajeError, setMensajeError] = useState("")
 
-  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  // Obtener los cultivos
-  const { data: unidadesMedida, isLoading: isLoadingUnidadMedida } = useGetUnidadesMedida();  // Obtener los cultivos
-  const { mutate, isPending } = usePatchCosechas();  // Mutación para actualizar las cosechas
+  const { data: plantaciones, isLoading: isLoadingPlantaciones } = useGetPlantaciones();  
+  const { data: unidadesMedida, isLoading: isLoadingUnidadMedida } = useGetUnidadesMedida();  
+  const { mutate, isPending } = usePatchCosechas(); 
 
   const handleSubmit = () => {
-    if (!fk_Plantacion || !cantidad || !fk_UnidadMedida || !fecha) {
+    if (!fk_Plantacion || !cantidad || !fk_UnidadMedida || !fecha || !precioUnidad) {
      setMensajeError("Por favor, completa todos los campos.");
       return;
     }
+    if (cantidad < 0){
+      setMensajeError("La cantidad cosechada no puede ser negativa")
+      return
+    }
     setMensajeError("")
 
-    // Llama a la mutación para actualizar la cosecha
     mutate(
       {
         id: cosecha.id,
         data: {
           cantidad,
           fecha,
-          fk_Plantacion,  // Envía solo el ID del cultivo
+          fk_Plantacion,  
           fk_UnidadMedida,
+          precioUnidad,
         },
       },
       {
         onSuccess: () => {
-          onClose();  // Cierra el modal después de guardar
+          onClose();  
         },
       }
     );
@@ -74,9 +78,15 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
       />
       <Input
         value={cantidad}
-        label="Cantidad Cosechada"
+        label="Cantidad cosechada"
         type="number"
         onChange={(e) => setCantidad(Number(e.target.value))}
+      />
+      <Input
+        value={precioUnidad}
+        label="Precio unidad"
+        type="number"
+        onChange={(e) => setPrecioUnidad(Number(e.target.value))}
       />
 
 
@@ -87,15 +97,15 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({ cosecha, onClos
         <Select
           label="Plantaciones"
           placeholder="Selecciona una plantacion"
-          selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}  // HeroUI espera un array de strings
+          selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];  // HeroUI devuelve un Set
-            setFk_Plantacion(selectedKey ? Number(selectedKey) : null);  // Actualiza el estado con el nuevo ID
+            const selectedKey = Array.from(keys)[0];  
+            setFk_Plantacion(selectedKey ? Number(selectedKey) : null);  
           }}
         >
           {(plantaciones || []).map((plantacion) => (
             <SelectItem key={plantacion.id.toString()}>
-              {plantacion.fk_Cultivo.nombre}
+              {plantacion.cultivo.nombre}
             </SelectItem>
           ))}
         </Select>
