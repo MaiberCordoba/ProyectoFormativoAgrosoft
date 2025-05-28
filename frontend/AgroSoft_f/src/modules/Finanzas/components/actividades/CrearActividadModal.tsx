@@ -9,9 +9,11 @@ import { Plus } from "lucide-react";
 import { Actividades, TipoActividad } from "../../types";
 import { User } from "@/modules/Users/types";
 import { CrearTipoActividadModal } from "../tipoActividad/CrearTipoActividadModal";
-import { Cultivo } from "@/modules/Trazabilidad/types";
+import { Cultivo, Plantaciones } from "@/modules/Trazabilidad/types";
 import { CrearCultivoModal } from "@/modules/Trazabilidad/components/cultivos/CrearCultivosModal";
 import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
 
 interface CrearActividadesModalProps {
   onClose: () => void;
@@ -27,6 +29,7 @@ export const CrearActividadesModal = ({
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
+  const [fk_Plantacion, setFkPlantacion] = useState<number | null>(null);
   const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
   //manejo de errores
   const [mensajeError, setMensajeError] = useState("");
@@ -34,6 +37,7 @@ export const CrearActividadesModal = ({
   const [tipoActividadModal, setTipoActividadModal] = useState(false);
   const [usuarioModal, setUsuarioModal] = useState(false);
   const [cultivoModal, setCultivoModal] = useState(false);
+  const [plantacionModal, setPlantacionModal] = useState(false);
 
   const {
     data: cultivos,
@@ -50,11 +54,17 @@ export const CrearActividadesModal = ({
     isLoading: isLoadingTiposActividad,
     refetch: refetchTipoActividad,
   } = useGetTipoActividad();
+
+  const {
+    data: plantacion,
+    isLoading: isLoadingPlantacion,
+    refetch: refetchPlantacion,
+  } = useGetPlantaciones();
+
   const { mutate, isPending } = usePostActividades();
 
   const handleSubmit = () => {
     if (
-      !fk_Cultivo ||
       !fk_Usuario ||
       !fk_TipoActividad ||
       !titulo ||
@@ -66,14 +76,20 @@ export const CrearActividadesModal = ({
 
       return;
     }
+
+    if (fk_Cultivo && fk_Plantacion) {
+      setMensajeError("No puede elegir cultivo y plantación al mismo tiempo")
+      return
+    }
     setMensajeError("");
 
     mutate(
-      { fk_Cultivo, fk_Usuario, fk_TipoActividad, titulo, descripcion, estado },
+      { fk_Cultivo, fk_Plantacion, fk_Usuario, fk_TipoActividad,titulo, descripcion, estado },
       {
         onSuccess: () => {
           onClose();
           setFk_Cultivo(null);
+          setFkPlantacion(null);
           setFk_Usuario(null);
           setFk_TipoActividad(null);
           setTitulo("");
@@ -102,6 +118,11 @@ export const CrearActividadesModal = ({
     refetchUsuario();
     setFk_Usuario(nuevoUsuario.id);
     setUsuarioModal(false);
+  };
+  const handlePlantacionCreada = (nuevaPlantacion: Plantaciones) => {
+    refetchPlantacion();
+    setFkPlantacion(nuevaPlantacion.id);
+    setPlantacionModal(false);
   };
 
   return (
@@ -186,6 +207,38 @@ export const CrearActividadesModal = ({
               onPress={() => setCultivoModal(true)}
               color="success"
               title="Crear nuevo cultivo"
+              radius="full"
+              size="sm"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+          </div>
+        )}
+        {isLoadingPlantacion ? (
+          <p>Cargando plantaciones...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Select
+                label="Plantacion"
+                placeholder="Selecciona una Plantacion"
+                selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFkPlantacion(selectedKey ? Number(selectedKey) : null);
+                }}
+              >
+                {(plantacion || []).map((p) => (
+                  <SelectItem key={p.id.toString()}>
+                    {p.cultivo.nombre}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <Button
+              onPress={() => setPlantacionModal(true)}
+              color="success"
+              title="Crear nueva plantacion"
               radius="full"
               size="sm"
             >
@@ -279,6 +332,12 @@ export const CrearActividadesModal = ({
         <CrearUsersModal
           onClose={() => setUsuarioModal(false)}
           onCreate={handleUsuarioCreado}
+        />
+      )}
+      {plantacionModal && (
+        <CrearPlantacionModal
+          onClose={() => setPlantacionModal(false)}
+          onCreate={handlePlantacionCreada}
         />
       )}
     </>
