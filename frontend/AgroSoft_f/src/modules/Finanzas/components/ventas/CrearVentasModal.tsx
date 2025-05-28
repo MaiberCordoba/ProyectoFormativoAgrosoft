@@ -27,7 +27,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
 
   const { data: cosechas, isLoading: isLoadingCosechas, refetch: refetchCosecha } = useGetCosechas();
-  const { data:plantaciones, isLoading: isLoadingPlantaciones} = useGetPlantaciones()
+  const { data:plantaciones} = useGetPlantaciones()
   const { data: unidadesMedida, isLoading: isLoadingUnidadesMedida, refetch: refetchUnidadMedida } = useGetUnidadesMedida();
   const { mutate, isPending } = usePostVentas();
 
@@ -68,7 +68,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
     setError("");
 
     mutate(
-      { fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad, descuento },
+      { fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad },
       {
         onSuccess: () => {
           onClose();
