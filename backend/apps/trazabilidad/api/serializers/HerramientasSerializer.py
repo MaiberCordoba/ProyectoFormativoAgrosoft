@@ -6,10 +6,15 @@ class HerramientasSerializer(ModelSerializer):
     class Meta:
         model = Herramientas
         fields = '__all__'
+        read_only_fields = ('valorTotal',)
 
     def create(self, validated_data):
         nombre = validated_data.get('nombre')
+        precio = validated_data.get('precio',0)
         nuevas_unidades = validated_data.get('unidades', 0)
+
+        valor_total = nuevas_unidades * precio
+        validated_data['valorTotal'] = valor_total
 
         herramienta_existente = Herramientas.objects.filter(nombre=nombre).first()
 
@@ -25,7 +30,6 @@ class HerramientasSerializer(ModelSerializer):
 
             return herramienta_existente
 
-        # Si no existe una herramienta con ese nombre, crear una nueva
         herramienta = super().create(validated_data)
 
         MovimientoInventario.objects.create(
