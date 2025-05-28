@@ -35,7 +35,7 @@ export function HerramientasList() {
   } = useEliminarHerramienta();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Lote: 0, nombre: "", descripcion: "", unidades: 0 });
+    handleCrear({ id: 0, fk_Lote: 0, nombre: "", descripcion: "", unidades: 0, precio:0 });
   };
 
   // Definición de columnas movida aquí
@@ -44,6 +44,7 @@ export function HerramientasList() {
     { name: "Nombre", uid: "nombre" },
     { name: "Descripcion", uid: "descripcion" },
     { name: "Unidades", uid: "unidades" },
+    { name: "Valor Herramientas", uid: "valor" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -59,6 +60,8 @@ export function HerramientasList() {
         return <span>{item.descripcion}</span>;
       case "unidades":
         return <span>{item.unidades}</span>;
+      case "valor":
+        return <span>{item.valorTotal}</span>;
       case "acciones":
         return (
           <AccionesTabla

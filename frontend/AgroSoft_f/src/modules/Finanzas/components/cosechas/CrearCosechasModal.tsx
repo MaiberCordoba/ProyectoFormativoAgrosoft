@@ -19,6 +19,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
   const [cantidad, setCantidad] = useState<number | null>(null);  // Inicializado en 0
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
+  const [valorUnidad, setValorUnidad] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
 
   const [mensajeError, setMensajeError] = useState("")
@@ -32,21 +33,26 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const { mutate, isPending } = usePostCosecha();
 
   const handleSubmit = () => {
-    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha ) {
+    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha || !valorUnidad) {
       setMensajeError("Por favor, completa todos los campos.");
       return;
+    }
+    if (cantidad < 0){
+      setMensajeError("La cantidad cosechada no puede ser negativa")
+      return
     }
     setMensajeError("")
 
     mutate(
-      { fk_Plantacion, cantidad, fk_UnidadMedida, fecha},
+      { fk_Plantacion, cantidad, fk_UnidadMedida, fecha,precioUnidad},
       {
         onSuccess: () => {
           onClose();
           setFk_Plantacion(null);
           setCantidad(null)
-          setFk_UnidadMedida(null) // Restablecer a 0
+          setFk_UnidadMedida(null)
           setFecha("");
+          setValorUnidad(null)
           setMensajeError("")
         },
       }
@@ -97,6 +103,13 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           onChange={(e) => setCantidad(Number(e.target.value))}
           required
         />
+        <Input
+          label="Precio unidad"
+          type="number"
+          value={valorUnidad}
+          onChange={(e) => setValorUnidad(Number(e.target.value))}
+          required
+        />
 
         {isLoadingPlantaciones ? (
           <p>Cargando plantaciones...</p>
@@ -104,7 +117,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
-                label="Plantacion"
+                label="Cultivo"
                 placeholder="Selecciona una plantacion"
                 selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
                 onSelectionChange={(keys) => {
@@ -113,7 +126,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
                 }}
               >
                 {(plantaciones || []).map((plantacion) => (
-                  <SelectItem key={plantacion.id.toString()}>{plantacion.fk_Cultivo.nombre}</SelectItem>
+                  <SelectItem key={plantacion.id.toString()}>{plantacion.cultivo.nombre}</SelectItem>
                 ))}
               </Select>
             </div>

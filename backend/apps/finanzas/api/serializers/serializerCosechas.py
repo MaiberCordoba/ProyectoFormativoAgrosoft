@@ -8,10 +8,15 @@ class SerializerCosechas(serializers.ModelSerializer):
     class Meta:
         model = Cosechas
         fields = '__all__'
+        read_only_fields = ('valorTotal',)
 
     def create(self, validated_data):
         unidad = validated_data.get('fk_UnidadMedida')
         cantidad = validated_data.get('cantidad')
+        precioUnidad = validated_data.get('precioUnidad')
+
+        valorTotal = precioUnidad*cantidad
+        validated_data['valorTotal'] = valorTotal
 
         if unidad:
             equivalencia = unidad.equivalenciabase
@@ -22,6 +27,10 @@ class SerializerCosechas(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         unidad = validated_data.get('fk_UnidadMedida', instance.fk_UnidadMedida)
         cantidad = validated_data.get('cantidad', instance.cantidad)
+        precioUnidad = validated_data.get('precioUnidad',instance.precioUnidad)
+
+        valorTotal = precioUnidad*cantidad
+        validated_data['valorTotal'] = valorTotal
 
         if unidad:
             equivalencia = unidad.equivalenciabase

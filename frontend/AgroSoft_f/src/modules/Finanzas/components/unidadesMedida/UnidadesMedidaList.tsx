@@ -46,7 +46,7 @@ export function UnidadesMedidaList() {
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Abreviatura", uid: "abreviatura" },
     { name: "Tipo", uid: "tipo" },
-    { name: "Equivalencia Base", uid: "equivalenciabase" },
+    { name: "Equivalencia (g)", uid: "equivalenciabase" },
     { name: "Acciones", uid: "acciones" },
   ];
 

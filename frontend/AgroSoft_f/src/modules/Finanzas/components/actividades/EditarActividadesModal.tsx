@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import ModalComponent from "@/components/Modal";
-import { usePatchActividades } from "../../hooks/actividades/usePatchActividades";
-import { Actividades } from "../../types";
-import { Input, Textarea, Select, SelectItem } from "@heroui/react";
-import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
-import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
-import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
+import React, { useState } from 'react';
+import ModalComponent from '@/components/Modal';
+import { usePatchActividades } from '../../hooks/actividades/usePatchActividades';
+import { Actividades } from '../../types';
+import { Input, Textarea, Select, SelectItem } from '@heroui/react';
+import { useGetCultivos } from '@/modules/Trazabilidad/hooks/cultivos/useGetCultivos'; 
+import { useGetUsers } from '@/modules/Users/hooks/useGetUsers';
+import { useGetTipoActividad } from '../../hooks/tipoActividad/useGetTiposActividad';
+import { useGetPlantaciones } from '@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones';
+
 
 interface EditarActividadesModalProps {
   actividad: Actividades;
@@ -19,19 +21,17 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
   const [titulo, setTitulo] = useState<string>(actividad.titulo);
   const [descripcion, setDescripcion] = useState<string>(actividad.descripcion);
   const [estado, setEstado] = useState<"AS" | "CO" | "CA">(actividad.estado);
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(
-    actividad.fk_Cultivo || null
-  );
-  const [fk_Usuario, setFk_Usuario] = useState<number | null>(
-    actividad.fk_Usuario || null
-  );
-  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(
-    actividad.fk_TipoActividad || null
-  );
+  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(actividad.fk_Cultivo || null);  
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(actividad.fk_Plantacion || null);  
+  const [fecha, setFecha] = useState<string>(actividad.fecha);  
+  const [fk_Usuario, setFk_Usuario] = useState<number | null>(actividad.fk_Usuario || null); 
+  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(actividad.fk_TipoActividad || null); 
+
   //manejo mensaje de error
   const [mensajeError, setMensajeError] = useState("");
   //
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
+  const { data: plantaciones, isLoading: isLoadingPlantacion } = useGetPlantaciones();
   const { data: users, isLoading: isLoadingUsers } = useGetUsers();
   const { data: tiposActividad, isLoading: isLoadingTiposActividad } =
     useGetTipoActividad();
@@ -39,19 +39,18 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
 
   const handleSubmit = () => {
     // Verificar que todos los campos estén completos
-    if (
-      !fk_Cultivo ||
-      !fk_Usuario ||
-      !fk_TipoActividad ||
-      !titulo ||
-      !descripcion ||
-      !estado
-    ) {
+    if (!fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
+
       setMensajeError("Por favor, completa todos los campos.");
 
       return;
     }
-    setMensajeError("");
+    if (fk_Cultivo &&  fk_Plantacion) {
+      setMensajeError("No puede elegir cultivo y plantacion al mismo tiempo ")
+      return
+    }
+    setMensajeError("")
+
 
     mutate(
       {
@@ -60,11 +59,15 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
           titulo,
           descripcion,
           estado,
+          fecha,
           fk_Cultivo,
-          fk_Usuario,
+          fk_Plantacion,
+          fk_Usuario, 
           fk_TipoActividad,
         },
+        onClose,
       },
+
       {
         onSuccess: () => {
           onClose();
@@ -103,6 +106,12 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
         onChange={(e) => setDescripcion(e.target.value)}
         required
       />
+      <Input
+        value={fecha}
+        label="Fecha"
+        onChange={(e) => setFecha(e.target.value)}
+        required
+      />
 
       <Select
         label="Estado"
@@ -134,6 +143,23 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
             <SelectItem key={cultivo.id.toString()}>
               {cultivo.nombre}
             </SelectItem>
+          ))}
+        </Select>
+      )}
+      {isLoadingPlantacion ? (
+        <p>Cargando plantaciones...</p>
+      ) : (
+        <Select
+          label="Plantacion"
+          placeholder="Selecciona una plantacion"
+          selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];  
+            setFk_Plantacion(selectedKey ? Number(selectedKey) : null);  
+          }}
+        >
+          {(plantaciones || []).map((p) => (
+            <SelectItem key={p.id.toString()}>{p.cultivo?.nombre}</SelectItem>
           ))}
         </Select>
       )}

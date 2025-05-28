@@ -8,6 +8,7 @@ class Ventas(models.Model):
     fecha = models.DateField(auto_now=True)
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida, on_delete=models.SET_NULL, null=True)
     cantidad = models.IntegerField()
+    descuento = models.IntegerField(null=True)
     valorTotal = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
