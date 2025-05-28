@@ -104,8 +104,8 @@ export interface Actividades {
   plantacion:Plantaciones;
   titulo: string;
   descripcion: string;
-  fecha: string;
-  estado: "AS" | "CO" | "CA";
+  fecha?: string;
+  estado?: "AS" | "CO" | "CA";
 }
 
 export interface Cosechas {

@@ -147,7 +147,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             onChange={(e) => setLatI1(Number(e.target.value))}
           />
           <Input
-            label="Long. Inf. Izquierda"
+            label="Lon. Inf. Izquierda"
             type="text"
             inputMode="decimal"
             value={longI1 !== null ? longI1.toString() : ""}
@@ -162,7 +162,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             onChange={(e) => setLatS1(Number(e.target.value))}
           />
           <Input
-            label="Long. Sup. Izquierda"
+            label="Lon. Sup.Izquierda"
             type="text"
             inputMode="decimal"
             value={longS1 !== null ? longS1.toString() : ""}
@@ -176,7 +176,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             onChange={(e) => setLatI2(Number(e.target.value))}
           />
           <Input
-            label="Long. Inf. Derecha"
+            label="Lon. Inf. Derecha"
             type="text"
             inputMode="decimal"
             value={longI2 !== null ? longI2.toString() : ""}
@@ -191,7 +191,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             onChange={(e) => setLatS2(Number(e.target.value))}
           />
           <Input
-            label="Long. Sup. Derecha"
+            label="Lon. Sup. Derecha"
             type="text"
             inputMode="decimal"
             value={longS2 !== null ? longS2.toString() : ""}

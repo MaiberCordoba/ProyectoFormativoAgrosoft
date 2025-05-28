@@ -15,6 +15,8 @@ class CoeficienteCultivo(models.Model):
     fase_crecimiento = models.CharField(max_length=50)
     kc_valor = models.DecimalField(max_digits=5, decimal_places=2)
     dias_desde_siembra = models.IntegerField(help_text="Días desde siembra para esta fase")
+    et_minima = models.DecimalField(max_digits=5, decimal_places=2,null=True, verbose_name="ET mínima (mm/día)")
+    et_maxima = models.DecimalField(max_digits=5, decimal_places=2,null=True, verbose_name="ET máxima (mm/día)")
     
     class Meta:
         ordering = ['dias_desde_siembra']

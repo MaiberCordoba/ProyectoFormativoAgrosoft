@@ -4,8 +4,8 @@ interface SensorCardProps {
   icon: JSX.Element;
   title: string;
   value: string;
-  additionalInfo?: string | null;
-  average?: number; 
+  subtitle?: string;
+  alert?: boolean;
   onClick: () => void;
 }
 
@@ -13,33 +13,37 @@ export default function SensorCard({
   icon, 
   title, 
   value, 
-  additionalInfo,
-  average,
+  subtitle,
+  alert,
   onClick 
 }: SensorCardProps) {
   return (
     <Card
       isPressable
-      shadow="sm"
       onPress={onClick}
-      className="w-full min-w-[260px] max-w-[280px] h-[220px] flex flex-col items-center justify-between rounded-2xl shadow-lg hover:shadow-xl transition bg-white p-4 m-4"
+      className={`
+        w-[280px] min-w-[280px] h-[220px]
+        flex flex-col items-center justify-between
+        rounded-2xl shadow-lg hover:shadow-xl
+        transition bg-white p-4 mx-1 my-2
+        ${alert ? "border-2 border-red-500" : ""}
+      `}
     >
-      <CardBody className="flex flex-col items-center justify-center">
-        <div className="text-gray-700 text-5xl">{icon}</div>
-        <p className="text-xl font-bold mt-3 text-center">{value}</p>
-        {average !== undefined && (
-          <p className="text-sm text-blue-500 mt-1">
-            Promedio: <span className="font-semibold">{average}</span>
-          </p>
-        )}
+      <CardBody className="flex flex-col items-center justify-center w-full pb-3">
+        <div className="text-gray-700 text-5xl mb-2">{icon}</div>
+        <p className="text-xl font-bold text-center text-gray-800">
+          {value}
+        </p>
       </CardBody>
 
-      <CardFooter className="bg-gray-100 text-center items-center py-2 w-full rounded-b-2xl">
-        <div className="w-full">
-          <p className="font-semibold text-center">{title}</p>
-          {additionalInfo && (
-            <p className="text-xs text-gray-500 mt-1">
-              {additionalInfo}
+      <div className="w-full border-t border-gray-200" />
+
+      <CardFooter className="w-full rounded-b-2xl p-3 bg-transparent">
+        <div className="w-full text-center">
+          <h3 className="font-semibold text-gray-900">{title}</h3>
+          {subtitle && (
+            <p className="text-xs text-gray-600 mt-1">
+              {subtitle}
             </p>
           )}
         </div>

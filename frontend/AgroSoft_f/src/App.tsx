@@ -28,8 +28,9 @@ import { UnidadesMedida } from "./modules/Finanzas/pages/pageUnidadesMedida";
 
 
 //Electronica
-import IoTPage from "./modules/IoT/pages/IoTPage";
+import IoTPage from "./modules/IoT/pages/Sensores";
 import SensorDetail from "./modules/IoT/pages/SensorDetail";
+import { Evapotranspiracion } from "./modules/IoT/pages/Evapotranspiracion";
 
 //trazabilidad
 import { TiposEspecie } from "./modules/Trazabilidad/pages/tiposEspecies";
@@ -120,8 +121,9 @@ function App() {
 
 
             {/*Electronica */}
-            <Route path="/iot" element={<IoTPage />} />
+            <Route path="/sensores" element={<IoTPage />} />
             <Route path="/sensores/:id" element={<SensorDetail />} />
+            <Route  path="/evapotranspiracion" element={<Evapotranspiracion />} />
 
             {/*Trazabilidad*/}
             <Route path="/tipos-especie" element={<TiposEspecie />} />

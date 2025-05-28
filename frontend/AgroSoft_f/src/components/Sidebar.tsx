@@ -68,9 +68,14 @@ const Sidebar: React.FC<SidebarProps> = ({
       <nav className="flex-1 overflow-y-auto p-2">
         {/* Elementos principales */}
         {[
-          { icon: Home, text: "Home", to: "/home" },
-          { icon: Users, text: "Usuarios", to: "/usuarios" },
-          { icon: Monitor, text: "IoT", to: "/iot" },
+
+          { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
+          {
+            icon: Users,
+            color: "text-[#254030]",
+            text: "Usuarios",
+            to: "/usuarios",
+          },
         ].map((item) => (
           <NavLink
             key={item.to}
@@ -82,16 +87,28 @@ const Sidebar: React.FC<SidebarProps> = ({
               ${!isOpen ? "justify-center" : ""}
             `}
           >
-            <item.icon size={20} />
+            <item.icon size={20} className={item.color} />
             {isOpen && <span>{item.text}</span>}
           </NavLink>
         ))}
 
         {/* Menús con submenús */}
         {[
+        {
+           
+          title: "IoT",
+          icon: Monitor,
+          submenus: [
+            "sensores",
+            "evapotranspiracion"
+          ],
+
+        },
+
           {
             title: "Cultivos",
             icon: Leaf,
+            color: "text-[#254030]",
             submenus: [
               "Semilleros",
               "Cultivos",
@@ -105,6 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {
             title: "Actividades",
             icon: Wrench,
+            color: "text-[#254030]",
             submenus: [
               "Actividades",
               "Tipos Actividad",
@@ -116,6 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {
             title: "Finanzas",
             icon: DollarSign,
+            color: "text-[#254030]",
             submenus: [
               "Ventas",
               "Cosechas",
@@ -128,6 +147,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {
             title: "Inventario",
             icon: ClipboardList,
+            color: "text-[#254030]",
             submenus: [
               "Insumos",
               "Herramientas",
@@ -139,6 +159,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           {
             title: "Fitosanitario",
             icon: ShieldCheck,
+            color: "text-[#254030]",
             submenus: [
               "Tipos de afectaciones",
               "Afectaciones",
@@ -166,7 +187,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div
                 className={`flex items-center ${isOpen ? "gap-3" : "justify-center w-full"}`}
               >
-                <menu.icon size={20} />
+                <menu.icon size={20} className={menu.color} />
                 {isOpen && <span className="text-sm">{menu.title}</span>}
               </div>
               {isOpen && (
@@ -212,7 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <NavLink
           to="/calendario"
           className={({ isActive }) => `
-            flex items-center p-2 rounded-lg hover:bg-gray-200
+            flex items-center p-2 rounded-lg hover:bg-gray-200  text-[#254030]
             ${isActive ? "bg-gray-200 font-medium" : ""}
             ${!isOpen ? "justify-center px-0" : "gap-3"}
           `}
@@ -223,7 +244,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <NavLink
           to="/mapa"
           className={({ isActive }) => `
-            flex items-center p-2 rounded-lg hover:bg-gray-200
+            flex items-center p-2 rounded-lg hover:bg-gray-200 text-[#254030]
             ${isActive ? "bg-gray-200 font-medium" : ""}
             ${!isOpen ? "justify-center px-0" : "gap-3"}
           `}

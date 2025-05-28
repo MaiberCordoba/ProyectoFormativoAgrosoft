@@ -8,12 +8,16 @@ import { useGetUsers } from '@/modules/Users/hooks/useGetUsers';
 import { useGetTipoActividad } from '../../hooks/tipoActividad/useGetTiposActividad';
 import { useGetPlantaciones } from '@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones';
 
+
 interface EditarActividadesModalProps {
   actividad: Actividades;
   onClose: () => void;
 }
 
-const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ actividad, onClose }) => {
+const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
+  actividad,
+  onClose,
+}) => {
   const [titulo, setTitulo] = useState<string>(actividad.titulo);
   const [descripcion, setDescripcion] = useState<string>(actividad.descripcion);
   const [estado, setEstado] = useState<"AS" | "CO" | "CA">(actividad.estado);
@@ -22,18 +26,21 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
   const [fecha, setFecha] = useState<string>(actividad.fecha);  
   const [fk_Usuario, setFk_Usuario] = useState<number | null>(actividad.fk_Usuario || null); 
   const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(actividad.fk_TipoActividad || null); 
+
   //manejo mensaje de error
-  const [mensajeError, setMensajeError] = useState("")
+  const [mensajeError, setMensajeError] = useState("");
   //
   const { data: cultivos, isLoading: isLoadingCultivos } = useGetCultivos();
   const { data: plantaciones, isLoading: isLoadingPlantacion } = useGetPlantaciones();
   const { data: users, isLoading: isLoadingUsers } = useGetUsers();
-  const { data: tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad();
-  const { mutate, isPending } = usePatchActividades();  
+  const { data: tiposActividad, isLoading: isLoadingTiposActividad } =
+    useGetTipoActividad();
+  const { mutate, isPending } = usePatchActividades();
 
   const handleSubmit = () => {
     // Verificar que todos los campos estén completos
     if (!fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha || !estado) {
+
       setMensajeError("Por favor, completa todos los campos.");
 
       return;
@@ -43,6 +50,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
       return
     }
     setMensajeError("")
+
 
     mutate(
       {
@@ -59,6 +67,12 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         },
         onClose,
       },
+
+      {
+        onSuccess: () => {
+          onClose();
+        },
+      }
     );
   };
 
@@ -69,15 +83,15 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
       title="Editar Actividad"
       footerButtons={[
         {
-          label: isPending ? 'Guardando...' : 'Guardar',
-          color: 'success',
-          variant: 'light',
+          label: isPending ? "Guardando..." : "Guardar",
+          color: "success",
+          variant: "light",
           onClick: handleSubmit,
         },
       ]}
     >
-      {mensajeError &&(
-        <p className='text-red-500 text-sm mb-2'>{mensajeError}</p>
+      {mensajeError && (
+        <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
       )}
       <Input
         value={titulo}
@@ -119,14 +133,16 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         <Select
           label="Cultivo"
           placeholder="Selecciona un cultivo"
-          selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []} 
+          selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];  
-            setFk_Cultivo(selectedKey ? Number(selectedKey) : null);  
+            const selectedKey = Array.from(keys)[0];
+            setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
           }}
         >
           {(cultivos || []).map((cultivo) => (
-            <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
+            <SelectItem key={cultivo.id.toString()}>
+              {cultivo.nombre}
+            </SelectItem>
           ))}
         </Select>
       )}
@@ -154,14 +170,16 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         <Select
           label="Usuario"
           placeholder="Selecciona un Usuario"
-          selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []} 
+          selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];  
-            setFk_Usuario(selectedKey ? Number(selectedKey) : null);  
+            const selectedKey = Array.from(keys)[0];
+            setFk_Usuario(selectedKey ? Number(selectedKey) : null);
           }}
         >
           {(users || []).map((usuario) => (
-            <SelectItem key={usuario.id.toString()}>{usuario.nombre}</SelectItem>
+            <SelectItem key={usuario.id.toString()}>
+              {usuario.nombre}
+            </SelectItem>
           ))}
         </Select>
       )}
@@ -172,14 +190,16 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({ activid
         <Select
           label="Tipos de actividad"
           placeholder="Selecciona el tipo de actividad"
-          selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []} 
+          selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];  
-            setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);  
+            const selectedKey = Array.from(keys)[0];
+            setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
           }}
         >
           {(tiposActividad || []).map((tipoActividad) => (
-            <SelectItem key={tipoActividad.id.toString()}>{tipoActividad.nombre}</SelectItem>
+            <SelectItem key={tipoActividad.id.toString()}>
+              {tipoActividad.nombre}
+            </SelectItem>
           ))}
         </Select>
       )}

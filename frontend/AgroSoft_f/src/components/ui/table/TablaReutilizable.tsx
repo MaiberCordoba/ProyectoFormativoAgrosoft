@@ -151,7 +151,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
             {(column) => (
               <TableColumn
                 key={column.uid}
-                className="sticky left-0 z-10 bg-gray-100"
+                className="sticky left-0 z-10 bg-[#e6f1ed]"
                 align={column.uid === "actions" ? "center" : "start"}
                 allowsSorting={column.sortable}
               >

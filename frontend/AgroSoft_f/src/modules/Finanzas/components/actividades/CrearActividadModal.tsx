@@ -31,6 +31,7 @@ export const CrearActividadesModal = ({
   const [fecha, setFecha] = useState("");
   const [fk_Plantacion, setFkPlantacion] = useState<number | null>(null);
   const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
+
   //manejo de errores
   const [mensajeError, setMensajeError] = useState("");
   //Creacion de modales
@@ -69,8 +70,7 @@ export const CrearActividadesModal = ({
       !fk_TipoActividad ||
       !titulo ||
       !descripcion ||
-      !fecha ||
-      !estado
+      !fecha
     ) {
       setMensajeError("Por favor, completa todos los campos.");
 
@@ -85,6 +85,7 @@ export const CrearActividadesModal = ({
 
     mutate(
       { fk_Cultivo, fk_Plantacion, fk_Usuario, fk_TipoActividad,titulo, descripcion, estado },
+
       {
         onSuccess: () => {
           onClose();
@@ -95,7 +96,6 @@ export const CrearActividadesModal = ({
           setTitulo("");
           setDescripcion("");
           setFecha("");
-          setEstado("");
           setMensajeError("");
         },
       }
@@ -167,20 +167,6 @@ export const CrearActividadesModal = ({
           min={new Date().toISOString().split("T")[0]}
           required
         />
-
-        <Select
-          label="Estado"
-          selectedKeys={[estado]}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0] as "AS" | "CO" | "CA";
-            setEstado(selectedKey);
-          }}
-          required
-        >
-          <SelectItem key="AS">Asignado</SelectItem>
-          <SelectItem key="CO">Completado</SelectItem>
-          <SelectItem key="CA">Cancelado</SelectItem>
-        </Select>
 
         {isLoadingCultivos ? (
           <p>Cargando cultivos...</p>
