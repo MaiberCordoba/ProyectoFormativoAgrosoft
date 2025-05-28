@@ -14,6 +14,7 @@ class UsuarioAdmin(UserAdmin):
         "apellidos",
         "telefono",
         "admin",
+        "rol",
     ]
     fieldsets = (
         (
@@ -27,6 +28,7 @@ class UsuarioAdmin(UserAdmin):
                     "fechaNacimiento",
                     "telefono",
                     "admin",
+                    "rol",
                 )
             },
         ),
@@ -45,6 +47,7 @@ class UsuarioAdmin(UserAdmin):
                     "fechaNacimiento",
                     "telefono",
                     "admin",
+                    "rol",
                     "password1",
                     "password2",
                     "is_staff",

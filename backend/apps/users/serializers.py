@@ -12,12 +12,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "identificacion",
             "nombre",
             "apellidos",
-            "fechaNacimiento",
             "telefono",
             "correoElectronico",
             "password",
             "admin",
             "estado",
+            "rol",
         ]
         extra_kwargs = {
             "password": {"write_only": True},

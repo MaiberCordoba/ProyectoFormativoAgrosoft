@@ -12,13 +12,20 @@ interface UserFormState {
   identificacion: string;
   nombre: string;
   apellidos: string;
-  fechaNacimiento: string;
   telefono: string;
   correoElectronico: string;
   password: string;
+  rol: string;
   admin: boolean;
   estado: string;
 }
+
+const ROLES = [
+  { value: "admin", label: "Administrador" },
+  { value: "instructor", label: "Instructor" },
+  { value: "pasante", label: "Pasante" },
+  { value: "invitado", label: "Invitado" },
+];
 
 export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
   const [userData, setUserData] = useState<UserFormState>({
@@ -26,16 +33,15 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     identificacion: "",
     nombre: "",
     apellidos: "",
-    fechaNacimiento: "",
     telefono: "",
     correoElectronico: "",
     password: "",
     estado: "",
+    rol:"",
     admin: false,
   });
 
   const { mutate, isPending } = usePostUsers();
-  const today = new Date().toISOString().split("T")[0];
 
   // Maneja cambios en inputs normales
   const handleInputChange = (
@@ -75,10 +81,10 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           identificacion: "",
           nombre: "",
           apellidos: "",
-          fechaNacimiento: "",
           telefono: "",
           correoElectronico: "",
           password: "",
+          rol: "",
           estado: "",
           admin: false,
         });
@@ -124,14 +130,6 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
       />
 
       <Input
-        label="Fecha de Nacimiento"
-        type="date"
-        value={userData.fechaNacimiento}
-        onChange={(e) => handleInputChange(e, "fechaNacimiento")}
-        max={today}
-      />
-
-      <Input
         label="Teléfono"
         type="tel"
         value={userData.telefono}
@@ -168,6 +166,25 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
       >
         <SelectItem key="activo">Activo</SelectItem>
         <SelectItem key="inactivo">Inactivo</SelectItem>
+      </Select>
+
+       <Select
+        isRequired
+        label="Rol"
+        selectedKeys={userData.rol ? new Set([userData.rol]) : new Set()}
+        onSelectionChange={(keys) => {
+          const selectedValue = Array.from(keys)[0] as string;
+          setUserData((prev) => ({
+            ...prev,
+            rol: selectedValue,
+          }));
+        }}
+      >
+        {ROLES.map((role) => (
+          <SelectItem key={role.value}>
+            {role.label}
+          </SelectItem>
+        ))}
       </Select>
 
       <div className="flex items-center mt-2">
