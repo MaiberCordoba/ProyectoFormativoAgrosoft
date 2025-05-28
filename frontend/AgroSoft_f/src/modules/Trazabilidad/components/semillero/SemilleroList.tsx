@@ -7,7 +7,7 @@ import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarSemilleroModal from "./EditarSemilleroModal";
 import { CrearSemilleroModal } from "./CrearSemilleroModal";
 import EliminarSemilleroModal from "./EliminarSemillero";
-import { Semilleros } from "../../types";
+import { Semillero } from "../../types";
 
 export function SemilleroList() {
   const { data: semilleros, isLoading, error } = useGetSemilleros();
@@ -43,7 +43,6 @@ export function SemilleroList() {
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
     { name: "Cultivo", uid: "fk_Cultivo", sortable: false },
     { name: "Unidades", uid: "unidades" },
     { name: "Fecha de Siembra", uid: "fechaSiembra", sortable: true },
@@ -51,20 +50,16 @@ export function SemilleroList() {
     { name: "Acciones", uid: "acciones" },
   ];
 
-  const renderCell = (item: Semilleros, columnKey: React.Key) => {
+  const renderCell = (item: Semillero & { nombreCultivo?: string }, columnKey: React.Key) => {
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
-        case "fk_Cultivo":
-          return (
-            <span>
-              {item.cultivo?.nombre
-                ? `${item.cultivo.nombre} ${item.cultivo.fk_Especie?.nombre ?? ""}`
-                : "Desconocido"}
-            </span>
-          );
-        
-               
+      case "fk_Cultivo":
+        return (
+          <span>
+            {item.cultivo?.nombre
+              ? `${item.cultivo.nombre} ${item.cultivo.fk_Especie?.nombre ?? ""}`
+              : "Desconocido"}
+          </span>
+        );
       case "unidades":
         return <span>{item.unidades}</span>;
       case "fechaSiembra":
@@ -79,7 +74,9 @@ export function SemilleroList() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof Semilleros])}</span>;
+        return <span>{String(item[columnKey as keyof Semilleroa
+          
+        ])}</span>;
     }
   };
 
@@ -89,10 +86,13 @@ export function SemilleroList() {
   return (
     <div className="p-4">
       <TablaReutilizable
-        datos={semilleros || []}
+        datos={(semilleros || []).map(s => ({
+          ...s,
+          nombreCultivo: s.cultivo?.nombre?.toLowerCase() ?? "",
+        }))}
         columnas={columnas}
-        claveBusqueda="id"
-        placeholderBusqueda="Buscar por ID"
+        claveBusqueda="nombreCultivo"
+        placeholderBusqueda="Buscar por Cultivo"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
       />

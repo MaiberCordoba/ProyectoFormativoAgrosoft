@@ -12,24 +12,24 @@ import { Cultivo } from "../../types";
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    CultivosEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    CultivosEditada,
+    handleEditar,
   } = useEditarCultivos();
 
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearCultivos();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     CultivosEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarCultivos();
 
   const handleCrearNuevo = () => {
@@ -42,11 +42,11 @@ export function CultivosList() {
 
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
-    { name: "Especie", uid: "especies", sortable: false }, // corregido
+    { name: "Especie", uid: "especies", sortable: false },
     { name: "Estado", uid: "activo", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
-  
+
   const renderCell = (item: Cultivo, columnKey: React.Key) => {
     switch (columnKey) {
       case "nombre":
@@ -66,7 +66,6 @@ export function CultivosList() {
         return <span>{String(item[columnKey as keyof Cultivo])}</span>;
     }
   };
-  
 
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los cultivos</p>;
@@ -92,6 +91,10 @@ export function CultivosList() {
       {isCreateModalOpen && (
         <CrearCultivoModal
           onClose={closeCreateModal}
+          onCreate={() => {
+            // solo cerrar modal, sin notificaciones aquí
+            closeCreateModal();
+          }}
         />
       )}
 
