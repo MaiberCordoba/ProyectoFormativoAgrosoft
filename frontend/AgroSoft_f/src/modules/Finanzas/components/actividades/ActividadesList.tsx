@@ -11,12 +11,14 @@ import { Actividades } from "../../types";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 
 export function ActividadesList() {
   const { data, isLoading, error } = useGetActividades();
   const { data: users, isLoading: loadingUser } = useGetUsers(); 
   const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
   const { data : tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad()
+  const { data : plantacion, isLoading: isLoadingPlantacion } = useGetPlantaciones()
 
   const { 
     isOpen: isEditModalOpen, 
@@ -39,12 +41,13 @@ export function ActividadesList() {
   } = useEliminarActividad();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0, fk_Usuario: 0, fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+    handleCrear({ id: 0, fk_Cultivo: 0,fk_Plantacion:0 ,fk_Usuario: 0, fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
   };
 
   // Definición de columnas
   const columnas = [
     { name: "Cultivo", uid: "cultivo" },
+    { name: "Plantacion", uid: "plantacion" },
     { name: "Usuario", uid: "usuario" },
     { name: "TipoActividad", uid: "tipoActividad"},
     { name: "Titulo", uid: "titulo" },
@@ -59,7 +62,10 @@ export function ActividadesList() {
     switch (columnKey) {
       case "cultivo":
         const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
-        return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
+        return <span>{cultivos ? cultivos.nombre : "No aplica"}</span>;
+      case "plantacion":
+        const plantaciones = plantacion?.find((c) => c.id === item.fk_Plantacion);
+        return <span>{plantaciones ? plantaciones.cultivo?.nombre : "No aplica"}</span>;
       case "usuario":
         const usuario = users?.find((c) => c.id === item.fk_Usuario);
         return <span>{usuario ? usuario.nombre : "No definido"}</span>;
@@ -86,7 +92,7 @@ export function ActividadesList() {
     }
   };
 
-  if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad) return <p>Cargando...</p>;
+  if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad || isLoadingPlantacion) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las actividades</p>;
 
   return (
