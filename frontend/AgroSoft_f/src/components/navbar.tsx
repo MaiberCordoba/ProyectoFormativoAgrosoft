@@ -5,6 +5,7 @@ import { Bell, User, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/UseAuth";
 import NotificationsModal from "@/modules/Notificaciones/components/NotificationsModal";
 import { useNotificationsContext } from "@/context/NotificationsContext";
+import EditarPerfilModal from "@/modules/Users/components/UserPerfil";
 
 interface NavbarProps {
   onMobileMenuToggle: () => void;
@@ -21,6 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({
   const { notificaciones } = useNotificationsContext(); // Usar contexto
   const navigate = useNavigate();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handleLogout = () => {
     logout?.();
@@ -39,6 +41,11 @@ const Navbar: React.FC<NavbarProps> = ({
     setIsNotificationsOpen(!isNotificationsOpen);
   };
 
+   const toggleProfileModal = () => {
+    setIsProfileModalOpen(!isProfileModalOpen);
+    if (isMobileMenuOpen) onMobileMenuToggle();
+  };
+  
   const unreadCount = notificaciones.filter((n) => !n.is_read).length;
 
   // Depuración
@@ -66,9 +73,12 @@ const Navbar: React.FC<NavbarProps> = ({
             <div className="hidden md:flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="font-medium">{user.nombre}</span>
-                <div className="w-8 h-8 rounded-full bg-white text-sena-green flex items-center justify-center font-semibold">
+                 <button 
+                  onClick={toggleProfileModal}
+                  className="w-8 h-8 rounded-full bg-white text-sena-green flex items-center justify-center font-semibold hover:bg-gray-100 transition-colors"
+                >
                   {getInitials(user.nombre)}
-                </div>
+                </button>
               </div>
               <div className="relative">
                 <button
@@ -131,10 +141,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   )}
                   <button
                     className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded"
-                    onClick={() => {
-                      onMobileMenuToggle();
-                      navigate("/perfil");
-                    }}
+                    onClick={toggleProfileModal}
                   >
                     <User size={18} /> Perfil
                   </button>
@@ -152,11 +159,24 @@ const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       </nav>
-      {user && (
-        <NotificationsModal
-          isOpen={isNotificationsOpen}
-          onClose={() => setIsNotificationsOpen(false)}
-        />
+          {user && (
+        <>
+          <NotificationsModal
+            isOpen={isNotificationsOpen}
+            onClose={() => setIsNotificationsOpen(false)}
+          />
+          
+          <EditarPerfilModal
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
+            onUpdateSuccess={() => {
+              // Forzar actualización del contexto/auth
+              // Esto hará que el navbar se actualice
+              window.location.reload();
+            }}
+          />
+        </>
+        
       )}
     </>
   );

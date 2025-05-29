@@ -15,7 +15,6 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     identificacion: user.identificacion.toString(),
     nombre: user.nombre,
     apellidos: user.apellidos,
-    fechaNacimiento: user.fechaNacimiento,
     telefono: user.telefono,
     correoElectronico: user.correoElectronico,
     estado: user.estado,
@@ -94,13 +93,6 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           type="text"
           value={userData.apellidos}
           onChange={(e) => handleInputChange(e, "apellidos")}
-        />
-
-        <Input
-          label="Fecha de Nacimiento"
-          type="date"
-          value={userData.fechaNacimiento}
-          onChange={(e) => handleInputChange(e, "fechaNacimiento")}
         />
 
         <Input

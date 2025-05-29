@@ -63,7 +63,6 @@ class Usuario(AbstractUser):
         "identificacion",
         "nombre",
         "apellidos",
-        "fechaNacimiento",
         "telefono",
     ]
 
