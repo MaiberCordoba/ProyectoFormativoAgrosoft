@@ -12,6 +12,7 @@ import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { useAuth } from "@/hooks/UseAuth";
 
 export function ActividadesList() {
   const { data, isLoading, error } = useGetActividades();
@@ -19,6 +20,9 @@ export function ActividadesList() {
   const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
   const { data : tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad()
   const { data : plantacion, isLoading: isLoadingPlantacion } = useGetPlantaciones()
+
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const { 
     isOpen: isEditModalOpen, 
@@ -81,10 +85,17 @@ export function ActividadesList() {
       case "estado":
         return <span>{item.estado}</span>;
       case "acciones":
-        return (
+       return (
           <AccionesTabla
             onEditar={() => handleEditar(item)}
             onEliminar={() => handleEliminar(item)}
+            permitirEditar={userRole === "admin" || userRole === "instructor"}
+            permitirEliminar={userRole === "admin"}
+            onVerDetalles={
+              userRole === "pasante" 
+                ? () => console.log("Ver detalles", item.id)
+                : undefined
+            }
           />
         );
       default:
