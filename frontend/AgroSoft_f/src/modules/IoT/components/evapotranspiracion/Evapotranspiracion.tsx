@@ -28,9 +28,7 @@ export default function EvapotranspiracionC() {
   const [selectedPlantacion, setSelectedPlantacion] = useState<number | string>("");
   const [errorET, setErrorET] = useState<string | null>(null);
   const [kcValue, setKcValue] = useState<string>("");
-  const [showSensorList, setShowSensorList] = useState<boolean>(false);
-  
-
+  const [showSensorList, setShowSensorList] = useState<boolean>(false);  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -132,9 +130,16 @@ export default function EvapotranspiracionC() {
               >
               {plantaciones.map(plantacion => (
                 <SelectItem 
-                key={String(plantacion.id)} 
+                  key={String(plantacion.id)}
                 >
-                {`Cultivo ${plantacion.fk_Cultivo|| 'N/D'}, Lote ${plantacion.fk_Era || 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+                  {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Era ${plantacion.fk_Era || 'N/D'}, Días sembrados: ${
+                    plantacion.fechaSiembra
+                      ? Math.floor(
+                          (Date.now() - new Date(plantacion.fechaSiembra).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        )
+                      : 'N/D'
+                  }`}
                 </SelectItem>
               ))}
               </Select>

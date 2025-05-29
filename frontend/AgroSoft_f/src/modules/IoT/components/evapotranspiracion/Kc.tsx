@@ -129,7 +129,6 @@ const cropCategories = [
       }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header with Search */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-emerald-900 flex items-center gap-2">
@@ -141,14 +140,12 @@ const cropCategories = [
           </div>
         </div>
         <br/>
-        {/* Categorías de cultivos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map((category) => (
             <div 
               key={category.id} 
               className="bg-white rounded-2xl shadow-lg overflow-hidden border border-emerald-100 transition-all duration-300 hover:shadow-xl"
             >
-              {/* Header always visible */}
               <div 
                 className={`p-5 cursor-pointer flex items-center justify-between transition-all ${
                   expandedCategory === category.id 
@@ -166,7 +163,6 @@ const cropCategories = [
                     <p className="text-sm opacity-80">{category.crops.length} cultivos</p>
                   </div>
                 </div>
-                {/* Icono de desplegar sin círculo */}
                 <span className="ml-2 flex items-center">
                   {expandedCategory === category.id ? (
                     <ChevronUp className="text-emerald-700" />
@@ -176,14 +172,9 @@ const cropCategories = [
                 </span>
               </div>
               
-              {/* When expanded, show category name again above crops */}
               {expandedCategory === category.id && (
             <div className="p-4 bg-emerald-50">
               <div className="mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="p-2 bg-emerald-100 rounded-lg">{category.icon}</span>
-                  <span className="text-lg font-bold text-emerald-700">{category.name}</span>
-                </div>
               </div>
               <div className="grid grid-cols-1 gap-4">
                 {category.crops.map((crop) => (
