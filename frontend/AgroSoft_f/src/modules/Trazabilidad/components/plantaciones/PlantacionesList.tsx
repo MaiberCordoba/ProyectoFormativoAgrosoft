@@ -9,7 +9,6 @@ import { CrearPlantacionModal } from "./CrearPlantacionesModal";
 import EliminarPlantacionModal from "./EliminarPlantaciones";
 import { Plantaciones } from "../../types";
 
-// 🔽 Importaciones para el reporte PDF
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { ReportePdfPlantaciones } from "./ReportePdfPlantaciones";
 import { Download } from "lucide-react";
@@ -91,7 +90,6 @@ export function PlantacionesList() {
   };
 
   const columnas = [
-    { name: "ID", uid: "id", sortable: true },
     { name: "Cultivo", uid: "cultivo", sortable: true },
     { name: "Semillero", uid: "semillero", sortable: false },
     { name: "Unidades", uid: "unidades", sortable: true },
@@ -101,12 +99,7 @@ export function PlantacionesList() {
   ];
 
   const renderCell = (item: Plantaciones, columnKey: React.Key) => {
-    // Depuración: Imprimir la clave de la columna
-    console.log("ColumnKey:", columnKey);
-
     switch (columnKey) {
-      case "id":
-        return <span>{item.id}</span>;
       case "cultivo":
         return <span>{item.cultivo?.nombre || "Sin nombre"}</span>;
       case "semillero":
@@ -129,7 +122,17 @@ export function PlantacionesList() {
         );
       case "eras":
         return (
-          <span>{item.eras?.tipo || `Era ${item.eras?.id || "N/A"}`}</span>
+          <span>
+            {item.eras?.tipo ? (
+              <>
+                {item.eras.tipo}
+                {" - "}
+                {item.eras.fk_lote?.nombre ?? "Sin lote"}
+              </>
+            ) : (
+              `Era ${item.eras?.id ?? "N/A"}`
+            )}
+          </span>
         );
       case "acciones":
         return (
@@ -139,49 +142,48 @@ export function PlantacionesList() {
           />
         );
       default:
-        console.warn(`Clave de columna no manejada: ${String(columnKey)}`);
         return (
           <span>{String(item[columnKey as keyof Plantaciones] ?? "N/A")}</span>
         );
     }
   };
 
-  // Depuración: Imprimir datos
-  console.log("Plantaciones:", data);
-
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las plantaciones</p>;
+
+  const datosConCultivoNombre = (data || []).map((item) => ({
+    ...item,
+    cultivoNombre: item.cultivo?.nombre?.toLowerCase() || "",
+  }));
 
   return (
     <div className="p-4 space-y-4">
       <TablaReutilizable
-        datos={data || []}
+        datos={datosConCultivoNombre}
         columnas={columnas}
-        claveBusqueda="id"
-        placeholderBusqueda="Buscar por ID"
+        claveBusqueda="cultivoNombre"
+        placeholderBusqueda="Buscar por cultivo"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
-        // 🔽 Botón de reporte PDF
-renderReporteAction={(data) => (
-  <PDFDownloadLink
-    document={<ReportePdfPlantaciones plantaciones={data} />}
-    fileName="reporte_plantaciones.pdf"
-  >
-    {({ loading }) => (
-      <button
-        className="p-2 rounded-full hover:bg-red-100 transition-colors"
-        title="Descargar reporte"
-      >
-        {loading ? (
-          <Download className="h-4 w-4 animate-spin text-blue-500" />
-        ) : (
-          <Download className="h-5 w-5 text-red-600" />
+        renderReporteAction={(data) => (
+          <PDFDownloadLink
+            document={<ReportePdfPlantaciones plantaciones={data} />}
+            fileName="reporte_plantaciones.pdf"
+          >
+            {({ loading }) => (
+              <button
+                className="p-2 rounded-full hover:bg-red-100 transition-colors"
+                title="Descargar reporte"
+              >
+                {loading ? (
+                  <Download className="h-4 w-4 animate-spin text-blue-500" />
+                ) : (
+                  <Download className="h-5 w-5 text-red-600" />
+                )}
+              </button>
+            )}
+          </PDFDownloadLink>
         )}
-      </button>
-    )}
-  </PDFDownloadLink>
-)}
-
       />
 
       {isEditModalOpen && PlantacionesEditada && (
@@ -191,7 +193,12 @@ renderReporteAction={(data) => (
         />
       )}
 
-      {isCreateModalOpen && <CrearPlantacionModal onClose={closeCreateModal} />}
+      {isCreateModalOpen && (
+        <CrearPlantacionModal
+          onClose={closeCreateModal}
+          onCreate={() => {}}
+        />
+      )}
 
       {isDeleteModalOpen && PlantacionesEliminada && (
         <EliminarPlantacionModal
