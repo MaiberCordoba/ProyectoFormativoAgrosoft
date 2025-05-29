@@ -131,8 +131,6 @@ export function ActividadesList() {
   if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad || isLoadingPlantacion) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las actividades</p>;
 
-  // Determinar si se permite crear nuevas actividades
-  const permitirCrear = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
 
   return (
     <div className="p-4">
