@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               "Herramientas",
               "Usos Herramientas",
               "Usos Insumos",
-              "Movimientos Inventario",
+              "Bodega",
             ],
           },
           {
