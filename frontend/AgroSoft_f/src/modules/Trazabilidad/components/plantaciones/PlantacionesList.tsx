@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useGetPlantaciones } from "../../hooks/plantaciones/useGetPlantaciones";
 import { useEditarPlantaciones } from "../../hooks/plantaciones/useEditarPlantaciones";
 import { useCrearPlantaciones } from "../../hooks/plantaciones/useCrearPlantaciones";
@@ -9,7 +10,7 @@ import { CrearPlantacionModal } from "./CrearPlantacionesModal";
 import EliminarPlantacionModal from "./EliminarPlantaciones";
 import { Plantaciones } from "../../types";
 
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { ReportePdfPlantaciones } from "./ReportePdfPlantaciones";
 import { Download } from "lucide-react";
 
@@ -35,6 +36,9 @@ export function PlantacionesList() {
     PlantacionesEliminada,
     handleEliminar,
   } = useEliminarPlantaciones();
+
+  // Estado para mostrar/ocultar previsualización PDF
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleCrearNuevo = () => {
     handleCrear({
@@ -166,25 +170,55 @@ export function PlantacionesList() {
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
         renderReporteAction={(data) => (
-          <PDFDownloadLink
-            document={<ReportePdfPlantaciones plantaciones={data} />}
-            fileName="reporte_plantaciones.pdf"
-          >
-            {({ loading }) => (
-              <button
-                className="p-2 rounded-full hover:bg-red-100 transition-colors"
-                title="Descargar reporte"
-              >
-                {loading ? (
-                  <Download className="h-4 w-4 animate-spin text-blue-500" />
-                ) : (
-                  <Download className="h-5 w-5 text-red-600" />
-                )}
-              </button>
-            )}
-          </PDFDownloadLink>
+          <>
+            {/* Botón para mostrar la previsualización */}
+            <button
+              onClick={() => setShowPreview(true)}
+              className="p-2 rounded-full hover:bg-gray-200 transition-colors mr-2"
+              title="Mostrar previsualización"
+            >
+              👁️
+            </button>
+
+            <PDFDownloadLink
+              document={<ReportePdfPlantaciones plantaciones={data} />}
+              fileName="reporte_plantaciones.pdf"
+            >
+              {({ loading }) => (
+                <button
+                  className="p-2 rounded-full hover:bg-red-100 transition-colors"
+                  title="Descargar reporte"
+                >
+                  {loading ? (
+                    <Download className="h-4 w-4 animate-spin text-blue-500" />
+                  ) : (
+                    <Download className="h-5 w-5 text-red-600" />
+                  )}
+                </button>
+              )}
+            </PDFDownloadLink>
+          </>
         )}
       />
+
+      {/* Mostrar previsualización solo cuando showPreview sea true */}
+      {showPreview && (
+        <div className="border rounded mt-4 relative">
+          <h2 className="text-sm font-semibold px-2 py-1 bg-gray-100 flex justify-between items-center">
+            Vista previa del PDF
+            <button
+              onClick={() => setShowPreview(false)}
+              className="text-red-500 font-bold px-2 hover:text-red-700"
+              title="Cerrar previsualización"
+            >
+              ❌
+            </button>
+          </h2>
+          <PDFViewer width="100%" height={600}>
+            <ReportePdfPlantaciones plantaciones={data || []} />
+          </PDFViewer>
+        </div>
+      )}
 
       {isEditModalOpen && PlantacionesEditada && (
         <EditarPlantacionModal
@@ -194,10 +228,7 @@ export function PlantacionesList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearPlantacionModal
-          onClose={closeCreateModal}
-          onCreate={() => {}}
-        />
+        <CrearPlantacionModal onClose={closeCreateModal} onCreate={() => {}} />
       )}
 
       {isDeleteModalOpen && PlantacionesEliminada && (
