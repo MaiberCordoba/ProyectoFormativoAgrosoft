@@ -98,7 +98,7 @@ export function PlantacionesList() {
     { name: "Semillero", uid: "semillero", sortable: false },
     { name: "Unidades", uid: "unidades", sortable: true },
     { name: "Fecha Siembra", uid: "fechaSiembra", sortable: true },
-    { name: "Era", uid: "eras", sortable: true },
+    { name: "Era - Lote", uid: "eras", sortable: true },
     { name: "Acciones", uid: "acciones", sortable: false },
   ];
 
