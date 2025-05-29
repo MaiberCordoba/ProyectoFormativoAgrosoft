@@ -42,22 +42,27 @@ class Usuario(AbstractUser):
         ('activo',"activo"),
         ('inactivo',"inactivo")
     ]
+    ROLES_CHOICES = [
+        ('admin','admin'),
+        ('instructor','instructor'),
+        ('pasante','pasante'),
+        ('visitante','visitante')
+    ]
     username = None
     identificacion = models.BigIntegerField(unique=True, null=False)
     nombre = models.CharField(max_length=30)
     apellidos = models.CharField(max_length=30)
-    fechaNacimiento = models.DateField()
     telefono = models.CharField(max_length=15)
     correoElectronico = models.CharField(max_length=255, unique=True, null=False)
     admin = models.BooleanField(default=False, null=False)
     estado=models.CharField(max_length=10,choices=ESTADO_CHOICES,default='activo')
+    rol = models.CharField(max_length=12 ,choices=ROLES_CHOICES)
 
     USERNAME_FIELD = "correoElectronico"
     REQUIRED_FIELDS = [
         "identificacion",
         "nombre",
         "apellidos",
-        "fechaNacimiento",
         "telefono",
     ]
 

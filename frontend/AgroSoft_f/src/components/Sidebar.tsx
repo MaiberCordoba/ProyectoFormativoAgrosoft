@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Home,
   Users,
@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { useAuth } from "@/hooks/UseAuth"; // Asegúrate de que la ruta sea correcta
 
 interface SidebarProps {
   isOpen: boolean;
@@ -29,19 +30,42 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const location = useLocation();
+  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Cuando el usuario cambie, actualiza el rol
+    if (user) {
+      setUserRole(user.rol);
+    } else {
+      setUserRole(null);
+    }
+  }, [user]);
 
   const toggleMenu = (menu: string) => {
     if (!isOpen && toggleSidebar) {
-      // Si el sidebar está cerrado
-      toggleSidebar(); // Abrir el sidebar
+      toggleSidebar();
       setTimeout(() => {
-        setOpenMenu(menu); // Desplegar el submenú después de la animación
-      }, 300); // Duración igual a la transición (300ms)
+        setOpenMenu(menu);
+      }, 300);
     } else {
-      // Comportamiento normal cuando está abierto
       setOpenMenu(openMenu === menu ? null : menu);
     }
   };
+
+  // Elementos principales del sidebar
+  const mainItems = [
+    { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
+    // Solo agregar el ítem de Usuarios si el rol es admin
+    ...(userRole === "admin" 
+      ? [{
+          icon: Users,
+          color: "text-[#254030]",
+          text: "Usuarios",
+          to: "/usuarios",
+        }]
+      : [])
+  ];
 
   return (
     <aside
@@ -67,16 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <nav className="flex-1 overflow-y-auto p-2">
         {/* Elementos principales */}
-        {[
-
-          { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
-          {
-            icon: Users,
-            color: "text-[#254030]",
-            text: "Usuarios",
-            to: "/usuarios",
-          },
-        ].map((item) => (
+        {mainItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -94,17 +109,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Menús con submenús */}
         {[
-        {
-           
-          title: "IoT",
-          icon: Monitor,
-          submenus: [
-            "sensores",
-            "evapotranspiracion"
-          ],
-
-        },
-
+          {
+            title: "IoT",
+            icon: Monitor,
+            submenus: [
+              "sensores",
+              "evapotranspiracion"
+            ],
+          },
           {
             title: "Cultivos",
             icon: Leaf,
@@ -169,7 +181,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               "Seguimiento de afectaciones",
             ],
           },
-          // ... otros menús
         ].map((menu) => (
           <div key={menu.title}>
             <button

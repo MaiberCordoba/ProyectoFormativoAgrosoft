@@ -12,12 +12,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "identificacion",
             "nombre",
             "apellidos",
-            "fechaNacimiento",
             "telefono",
             "correoElectronico",
             "password",
             "admin",
             "estado",
+            "rol",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
@@ -34,3 +34,17 @@ class UsuarioSerializer(serializers.ModelSerializer):
             user.set_password(password)
         user.save()
         return user
+    
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        
+        # Actualizar campos normales
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        # Manejo CRUCIAL de la contraseña
+        if password:
+            instance.set_password(password)  # Genera el hash correcto
+        
+        instance.save()
+        return instance
