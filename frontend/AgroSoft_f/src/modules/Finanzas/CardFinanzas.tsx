@@ -57,13 +57,6 @@ export function CosechasResumenCard() {
             Vender
           </Button>
           </div>
-          {modalVentas && (
-          <CrearVentasModal
-          onClose={() => setModalVentas(false)}
-          onCreate={handleVentaCosecha}
-          cosecha={cosechaSeleccionada}
-          />
-          )}
           </>
         );
       })}
@@ -72,6 +65,13 @@ export function CosechasResumenCard() {
         <p className="text-sm font-semibold text-green-800">Total Productos Cosechados</p>
         <p className="text-xl font-bold text-green-900">{total}</p>
       </div>
+      {modalVentas && cosechaSeleccionada && (
+        <CrearVentasModal
+        onClose={() => setModalVentas(false)}
+        onCreate={handleVentaCosecha}
+        cosecha={cosechaSeleccionada}
+      />
+      )}
     </div>
   );
 }
