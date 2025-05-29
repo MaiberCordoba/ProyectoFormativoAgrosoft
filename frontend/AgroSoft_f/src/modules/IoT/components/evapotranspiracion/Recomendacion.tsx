@@ -10,13 +10,8 @@ import {
 } from "@heroui/react";
 import { 
   Droplet, 
-  Thermometer, 
-  Info,
-  ArrowUpRight,
   ThermometerSun,
   Leaf,
-  Sun,
-  Calendar,
   Zap,
   Droplets,
   Scissors
