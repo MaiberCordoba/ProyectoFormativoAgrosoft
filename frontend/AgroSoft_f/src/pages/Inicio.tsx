@@ -18,7 +18,7 @@ export function Inicio() {
       {/* Encabezado con navegación */}
       <header className="relative z-10 flex justify-between items-center px-10 py-6 text-white">
         <div className="text-2xl font-bold tracking-wide">
-          AD<span className="text-green-400">SO</span> 2846103
+          AD<span style={{ color: "#327d45" }}>SO</span> 2846103
         </div>
       </header>
 
@@ -26,16 +26,19 @@ export function Inicio() {
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-10 h-[calc(100vh-96px)]">
         {/* Lado izquierdo: texto sobre fondo oscuro */}
         <div className="bg-black/60 text-white p-10 rounded-lg max-w-xl backdrop-blur-md shadow-xl">
-          <p className="text-green-400 text-sm uppercase tracking-widest mb-2">Sistema Tecnológico</p>
+          <p style={{ color: "#327d45" }} className="text-sm uppercase tracking-widest mb-2">Sistema Tecnológico</p>
           <h1 className="text-5xl font-extrabold leading-tight mb-4">
-            AGRO<span className="text-green-400">SOFT</span>
+            AGRO<span style={{ color: "#327d45" }}>SOFT</span>
           </h1>
           <p className="text-gray-200 mb-6">
             Es un sistema integral diseñado para el beneficio y desarrollo del campo a través de soluciones tecnológicas.
           </p>
           <button
             onClick={handleRedirect}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded"
+            className="text-white font-bold py-2 px-6 rounded"
+            style={{ backgroundColor: "#327d45" }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#286838"}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#327d45"}
           >
             Ir a módulo IoT
           </button>
