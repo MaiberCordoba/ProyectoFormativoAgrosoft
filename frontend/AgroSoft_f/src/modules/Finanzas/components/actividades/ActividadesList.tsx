@@ -13,6 +13,7 @@ import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCult
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
 
 export function ActividadesList() {
   const { data, isLoading, error } = useGetActividades();
@@ -44,8 +45,33 @@ export function ActividadesList() {
     handleEliminar
   } = useEliminarActividad();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0,fk_Plantacion:0 ,fk_Usuario: 0, fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+    const permitido = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
+    
+    if (permitido) {
+      handleCrear({ id: 0, fk_Cultivo: 0, fk_Plantacion:0, fk_Usuario: 0, 
+                   fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (action: () => void, requiredRoles: string[]) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
   };
 
   // Definición de columnas
@@ -87,15 +113,14 @@ export function ActividadesList() {
       case "acciones":
        return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
-            permitirEditar={userRole === "admin" || userRole === "instructor"}
-            permitirEliminar={userRole === "admin"}
-            onVerDetalles={
-              userRole === "pasante" 
-                ? () => console.log("Ver detalles", item.id)
-                : undefined
-            }
+            onEditar={() => handleActionWithPermission(
+              () => handleEditar(item), 
+              ["admin", "instructor", "pasante"]
+            )}
+            onEliminar={() => handleActionWithPermission(
+              () => handleEliminar(item), 
+              ["admin", "instructor"]
+            )}
           />
         );
       default:
@@ -105,6 +130,9 @@ export function ActividadesList() {
 
   if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad || isLoadingPlantacion) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las actividades</p>;
+
+  // Determinar si se permite crear nuevas actividades
+  const permitirCrear = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
 
   return (
     <div className="p-4">
