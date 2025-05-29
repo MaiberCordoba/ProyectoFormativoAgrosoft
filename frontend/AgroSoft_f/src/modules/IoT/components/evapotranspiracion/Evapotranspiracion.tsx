@@ -5,6 +5,7 @@ import { addToast } from "@heroui/toast";
 import EvapotranspiracionCard from "./EvapotranspiracionCard";
 import EvapotranspiracionChart from "./EvapotranspiracionChart";
 import CropKCoefficientTable from "./Kc";
+import Recomendaciones from "./Recomendacion";
 
 type Plantacion = {
   id: number;
@@ -274,21 +275,37 @@ export default function EvapotranspiracionC() {
                 />
               </div>
               <div className="p-8 rounded-xl">
-                <br/>
-                <br/>
+
                 <EvapotranspiracionChart 
-                  plantacionId={selectedPlantacion.toString()}
-                  nuevoDato={{
-                    fecha: new Date().toISOString(),
-                    et_mm_dia: evapotranspiracion.evapotranspiracion_mm_dia,
+                plantacionId={selectedPlantacion.toString()}
+                nuevoDato={{
+                  fecha: new Date().toISOString(),
+                  et_mm_dia: evapotranspiracion.evapotranspiracion_mm_dia,
+                  kc: evapotranspiracion.kc,
+                  temperatura: evapotranspiracion.sensor_data.temperatura,
+                  humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                  humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo,
+                  estado_humedad: evapotranspiracion.alerta_humedad?.tipo,
+                  dias_desde_siembra: evapotranspiracion.detalles.dias_siembra
+                }}
+                showAdditionalInfo={true}
+              />
+                <br />
+
+                <Recomendaciones 
+                    cultivo={{
+                    id: selectedPlantacion.toString(),
+                    nombre: evapotranspiracion.detalles.cultivo,
+                    dias_siembra: evapotranspiracion.detalles.dias_siembra
+                  }}
+                  datosActuales={{
+                    et: evapotranspiracion.evapotranspiracion_mm_dia,
                     kc: evapotranspiracion.kc,
                     temperatura: evapotranspiracion.sensor_data.temperatura,
-                    humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
                     humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo,
-                    estado_humedad: evapotranspiracion.alerta_humedad?.tipo,
-                    dias_desde_siembra: evapotranspiracion.detalles.dias_siembra
+                    humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                    estado_humedad: evapotranspiracion.alerta_humedad?.tipo || 'normal'
                   }}
-                  showAdditionalInfo={true}
                 />
               </div>
             </div>
