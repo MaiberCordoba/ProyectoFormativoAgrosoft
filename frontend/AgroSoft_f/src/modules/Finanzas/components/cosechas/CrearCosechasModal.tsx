@@ -19,7 +19,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
   const [cantidad, setCantidad] = useState<number | null>(null);  // Inicializado en 0
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [valorUnidad, setValorUnidad] = useState<number | null>(null);
+  const [precioUnidad, setPrecioUnidad] = useState<number | null>(null);
   const [fecha, setFecha] = useState("");
 
   const [mensajeError, setMensajeError] = useState("")
@@ -33,7 +33,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const { mutate, isPending } = usePostCosecha();
 
   const handleSubmit = () => {
-    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha || !valorUnidad) {
+    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha || !precioUnidad) {
       setMensajeError("Por favor, completa todos los campos.");
       return;
     }
@@ -52,7 +52,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           setCantidad(null)
           setFk_UnidadMedida(null)
           setFecha("");
-          setValorUnidad(null)
+          setPrecioUnidad(null)
           setMensajeError("")
         },
       }
@@ -106,8 +106,8 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
         <Input
           label="Precio unidad"
           type="number"
-          value={valorUnidad}
-          onChange={(e) => setValorUnidad(Number(e.target.value))}
+          value={precioUnidad}
+          onChange={(e) => setPrecioUnidad(Number(e.target.value))}
           required
         />
 
