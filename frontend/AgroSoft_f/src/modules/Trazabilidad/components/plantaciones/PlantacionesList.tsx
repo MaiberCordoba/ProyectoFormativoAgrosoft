@@ -127,7 +127,7 @@ export function PlantacionesList() {
               <>
                 {item.eras.tipo}
                 {" - "}
-                {item.eras.fk_lote?.nombre ?? "Sin lote"}
+                {item.eras.Lote?.nombre ?? "Sin lote"}
               </>
             ) : (
               `Era ${item.eras?.id ?? "N/A"}`
