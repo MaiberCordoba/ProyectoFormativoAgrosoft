@@ -1,4 +1,4 @@
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer, View } from "react-big-calendar";
 import { format } from "date-fns/format";
 import { parse } from "date-fns/parse";
 import { startOfWeek } from "date-fns/startOfWeek";
@@ -9,6 +9,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import { Actividades } from "@/modules/Finanzas/types";
 import { Controles } from "@/modules/Sanidad/types";
+
+import "@/modules/Trazabilidad/components/calendario/calendario.css";
 
 const locales = { es };
 
@@ -46,6 +48,8 @@ interface EventoCalendario {
 
 export default function CalendarioActividades() {
   const [eventos, setEventos] = useState<EventoCalendario[]>([]);
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null>(null);
+  const [vistaActual, setVistaActual] = useState<View>("month");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,9 +62,7 @@ export default function CalendarioActividades() {
       Authorization: `Bearer ${token}`,
     };
 
-    const fetchActividades = fetch("http://127.0.0.1:8000/api/actividades/", {
-      headers,
-    })
+    const fetchActividades = fetch("http://127.0.0.1:8000/api/actividades/", { headers })
       .then((res) => {
         if (res.status === 401) throw new Error("No autorizado");
         return res.json();
@@ -74,9 +76,7 @@ export default function CalendarioActividades() {
         }))
       );
 
-    const fetchControles = fetch("http://127.0.0.1:8000/api/controles/", {
-      headers,
-    })
+    const fetchControles = fetch("http://127.0.0.1:8000/api/controles/", { headers })
       .then((res) => {
         if (res.status === 401) throw new Error("No autorizado");
         return res.json();
@@ -98,57 +98,96 @@ export default function CalendarioActividades() {
         console.error("Error cargando datos:", err);
         if (err.message === "No autorizado") {
           alert("Sesión expirada. Por favor inicia sesión nuevamente.");
-          // Puedes redirigir al login si tienes routing
-          // window.location.href = "/login";
         }
       });
   }, []);
 
+  const handleSelectSlot = (slotInfo: { start: Date }) => {
+    setFechaSeleccionada(slotInfo.start);
+    setVistaActual("agenda");
+  };
+
+  const handleSelectEvent = (event: EventoCalendario) => {
+    setFechaSeleccionada(event.start);
+    setVistaActual("agenda");
+  };
+
+  const eventosFiltrados = fechaSeleccionada
+    ? eventos.filter(
+        (e) =>
+          e.start.toDateString() === fechaSeleccionada.toDateString()
+      )
+    : eventos;
+
   const containerStyle: React.CSSProperties = {
     backgroundColor: "white",
-    padding: "16px",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    maxWidth: "900px",
+    padding: "25px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    maxWidth: "1000px",
     margin: "0 auto",
+    marginBottom: "25px",
+  };
+
+  const titleStyle: React.CSSProperties = {
+    backgroundColor: "#327D45",
+    color: "white",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    textAlign: "center",
+    marginBottom: "20px",
+    fontSize: "22px",
+    fontWeight: "bold",
+  };
+
+  const CustomEvent = ({ event }: { event: EventoCalendario }) => {
+    const baseStyle: React.CSSProperties = {
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "0.8rem",
+      fontWeight: 500,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      backgroundColor: event.tipo === "actividad" ? "#327D45" : "#325D7D",
+    };
+
+    return <div style={baseStyle}>{event.title}</div>;
   };
 
   return (
     <div style={containerStyle}>
+      <div style={titleStyle}>Calendario de Actividades y Controles</div>
       <Calendar
         localizer={localizer}
-        events={eventos}
+        events={eventosFiltrados}
         startAccessor="start"
         endAccessor="end"
         messages={messages}
         culture="es"
-        style={{ height: 450 }}
+        style={{ height: 700 }}
         views={["month", "agenda"]}
+        view={vistaActual}
+        onView={(view) => setVistaActual(view)}
+        date={fechaSeleccionada ?? new Date()}
+        onNavigate={(date) => setFechaSeleccionada(date)}
+        selectable
+        onSelectSlot={handleSelectSlot}
+        onSelectEvent={handleSelectEvent}
         components={{
+          event: CustomEvent,
           agenda: {
+            event: CustomEvent,
             time: () => null,
           },
         }}
-        eventPropGetter={(event) => {
-          const backgroundColor = event.tipo === "actividad" ? "#12A34A" : "#06202B";
-          return {
-            style: {
-              backgroundColor,
-              color: "white",
-              borderRadius: "5px",
-              padding: "2px 5px",
-            },
-          };
-        }}
-        dayPropGetter={(date) => {
-          const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-          return {
-            style: {
-              backgroundColor: "#f9fcff",
-              border: "1px solid #e0e0e0",
-            },
-          };
-        }}
+        dayPropGetter={() => ({
+          style: {
+            backgroundColor: "#f8fbff",
+            border: "1px solid #e6e6e6",
+          },
+        })}
       />
     </div>
   );
