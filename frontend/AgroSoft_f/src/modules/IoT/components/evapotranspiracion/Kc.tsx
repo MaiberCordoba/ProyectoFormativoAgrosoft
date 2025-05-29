@@ -1,6 +1,6 @@
 import  { useState } from 'react';
 import { 
-  Leaf, Carrot, Apple, Sprout, LeafyGreen, Wheat, Banana, ChevronDown, ChevronUp,
+  Leaf, Carrot, Sprout, LeafyGreen, Wheat, Banana, ChevronDown, ChevronUp,
   Citrus
 } from 'lucide-react';
 
@@ -46,6 +46,7 @@ const cropCategories = [
             { name: 'Sandía', stages: [{ kc: 0.5, duration: '1-30' }, { kc: 0.8, duration: '31-60' }, { kc: 1.10, duration: '61-90' }, { kc: 0.85, duration: '91-110' }], totalDays: 110 },
             { name: 'Auyama', stages: [{ kc: 0.5, duration: '1-35' }, { kc: 0.8, duration: '36-70' }, { kc: 1.05, duration: '71-100' }, { kc: 0.85, duration: '101-130' }], totalDays: 130 },
             { name: 'Melón', stages: [{ kc: 0.5, duration: '1-30' }, { kc: 0.8, duration: '31-65' }, { kc: 1.10, duration: '66-95' }, { kc: 0.85, duration: '96-115' }], totalDays: 115 },
+            { name: 'Pimentón', stages: [{ kc: 0.5, duration: '1-30' }, { kc: 0.8, duration: '31-60' }, { kc: 1.15, duration: '61-120' },{ kc: 0.85, duration: '121-150' }], totalDays: 150}
         ]
     },
     {
