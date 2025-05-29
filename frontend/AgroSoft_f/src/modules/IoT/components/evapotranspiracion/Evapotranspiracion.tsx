@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
-import { Sprout, Calculator, ArrowLeft, Droplet } from "lucide-react";
+import { Sprout, Calculator, ArrowLeft, Droplet, ChevronDown, ChevronUp } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import EvapotranspiracionCard from "./EvapotranspiracionCard";
 import EvapotranspiracionChart from "./EvapotranspiracionChart";
+import CropKCoefficientTable from "./Kc";
 
 type Plantacion = {
   id: number;
@@ -27,6 +28,8 @@ export default function EvapotranspiracionC() {
   const [selectedPlantacion, setSelectedPlantacion] = useState<number | string>("");
   const [errorET, setErrorET] = useState<string | null>(null);
   const [kcValue, setKcValue] = useState<string>("");
+  const [showSensorList, setShowSensorList] = useState<boolean>(false);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -131,7 +134,7 @@ export default function EvapotranspiracionC() {
                 <SelectItem 
                 key={String(plantacion.id)} 
                 >
-                {`Cultivo ${plantacion.fk_Cultivo?.nombre || 'N/D'}, Lote ${plantacion.fk_Era?.fk_lote?.nombre || 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+                {`Cultivo ${plantacion.fk_Cultivo|| 'N/D'}, Lote ${plantacion.fk_Era || 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
                 </SelectItem>
               ))}
               </Select>
@@ -286,6 +289,29 @@ export default function EvapotranspiracionC() {
             </div>
           </div>
         )}
+        <br/><br/><br/>
+      <div className="col-span-full mt-6 flex flex-col items-center w-full max-w-3xl mx-auto">
+      <button
+        className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"
+        onClick={() => setShowSensorList((prev) => !prev)}
+      >
+        {showSensorList ? (
+          <>
+            Ocultar lista <ChevronUp className="w-4 h-4" />
+          </>
+        ) : (
+          <>
+            coeficientes Kc recomendados <ChevronDown className="w-4 h-4" />
+          </>
+        )}
+      </button>
+      
+      {showSensorList && (
+        <div className="w-full mt-4 animate-slideDown">
+          <CropKCoefficientTable />
+        </div>
+      )}
+    </div>
       </div>
     </div>
   );
