@@ -17,7 +17,7 @@ class Actividades(models.Model):
     fk_TipoActividad = models.ForeignKey(TipoActividad, on_delete=models.SET_NULL, null=True)
     titulo = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=200)
-    fecha = models.DateField(auto_now_add=True)  # Establece automáticamente la fecha al crear
+    fecha = models.DateField(auto_now=False)  # Establece automáticamente la fecha al crear
     estado = models.CharField(max_length=3, choices=ESTADO_CHOICES, default='AS')
 
     def __str__(self):
