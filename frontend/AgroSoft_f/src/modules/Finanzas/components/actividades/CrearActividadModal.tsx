@@ -215,11 +215,20 @@ export const CrearActividadesModal = ({
                 }}
               >
                 {(plantacion || []).map((p) => (
-                  <SelectItem key={p.id.toString()}>
-                    {p.cultivo.nombre}
+                  <SelectItem 
+                  key={p.id.toString()}
+                  textValue={`Cultivo:${p.cultivo.nombre} - Era:${p.eras.tipo}`}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-semibold">Cultivo:{p.cultivo.nombre}</span>
+                      <span className="font-semibold">Era: {p.eras.tipo}</span>
+                    </div>
+                  
                   </SelectItem>
                 ))}
               </Select>
+
+              
             </div>
             <Button
               onPress={() => setPlantacionModal(true)}
