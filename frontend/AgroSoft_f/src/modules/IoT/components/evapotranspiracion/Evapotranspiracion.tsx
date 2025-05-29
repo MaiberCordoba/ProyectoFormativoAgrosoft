@@ -295,28 +295,30 @@ export default function EvapotranspiracionC() {
           </div>
         )}
         <br/><br/><br/>
-      <div className="col-span-full mt-6 flex flex-col items-center w-full max-w-3xl mx-auto">
-      <button
-        className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"
-        onClick={() => setShowSensorList((prev) => !prev)}
-      >
-        {showSensorList ? (
-          <>
-            Ocultar lista <ChevronUp className="w-4 h-4" />
-          </>
-        ) : (
-          <>
-            coeficientes Kc recomendados <ChevronDown className="w-4 h-4" />
-          </>
-        )}
-      </button>
-      
-      {showSensorList && (
-        <div className="w-full mt-4 animate-slideDown">
-          <CropKCoefficientTable />
+      {!evapotranspiracion && (
+        <div className="col-span-full mt-6 flex flex-col items-center w-full max-w-3xl mx-auto">
+          <button
+            className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"
+            onClick={() => setShowSensorList((prev) => !prev)}
+          >
+            {showSensorList ? (
+              <>
+                Ocultar lista <ChevronUp className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                coeficientes Kc recomendados <ChevronDown className="w-4 h-4" />
+              </>
+            )}
+          </button>
+          
+          {showSensorList && (
+            <div className="w-full mt-4 animate-slideDown">
+              <CropKCoefficientTable />
+            </div>
+          )}
         </div>
       )}
-    </div>
       </div>
     </div>
   );
