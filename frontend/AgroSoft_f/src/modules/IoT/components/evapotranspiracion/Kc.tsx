@@ -1,6 +1,7 @@
 import  { useState } from 'react';
 import { 
-  Leaf, Carrot, Apple, Sprout, LeafyGreen, Wheat, Banana, ChevronDown, ChevronUp
+  Leaf, Carrot, Apple, Sprout, LeafyGreen, Wheat, Banana, ChevronDown, ChevronUp,
+  Citrus
 } from 'lucide-react';
 
 const CropKCoefficientTable = () => {
@@ -38,7 +39,7 @@ const cropCategories = [
     {
         id: 'fruits',
         name: 'Frutas y Hortalizas de Fruto',
-        icon: <Apple style={{ color: "#EF4444" }} size={24} />,
+        icon: <Citrus  style={{ color: "#EF4444" }} size={24} />,
         crops: [
             { name: 'Tomate', stages: [{ kc: 0.5, duration: '1-30' }, { kc: 0.8, duration: '31-60' }, { kc: 1.20, duration: '61-110' }, { kc: 0.80, duration: '111-140' }], totalDays: 140 },
             { name: 'Pepino', stages: [{ kc: 0.5, duration: '1-25' }, { kc: 0.8, duration: '26-50' }, { kc: 1.10, duration: '51-80' }, { kc: 0.85, duration: '81-100' }], totalDays: 100 },
