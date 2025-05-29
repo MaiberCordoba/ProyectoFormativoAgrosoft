@@ -110,37 +110,39 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           },
         ]}
         >
-          <p className="text-red-500 text-sm mb-2">{error}</p>
+        <p className="text-red-500 text-sm mb-2">{error}</p>
         {isLoadingCosechas ? (
-  <p>Cargando cosechas...</p>
-) : (
-  <div className="flex items-center gap-2">
-    <div className="flex-1">
-      <Select
-        label="Cosecha"
-        placeholder="Selecciona el producto y cantidad"
-        selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
-        onSelectionChange={(keys) => {
-          const selectedKey = Array.from(keys)[0];
-          setFk_Cosecha(selectedKey ? Number(selectedKey) : null);
-        }}
-      >
-      {(cosechas || []).map((cosecha) => {
-        const plantacion = plantaciones.find(p => p.id === cosecha.fk_Plantacion);
-        const producto = plantacion?.cultivo?.nombre || "Sin producto";
-        return (
-          <SelectItem
-            key={cosecha.id.toString()}
-            textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidad}`}
-          >
-            <div className="flex flex-col">
-              <span className="font-semibold">Producto: {producto}</span>
-              <span>Cantidad: {cosecha.cantidad}</span>
-            </div>
-          </SelectItem>
-                  );
-                })}
+        <p>Cargando cosechas...</p>
+        ) : (
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+          <Select
+          label="Cosecha"
+          placeholder="Selecciona el producto y cantidad"
+          selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0];
+            setFk_Cosecha(selectedKey ? Number(selectedKey) : null);
+          }}
+        >
+          {(cosechas || []).map((cosecha) => {
+          const plantacion = plantaciones?.find(p => p.id === cosecha.fk_Plantacion);
+          const producto = plantacion?.cultivo?.nombre || "Sin producto";
+          return (
+            <SelectItem
+              key={cosecha.id.toString()}
+              textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidad}`}
+            >
+              <div className="flex flex-col">
+                <span className="font-semibold">Producto: {producto}</span>
+                <span>Cantidad: {cosecha.cantidad}</span>
+              </div>
+            </SelectItem>
+          );
+          })}
           </Select>
+
+          
           </div>
             <Button
               onPress={() => setCosechaModal(true)}
