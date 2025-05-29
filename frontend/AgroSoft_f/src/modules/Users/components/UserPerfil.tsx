@@ -55,25 +55,40 @@ const EditarPerfilModal: React.FC<EditarPerfilModalProps> = ({
     }));
   };
 
-  const handleSubmit = () => {
-    if (!currentUser?.id) {
-      addToast({
-        title: "Error",
-        description: "No se pudo identificar al usuario",
-        color: "danger",
-      });
-      return;
-    }
-
-    const changedData: Partial<User> = {};
-    Object.keys(userData).forEach(key => {
-      const userKey = key as keyof User;
-      if (userData[key as keyof typeof userData] !== currentUser[userKey]?.toString()) {
-        changedData[userKey] = userKey === 'identificacion' 
-          ? Number(userData.identificacion)
-          : userData[key as keyof typeof userData];
-      }
+ const handleSubmit = () => {
+  if (!currentUser?.id) {
+    addToast({
+      title: "Error",
+      description: "No se pudo identificar al usuario",
+      color: "danger",
     });
+    return;
+  }
+
+  const changedData: Partial<User> = {};
+  
+  // Campos normales (excluyendo password)
+  Object.keys(userData).forEach(key => {
+    if (key === "password") return; // Saltamos password aquí
+    
+    const userKey = key as keyof User;
+    const currentValue = userData[key as keyof typeof userData];
+    const originalValue = currentUser[userKey]?.toString() || "";
+    
+    if (currentValue !== originalValue) {
+      changedData[userKey] = userKey === 'identificacion' 
+        ? Number(currentValue)
+        : currentValue;
+    }
+  });
+  
+  // Manejo especial para password: solo si no está vacío y es diferente
+  if (
+    userData.password !== "" && 
+    userData.password !== currentUser.password
+  ) {
+    changedData.password = userData.password;
+  }
 
     if (Object.keys(changedData).length === 0) {
       addToast({
