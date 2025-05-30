@@ -13,19 +13,20 @@ interface CrearMovimientoInventarioModalProps {
 
 export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInventarioModalProps) => {
   const [tipo, setTipo] = useState<"entrada" | "salida">("entrada");
-  const [unidades, setUnidades] = useState<number | null>(null);
+  const [unidades, setUnidades] = useState<string>("");
   const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
-
-  const [error,setError] = useState("")
+  const [error, setError] = useState("");
 
   const { mutate, isPending } = usePostMovimiento();
   const { data: insumos = [], isLoading: cargandoInsumos } = useGetInsumos();
   const { data: herramientas = [], isLoading: cargandoHerramientas } = useGetHerramientas();
 
   const handleSubmit = () => {
-    if (!unidades || unidades <= 0) {
-      setError("Por favor, ingresa una cantidad válida.");
+    const cantidad = Number(unidades);
+
+    if (isNaN(cantidad) || cantidad <= 0) {
+      setError("Por favor, ingresa una cantidad válida mayor a 0.");
       return;
     }
 
@@ -45,7 +46,7 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
     mutate(
       {
         tipo,
-        unidades,
+        unidades: cantidad,
         fk_Insumo,
         fk_UsoInsumo: null,
         fk_Herramienta,
@@ -55,10 +56,10 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
         onSuccess: () => {
           onClose();
           setTipo("entrada");
-          setUnidades(null);
+          setUnidades("");
           setFk_Insumo(null);
           setFk_Herramienta(null);
-          setError("")
+          setError("");
         },
       }
     );
@@ -94,10 +95,9 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
 
         <Input
           label="Cantidad de unidades"
-          type="number"
-          min="1"
-          value={unidades ?? ""}
-          onChange={(e) => setUnidades(Number(e.target.value) || null)}
+          type="text"
+          value={unidades}
+          onChange={(e) => setUnidades(e.target.value)}
           required
         />
 

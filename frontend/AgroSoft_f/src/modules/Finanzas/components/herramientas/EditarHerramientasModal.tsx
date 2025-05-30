@@ -1,39 +1,59 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { usePatchHerramientas } from '../../hooks/herramientas/usePatchHerramientas'; // Cambié el hook
+import { usePatchHerramientas } from '../../hooks/herramientas/usePatchHerramientas';
 import { Herramientas } from '../../types';
 import { Input, Textarea, Select, SelectItem } from '@heroui/react';
-import { useGetLotes } from '@/modules/Trazabilidad/hooks/lotes/useGetLotes'; // Cambié el hook
+import { useGetLotes } from '@/modules/Trazabilidad/hooks/lotes/useGetLotes';
 
 interface EditarHerramientaModalProps {
-  herramienta: Herramientas; // La herramienta que se está editando
-  onClose: () => void; // Función para cerrar el modal
+  herramienta: Herramientas;
+  onClose: () => void;
 }
 
 const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herramienta, onClose }) => {
   const [nombre, setNombre] = useState<string>(herramienta.nombre);
   const [descripcion, setDescripcion] = useState<string>(herramienta.descripcion);
-  const [unidades, setUnidades] = useState<number>(herramienta.unidades);
-  const [fk_Lote, setFk_Lote] = useState<number | undefined>(herramienta.fk_Lote); // Estado para el ID del lote
+  const [unidades, setUnidades] = useState<string>(herramienta.unidades.toString());
+  const [precio, setPrecio] = useState<string>(herramienta.precio.toString());
+  const [fk_Lote, setFk_Lote] = useState<number | undefined>(herramienta.fk_Lote);
+  const [error, setError] = useState<string>("");
 
-  const { data: lotes, isLoading: isLoadingLotes } = useGetLotes(); // Obtener los lotes
-  const { mutate, isPending } = usePatchHerramientas(); // Mutación para actualizar herramientas
+  const { data: lotes, isLoading: isLoadingLotes } = useGetLotes();
+  const { mutate, isPending } = usePatchHerramientas();
 
   const handleSubmit = () => {
-    // Llama a la mutación para actualizar la herramienta
+    // Validar que unidades y precio sean números válidos y no negativos
+    const unidadesNum = Number(unidades);
+    const precioNum = Number(precio);
+
+    if (
+      nombre.trim() === "" ||
+      descripcion.trim() === "" ||
+      isNaN(unidadesNum) ||
+      isNaN(precioNum) ||
+      unidadesNum < 0 ||
+      precioNum < 0
+    ) {
+      setError("Por favor ingresa valores válidos y que no sean negativos en todos los campos.");
+      return;
+    }
+
+    setError("");
+
     mutate(
       {
         id: herramienta.id,
         data: {
           nombre,
           descripcion,
-          unidades,
-          fk_Lote, // Envía solo el ID del lote
+          unidades: unidadesNum,
+          precio: precioNum,
+          fk_Lote,
         },
       },
       {
         onSuccess: () => {
-          onClose(); // Cierra el modal después de guardar
+          onClose();
         },
       }
     );
@@ -53,6 +73,8 @@ const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herrami
         },
       ]}
     >
+      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+
       <Input
         value={nombre}
         label="Nombre"
@@ -62,14 +84,19 @@ const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herrami
       <Textarea
         value={descripcion}
         label="Descripción"
-        type="text"
         onChange={(e) => setDescripcion(e.target.value)}
       />
       <Input
         value={unidades}
         label="Unidades"
         type="number"
-        onChange={(e) => setUnidades(Number(e.target.value))}
+        onChange={(e) => setUnidades(e.target.value)}
+      />
+      <Input
+        value={precio}
+        label="Precio Unidad"
+        type="number"
+        onChange={(e) => setPrecio(e.target.value)}
       />
 
       {/* Selector de Lotes */}
@@ -79,16 +106,14 @@ const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herrami
         <Select
           label="Lote"
           placeholder="Selecciona un lote"
-          selectedKeys={fk_Lote ? [fk_Lote.toString()] : []} // HeroUI espera un array de strings
+          selectedKeys={fk_Lote ? [fk_Lote.toString()] : []}
           onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0]; // HeroUI devuelve un Set
-            setFk_Lote(selectedKey ? Number(selectedKey) : undefined); // Actualiza el estado con el nuevo ID
+            const selectedKey = Array.from(keys)[0];
+            setFk_Lote(selectedKey ? Number(selectedKey) : undefined);
           }}
         >
           {(lotes || []).map((lote) => (
-            <SelectItem key={lote.id.toString()}>
-              {lote.nombre}
-            </SelectItem>
+            <SelectItem key={lote.id.toString()}>{lote.nombre}</SelectItem>
           ))}
         </Select>
       )}
