@@ -3,17 +3,39 @@ import { useEditarAfeccionCultivo } from "../../hooks/afeccionescultivo/useEdita
 import { useCrearAfeccionCultivo } from "../../hooks/afeccionescultivo/useCrearAfeccionescultivo";
 import { useEliminarAfeccionCultivo } from "../../hooks/afeccionescultivo/useEliminarAfeccionescultivo";
 import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
-
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarAfeccionCultivoModal from "./EditarAfeccionescultivoModal";
 import {CrearAfeccionCultivoModal } from "./CrearAfeccionescultivoModal";
 import EliminarAfeccionCultivoModal from "./EliminarAfeccionescultivo";
 import { AfeccionesCultivo, EstadoAfeccion } from "../../types";
+import { useAuth } from "@/hooks/UseAuth"; // Importa useAuth
+import { addToast } from "@heroui/toast"; // Importa addToast
 
 export function AfeccionesCultivoList() {
   const { data, isLoading, error } = useGetAfeccionesCultivo();
   const { data: afecciones } = useGetAfecciones();
+  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const userRole = user?.rol || null; // Obtiene el rol del usuario
+
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
+  const handleActionWithPermission = (
+    action: () => void, 
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
 
   const { 
     isOpen: isEditModalOpen, 
@@ -36,10 +58,16 @@ export function AfeccionesCultivoList() {
   } = useEliminarAfeccionCultivo();
 
   const handleCrearNuevo = () => {
-    handleCrear({ fk_Plantacion: 0, fk_Plaga: 0, fechaEncuentro: "", estado: "ST" });
+    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
+    
+    if (permitido) {
+      handleCrear({ fk_Plantacion: 0, fk_Plaga: 0, fechaEncuentro: "", estado: "ST" });
+    } else {
+      showAccessDenied();
+    }
   };
 
-   const columnas = [
+  const columnas = [
     { name: "Cultivo", uid: "cultivo", sortable: true },
     { name: "Especie", uid: "especie" },
     { name: "Era", uid: "era" },
@@ -51,7 +79,7 @@ export function AfeccionesCultivoList() {
     { name: "Acciones", uid: "acciones" },
   ];
 
-   const renderCell = (item: AfeccionesCultivo, columnKey: React.Key) => {
+  const renderCell = (item: AfeccionesCultivo, columnKey: React.Key) => {
     switch (columnKey) {
       case "cultivo":
         return <span>{item.plantaciones?.cultivo?.nombre || "No definido"}</span>;
@@ -72,8 +100,18 @@ export function AfeccionesCultivoList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => 
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
+            onEliminar={() => 
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -97,7 +135,7 @@ export function AfeccionesCultivoList() {
 
       {isEditModalOpen && afeccionCultivoEditada && (
         <EditarAfeccionCultivoModal
-        afeccionCultivo={afeccionCultivoEditada}
+          afeccionCultivo={afeccionCultivoEditada}
           onClose={closeEditModal}
         />
       )}
@@ -110,7 +148,7 @@ export function AfeccionesCultivoList() {
 
       {isDeleteModalOpen && afeccionCultivoEliminada && (
         <EliminarAfeccionCultivoModal
-        afeccioncultivo={afeccionCultivoEliminada}
+          afeccioncultivo={afeccionCultivoEliminada}
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
         />
@@ -118,5 +156,3 @@ export function AfeccionesCultivoList() {
     </div>
   );
 }
-
-

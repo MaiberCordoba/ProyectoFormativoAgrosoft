@@ -8,9 +8,33 @@ import EditarTipoControlModal from "./EditarTipoControlModal";
 import { CrearTipoControlModal } from "./CrearTipoControlModal";
 import EliminarTipoControlModal from "./EliminarTipoControlModal";
 import { TipoControl } from "../../types";
+import { useAuth } from "@/hooks/UseAuth"; // Importa useAuth
+import { addToast } from "@heroui/toast"; // Importa addToast
 
 export function TipoControlList() {
   const { data, isLoading, error } = useGetTipoControl();
+  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const userRole = user?.rol || null; // Obtiene el rol del usuario
+
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
+  const handleActionWithPermission = (
+    action: () => void, 
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -32,7 +56,13 @@ export function TipoControlList() {
   } = useEliminarTipoControl();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "" });
+    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
+    
+    if (permitido) {
+      handleCrear({ id: 0, nombre: "", descripcion: "" });
+    } else {
+      showAccessDenied();
+    }
   };
 
   // Definición de columnas
@@ -40,7 +70,6 @@ export function TipoControlList() {
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
     { name: "Acciones", uid: "acciones" },
-    
   ];
 
   // Función de renderizado
@@ -53,8 +82,18 @@ export function TipoControlList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => 
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
+            onEliminar={() => 
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:

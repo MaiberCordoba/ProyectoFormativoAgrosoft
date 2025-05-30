@@ -9,9 +9,33 @@ import { CrearTipoAfeccionModal } from "./CrearTipoAfeccionModal";
 import EliminarTipoAfeccionModal from "./EliminarTipoAfeccionModal";
 import { TiposAfecciones } from "../../types";
 import { Image } from "@heroui/react";
+import { useAuth } from "@/hooks/UseAuth"; // Importa useAuth
+import { addToast } from "@heroui/toast"; // Importa addToast
 
 export function TipoAfeccionesList() {
   const { data, isLoading, error } = useGetTipoAfecciones();
+  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const userRole = user?.rol || null; // Obtiene el rol del usuario
+
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
+  const handleActionWithPermission = (
+    action: () => void, 
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
   const { 
     isOpen: isEditModalOpen, 
     closeModal: closeEditModal, 
@@ -33,7 +57,13 @@ export function TipoAfeccionesList() {
   } = useEliminarTipoAfeccion();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "", img: "" });
+    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
+    
+    if (permitido) {
+      handleCrear({ id: 0, nombre: "", descripcion: "", img: "" });
+    } else {
+      showAccessDenied();
+    }
   };
 
   // Definición de columnas
@@ -52,17 +82,29 @@ export function TipoAfeccionesList() {
       case "descripcion":
         return <span>{item.descripcion}</span>;
       case "img":
-        return <Image
-        isZoomed
-        src={item.img}
-        alt={item.nombre}
-        className="w-14 h-14 object-contain rounded-lg" 
-      />;
+        return (
+          <Image
+            isZoomed
+            src={item.img}
+            alt={item.nombre}
+            className="w-14 h-14 object-contain rounded-lg" 
+          />
+        );
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => 
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
+            onEliminar={() => 
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -88,7 +130,7 @@ export function TipoAfeccionesList() {
       {/* Modales */}
       {isEditModalOpen && tipoafeccionEditada && (
         <EditarTipoAfeccionModal
-        tipoAfeccion={tipoafeccionEditada}
+          tipoAfeccion={tipoafeccionEditada}
           onClose={closeEditModal}
         />
       )}
