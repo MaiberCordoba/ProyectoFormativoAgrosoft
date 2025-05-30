@@ -14,5 +14,8 @@ class Insumos(models.Model):
     totalGramos = models.IntegerField(null=True, blank=True)
     cantidadGramos = models.IntegerField(null=True, blank=True)
     valorTotalInsumos = models.FloatField(null=True, blank=True)
+
+    
+
     def __str__(self):
         return self.nombre

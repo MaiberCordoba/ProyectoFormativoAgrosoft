@@ -20,5 +20,12 @@ class Actividades(models.Model):
     fecha = models.DateField(auto_now_add=True)  # Establece automáticamente la fecha al crear
     estado = models.CharField(max_length=3, choices=ESTADO_CHOICES, default='AS')
 
+    def save(self, *args, **kwargs):
+        if self.titulo:
+            self.titulo = self.titulo.capitalize()
+        if self.descripcion:
+            self.descripcion = self.descripcion.capitalize()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"fecha: {self.fecha} titulo: {self.titulo} encargado: {self.fk_Usuario.nombre if self.fk_Usuario else 'Sin asignar'}"

@@ -7,5 +7,10 @@ class UnidadesMedida(models.Model):
     abreviatura= models.CharField(max_length=50)
     tipo = models.CharField(max_length=30, choices=tipo_choises, default="MASA")
     equivalenciabase = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.nombre
