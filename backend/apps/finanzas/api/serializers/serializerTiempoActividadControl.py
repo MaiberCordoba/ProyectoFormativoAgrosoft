@@ -4,7 +4,7 @@ from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadContr
 
 class SerializerTiempoActividadControl(ModelSerializer):
     fecha = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only=True) 
-    valorTotal = serializers.FloatField(read_only=True)
+    valorTotal = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = TiempoActividadControl
