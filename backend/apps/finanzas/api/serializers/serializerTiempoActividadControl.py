@@ -3,12 +3,13 @@ from rest_framework import serializers
 from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadControl
 
 class SerializerTiempoActividadControl(ModelSerializer):
-    fecha = serializers.DateTimeField(format="%Y-%m-%d %H:%M") 
+    fecha = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only=True) 
     valorTotal = serializers.FloatField(read_only=True)
 
     class Meta:
         model = TiempoActividadControl
         fields = '__all__'
+        read_only_fields = ['fecha','valorTotal']
 
     def validate(self, data):
         actividad = data.get('fk_actividad')
