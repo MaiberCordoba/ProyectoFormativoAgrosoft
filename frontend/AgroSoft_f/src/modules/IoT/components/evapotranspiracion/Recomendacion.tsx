@@ -1,5 +1,5 @@
 // src/components/RecomendacionesDetalladas.tsx
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { 
   Card,
   CardBody,
@@ -14,7 +14,10 @@ import {
   Leaf,
   Zap,
   Droplets,
-  Scissors
+  Scissors,
+  Flower,
+  Apple,
+  TreePalm
 } from "lucide-react";
 
 interface Recomendacion {
@@ -43,7 +46,7 @@ interface Props {
   };
 }
 
-export default function RecomendacionesDetalladas({ cultivo, datosActuales }: Props) {
+export default function Recomendaciones({ cultivo, datosActuales }: Props) {
   const [loading, setLoading] = useState(true);
   
   const cultivoInfo = useMemo(() => {
@@ -173,51 +176,44 @@ export default function RecomendacionesDetalladas({ cultivo, datosActuales }: Pr
     return null;
   }, [cultivo]);
 
-  // Calcular déficit de riego
-  const calcularDeficitRiego = useCallback((
-    etActual: number, 
-    kcActual: number, 
-    kcRecomendado: number | undefined,
-    humedadSuelo: number
-  ): number => {
-    // Si tenemos Kc recomendado, usamos esa referencia
-    if (kcRecomendado !== undefined) {
-      const etRecomendada = etActual * (kcRecomendado / kcActual);
-      return Math.max(0, etRecomendada - etActual);
-    }
-    
-    // Si no, usamos la humedad del suelo como referencia
-    if (humedadSuelo < 40) return 5.0;
-    if (humedadSuelo < 60) return 2.5;
-    return 0;
-  }, []);
-
   // Generar recomendaciones
   const recomendaciones = useMemo(() => {
     if (!cultivo || !datosActuales) return [];
     
     const nuevasRecomendaciones: Recomendacion[] = [];
     
-    // 1. Recomendaciones de riego
-    const deficitRiego = calcularDeficitRiego(
-      datosActuales.et, 
-      datosActuales.kc, 
-      cultivoInfo?.etapaActual?.kcRecomendado,
-      datosActuales.humedad_suelo
-    );
-    
+    // 1. Calcular déficit de riego
+    const kcRecomendado = cultivoInfo?.etapaActual?.kcRecomendado;
+    const requiredETc = datosActuales.et * (kcRecomendado ?? datosActuales.kc);
+    const actualETc = datosActuales.et * datosActuales.kc;
+    const deficitRiego = Math.max(0, requiredETc - actualETc);
+    const estresHidrico = requiredETc > 0 ? ((requiredETc - actualETc) / requiredETc) * 100 : 0;
+
     if (deficitRiego > 0) {
+      let severidad: 'info' | 'advertencia' | 'urgente' = 'info';
+      let mensaje = `El cultivo muestra un déficit de agua de ${deficitRiego.toFixed(1)} mm/día`;
+      
+      if (estresHidrico > 20) {
+        severidad = 'urgente';
+        mensaje = `Estrés hídrico severo (${estresHidrico.toFixed(1)}% de déficit)`;
+      } else if (estresHidrico > 10) {
+        severidad = 'advertencia';
+        mensaje = `Déficit hídrico moderado (${estresHidrico.toFixed(1)}%)`;
+      }
+
       nuevasRecomendaciones.push({
         tipo: 'riego',
-        titulo: "Necesidad de riego inmediato",
-        mensaje: `El cultivo muestra un déficit de agua de ${deficitRiego.toFixed(1)} mm/día`,
-        severidad: 'urgente',
+        titulo: "Necesidad de riego",
+        mensaje,
+        severidad,
         accion: `Aplicar riego equivalente a ${deficitRiego.toFixed(1)} mm (${(deficitRiego * 10).toFixed(1)} L/m²) en las próximas 24 horas`,
         icon: <Droplet className="text-blue-500" />,
         detalles: [
-          `ETc actual: ${datosActuales.et.toFixed(2)} mm/día`,
+          `ET0 (evapotranspiración de referencia): ${datosActuales.et.toFixed(2)} mm/día`,
           `Kc actual: ${datosActuales.kc.toFixed(2)}`,
-          `Kc recomendado para esta etapa: ${cultivoInfo?.etapaActual?.kcRecomendado?.toFixed(2) || 'N/A'}`,
+          `Kc recomendado para esta etapa: ${kcRecomendado?.toFixed(2) ?? 'N/A'}`,
+          `ETc recomendada: ${requiredETc.toFixed(2)} mm/día`,
+          `ETc actual: ${actualETc.toFixed(2)} mm/día`,
           `Humedad del suelo: ${datosActuales.humedad_suelo}% (${datosActuales.estado_humedad})`
         ]
       });
@@ -244,14 +240,14 @@ export default function RecomendacionesDetalladas({ cultivo, datosActuales }: Pr
         accion: "Continuar con el programa de riego actual",
         icon: <Droplet className="text-green-500" />,
         detalles: [
-          `ETc actual: ${datosActuales.et.toFixed(2)} mm/día`,
+          `ET0: ${datosActuales.et.toFixed(2)} mm/día`,
+          `ETc actual: ${actualETc.toFixed(2)} mm/día`,
           `Humedad del suelo: ${datosActuales.humedad_suelo}%`,
           `Estado: ${datosActuales.estado_humedad}`
         ]
       });
     }
     
-    // 2. Recomendaciones de protección según temperatura
     if (datosActuales.temperatura > 30) {
       nuevasRecomendaciones.push({
         tipo: 'proteccion',
@@ -282,7 +278,6 @@ export default function RecomendacionesDetalladas({ cultivo, datosActuales }: Pr
       });
     }
     
-    // 3. Recomendaciones específicas por tipo de cultivo
     if (cultivoInfo) {
       // Para hortalizas de hoja
       if (cultivoInfo.categoria === 'Hortalizas de Hoja') {
@@ -352,11 +347,60 @@ export default function RecomendacionesDetalladas({ cultivo, datosActuales }: Pr
         }
       }
     }
-  
+
+    if (cultivoInfo?.etapaActual?.numero === 3) { // Etapa 3: Floración
+      nuevasRecomendaciones.push({
+        tipo: 'riego',
+        titulo: "Etapa crítica - Floración",
+        mensaje: "El cultivo está en floración, requiere riego óptimo para evitar caída de flores",
+        severidad: 'advertencia',
+        accion: "Mantener humedad del suelo entre 70-80% y evitar estrés hídrico",
+        icon: <Flower className="text-purple-500" />,
+        detalles: [
+          "La falta de agua en floración puede reducir el cuajado de frutos",
+          "Evitar riegos pesados que puedan lavar polen"
+        ]
+      });
+    } else if (cultivoInfo?.etapaActual?.numero === 4) { // Etapa 4: Fructificación
+      nuevasRecomendaciones.push({
+        tipo: 'riego',
+        titulo: "Etapa crítica - Fructificación",
+        mensaje: "Riego constante para desarrollo de frutos",
+        severidad: 'advertencia',
+        accion: "Aplicar riegos ligeros y frecuentes para evitar rajaduras",
+        icon: <Apple className="text-red-500" />,
+        detalles: [
+          "Los cambios bruscos de humedad pueden causar rajado de frutos",
+          "Mantener humedad constante del suelo"
+        ]
+      });
+    }
+
+    // 6. Recomendaciones para cultivos tropicales
+    if (cultivoInfo?.categoria === 'Cultivos Tropicales') {
+      // Recomendación de riego profundo
+      nuevasRecomendaciones.push({
+        tipo: 'riego',
+        titulo: "Riego profundo para raíces",
+        mensaje: "Los cultivos tropicales requieren riegos menos frecuentes pero más profundos",
+        severidad: 'info',
+        accion: `Aplicar ${(deficitRiego > 0 ? deficitRiego.toFixed(1) : '5.0')} mm en un solo riego profundo cada 3-5 días`,
+        icon: <TreePalm className="text-green-600" />,
+        detalles: [
+          "Los riegos profundos fomentan raíces más profundas",
+          "Aplicar en la mañana temprano"
+        ]
+      });
+    }
+
+    nuevasRecomendaciones.sort((a, b) => {
+      const priority = { 'urgente': 1, 'advertencia': 2, 'info': 3 };
+      return priority[a.severidad] - priority[b.severidad] || a.tipo.localeCompare(b.tipo);
+    });
 
     setLoading(false);
     return nuevasRecomendaciones;
-  }, [cultivo, datosActuales, cultivoInfo, calcularDeficitRiego]);
+  }, [cultivo, datosActuales, cultivoInfo]);
 
   // Determinar color según severidad
   const getColorSeveridad = (severidad: string) => {
