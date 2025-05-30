@@ -9,33 +9,42 @@ export function Inicio() {
   };
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center relative"
-      style={{ backgroundImage: 'url("/ImagenHome.JPG")' }}
-    >
-      {/* Capa oscura semi-transparente sobre la imagen */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-0" />
+    <div className="relative h-full w-full overflow-hidden">
+      {" "}
+      {/* Añade overflow-hidden */}
+      {/* Fondo con posición fixed */}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10"
+        style={{
+          backgroundImage: 'url("/ImagenHome.JPG")',
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      </div>
+      {/* Contenido */}
+      <div className="relative h-full flex flex-col ">
+        <header className="px-6 py-4">
+          <div className="text-2xl font-bold text-white tracking-wide">
+            AD<span className="text-[#327d45]">SO</span> 2846103
+          </div>
+        </header>
 
-      {/* Contenido principal */}
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-10 h-[calc(100vh-96px)]">
-        {/* Lado izquierdo: texto principal y botón */}
-        <div className="text-white max-w-xl">
-          <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight mb-4 uppercase">
-            Agro<span style={{ color: "#327d45" }}>Soft</span> 
-          </h1>
-          <p className="text-gray-200 text-lg mb-8">
-            Innovación tecnológica para el desarrollo del campo.
-          </p>
-          {/* Botón circular con ícono de flecha */}
-          <button
-            onClick={handleRedirect}
-            className="flex items-center justify-center w-14 h-14 rounded-full text-white font-bold"
-            style={{ backgroundColor: "#327d45" }}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#286838")}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#327d45")}
-          >
-            <FaArrowRight size={24} />
-          </button>
+        <div className="flex-1 flex items-center justify-center px-6 pb-16 ">
+          <div className="text-center text-white max-w-md ">
+            <h1 className="text-4xl sm:text-5xl font-extrabold mt-9 mb-4 uppercase">
+              Agro<span className="text-[#327d45]">Soft</span> Para El Campo
+            </h1>
+            <p className="text-gray-200 mb-8">
+              Sistema integral para el desarrollo del campo con tecnología
+            </p>
+            <button
+              onClick={handleRedirect}
+              className="mx-auto flex items-center justify-center w-14 h-14 rounded-full text-white font-bold bg-[#327d45] hover:bg-[#286838] transition-all duration-300"
+            >
+              <FaArrowRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
