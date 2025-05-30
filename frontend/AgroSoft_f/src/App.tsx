@@ -109,7 +109,7 @@ function App() {
             <Route path="/cosechas" element={<Cosechas/>} />
             <Route path="/usos-herramientas" element={<UsosHerramientas/>} />
             <Route path="/unidades-tiempo" element={<UnidadesTiempo/>} />
-            <Route path="/movimientos-inventario" element={<MovimientosInventario/>} />
+            <Route path="/bodega" element={<MovimientosInventario/>} />
             <Route path="/unidades-medida" element={<UnidadesMedida/>} />
             <Route path="/usos-insumos" element={<UsosInsumos/>} /> 
             <Route path="/insumos" element={<Insumos/>}/> 

@@ -3,8 +3,8 @@ import ModalComponent from '@/components/Modal';
 import { Input, Select, SelectItem } from '@heroui/react';
 import { MovimientoInventario } from '../../types';
 import { useGetHerramientas } from '../../hooks/herramientas/useGetHerramientas';
-import { useGetUsosHerramientas } from '../../hooks/usosHerramientas/useGetUsosHerramientas';
 import { usePatchMovimientoInventario } from '../../hooks/movimientoInventario/usePatchMovimientos';
+import { useGetInsumos } from '../../hooks/insumos/useGetInsumos';
 
 interface EditarMovimientoInventarioModalProps {
   movimiento: MovimientoInventario;
@@ -18,13 +18,25 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
   const [tipo, setTipo] = useState<'entrada' | 'salida'>(movimiento.tipo);
   const [unidades, setUnidades] = useState<number>(movimiento.unidades);
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(movimiento.fk_Herramienta || null);
-  const [fk_UsoHerramienta, setFk_UsoHerramienta] = useState<number | null>(movimiento.fk_UsoHerramienta || null);
+  const [fkInsumo, setFkInsumo] = useState<number | null>(movimiento.fk_Insumo || null);
+  const [error,setError] = useState("")
+
 
   const { data: herramientas = [] } = useGetHerramientas();
-  const { data: usosHerramientas = [] } = useGetUsosHerramientas();
+  const { data: insumos = [] } = useGetInsumos();
   const { mutate, isPending } = usePatchMovimientoInventario();
 
+
   const handleSubmit = () => {
+     if (!unidades || unidades <= 0) {
+      setError("Por favor, ingresa una cantidad válida.");
+      return;
+    }
+    if (fkInsumo &&  fk_Herramienta){
+      setError("Solo se puede registrar un movimiento para insumo o herramienta, no ambos.");
+      return
+    }
+    setError("")
     mutate(
       {
         id: movimiento.id,
@@ -32,9 +44,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
           tipo,
           unidades,
           fk_Herramienta,
-          fk_UsoHerramienta,
-          fk_Insumo: null,
-          fk_UsoInsumo: null,
+          fk_Insumo: fkInsumo,
         },
       },
       {
@@ -57,6 +67,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         },
       ]}
     >
+      <p className='text-red-500 text-sm mb-2'>{error}</p>
       <Select
         label="Tipo de Movimiento"
         selectedKeys={[tipo]}
@@ -89,17 +100,17 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
       </Select>
 
       <Select
-        label="Uso de Herramienta"
-        placeholder="Selecciona un uso"
-        selectedKeys={fk_UsoHerramienta ? [fk_UsoHerramienta.toString()] : []}
+        label="Insumo"
+        placeholder="Selecciona un insumo"
+        selectedKeys={fkInsumo ? [fkInsumo.toString()] : []}
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0];
-          setFk_UsoHerramienta(key ? Number(key) : null);
+          setFkInsumo(key ? Number(key) : null);
         }}
       >
-        {usosHerramientas.map((uso) => (
+        {insumos.map((uso) => (
           <SelectItem key={uso.id.toString()}>
-            {uso.actividad?.nombre || `Uso ${uso.id}`}
+            {uso.nombre}
           </SelectItem>
         ))}
       </Select>

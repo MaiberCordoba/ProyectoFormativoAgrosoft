@@ -205,6 +205,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </NavLink>
         ))}
 
+
         {/* Usar la lista filtrada de menús */}
         {filteredMenuItems.map((menu) => (
           <div key={menu.title}>
