@@ -74,7 +74,7 @@ export function SemilleroList() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof Semilleroa
+        return <span>{String(item[columnKey as keyof Semillero
           
         ])}</span>;
     }
