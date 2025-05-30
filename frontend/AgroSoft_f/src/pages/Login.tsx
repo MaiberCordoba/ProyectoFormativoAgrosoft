@@ -51,8 +51,8 @@ const Login = () => {
 
             <FormComponent
               fields={[
-                { name: "email", label: "E-mail", type: "email", required: true },
-                { name: "password", label: "Password", type: "password", required: true },
+                { name: "email", label: "Correo", type: "email", required: true },
+                { name: "password", label: "Contraseña", type: "password", required: true },
               ]}
               onSubmit={handleSubmit}
               submitLabel="Iniciar"

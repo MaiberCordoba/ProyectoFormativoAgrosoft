@@ -24,7 +24,7 @@ const ROLES = [
   { value: "admin", label: "Administrador" },
   { value: "instructor", label: "Instructor" },
   { value: "pasante", label: "Pasante" },
-  { value: "invitado", label: "Invitado" },
+  { value: "visitante", label: "visitante" },
 ];
 
 export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
