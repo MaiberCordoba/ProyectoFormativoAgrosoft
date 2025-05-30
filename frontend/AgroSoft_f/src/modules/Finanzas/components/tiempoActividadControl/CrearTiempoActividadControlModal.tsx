@@ -52,7 +52,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
     setError("")
 
     mutate(
-      {id:0, tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
+      {tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
       {
         onSuccess: () => {
           onClose();
@@ -147,16 +147,18 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
         <div className="flex items-center gap-2">
           <div className="flex-1">
             <Select
-              label="Actividad"
-              placeholder="Selecciona una actividad"
-              selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
-              onSelectionChange={(keys) => {
-                const selectedKey = Array.from(keys)[0];
-                setFk_Actividad(selectedKey ? Number(selectedKey) : null);
-              }}
+            label="Actividad"
+            placeholder="Selecciona una actividad"
+            selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0];
+              setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+            }}
             >
-              {(actividades || []).map((actividad) => (
-                <SelectItem key={actividad.id.toString()}>{actividad.titulo}</SelectItem>
+              {(actividades || [])
+              .filter((actividad) => actividad.estado === "CO")
+              .map((actividad) => (
+              <SelectItem key={actividad.id.toString()}>{actividad.titulo}</SelectItem>
               ))}
             </Select>
           </div>
