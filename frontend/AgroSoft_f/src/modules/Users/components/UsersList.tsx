@@ -58,21 +58,20 @@ export function UsersList() {
       identificacion: 0,
       nombre: "",
       apellidos: "",
-      fechaNacimiento: "",
       telefono: "",
       correoElectronico: "",
       admin: false,
       estado: "",
+      rol:"",
     });
   };
 
   const columnas = [
     { name: "Identificacion", uid: "identificacion", sortable: true },
-    { name: "FechaNacimiento", uid: "fechaNacimiento", sortable: true },
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Apellidos", uid: "apellidos" },
     { name: "Email", uid: "correoElectronico" },
-    { name: "Rol", uid: "admin" },
+    { name: "Rol", uid: "rol" },
     { name: "Estado", uid: "estado" },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -81,16 +80,14 @@ export function UsersList() {
     switch (columnKey) {
       case "identificacion":
         return <span>{item.identificacion}</span>;
-      case "fechaNacimiento":
-        return <span>{item.fechaNacimiento}</span>;
       case "nombre":
         return <span>{item.nombre}</span>;
       case "apellidos":
         return <span>{item.apellidos}</span>;
       case "correoElectronico":
         return <span>{item.correoElectronico}</span>;
-      case "admin":
-        return <span>{item.admin ? "Administrador" : "Usuario"}</span>;
+      case "rol":
+        return <span>{item.rol}</span>;
       case "estado":
         return (
           <Chip
