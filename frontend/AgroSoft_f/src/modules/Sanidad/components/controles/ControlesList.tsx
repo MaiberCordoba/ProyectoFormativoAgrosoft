@@ -8,9 +8,32 @@ import EditarControlModal from "./EditarControlesModal";
 import { CrearControlModal } from "./CrearControlesModal";
 import EliminarControlModal from "./EliminaControles";
 import { Controles } from "../../types";
+import { useAuth } from "@/hooks/UseAuth"; // Importa useAuth
+import { addToast } from "@heroui/toast"; // Importa addToast
 
 export function ControlesList() {
   const { data, isLoading, error } = useGetControles();
+  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const userRole = user?.rol || null; // Obtiene el rol del usuario
+
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
+  const handleActionWithPermission = (
+    action: () => void, 
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
 
   const {
     isOpen: isEditModalOpen,
@@ -33,14 +56,20 @@ export function ControlesList() {
   } = useEliminarControl();
 
   const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      fk_Afeccion: 0,
-      fk_TipoControl: 0,
-      fechaControl: "",
-      descripcion: "",
-      fk_Usuario: 0,
-    });
+    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
+    
+    if (permitido) {
+      handleCrear({
+        id: 0,
+        fk_Afeccion: 0,
+        fk_TipoControl: 0,
+        fechaControl: "",
+        descripcion: "",
+        fk_Usuario: 0,
+      });
+    } else {
+      showAccessDenied();
+    }
   };
 
   const columnas = [
@@ -71,8 +100,18 @@ export function ControlesList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => 
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
+            onEliminar={() => 
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -103,7 +142,7 @@ export function ControlesList() {
           onClose={closeCreateModal}
           onCreate={(nuevoControl) => {
             console.log("Control creado desde modal:", nuevoControl);
-            closeCreateModal(); // opcional, ya lo haces dentro del modal
+            closeCreateModal();
           }}
         />
       )}

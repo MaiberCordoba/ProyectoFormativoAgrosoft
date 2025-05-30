@@ -15,7 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useAuth } from "@/hooks/UseAuth"; // Asegúrate de que la ruta sea correcta
+import { useAuth } from "@/hooks/UseAuth";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -30,17 +30,32 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const location = useLocation();
-  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const { user } = useAuth();
   const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    // Cuando el usuario cambie, actualiza el rol
     if (user) {
       setUserRole(user.rol);
     } else {
       setUserRole(null);
     }
   }, [user]);
+
+  // Función para filtrar submenús
+  const getFilteredSubmenus = (title: string, submenus: string[]): string[] => {
+    if (title === "Cultivos" && userRole === "visitante") {
+      return submenus.filter(sub => 
+        !["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie"].includes(sub)
+      );
+    }
+
+    if (title === "Fitosanitario" && userRole === "visitante") {
+      return submenus.filter(sub => 
+        !["Tipos de afectaciones", "Afectaciones", "tipos de control"].includes(sub)
+      );
+    }
+    return submenus;
+  };
 
   const toggleMenu = (menu: string) => {
     if (!isOpen && toggleSidebar) {
@@ -53,10 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  // Elementos principales del sidebar
   const mainItems = [
     { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
-    // Solo agregar el ítem de Usuarios si el rol es admin
     ...(userRole === "admin" 
       ? [{
           icon: Users,
@@ -67,13 +80,99 @@ const Sidebar: React.FC<SidebarProps> = ({
       : [])
   ];
 
+  // Lista base de menús
+  const baseMenuItems = [
+    {
+      title: "IoT",
+      icon: Monitor,
+      submenus: ["sensores", "evapotranspiracion"],
+    },
+    {
+      title: "Cultivos",
+      icon: Leaf,
+      color: "text-[#254030]",
+      submenus: [
+        "Semilleros",
+        "Cultivos",
+        "Lotes",
+        "Eras",
+        "Especies",
+        "Tipos Especie",
+        "Informacion Cultivos Sembrados",
+      ],
+    },
+    {
+      title: "Actividades",
+      icon: Wrench,
+      color: "text-[#254030]",
+      submenus: [
+        "Actividades",
+        "Tipos Actividad",
+        "Tiempo actividad control",
+        "Unidades medida",
+        "Unidades tiempo",
+      ],
+    },
+    {
+      title: "Finanzas",
+      icon: DollarSign,
+      color: "text-[#254030]",
+      submenus: [
+        "Ventas",
+        "Cosechas",
+        "Desechos",
+        "Tipos de desechos",
+        "resumen finanzas",
+        "Salarios",
+      ],
+    },
+    {
+      title: "Inventario",
+      icon: ClipboardList,
+      color: "text-[#254030]",
+      submenus: [
+        "Insumos",
+        "Herramientas",
+        "Usos Herramientas",
+        "Usos Insumos",
+        "Movimientos Inventario",
+      ],
+    },
+    {
+      title: "Fitosanitario",
+      icon: ShieldCheck,
+      color: "text-[#254030]",
+      submenus: [
+        "Tipos de afectaciones",
+        "Afectaciones",
+        "Afectaciones en cultivos",
+        "tipos de control",
+        "Controles",
+        "Seguimiento de afectaciones",
+      ],
+    },
+  ];
+
+  // Filtrar menús completos para visitantes
+  const filteredMenuItems = baseMenuItems
+    .filter(menu => {
+      // Ocultar completamente el menú "Actividades" para visitantes
+      if (userRole === "visitante" && menu.title === "Actividades") {
+        return false;
+      }
+      return true;
+    })
+    .map(menu => ({
+      ...menu,
+      submenus: getFilteredSubmenus(menu.title, menu.submenus)
+    }));
+
   return (
     <aside
       className={`h-full bg-white shadow-lg flex flex-col transition-all duration-300 ${
         isOpen ? "w-48" : "w-20"
       }`}
     >
-      {/* Botón de toggle */}
       {toggleSidebar && (
         <button
           onClick={toggleSidebar}
@@ -90,7 +189,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <nav className="flex-1 overflow-y-auto p-2">
-        {/* Elementos principales */}
         {mainItems.map((item) => (
           <NavLink
             key={item.to}
@@ -107,81 +205,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           </NavLink>
         ))}
 
-        {/* Menús con submenús */}
-        {[
-          {
-            title: "IoT",
-            icon: Monitor,
-            submenus: [
-              "sensores",
-              "evapotranspiracion"
-            ],
-          },
-          {
-            title: "Cultivos",
-            icon: Leaf,
-            color: "text-[#254030]",
-            submenus: [
-              "Semilleros",
-              "Cultivos",
-              "Lotes",
-              "Eras",
-              "Especies",
-              "Tipos Especie",
-              "Informacion Cultivos Sembrados",
-            ],
-          },
-          {
-            title: "Actividades",
-            icon: Wrench,
-            color: "text-[#254030]",
-            submenus: [
-              "Actividades",
-              "Tipos Actividad",
-              "Tiempo actividad control",
-              "Unidades medida",
-              "Unidades tiempo",
-            ],
-          },
-          {
-            title: "Finanzas",
-            icon: DollarSign,
-            color: "text-[#254030]",
-            submenus: [
-              "Ventas",
-              "Cosechas",
-              "Desechos",
-              "Tipos de desechos",
-              "resumen finanzas",
-              "Salarios",
-            ],
-          },
-          {
-            title: "Inventario",
-            icon: ClipboardList,
-            color: "text-[#254030]",
-            submenus: [
-              "Insumos",
-              "Herramientas",
-              "Usos Herramientas",
-              "Usos Insumos",
-              "Movimientos Inventario",
-            ],
-          },
-          {
-            title: "Fitosanitario",
-            icon: ShieldCheck,
-            color: "text-[#254030]",
-            submenus: [
-              "Tipos de afectaciones",
-              "Afectaciones",
-              "Afectaciones en cultivos",
-              "tipos de control",
-              "Controles",
-              "Seguimiento de afectaciones",
-            ],
-          },
-        ].map((menu) => (
+        {/* Usar la lista filtrada de menús */}
+        {filteredMenuItems.map((menu) => (
           <div key={menu.title}>
             <button
               className={`flex items-center w-full p-2 rounded-lg hover:bg-gray-200 ${
@@ -211,11 +236,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               )}
             </button>
 
-            {isOpen && openMenu === menu.title && (
+            {isOpen && openMenu === menu.title && menu.submenus.length > 0 && (
               <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  openMenu === menu.title ? "max-h-40" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-300`}
               >
                 <div className="scroll-custom max-h-[150px] overflow-y-auto">
                   {menu.submenus.map((submenu) => {
@@ -240,7 +263,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ))}
 
-        {/* Elementos finales */}
         <NavLink
           to="/calendario"
           className={({ isActive }) => `
