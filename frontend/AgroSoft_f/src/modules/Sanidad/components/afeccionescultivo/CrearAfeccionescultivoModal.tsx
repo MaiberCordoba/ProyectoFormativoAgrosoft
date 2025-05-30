@@ -24,19 +24,8 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
   const { data: tiposPlagaData, refetch: refetchAfecciones } = useGetAfecciones();
   const { mutate, isPending } = usePostAfeccionCultivo();
 
-  const [plantaciones, setPlantaciones] = useState<any[]>([]);
-  const [tiposPlaga, setTiposPlaga] = useState<any[]>([]);
-
   const [mostrarModalAfeccion, setMostrarModalAfeccion] = useState(false);
   const [mostrarModalPlantacion, setMostrarModalPlantacion] = useState(false);
-
-  useEffect(() => {
-    if (plantacionesData) setPlantaciones(plantacionesData);
-  }, [plantacionesData]);
-
-  useEffect(() => {
-    if (tiposPlagaData) setTiposPlaga(tiposPlagaData);
-  }, [tiposPlagaData]);
 
   const handleSubmit = () => {
     if (!fk_Plantacion || !fk_Plaga || !estado || !fechaEncuentro) {
@@ -64,21 +53,17 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
   };
 
   const handleNuevaAfeccion = async () => {
-    await refetchAfecciones();
-    const nuevas = await useGetAfecciones().data;
-    if (nuevas && nuevas.length > 0) {
-      const nueva = nuevas[nuevas.length - 1];
-      setTiposPlaga(nuevas);
+    const { data } = await refetchAfecciones();
+    if (data && data.length > 0) {
+      const nueva = data[data.length - 1];
       setFk_Plaga(nueva.id);
     }
   };
 
   const handleNuevaPlantacion = async () => {
-    await refetchPlantaciones();
-    const nuevas = await useGetPlantaciones().data;
-    if (nuevas && nuevas.length > 0) {
-      const nueva = nuevas[nuevas.length - 1];
-      setPlantaciones(nuevas);
+    const { data } = await refetchPlantaciones();
+    if (data && data.length > 0) {
+      const nueva = data[data.length - 1];
       setFk_Plantacion(nueva.id);
     }
   };
@@ -105,14 +90,23 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
               label="Plantación"
               placeholder="Selecciona una plantación"
               selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
-              onSelectionChange={(keys) => setFk_Plantacion(Number(Array.from(keys)[0]))}
+              onSelectionChange={(keys) =>
+                setFk_Plantacion(Number(Array.from(keys)[0]))
+              }
             >
-              {plantaciones.map((plantacion) => (
-                <SelectItem key={plantacion.id.toString()}>{plantacion.id}</SelectItem>
+              {plantacionesData?.map((plantacion) => (
+                <SelectItem key={plantacion.id.toString()}>
+                  {`${plantacion.cultivo?.nombre || `Plantación #${plantacion.id}`} - Era: ${plantacion.eras?.tipo || 'No asignada'}`}
+                </SelectItem>
               ))}
             </Select>
           </div>
-          <Button onPress={() => setMostrarModalPlantacion(true)} color="success" radius="full" size="sm">
+          <Button
+            onPress={() => setMostrarModalPlantacion(true)}
+            color="success"
+            radius="full"
+            size="sm"
+          >
             <Plus className="w-5 h-5 text-white" />
           </Button>
         </div>
@@ -124,14 +118,21 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
               label="Afectación"
               placeholder="Selecciona una Afectación"
               selectedKeys={fk_Plaga ? [fk_Plaga.toString()] : []}
-              onSelectionChange={(keys) => setFk_Plaga(Number(Array.from(keys)[0]))}
+              onSelectionChange={(keys) =>
+                setFk_Plaga(Number(Array.from(keys)[0]))
+              }
             >
-              {tiposPlaga.map((tipo) => (
+              {tiposPlagaData?.map((tipo) => (
                 <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
               ))}
             </Select>
           </div>
-          <Button onPress={() => setMostrarModalAfeccion(true)} color="success" radius="full" size="sm">
+          <Button
+            onPress={() => setMostrarModalAfeccion(true)}
+            color="success"
+            radius="full"
+            size="sm"
+          >
             <Plus className="w-5 h-5 text-white" />
           </Button>
         </div>
@@ -139,7 +140,9 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
         <Select
           label="Estado de la Afección"
           selectedKeys={[estado]}
-          onSelectionChange={(keys) => setEstado(Array.from(keys)[0] as keyof typeof EstadoAfeccion)}
+          onSelectionChange={(keys) =>
+            setEstado(Array.from(keys)[0] as keyof typeof EstadoAfeccion)
+          }
         >
           {Object.entries(EstadoAfeccion).map(([key, label]) => (
             <SelectItem key={key}>{label}</SelectItem>

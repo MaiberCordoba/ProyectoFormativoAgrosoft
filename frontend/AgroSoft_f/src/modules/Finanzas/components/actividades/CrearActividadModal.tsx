@@ -30,7 +30,6 @@ export const CrearActividadesModal = ({
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
   const [fk_Plantacion, setFkPlantacion] = useState<number | null>(null);
-  const [estado, setEstado] = useState<"AS" | "CO" | "CA" | "">("");
 
   //manejo de errores
   const [mensajeError, setMensajeError] = useState("");
@@ -84,7 +83,7 @@ export const CrearActividadesModal = ({
     setMensajeError("");
 
     mutate(
-      { fk_Cultivo, fk_Plantacion, fk_Usuario, fk_TipoActividad,titulo, descripcion, estado },
+      { fk_Cultivo, fk_Plantacion, fk_Usuario, fk_TipoActividad,titulo, descripcion, fecha },
 
       {
         onSuccess: () => {

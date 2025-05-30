@@ -21,7 +21,7 @@ export const usePatchTipoAfecciones = () => {
       addToast({
         title: "Actualización exitosa",
         description: "el tipo de afeccion se actualizó correctamente",
-        color: "primary",
+        color: "success",
      
       });
     },

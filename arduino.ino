@@ -10,25 +10,45 @@ using namespace websockets;
 const char* ssid = "LA COLMENA";
 const char* password = "Colmena66+1954*";
 
-const char* websocket_server = "ws://192.168.101.70:8000/ws/sensor/";
+const char* websocket_server = "ws://192.168.101.71:8000/ws/sensor";
 WebsocketsClient client;
 
 Adafruit_SSD1306 display(128, 64, &Wire, -1);
 
 #define DHTPIN 4
-#define DHTTYPE DHT11
+#define DHTTYPE DHT22  
 DHT dht(DHTPIN, DHTTYPE);
 #define FOTORESISTOR_PIN A0
 #define VIENTO_PIN 5
 
-const int SENSOR_TEM_ID = 14;
-const int SENSOR_HUM_A_ID = 16; 
-const int SENSOR_LUM_ID = 17;
-const int SENSOR_VIE_ID = 19;
+const int SENSOR_TEM_ID = 25;
+const int SENSOR_HUM_A_ID = 27; 
+const int SENSOR_LUM_ID = 26;
+const int SENSOR_VIE_ID = 28;
 const int lote_id = 1;
 
 unsigned long lastReconnectAttempt = 0;
-const unsigned long reconnectInterval = 10000; // 10 segundos
+const unsigned long reconnectInterval = 10000;
+
+volatile unsigned long pulseStart = 0;
+volatile unsigned long pulseEnd = 0;
+volatile bool newPulse = false;
+float windSpeed = 0;
+
+const int NUM_READINGS = 5;
+float tempReadings[NUM_READINGS] = {0};
+float humReadings[NUM_READINGS] = {0};
+int lumReadings[NUM_READINGS] = {0};
+int readIndex = 0;
+
+void IRAM_ATTR windPulseISR() {
+  if (digitalRead(VIENTO_PIN) == HIGH) {
+    pulseStart = micros();
+  } else {
+    pulseEnd = micros();
+    newPulse = true;
+  }
+}
 
 void setup() {
   Serial.begin(115200);
@@ -40,7 +60,16 @@ void setup() {
   
   dht.begin();
   pinMode(FOTORESISTOR_PIN, INPUT);
-  pinMode(VIENTO_PIN, INPUT);
+  pinMode(VIENTO_PIN, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(VIENTO_PIN), windPulseISR, CHANGE);
+
+  for (int i = 0; i < NUM_READINGS; i++) {
+    tempReadings[i] = dht.readTemperature();
+    humReadings[i] = dht.readHumidity();
+    lumReadings[i] = analogRead(FOTORESISTOR_PIN);
+    delay(100);
+  }
 
   conectarWiFi();
   conectarWebSocket();
@@ -59,25 +88,56 @@ void loop() {
     }
   }
 
+  if(newPulse) {
+    noInterrupts();
+    unsigned long pulseDuration = pulseEnd - pulseStart;
+    newPulse = false;
+    interrupts();
+    
+    if(pulseDuration > 0) {
+      windSpeed = 1.0 / (pulseDuration * 0.000001 * 2.0);
+    }
+  }
+
   static unsigned long lastSend = 0;
   if(millis() - lastSend > 8000) {
     lastSend = millis();
     
-    float temperatura = dht.readTemperature();
-    float humedad = dht.readHumidity();
-    int luz = analogRead(FOTORESISTOR_PIN);
-    float viento = (pulseIn(VIENTO_PIN, HIGH) > 0) ? (2.4/pulseIn(VIENTO_PIN, HIGH))*1000 : 0;
+    tempReadings[readIndex] = dht.readTemperature();
+    humReadings[readIndex] = dht.readHumidity();
+    lumReadings[readIndex] = analogRead(FOTORESISTOR_PIN);
+    
+    float temperatura = 0;
+    float humedad = 0;
+    int luz = 0;
+    
+    for (int i = 0; i < NUM_READINGS; i++) {
+      temperatura += tempReadings[i];
+      humedad += humReadings[i];
+      luz += lumReadings[i];
+    }
+    
+    temperatura /= NUM_READINGS;
+    humedad /= NUM_READINGS;
+    luz /= NUM_READINGS;
+    
+    readIndex = (readIndex + 1) % NUM_READINGS;
 
-    mostrarEnPantalla(temperatura, humedad, luz, viento);
+    if (isnan(temperatura) || isnan(humedad)) {
+      Serial.println("Error en lectura de DHT22");
+      return;
+    }
+
+    mostrarEnPantalla(temperatura, humedad, luz, windSpeed);
 
     if(client.available()) {
-      enviarDatos("TEM", temperatura, SENSOR_TEM_ID);
-      delay(300);
-      enviarDatos("HUM_A", humedad, SENSOR_HUM_A_ID);
-      delay(300);
-      enviarDatos("LUM", luz, SENSOR_LUM_ID);
-      delay(300);
-      enviarDatos("VIE", viento, SENSOR_VIE_ID);
+      enviarDato("TEM", temperatura, SENSOR_TEM_ID);
+      delay(100);
+      enviarDato("HUM_A", humedad, SENSOR_HUM_A_ID);
+      delay(100);
+      enviarDato("LUM", luz, SENSOR_LUM_ID);
+      delay(100);
+      enviarDato("VIE", windSpeed, SENSOR_VIE_ID);
     }
   }
   
@@ -87,21 +147,21 @@ void loop() {
 void mostrarEnPantalla(float temp, float hum, int luz, float viento) {
   display.clearDisplay();
   display.setCursor(0,0);
-  display.println("Temp: " + String(temp) + "C");
-  display.println("Hum: " + String(hum) + "%");
+  display.println("Temp: " + String(temp, 1) + "C");
+  display.println("Hum: " + String(hum, 1) + "%");
   display.println("Luz: " + String(luz));
-  display.println("Viento: " + String(viento,1) + "m/s");
+  display.println("Viento: " + String(viento, 1) + "m/s");
   display.println(WiFi.status()==WL_CONNECTED?"WiFi: OK":"WiFi: OFF");
   display.println(client.available()?"WS: OK":"WS: OFF");
   display.display();
 }
 
-void enviarDatos(String tipo, float valor, int sensor_id) {
+void enviarDato(String tipo, float valor, int sensor_id) {
   DynamicJsonDocument doc(200);
-  doc["action"] = "update_sensor";
-  doc["tipo"] = tipo;
-  doc["valor"] = valor;
-  doc["fk_lote_id"] = lote_id;
+  doc["action"] = "update_sensor";  // Mismo nombre de acción
+  doc["tipo"] = tipo;               // Mismo campo "tipo"
+  doc["valor"] = valor;             // Mismo campo "valor"
+  doc["fk_lote_id"] = lote_id;      // Mismo campo "fk_lote_id"
   
   String json;
   serializeJson(doc, json);
@@ -156,7 +216,7 @@ void conectarWebSocket() {
       }
   });
   
-  client.addHeader("Origin", "http://192.168.101.70");
+  client.addHeader("Origin", "http://192.168.101.71");
   
   bool connected = client.connect(websocket_server);
   if(connected) {

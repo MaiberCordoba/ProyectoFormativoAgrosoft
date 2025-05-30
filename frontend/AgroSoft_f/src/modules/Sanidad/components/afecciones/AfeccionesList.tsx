@@ -10,12 +10,36 @@ import EliminarAfeccionModal from "./EliminarAfeccion";
 import { Afecciones } from "../../types";
 import { useEffect } from "react";
 import { Image } from "@heroui/react";
+import { useAuth } from "@/hooks/UseAuth"; // Importa useAuth
+import { addToast } from "@heroui/toast"; // Importa addToast
 
 export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
+  const { user } = useAuth(); // Obtiene el usuario autenticado
+  const userRole = user?.rol || null; // Obtiene el rol del usuario
+  
   useEffect(() => {
-    console.log(data); // Verifica que los datos contienen el campo `tipoPlaga`
+    console.log(data);
   }, [data]);
+
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
+  const handleActionWithPermission = (
+    action: () => void, 
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
 
   const { 
     isOpen: isEditModalOpen, 
@@ -38,10 +62,15 @@ export function AfeccionesList() {
   } = useEliminarAfeccion();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo: 0, img: "" });
+    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
+    
+    if (permitido) {
+      handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo: 0, img: "" });
+    } else {
+      showAccessDenied();
+    }
   };
 
-  // Definición de columnas movida aquí
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
@@ -50,7 +79,6 @@ export function AfeccionesList() {
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Función de renderizado movida aquí
   const renderCell = (item: Afecciones, columnKey: React.Key) => {
     switch (columnKey) {
       case "nombre":
@@ -60,17 +88,28 @@ export function AfeccionesList() {
       case "tipoPlaga":
         return <span>{item.tipoPlaga?.nombre || "No definido"}</span>;
       case "img":
-        return <Image
-        
-        src={item.img}
-        alt={item.nombre}
-        className="w-14 h-14 object-contain rounded-lg" 
-      />;
+        return (
+          <Image
+            src={item.img}
+            alt={item.nombre}
+            className="w-14 h-14 object-contain rounded-lg" 
+          />
+        );
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => 
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
+            onEliminar={() => 
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -83,7 +122,6 @@ export function AfeccionesList() {
 
   return (
     <div className="p-4">
-      {/* Tabla reutilizable directa */}
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
@@ -93,7 +131,6 @@ export function AfeccionesList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {/* Modales */}
       {isEditModalOpen && afeccionEditada && (
         <EditarAfeccionModal
           afeccion={afeccionEditada}
@@ -104,7 +141,6 @@ export function AfeccionesList() {
       {isCreateModalOpen && (
         <CrearAfeccionModal
           onClose={closeCreateModal}
-          
         />
       )}
 
