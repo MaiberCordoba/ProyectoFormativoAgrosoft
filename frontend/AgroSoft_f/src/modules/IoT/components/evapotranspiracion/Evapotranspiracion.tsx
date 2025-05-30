@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
-import { Sprout, Calculator, ArrowLeft } from "lucide-react";
+import { Sprout, Calculator, ArrowLeft, Droplet, ChevronDown, ChevronUp } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import EvapotranspiracionCard from "./EvapotranspiracionCard";
 import EvapotranspiracionChart from "./EvapotranspiracionChart";
+import CropKCoefficientTable from "./Kc";
+import Recomendaciones from "./Recomendacion";
 
 type Plantacion = {
   id: number;
@@ -27,7 +29,7 @@ export default function EvapotranspiracionC() {
   const [selectedPlantacion, setSelectedPlantacion] = useState<number | string>("");
   const [errorET, setErrorET] = useState<string | null>(null);
   const [kcValue, setKcValue] = useState<string>("");
-
+  const [showSensorList, setShowSensorList] = useState<boolean>(false);  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -95,9 +97,21 @@ export default function EvapotranspiracionC() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-6xl mx-auto p-4 space-y-8">
         {!evapotranspiracion && (
-            <div className="bg-white/800 rounded-xl shadow-lg p-6 max-w-md mx-auto">
+            <div
+              className="max-w-xl mx-auto"
+              style={{
+              background: '#f0fdf4',
+              borderRadius: '0.75rem',
+              boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
+              border: '1px solid #bbf7d0',
+              color: '#166534',
+              fontWeight: 500,
+              fontSize: 14,
+              padding: 24,
+              }}
+            >
             <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center justify-center gap-2 text-center">
-              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#2ECC71" }}/>
+              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#166534" }}/>
               Calculadora de Evapotranspiración
             </h2>
             
@@ -117,37 +131,44 @@ export default function EvapotranspiracionC() {
               >
               {plantaciones.map(plantacion => (
                 <SelectItem 
-                key={String(plantacion.id)} 
+                  key={String(plantacion.id)}
                 >
-                {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Lote ${plantacion.fk_Era|| 'N/D'} (${new Date(plantacion.fechaSiembra).toLocaleDateString()})`}
+                  {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Era ${plantacion.fk_Era || 'N/D'}, Días sembrados: ${
+                    plantacion.fechaSiembra
+                      ? Math.floor(
+                          (Date.now() - new Date(plantacion.fechaSiembra).getTime()) /
+                            (1000 * 60 * 60 * 24)
+                        )
+                      : 'N/D'
+                  }`}
                 </SelectItem>
               ))}
               </Select>
 
               <Input
-                label="Coeficiente de Cultivo (Kc - Opcional)"
-                placeholder="Dejar vacío para cálculo automático"
-                type="number"
-                min="0"
-                step="0.01"
-                value={kcValue}
-                onChange={(e) => setKcValue(e.target.value)}
-                description="Valor numérico que representa el coeficiente del cultivo"
-                className="w-full"
+              label="Coeficiente de Cultivo (Kc - Opcional)"
+              placeholder="Dejar vacío para cálculo automático"
+              type="number"
+              min="0"
+              step="0.01"
+              value={kcValue}
+              onChange={(e) => setKcValue(e.target.value)}
+              description="Valor numérico que representa el coeficiente del cultivo"
+              className="w-full"
               />
 
               <div className="flex justify-end gap-4">
-                <Button 
-                  color="success" 
-                  onClick={calcularEvapotranspiracion}
-                  disabled={!selectedPlantacion}
-                  className="w-full sm:w-auto"
-                >
-                  Calcular
-                </Button>
+              <Button 
+                color="success" 
+                onClick={calcularEvapotranspiracion}
+                disabled={!selectedPlantacion}
+                className="w-full sm:w-auto"
+              >
+                Calcular
+              </Button>
               </div>
             </div>
-          </div>
+            </div>
         )}
 
         {evapotranspiracion && (
@@ -165,36 +186,80 @@ export default function EvapotranspiracionC() {
                 <h2 className="text-2xl font-bold text-blue-800 text-center">
                 <strong>Evapotranspiración (ETc)</strong>
                 </h2>
+                
               <div className="w-10"/>
             </div>
-
+            <br/>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="flex flex-col gap-4">
-              <div className="bg-white/80 rounded-2xl shadow-md p-6 w-full max-w-md flex flex-col justify-between">
+                <div
+                  className="rounded-2xl shadow-md w-full max-w-md flex flex-col justify-between mx-auto"
+                  style={{
+                  background: 'rgba(224, 242, 254, 0.35)', 
+                  borderRadius: '0.75rem',
+                  boxShadow: '0 6px 24px 0 rgba(16, 185, 129, 0.10)',
+                  border: '1px solid #bbf7d0',
+                  color: '#166534',
+                  fontWeight: 500,
+                  fontSize: 14,
+                  padding: 24,
+                  }}
+                >
                 <h3 className="text-base font-semibold text-black mb-3 flex items-center gap-2">
                   <Sprout className="text-green-700" size={20} style={{ color: "#2ECC71" }} />
-                    Detalles de la Plantación
+                  Detalles de la Plantación
                 </h3>
                 <br/>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Cultivo:</span>
-                    <span className="text-black">{evapotranspiracion.detalles.cultivo}</span>
+                  <span className="font-medium text-black">Cultivo:</span>
+                  <span className="text-black">{evapotranspiracion.detalles.cultivo}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Lote:</span>
-                    <span className="text-black">{evapotranspiracion.detalles.lote}</span>
+                  <span className="font-medium text-black">Lote:</span>
+                  <span className="text-black">{evapotranspiracion.detalles.lote}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Fecha Siembra:</span>
-                    <span className="text-black">{new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</span>
+                  <span className="font-medium text-black">Fecha Siembra:</span>
+                  <span className="text-black">{new Date(evapotranspiracion.detalles.fecha_siembra).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium text-black">Días desde siembra:</span>
-                    <span className="text-black">{evapotranspiracion.detalles.dias_siembra}</span>
+                  <span className="font-medium text-black">Días desde siembra:</span>
+                  <span className="text-black">{evapotranspiracion.detalles.dias_siembra}</span>
                   </div>
+                  
+                  {evapotranspiracion.sensor_data.humedad_suelo && (
+                    <div className="pt-3 mt-3 border-t">
+                      <div className="flex justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <Droplet className="text-purple-600" size={18} />
+                          <span className="font-medium text-black">Humedad del Suelo:</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-black">
+                            {evapotranspiracion.sensor_data.humedad_suelo}%
+                          </span>
+                          {evapotranspiracion.alerta_humedad && (
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              evapotranspiracion.alerta_humedad.tipo === 'peligro' 
+                                ? 'bg-red-100 text-red-800' 
+                                : evapotranspiracion.alerta_humedad.tipo === 'advertencia' 
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-green-100 text-green-800'
+                            }`}>
+                              {evapotranspiracion.alerta_humedad.tipo === 'peligro' 
+                                ? 'Crítica' 
+                                : evapotranspiracion.alerta_humedad.tipo === 'advertencia' 
+                                  ? 'Alta'
+                                  : 'Óptima'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
+                </div>
 
                 <EvapotranspiracionCard
                   etReal={evapotranspiracion.evapotranspiracion_mm_dia}
@@ -203,29 +268,74 @@ export default function EvapotranspiracionC() {
                     temperatura: evapotranspiracion.sensor_data.temperatura,
                     viento: evapotranspiracion.sensor_data.viento,
                     iluminacion: evapotranspiracion.sensor_data.iluminacion,
-                    humedad_ambiente: evapotranspiracion.sensor_data.humedad
+                    humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                    humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo
                   }}
+                  estadoHumedad={evapotranspiracion.alerta_humedad?.tipo}
                 />
               </div>
               <div className="p-8 rounded-xl">
-                <br/>
-                <br/>
+
                 <EvapotranspiracionChart 
-                  plantacionId={selectedPlantacion.toString()}
-                  nuevoDato={{
-                    fecha: new Date().toISOString(),
-                    et_mm_dia: evapotranspiracion.evapotranspiracion_mm_dia,
+                plantacionId={selectedPlantacion.toString()}
+                nuevoDato={{
+                  fecha: new Date().toISOString(),
+                  et_mm_dia: evapotranspiracion.evapotranspiracion_mm_dia,
+                  kc: evapotranspiracion.kc,
+                  temperatura: evapotranspiracion.sensor_data.temperatura,
+                  humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                  humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo,
+                  estado_humedad: evapotranspiracion.alerta_humedad?.tipo,
+                  dias_desde_siembra: evapotranspiracion.detalles.dias_siembra
+                }}
+                showAdditionalInfo={true}
+              />
+                <br />
+
+                <Recomendaciones 
+                    cultivo={{
+                    id: selectedPlantacion.toString(),
+                    nombre: evapotranspiracion.detalles.cultivo,
+                    dias_siembra: evapotranspiracion.detalles.dias_siembra
+                  }}
+                  datosActuales={{
+                    et: evapotranspiracion.evapotranspiracion_mm_dia,
                     kc: evapotranspiracion.kc,
                     temperatura: evapotranspiracion.sensor_data.temperatura,
-                    humedad: evapotranspiracion.sensor_data.humedad,
-                    dias_desde_siembra: evapotranspiracion.detalles.dias_desde_siembra
+                    humedad_suelo: evapotranspiracion.sensor_data.humedad_suelo,
+                    humedad_ambiente: evapotranspiracion.sensor_data.humedad_aire,
+                    estado_humedad: evapotranspiracion.alerta_humedad?.tipo || 'normal'
                   }}
-                  showAdditionalInfo={true}
                 />
               </div>
             </div>
           </div>
         )}
+        <br/><br/><br/>
+      {!evapotranspiracion && (
+        <div className="col-span-full mt-6 flex flex-col items-center w-full max-w-3xl mx-auto">
+          <button
+            className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"
+            onClick={() => setShowSensorList((prev) => !prev)}
+          >
+            {showSensorList ? (
+              <>
+                Ocultar lista <ChevronUp className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                coeficientes Kc recomendados <ChevronDown className="w-4 h-4" />
+              </>
+            )}
+          </button>
+          
+          {showSensorList && (
+            <div className="w-full mt-4 animate-slideDown">
+              <CropKCoefficientTable />
+            </div>
+          )}
+        </div>
+      )}
       </div>
     </div>
   );
