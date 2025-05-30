@@ -355,7 +355,7 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
         </ModalBody>
 
         <ModalFooter className="px-6 pb-4 pt-2">
-          <Button color="primary" onPress={onClose}>
+          <Button color="danger" onPress={onClose}>
             Cerrar
           </Button>
         </ModalFooter>
