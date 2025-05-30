@@ -15,7 +15,14 @@ class Insumos(models.Model):
     cantidadGramos = models.IntegerField(null=True, blank=True)
     valorTotalInsumos = models.FloatField(null=True, blank=True)
 
-    
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
+        if self.descripcion:
+            self.descripcion = self.descripcion.capitalize()
+        if self.compuestoActivo:
+            self.compuestoActivo = self.compuestoActivo.capitalize()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre

@@ -54,7 +54,7 @@ export function DesechosList() {
     switch (columnKey) {
       case "plantacion":
         const plantaciones = plantacion?.find((c) => c.id === item.fk_Plantacion);
-        return <span>Plantacion de: {plantaciones ? plantaciones.fk_Cultivo.nombre : "No definido"}</span>;
+        return <span>Plantacion de: {plantaciones ? plantaciones.cultivo.nombre : "No definido"}</span>;
       case "tipoDesecho":
         const tipoDesecho = tiposDesechos?.find((c) => c.id === item.fk_TipoDesecho);
         return <span>{tipoDesecho ? tipoDesecho.nombre : "No definido"}</span>;

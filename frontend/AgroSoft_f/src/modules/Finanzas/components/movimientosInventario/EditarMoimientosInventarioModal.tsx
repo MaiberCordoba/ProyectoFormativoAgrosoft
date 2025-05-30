@@ -16,33 +16,35 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
   onClose,
 }) => {
   const [tipo, setTipo] = useState<'entrada' | 'salida'>(movimiento.tipo);
-  const [unidades, setUnidades] = useState<number>(movimiento.unidades);
+  const [unidades, setUnidades] = useState<string>(movimiento.unidades.toString());
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(movimiento.fk_Herramienta || null);
   const [fkInsumo, setFkInsumo] = useState<number | null>(movimiento.fk_Insumo || null);
-  const [error,setError] = useState("")
-
+  const [error, setError] = useState("");
 
   const { data: herramientas = [] } = useGetHerramientas();
   const { data: insumos = [] } = useGetInsumos();
   const { mutate, isPending } = usePatchMovimientoInventario();
 
-
   const handleSubmit = () => {
-     if (!unidades || unidades <= 0) {
-      setError("Por favor, ingresa una cantidad válida.");
+    const cantidad = Number(unidades);
+
+    if (isNaN(cantidad) || cantidad <= 0) {
+      setError("Por favor, ingresa una cantidad válida mayor a 0.");
       return;
     }
-    if (fkInsumo &&  fk_Herramienta){
+
+    if (fkInsumo && fk_Herramienta) {
       setError("Solo se puede registrar un movimiento para insumo o herramienta, no ambos.");
-      return
+      return;
     }
-    setError("")
+
+    setError("");
     mutate(
       {
         id: movimiento.id,
         data: {
           tipo,
-          unidades,
+          unidades: cantidad,
           fk_Herramienta,
           fk_Insumo: fkInsumo,
         },
@@ -67,7 +69,8 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         },
       ]}
     >
-      <p className='text-red-500 text-sm mb-2'>{error}</p>
+      <p className="text-red-500 text-sm mb-2">{error}</p>
+
       <Select
         label="Tipo de Movimiento"
         selectedKeys={[tipo]}
@@ -79,9 +82,9 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
 
       <Input
         label="Unidades"
-        type="number"
+        type="text"
         value={unidades}
-        onChange={(e) => setUnidades(Number(e.target.value))}
+        onChange={(e) => setUnidades(e.target.value)}
         required
       />
 
@@ -92,6 +95,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0];
           setFk_Herramienta(key ? Number(key) : null);
+          setFkInsumo(null); // Desactiva insumo si se selecciona herramienta
         }}
       >
         {herramientas.map((h) => (
@@ -106,6 +110,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0];
           setFkInsumo(key ? Number(key) : null);
+          setFk_Herramienta(null); // Desactiva herramienta si se selecciona insumo
         }}
       >
         {insumos.map((uso) => (

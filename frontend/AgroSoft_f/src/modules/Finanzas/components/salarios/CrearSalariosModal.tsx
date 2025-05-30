@@ -6,32 +6,40 @@ import { Salarios } from "../../types";
 
 interface CrearSalariosModalProps {
   onClose: () => void;
-  onCreate: (nuevoSalario : Salarios) => void
+  onCreate: (nuevoSalario: Salarios) => void;
 }
 
-export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
+export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
   const [nombre, setNombre] = useState("");
-  const [monto, setMonto] = useState<number | "">("");
-  const [horas, setHoras] = useState<number | "">("");
+  const [monto, setMonto] = useState<string>("");
+  const [horas, setHoras] = useState<string>("");
   const [estado, setEstado] = useState<"activo" | "inactivo" | "">("");
-  
   const [error, setError] = useState("");
 
   const { mutate, isPending } = usePostSalario();
 
   const handleSubmit = () => {
+    const montoNum = Number(monto);
+    const horasNum = Number(horas);
+
     if (!nombre || monto === "" || horas === "" || !estado) {
       setError("Por favor, completa todos los campos.");
       return;
     }
-    setError("")
+
+    if (isNaN(montoNum) || isNaN(horasNum) || montoNum <= 0 || horasNum <= 0) {
+      setError("Monto y horas deben ser números mayores que cero.");
+      return;
+    }
+
+    setError("");
 
     mutate(
       {
-        id:0,
+        id: 0,
         nombre,
-        monto: Number(monto),
-        horas: Number(horas),
+        monto: montoNum,
+        horas: horasNum,
         estado,
       },
       {
@@ -41,7 +49,7 @@ export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
           setMonto("");
           setHoras("");
           setEstado("");
-          setError("")
+          setError("");
         },
       }
     );
@@ -62,6 +70,7 @@ export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
       ]}
     >
       <p className="text-red-500 text-sm mb-2">{error}</p>
+
       <Input
         label="Nombre Salario"
         type="text"
@@ -74,15 +83,15 @@ export const CrearSalariosModal = ({ onClose}: CrearSalariosModalProps) => {
         label="Monto(valor)"
         type="number"
         value={monto}
-        onChange={(e) => setMonto(Number(e.target.value))}
+        onChange={(e) => setMonto(e.target.value)}
         required
       />
 
       <Input
-        label="Horas de trabajo(dia)"
+        label="Horas de trabajo(día)"
         type="number"
         value={horas}
-        onChange={(e) => setHoras(Number(e.target.value))}
+        onChange={(e) => setHoras(e.target.value)}
         required
       />
 
