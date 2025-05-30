@@ -186,12 +186,6 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           </SelectItem>
         ))}
       </Select>
-
-      <div className="flex items-center mt-2">
-        <Checkbox isSelected={userData.admin} onValueChange={handleAdminChange}>
-          ¿Es administrador?
-        </Checkbox>
-      </div>
     </ModalComponent>
   );
 };
