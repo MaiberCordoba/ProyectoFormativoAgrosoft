@@ -13,7 +13,7 @@ import { Chip } from "@heroui/react";
 import { CrearUsersModal } from "./CrearUsersModal";
 import RegistroMasivoModal from "./registroMasivoModal";
 
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { ReportePdfUsuarios } from "./ReportePdfUsuarios";
 import { Download } from "lucide-react";
 
@@ -38,13 +38,16 @@ export function UsersList() {
   } = useEliminarUsers();
 
   const [isRegistroMasivoOpen, setIsRegistroMasivoOpen] = useState(false);
+
   const {
     data: reporteData,
     isLoading: loadingReporte,
     isError: errorReporte,
   } = useReporteUsuarios();
 
-  // DEBUG: ver en consola cuando reporteData cambie
+  // Estado para controlar si mostramos la previsualización del PDF
+  const [showPreview, setShowPreview] = useState(false);
+
   useEffect(() => {
     console.log("🟣 reporteData en UsersList:", reporteData);
   }, [reporteData]);
@@ -129,7 +132,6 @@ export function UsersList() {
           { uid: "inactivo", nombre: "Inactivo" },
         ]}
         renderReporteAction={() => {
-          // Mientras se carga el reporte
           if (loadingReporte) {
             return (
               <button
@@ -141,7 +143,6 @@ export function UsersList() {
               </button>
             );
           }
-          // Si hubo un error
           if (errorReporte || !reporteData) {
             return (
               <button
@@ -153,30 +154,59 @@ export function UsersList() {
               </button>
             );
           }
-          // Ya tenemos reporteData
           return (
-            <PDFDownloadLink
-              document={<ReportePdfUsuarios data={reporteData} />}
-              fileName="reporte_usuarios.pdf"
-              style={{ textDecoration: "none" }}
-            >
-              {({ loading }) => (
-                <button
-                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                  title="Descargar reporte"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <Download className="h-4 w-4 animate-spin text-blue-500" />
-                  ) : (
-                    <Download className="h-5 w-5 text-red-600" />
-                  )}
-                </button>
-              )}
-            </PDFDownloadLink>
+            <>
+              {/* Botón para mostrar previsualización */}
+              <button
+                onClick={() => setShowPreview(true)}
+                className="p-2 rounded-full hover:bg-gray-200 transition-colors mr-2"
+                title="Mostrar previsualización"
+              >
+                👁️
+              </button>
+
+              <PDFDownloadLink
+                document={<ReportePdfUsuarios data={reporteData} />}
+                fileName="reporte_usuarios.pdf"
+                style={{ textDecoration: "none" }}
+              >
+                {({ loading }) => (
+                  <button
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    title="Descargar reporte"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Download className="h-4 w-4 animate-spin text-blue-500" />
+                    ) : (
+                      <Download className="h-5 w-5 text-red-600" />
+                    )}
+                  </button>
+                )}
+              </PDFDownloadLink>
+            </>
           );
         }}
       />
+
+      {/* Mostrar previsualización solo cuando showPreview sea true */}
+      {showPreview && (
+        <div className="border rounded mt-4 relative">
+          <h2 className="text-sm font-semibold px-2 py-1 bg-gray-100 flex justify-between items-center">
+            Vista previa del PDF
+            <button
+              onClick={() => setShowPreview(false)}
+              className="text-red-500 font-bold px-2 hover:text-red-700"
+              title="Cerrar previsualización"
+            >
+              ❌
+            </button>
+          </h2>
+          <PDFViewer width="100%" height={600}>
+            <ReportePdfUsuarios data={reporteData || []} />
+          </PDFViewer>
+        </div>
+      )}
 
       {/* Modales */}
       {isEditModalOpen && UsersEditada && (
