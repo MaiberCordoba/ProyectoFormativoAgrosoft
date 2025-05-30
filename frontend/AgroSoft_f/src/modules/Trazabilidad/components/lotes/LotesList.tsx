@@ -8,9 +8,13 @@ import EditarLoteModal from "./EditarLotesModal";
 import { CrearLoteModal } from "./CrearLotesModal";
 import EliminarLoteModal from "./EliminarLotes";
 import { Lotes } from "../../types";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function LoteList() {
   const { data, isLoading, error } = useGetLotes();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -32,22 +36,47 @@ export function LoteList() {
     handleEliminar,
   } = useEliminarLotes();
 
-  const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      nombre: "",
-      descripcion: "",
-      latI1: 0,
-      longI1: 0,
-      latS1: 0,
-      longS1: 0,
-      latI2: 0,
-      longI2: 0,
-      latS2: 0,
-      longS2: 0,
-      estado: true,
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
     });
   };
+
+  const handleActionWithPermission = (action: () => void, requiredRoles: string[]) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+  
+
+  const handleCrearNuevo = () => {
+  const permitido = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
+  
+  if (permitido) {
+      handleCrear({
+        id: 0,
+        nombre: "",
+        descripcion: "",
+        latI1: 0,
+        longI1: 0,
+        latS1: 0,
+        longS1: 0,
+        latI2: 0,
+        longI2: 0,
+        latS2: 0,
+        longS2: 0,
+        estado: true,
+      });
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  
 
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
@@ -82,8 +111,14 @@ export function LoteList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => handleActionWithPermission(
+              () => handleEditar(item), 
+              ["admin", "instructor", "pasante"]
+            )}
+            onEliminar={() => handleActionWithPermission(
+              () => handleEliminar(item), 
+              ["admin", "instructor"]
+            )}
           />
         );
       default:

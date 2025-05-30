@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { usePostEspecies } from "../../hooks/especies/usePostEspecies";
-import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie";
+import { useGetTiposEspecie } from "../../hooks/tiposEspecie/useGetTiposEpecie"; // corregido
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
@@ -24,14 +24,13 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
   const [preview, setPreview] = useState<string | null>(null);
   const [tiempocrecimiento, setTiempocrecimiento] = useState<string | "">("");
   const [fk_tipoespecie, setFk_tipoespecie] = useState<number | null>(null);
-
   const [modalTipoEspecieVisible, setModalTipoEspecieVisible] = useState(false);
 
   const { mutate, isPending } = usePostEspecies();
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie, refetch: refetchTipos } = useGetTiposEspecie();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie ) {
+    if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie) {
       console.log("Por favor, completa todos los campos.");
       return;
     }
@@ -62,7 +61,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
     setFk_tipoespecie(nuevoTipo.id);
     setModalTipoEspecieVisible(false);
   };
-
 
   return (
     <>
@@ -109,7 +107,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           ))}
         </Select>
 
-        {/* Tipo de Especie con botón de creación */}
         {isLoadingTiposEspecie ? (
           <p>Cargando tipos de especie...</p>
         ) : (
@@ -141,7 +138,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           </div>
         )}
 
-        {/* Imagen */}
         <div className="mt-4">
           <Button
             type="button"
@@ -158,7 +154,7 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) {
+              if (file instanceof File) {
                 setImg(file);
                 setPreview(URL.createObjectURL(file));
               }
@@ -183,7 +179,6 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           onCreate={handleTipoEspecieCreada}
         />
       )}
-
     </>
   );
 };

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   tableColHeader: {
-    width: "25%",
+    width: "20%",
     backgroundColor: "#f0f0f0",
     borderStyle: "solid",
     borderWidth: 1,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   tableCol: {
-    width: "25%",
+    width: "20%",
     borderStyle: "solid",
     borderWidth: 1,
     borderLeftWidth: 0,
@@ -76,7 +76,7 @@ export const ReportePdfPlantaciones = ({ plantaciones }: Props) => {
 
         <Text style={styles.paragraph}>
           Este reporte contiene el detalle de cada plantación registrada, incluyendo el cultivo,
-          unidades del semillero, fecha de siembra y la era asignada.
+          semillero, unidades sembradas, fecha de siembra y la era asignada junto con su lote.
         </Text>
 
         <Text style={{ fontSize: 10, marginBottom: 10, marginLeft: 10 }}>
@@ -89,29 +89,47 @@ export const ReportePdfPlantaciones = ({ plantaciones }: Props) => {
               <Text style={styles.tableCellHeader}>Cultivo</Text>
             </View>
             <View style={styles.tableColHeader}>
+              <Text style={styles.tableCellHeader}>Semillero</Text>
+            </View>
+            <View style={styles.tableColHeader}>
               <Text style={styles.tableCellHeader}>Unidades</Text>
             </View>
             <View style={styles.tableColHeader}>
               <Text style={styles.tableCellHeader}>Fecha siembra</Text>
             </View>
             <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Era</Text>
+              <Text style={styles.tableCellHeader}>Era - Lote</Text>
             </View>
           </View>
 
           {plantaciones.map((p, index) => (
             <View style={styles.tableRow} key={index}>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{p.fk_Cultivo?.nombre || "N/A"}</Text>
+                <Text style={styles.tableCell}>{p.cultivo?.nombre || "Sin nombre"}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{p.fk_semillero?.unidades ?? "N/A"}</Text>
+                <Text style={styles.tableCell}>
+                  {p.semillero?.cultivo?.nombre
+                    ? `Semillero: ${p.semillero.cultivo.nombre}`
+                    : "Sin semillero"}
+                </Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{p.fk_semillero?.fechasiembra ?? "N/A"}</Text>
+                <Text style={styles.tableCell}>{p.unidades ?? "N/A"}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{p.fk_Era?.id || "N/A"}</Text>
+                <Text style={styles.tableCell}>
+                  {p.fechaSiembra
+                    ? new Date(p.fechaSiembra).toLocaleDateString("es-CO")
+                    : "N/A"}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  {p.eras?.tipo
+                    ? `${p.eras.tipo} - ${p.eras.Lote?.nombre ?? "Sin lote"}`
+                    : `Era - Lote ${p.eras?.id ?? "N/A"}`}
+                </Text>
               </View>
             </View>
           ))}

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { UseModal } from "@/hooks/useModal";
-import { Cultivos } from "../../types";
+import { Cultivo } from "../../types";
 
 export const useEliminarCultivos = () => {
   const { isOpen, openModal, closeModal } = UseModal();
-  const [CultivosEliminada, setCultivosEliminada] = useState<Cultivos | null>(null);
+  const [CultivosEliminada, setCultivosEliminada] = useState<Cultivo | null>(null);
 
-  const handleEliminar = (Cultivos: Cultivos) => {
+  const handleEliminar = (Cultivos: Cultivo) => {
     setCultivosEliminada(Cultivos);
     openModal();
   };

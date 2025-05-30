@@ -19,7 +19,7 @@ interface TablaReutilizableProps<T extends { [key: string]: any }> {
   claveBusqueda: keyof T;
   opcionesEstado?: { uid: string; nombre: string }[];
   renderCell: (item: T, columnKey: React.Key) => React.ReactNode;
-  onCrearNuevo: () => void;
+  onCrearNuevo?: () => void;
   onRegistroMasivo?: () => void;
   placeholderBusqueda?: string;
   initialVisibleColumns?: string[]; // Nueva prop

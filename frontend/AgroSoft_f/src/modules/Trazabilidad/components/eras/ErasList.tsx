@@ -9,10 +9,15 @@ import EditarEraModal from "./EditarErasModal";
 import { CrearEraModal } from "./CrearEraModal";
 import EliminarEraModal from "./EliminarEras";
 import { Eras } from "../../types";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
 
 export function EraList() {
   const { data: eras, isLoading, error } = useGetEras();
   const { data: lotes } = useGetLotes();
+  
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -34,20 +39,44 @@ export function EraList() {
     handleEliminar,
   } = useEliminarEras();
 
-  const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      tipo: "",
-      fk_lote: { nombre: "" },
-      latI1: null,
-      longI1: null,
-      latS1: null,
-      longS1: null,
-      latI2: null,
-      longI2: null,
-      latS2: null,
-      longS2: null,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
     });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (action: () => void, requiredRoles: string[]) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  const handleCrearNuevo = () => {
+    const permitido = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
+    
+    if (permitido) {
+      handleCrear({
+        id: 0,
+        tipo: "",
+        fk_lote: { nombre: "" },
+        latI1: null,
+        longI1: null,
+        latS1: null,
+        longS1: null,
+        latI2: null,
+        longI2: null,
+        latS2: null,
+        longS2: null,
+      });
+    } else {
+      showAccessDenied();
+    }
   };
 
   const columnas = [
@@ -102,8 +131,14 @@ export function EraList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => handleActionWithPermission(
+              () => handleEditar(item), 
+              ["admin", "instructor", "pasante"]
+            )}
+            onEliminar={() => handleActionWithPermission(
+              () => handleEliminar(item), 
+              ["admin", "instructor"]
+            )}
           />
         );
       default:
