@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         "Herramientas",
         "Usos Herramientas",
         "Usos Insumos",
-        "Movimientos Inventario",
+        "Bodega",
       ],
     },
     {
@@ -204,6 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {isOpen && <span>{item.text}</span>}
           </NavLink>
         ))}
+
 
         {/* Usar la lista filtrada de menús */}
         {filteredMenuItems.map((menu) => (

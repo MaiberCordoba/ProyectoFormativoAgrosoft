@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { FaArrowRight } from "react-icons/fa"; // Importamos un ícono de flecha
 
 export function Inicio() {
   const navigate = useNavigate();
@@ -8,40 +9,42 @@ export function Inicio() {
   };
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center relative"
-      style={{ backgroundImage: 'url("/ImagenHome.JPG")' }}
-    >
-      {/* Capa oscura semi-transparente sobre la imagen */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-0" />
+    <div className="relative h-full w-full overflow-hidden">
+      {" "}
+      {/* Añade overflow-hidden */}
+      {/* Fondo con posición fixed */}
+      <div
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10"
+        style={{
+          backgroundImage: 'url("/ImagenHome.JPG")',
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      </div>
+      {/* Contenido */}
+      <div className="relative h-full flex flex-col ">
+        <header className="px-6 py-4">
+          <div className="text-2xl font-bold text-white tracking-wide">
+            AD<span className="text-[#327d45]">SO</span> 2846103
+          </div>
+        </header>
 
-      {/* Encabezado con navegación */}
-      <header className="relative z-10 flex justify-between items-center px-10 py-6 text-white">
-        <div className="text-2xl font-bold tracking-wide">
-          AD<span style={{ color: "#327d45" }}>SO</span> 2846103
-        </div>
-      </header>
-
-      {/* Contenido principal */}
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-10 h-[calc(100vh-96px)]">
-        {/* Lado izquierdo: texto sobre fondo oscuro */}
-        <div className="bg-black/60 text-white p-10 rounded-lg max-w-xl backdrop-blur-md shadow-xl">
-          <p style={{ color: "#327d45" }} className="text-sm uppercase tracking-widest mb-2">Sistema Tecnológico</p>
-          <h1 className="text-5xl font-extrabold leading-tight mb-4">
-            AGRO<span style={{ color: "#327d45" }}>SOFT</span>
-          </h1>
-          <p className="text-gray-200 mb-6">
-            Es un sistema integral diseñado para el beneficio y desarrollo del campo a través de soluciones tecnológicas.
-          </p>
-          <button
-            onClick={handleRedirect}
-            className="text-white font-bold py-2 px-6 rounded"
-            style={{ backgroundColor: "#327d45" }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#286838"}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#327d45"}
-          >
-            Ir a módulo IoT
-          </button>
+        <div className="flex-1 flex items-center justify-center px-6 pb-16 ">
+          <div className="text-center text-white max-w-md ">
+            <h1 className="text-4xl sm:text-5xl font-extrabold mt-9 mb-4 uppercase">
+              Agro<span className="text-[#327d45]">Soft</span> Para El Campo
+            </h1>
+            <p className="text-gray-200 mb-8">
+              Sistema integral para el desarrollo del campo con tecnología
+            </p>
+            <button
+              onClick={handleRedirect}
+              className="mx-auto flex items-center justify-center w-14 h-14 rounded-full text-white font-bold bg-[#327d45] hover:bg-[#286838] transition-all duration-300"
+            >
+              <FaArrowRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

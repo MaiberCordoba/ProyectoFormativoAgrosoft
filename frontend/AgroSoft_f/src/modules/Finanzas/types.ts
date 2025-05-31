@@ -255,6 +255,6 @@ export interface Ventas {
   fk_UnidadMedida: number;
   unidadMedida: UnidadesMedida;
   cantidad: number;
-  descuento:number;
+  descuento?:number;
   valorTotal: number;
 }

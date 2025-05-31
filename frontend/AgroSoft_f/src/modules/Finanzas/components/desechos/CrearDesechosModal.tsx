@@ -113,7 +113,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
           >
             {(plantaciones || []).map((plantacion) => (
               <SelectItem key={plantacion.id.toString()}>
-                {`Plantación cultivo: ${plantacion.fk_Cultivo.nombre}`}
+                {`Plantación cultivo: ${plantacion.cultivo.nombre}`}
               </SelectItem>
             ))}
           </Select>

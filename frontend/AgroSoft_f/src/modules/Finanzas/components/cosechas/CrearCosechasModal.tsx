@@ -12,62 +12,74 @@ import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaci
 
 interface CrearCosechasModalProps {
   onClose: () => void;
-  onCreate: (nuevaCosecha:Cosechas) => void;
+  onCreate: (nuevaCosecha: Cosechas) => void;
 }
 
 export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
-  const [cantidad, setCantidad] = useState<number | null>(null);  // Inicializado en 0
+  const [cantidad, setCantidad] = useState<string>("");
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [valorUnidad, setValorUnidad] = useState<number | null>(null);
+  const [precioUnidad, setPrecioUnidad] = useState<string>("");
   const [fecha, setFecha] = useState("");
+  const [mensajeError, setMensajeError] = useState("");
 
-  const [mensajeError, setMensajeError] = useState("")
+  const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
+  const [PlantacionModal, setPlantacionModal] = useState(false);
 
-//Creacion de estados para abrir modales
-  const [unidadMedidaModal,setUnidadMedidaModal] = useState(false)
-  const [PlantacionModal,setPlantacionModal] = useState(false)
-
-  const { data: plantaciones, isLoading: isLoadingPlantaciones, refetch: refetchPlantaciones } = useGetPlantaciones()
-  const { data: UnidadMedida, isLoading: isLoadingUnidadMedida, refetch: refetchUnidadMedida  } = useGetUnidadesMedida();
+  const { data: plantaciones, isLoading: isLoadingPlantaciones, refetch: refetchPlantaciones } = useGetPlantaciones();
+  const { data: UnidadMedida, isLoading: isLoadingUnidadMedida, refetch: refetchUnidadMedida } = useGetUnidadesMedida();
   const { mutate, isPending } = usePostCosecha();
 
   const handleSubmit = () => {
-    if (!fk_Plantacion || !cantidad  || !fk_UnidadMedida || !fecha || !valorUnidad) {
+    if (!fk_Plantacion || cantidad === "" || !fk_UnidadMedida || !fecha || precioUnidad === "") {
       setMensajeError("Por favor, completa todos los campos.");
       return;
     }
-    if (cantidad < 0){
-      setMensajeError("La cantidad cosechada no puede ser negativa")
-      return
+
+    const cantidadNumero = Number(cantidad);
+    const precioNumero = Number(precioUnidad);
+
+    if (cantidadNumero < 0) {
+      setMensajeError("La cantidad cosechada no puede ser negativa");
+      return;
     }
-    setMensajeError("")
+
+    setMensajeError("");
 
     mutate(
-      { fk_Plantacion, cantidad, fk_UnidadMedida, fecha,precioUnidad},
+      {
+        fk_Plantacion,
+        cantidad: cantidadNumero,
+        fk_UnidadMedida,
+        fecha,
+        precioUnidad: precioNumero,
+      },
+
       {
         onSuccess: () => {
           onClose();
           setFk_Plantacion(null);
-          setCantidad(null)
-          setFk_UnidadMedida(null)
+          setCantidad("");
+          setFk_UnidadMedida(null);
           setFecha("");
-          setValorUnidad(null)
-          setMensajeError("")
+          setPrecioUnidad("");
+          setMensajeError("");
         },
       }
     );
   };
-  const handlePlantacionCreada = (nuevaPlantacion : Plantaciones) =>{
-    refetchPlantaciones()
-    setFk_Plantacion(nuevaPlantacion.id)
-    setPlantacionModal(false)
-  }
-  const handleUnidadMedidaCreada = (nuevaUnidadMedida : UnidadesMedida) =>{
-    refetchUnidadMedida()
-    setFk_UnidadMedida(nuevaUnidadMedida.id)
-    setUnidadMedidaModal(false)
-  }
+
+  const handlePlantacionCreada = (nuevaPlantacion: Plantaciones) => {
+    refetchPlantaciones();
+    setFk_Plantacion(nuevaPlantacion.id);
+    setPlantacionModal(false);
+  };
+
+  const handleUnidadMedidaCreada = (nuevaUnidadMedida: UnidadesMedida) => {
+    refetchUnidadMedida();
+    setFk_UnidadMedida(nuevaUnidadMedida.id);
+    setUnidadMedidaModal(false);
+  };
 
   return (
     <>
@@ -84,9 +96,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           },
         ]}
       >
-        {mensajeError &&(
-          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
-        )}
+        {mensajeError && <p className="text-red-500 text-sm mb-2">{mensajeError}</p>}
 
         <Input
           label="Fecha de Cosecha"
@@ -96,18 +106,26 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           min={new Date().toISOString().split("T")[0]}
           required
         />
+
         <Input
           label="Cantidad cosechada"
-          type="number"
+          type="text"
           value={cantidad}
-          onChange={(e) => setCantidad(Number(e.target.value))}
+          onChange={(e) => {
+            const valor = e.target.value;
+            if (/^\d*$/.test(valor)) setCantidad(valor);
+          }}
           required
         />
+
         <Input
           label="Precio unidad"
-          type="number"
-          value={valorUnidad}
-          onChange={(e) => setValorUnidad(Number(e.target.value))}
+          type="text"
+          value={precioUnidad}
+          onChange={(e) => {
+            const valor = e.target.value;
+            if (/^\d*\.?\d*$/.test(valor)) setPrecioUnidad(valor);
+          }}
           required
         />
 
@@ -119,9 +137,9 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
               <Select
                 label="Cultivo"
                 placeholder="Selecciona una plantacion"
-                selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
+                selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
                 onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0]; 
+                  const selectedKey = Array.from(keys)[0];
                   setFk_Plantacion(selectedKey ? Number(selectedKey) : null);
                 }}
               >
@@ -131,16 +149,17 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
               </Select>
             </div>
             <Button
-            onPress={() => setPlantacionModal(true)}
-            color="success"
-            title="Crear nueva plantacion"
-            radius="full"
-            size="sm"
+              onPress={() => setPlantacionModal(true)}
+              color="success"
+              title="Crear nueva plantacion"
+              radius="full"
+              size="sm"
             >
-              <Plus className="w-5 h-5 text-white"/>
+              <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
         )}
+
         {isLoadingUnidadMedida ? (
           <p>Cargando unidades de medida...</p>
         ) : (
@@ -149,9 +168,9 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
               <Select
                 label="Unidad de medida"
                 placeholder="Selecciona una unidad de medida"
-                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []} 
+                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0]; 
+                  const selectedKey = Array.from(keys)[0];
                   setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
                 }}
               >
@@ -160,29 +179,25 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
                 ))}
               </Select>
             </div>
-             <Button
-            onPress={() => setUnidadMedidaModal(true)}
-            color="success"
-            title="Crear nueva Unidad de Medida"
-            radius="full"
-            size="sm"
+            <Button
+              onPress={() => setUnidadMedidaModal(true)}
+              color="success"
+              title="Crear nueva Unidad de Medida"
+              radius="full"
+              size="sm"
             >
-              <Plus className="w-5 h-5 text-white"/>
+              <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
         )}
       </ModalComponent>
+
       {PlantacionModal && (
-        <CrearPlantacionModal
-        onClose={() => setPlantacionModal(false)}
-        onCreate={handlePlantacionCreada}
-        />
+        <CrearPlantacionModal onClose={() => setPlantacionModal(false)} onCreate={handlePlantacionCreada} />
       )}
+
       {unidadMedidaModal && (
-        <CrearUnidadesMedidaModal
-        onClose={() => setUnidadMedidaModal(false)}
-        onCreate={handleUnidadMedidaCreada}
-        />
+        <CrearUnidadesMedidaModal onClose={() => setUnidadMedidaModal(false)} onCreate={handleUnidadMedidaCreada} />
       )}
     </>
   );

@@ -24,7 +24,7 @@ const ROLES = [
   { value: "admin", label: "Administrador" },
   { value: "instructor", label: "Instructor" },
   { value: "pasante", label: "Pasante" },
-  { value: "invitado", label: "Invitado" },
+  { value: "visitante", label: "visitante" },
 ];
 
 export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
@@ -186,12 +186,6 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           </SelectItem>
         ))}
       </Select>
-
-      <div className="flex items-center mt-2">
-        <Checkbox isSelected={userData.admin} onValueChange={handleAdminChange}>
-          ¿Es administrador?
-        </Checkbox>
-      </div>
     </ModalComponent>
   );
 };

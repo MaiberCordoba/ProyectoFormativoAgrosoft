@@ -38,7 +38,7 @@ export function VentasList() {
   } = useEliminarVenta();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cosecha: 0, precioUnitario: 0, fecha: "", fk_UnidadMedida: 0,cantidad:0,valorTotal:0});
+    handleCrear({ id: 0, fk_Cosecha: 0, fecha: "", fk_UnidadMedida: 0,cantidad:0,valorTotal:0});
   };
 
   const columnas = [
@@ -46,7 +46,6 @@ export function VentasList() {
     { name: "Producto", uid: "cosecha" },
     { name: "Unidad de medida", uid: "unidadMedida" },
     { name: "Cantidad", uid: "cantidad" },
-    { name: "Precio Unitario", uid: "precioUnitario" },
     { name: "Valor Total de venta", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" },
   ];

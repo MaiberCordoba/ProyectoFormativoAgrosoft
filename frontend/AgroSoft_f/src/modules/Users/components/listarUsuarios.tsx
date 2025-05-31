@@ -22,7 +22,6 @@ export function UserList() {
     { key: "identificacion", label: "Identificación" },
     { key: "nombre", label: "Nombre" },
     { key: "apellidos", label: "Apellidos" },
-    { key: "fechaNacimiento", label: "Fecha de Nacimiento" },
     { key: "telefono", label: "Teléfono" },
     { key: "correoElectronico", label: "Correo Electrónico" },
     { key: "admin", label: "Admin" },
@@ -73,7 +72,6 @@ export function UserList() {
             <p><strong>ID:</strong> {selectedUser.id}</p>
             <p><strong>Identificación:</strong> {selectedUser.identificacion}</p>
             <p><strong>Nombre:</strong> {selectedUser.nombre} {selectedUser.apellidos}</p>
-            <p><strong>Fecha de Nacimiento:</strong> {selectedUser.fechaNacimiento}</p>
             <p><strong>Teléfono:</strong> {selectedUser.telefono}</p>
             <p><strong>Correo Electrónico:</strong> {selectedUser.correoElectronico}</p>
             <p><strong>Admin:</strong> {selectedUser.admin ? "Sí" : "No"}</p>
