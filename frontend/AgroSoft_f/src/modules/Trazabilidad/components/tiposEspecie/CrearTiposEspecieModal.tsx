@@ -2,6 +2,7 @@ import { useState } from "react";
 import { usePostTiposEspecie } from "../../hooks/tiposEspecie/usePostTiposEspecie";
 import ModalComponent from "@/components/Modal";
 import { Button, Input } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 interface CrearTiposEspecieModalProps {
   onClose: () => void;
@@ -18,7 +19,11 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
 
   const handleSubmit = () => {
     if (!nombre || !descripcion || !img) {
-      console.log("Por favor, completa todos los campos.");
+      addToast({
+        title: "Campos incompletos",
+        description: "Por favor, completa todos los campos.",
+        color: "warning",
+      });
       return;
     }
 
@@ -29,12 +34,31 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
 
     mutate(formData, {
       onSuccess: (data) => {
-        onCreate(data);
-        onClose();
+        addToast({
+          title: "Creación exitosa",
+          description: "Nuevo tipo de especie registrado con éxito",
+          color: "success",
+        });
+
+        try {
+          onCreate(data);
+        } catch (err) {
+          console.error("Error en onCreate:", err);
+        }
+
         setNombre("");
         setDescripcion("");
         setImg(null);
         setPreview(null);
+        onClose();
+      },
+      onError: (error) => {
+        console.error("Error al crear el tipo de especie:", error);
+        addToast({
+          title: "Error al crear tipo de especie",
+          description: "No fue posible registrar el tipo de especie",
+          color: "danger",
+        });
       },
     });
   };
