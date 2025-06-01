@@ -20,7 +20,7 @@ interface CrearTiempoActividadControlModalProps {
 }
 
 export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActividadControlModalProps) => {
-  const [tiempo, setTiempo] = useState<number | null>(null);
+  const [tiempo, setTiempo] = useState(0);
   const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number | null>(null);
   const [fk_actividad, setFk_Actividad] = useState<number | null>(null);
   const [fk_control, setFk_Control] = useState<number | null>(null);
@@ -49,6 +49,10 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
       setError("Solo puede elegir una actividad o un contro,no ambas.")
       return
     }
+    if(tiempo < 0){
+      setError("Ingrese un timepo valido")
+      return
+    }
     setError("")
 
     mutate(
@@ -56,7 +60,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
       {
         onSuccess: () => {
           onClose();
-          setTiempo(null);
+          setTiempo(0);
           setFk_UnidadTiempo(null);
           setFk_Actividad(null);
           setFk_Control(null);
@@ -106,7 +110,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
         <Input
           label="Tiempo"
           type="number"
-          value={tiempo}
+          value={tiempo.toString()}
           onChange={(e) => setTiempo(Number(e.target.value))}
           required
           />
