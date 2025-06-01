@@ -8,19 +8,18 @@ import ModalComponent from "@/components/Modal";
 import { Select, SelectItem, Input, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import type { Especies, Cultivo, Semillero, Eras, Plantaciones } from "../../types";
-
-// Importa los modales
 import { CrearEspecieModal } from "../especies/CrearEspecieModal";
 import { CrearCultivoModal } from "../cultivos/CrearCultivosModal";
 import { CrearSemilleroModal } from "../semillero/CrearSemilleroModal";
 import { CrearEraModal } from "../eras/CrearEraModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearPlantacionModalProps {
   onClose: () => void;
   onCreate: (nuevaPlantacion: Plantaciones) => void;
 }
 
-export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => {
+export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModalProps) => {
   const [fk_Especie, setFk_Especie] = useState<number | null>(null);
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_semillero, setFk_semillero] = useState<number | null>(null);
@@ -43,8 +42,12 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
   const semillerosFiltrados = semilleros.filter((s: Semillero) => s.fk_Cultivo === fk_Cultivo);
 
   const handleSubmit = () => {
-    if (!fk_Era || !fk_Cultivo || !fk_semillero || !unidades || !fechaSiembra) {
-      console.log("Por favor, completa todos los campos.");
+    if (!fk_Era || !fk_Cultivo || !unidades || !fechaSiembra) {
+      addToast({
+        title: "Campos Obligatorios",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "warning",
+      });
       return;
     }
 
@@ -52,17 +55,20 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
       {
         fk_Cultivo,
         fk_Era,
-        fk_semillero,
+        fk_semillero, // puede ser null
         unidades,
         fechaSiembra,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          onCreate(data);
           onClose();
           setFk_Especie(null);
           setFk_Cultivo(null);
           setFk_semillero(null);
           setFk_Era(null);
+          setUnidades(0);
+          setFechaSiembra("");
         },
       }
     );
@@ -75,6 +81,9 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
         setUnidades(semilleroSeleccionado.unidades);
         setFechaSiembra(semilleroSeleccionado.fechasiembra);
       }
+    } else {
+      setUnidades(0);
+      setFechaSiembra("");
     }
   }, [fk_semillero]);
 
@@ -93,7 +102,7 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
           },
         ]}
       >
-        {/* Select de Especie */}
+        {/* Especie */}
         <div className="flex items-end gap-2">
           <div className="flex-1">
             <Select
@@ -141,11 +150,11 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
           </Button>
         </div>
 
-        {/* Semillero */}
+        {/* Semillero (opcional) */}
         <div className="flex items-end gap-2 mt-4">
           <div className="flex-1">
             <Select
-              label="Semillero"
+              label="Semillero (opcional)"
               placeholder="Selecciona un semillero"
               selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
               onSelectionChange={(keys) => {
@@ -166,9 +175,23 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
           </Button>
         </div>
 
-        {/* Campos automáticos */}
-        <Input className="mt-4" label="Unidades" value={unidades.toString()} isReadOnly />
-        <Input className="mt-2" label="Fecha Siembra" value={fechaSiembra} isReadOnly />
+        {/* Unidades y fecha siembra */}
+        <Input
+          className="mt-4"
+          label="Unidades"
+          type="number"
+          value={unidades.toString()}
+          onChange={(e) => setUnidades(Number(e.target.value))}
+          isReadOnly={fk_semillero !== null}
+        />
+        <Input
+          className="mt-2"
+          label="Fecha Siembra"
+          type="date"
+          value={fechaSiembra}
+          onChange={(e) => setFechaSiembra(e.target.value)}
+          isReadOnly={fk_semillero !== null}
+        />
 
         {/* Era */}
         <div className="flex items-end gap-2 mt-4">
@@ -184,7 +207,7 @@ export const CrearPlantacionModal = ({ onClose }: CrearPlantacionModalProps) => 
             >
               {eras.map((era: Eras) => (
                 <SelectItem key={era.id.toString()}>
-                  {`Era ${era.tipo} en ${era.fk_lote?.nombre}`}
+                  {`Era ${era.tipo} en ${era.Lote?.nombre || "sin lote"}`}
                 </SelectItem>
               ))}
             </Select>
