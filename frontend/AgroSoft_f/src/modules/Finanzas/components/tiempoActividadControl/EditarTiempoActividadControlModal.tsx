@@ -17,12 +17,13 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
   tiempoActividadControl,
   onClose,
 }) => {
-  const [tiempo, setTiempo] = useState<number>(tiempoActividadControl.tiempo);
+  const [tiempo, setTiempo] = useState(tiempoActividadControl.tiempo);
   const [valorTotal, setValorTotal] = useState<number>(tiempoActividadControl.valorTotal);
   const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number>(tiempoActividadControl.fk_unidadTiempo);
   const [fk_actividad, setFk_Actividad] = useState<number>(tiempoActividadControl.fk_actividad);
   const [fk_control, setFk_Control] = useState<number>(tiempoActividadControl.fk_control);
   const [fk_salario, setFk_Salario] = useState<number>(tiempoActividadControl.fk_salario);
+  const [error, setError]=useState("")
 
   const { data: actividades } = useGetActividades();
   const { data: unidadesTiempo } = useGetUnidadesTiempo();
@@ -34,6 +35,10 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
     if (!tiempo || !valorTotal || !fk_unidadTiempo || !fk_salario) {
       console.log("Por favor, completa todos los campos.");
       return;
+    }
+    if (tiempo < 0){
+      setError("Ingrese un tiempo valido")
+      return
     }
 
     mutate(
@@ -70,8 +75,9 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         },
       ]}
     >
+      <p className='text-red-500 text-sm '>{error}</p>
       <Input
-        value={tiempo}
+        value={tiempo.toString()}
         label="Tiempo"
         type="number"
         onChange={(e) => setTiempo(Number(e.target.value))}
