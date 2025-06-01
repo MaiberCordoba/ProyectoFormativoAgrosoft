@@ -5,6 +5,7 @@ import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearTiposEspecieModal } from "../tiposEspecie/CrearTiposEspecieModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearEspecieModalProps {
   onClose: () => void;
@@ -30,9 +31,14 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie, refetch: refetchTipos } = useGetTiposEspecie();
 
   const handleSubmit = () => {
+    // Validación antes de mutar
     if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie) {
-      console.log("Por favor, completa todos los campos.");
-      return;
+     addToast({
+        title: "Campos Obligatiorios",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "warning",
+      });
+      return; 
     }
 
     const formData = new FormData();
@@ -46,12 +52,20 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
       onSuccess: (data) => {
         onCreate(data);
         onClose();
+        // reset form
         setNombre("");
         setDescripcion("");
         setImg(null);
         setPreview(null);
         setTiempocrecimiento("");
         setFk_tipoespecie(null);
+      },
+      onError: () => {
+        addToast({
+          title: "Error",
+          description: "No fue posible registrar la nueva especie.",
+          color: "danger",
+        });
       },
     });
   };
