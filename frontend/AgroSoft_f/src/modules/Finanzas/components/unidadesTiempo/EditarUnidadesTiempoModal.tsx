@@ -11,11 +11,18 @@ interface EditarUnidadesTiempoModalProps {
 
 const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ unidadTiempo, onClose }) => {
   const [nombre, setNombre] = useState<string>(unidadTiempo.nombre);
-  const [equivalenciaMinutos, setEquivalenciaMinutos] = useState<number>(unidadTiempo.equivalenciaMinutos);
+  const [equivalenciaMinutos, setEquivalenciaMinutos] = useState(unidadTiempo.equivalenciaMinutos);
+
+  const [error,setError] = useState("")
 
   const { mutate, isPending } = usePatchUnidadesTiempo();
 
   const handleSubmit = () => {
+    if (equivalenciaMinutos < 0){
+      setError("Ingresa una equivalencia valida")
+      return
+    }
+    setError("")
     mutate(
       {
         id: unidadTiempo.id,
@@ -47,6 +54,7 @@ const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ u
         },
       ]}
     >
+      <p className='text-red-500 text-sm mb-2'>{error}</p>
       <Input
         value={nombre}
         label="Nombre"

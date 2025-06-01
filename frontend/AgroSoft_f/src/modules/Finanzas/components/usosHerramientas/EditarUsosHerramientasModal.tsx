@@ -14,13 +14,18 @@ interface EditarUsoHerramientaModalProps {
 const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ usoHerramienta, onClose }) => {
   const [fk_Herramienta, setFk_Herramienta] = useState<number>(usoHerramienta.fk_Herramienta || 0);
   const [fk_Actividad, setFk_Actividad] = useState<number>(usoHerramienta.fk_Actividad || 0);
-  const [unidades, setUnidades] = useState<number>(usoHerramienta.unidades);
+  const [unidades, setUnidades] = useState(usoHerramienta.unidades);
+  const [error, setError] = useState("");
 
   const { data: herramientas, isLoading: isLoadingHerramientas } = useGetHerramientas();
   const { data: actividades, isLoading: isLoadingActividades } = useGetActividades();
   const { mutate, isPending } = usePatchUsosHerramientas();
 
   const handleSubmit = () => {
+    if (unidades < 0 ){
+      setError("La cantidad no puede ser negativa")
+      return
+    }
     mutate(
       {
         id: usoHerramienta.id,
@@ -52,9 +57,10 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
         },
       ]}
     >
+      <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Cantidad Usada"
-        value={unidades}
+        value={unidades.toString()}
         type="number"
         onChange={(e) => setUnidades(Number(e.target.value))}
         required

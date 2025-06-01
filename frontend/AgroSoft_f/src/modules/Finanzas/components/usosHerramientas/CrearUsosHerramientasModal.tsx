@@ -17,7 +17,7 @@ interface CrearUsoHerramientaModalProps {
 export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalProps) => {
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
-  const [unidades, setUnidades] = useState<number | null>(null)
+  const [unidades, setUnidades] = useState(0)
   const [error,setError] = useState("")
 
   const [herramientaModal, setHerramientaModal] = useState(false)
@@ -32,6 +32,10 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
       setError("Por favor, completa todos los campos.");
       return;
     }
+    if(unidades < 0){
+      setError("Por favor ingresa una cantidad valida")
+      return
+    }
     setError("")
 
     mutate(
@@ -41,7 +45,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
           onClose();
           setFk_Herramienta(null);
           setFk_Actividad(null);
-          setUnidades(null)
+          setUnidades(0)
           setError("")
         },
       }
@@ -77,7 +81,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
         <Input
           label="Cantidad Usada"
           type="number"
-          value={unidades}
+          value={unidades.toString()}
           onChange={(e) => setUnidades(Number(e.target.value))}
           required
         />
