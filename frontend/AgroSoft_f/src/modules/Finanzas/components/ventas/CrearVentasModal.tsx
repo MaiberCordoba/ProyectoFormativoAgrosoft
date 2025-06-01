@@ -18,9 +18,9 @@ interface CrearVentasModalProps {
 export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
   const [valorTotal, setValorTotal] = useState<number | null>(null);
-  const [descuento, setDescuento] = useState<number | null>(null);
+  const [descuento, setDescuento] = useState(0);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [cantidad, setCantidad] = useState<number | null>(null);
+  const [cantidad, setCantidad] = useState(0);
   const [error, setError] = useState("");
 
   const [CosechaModal, setCosechaModal] = useState(false);
@@ -64,6 +64,10 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       setError(`La cantidad ingresada excede la cantidad disponible.`);
       return;
     }
+    if (cantidad < 0 || descuento < 0){
+      setError("No se permiten valores negativos")
+      return
+    }
 
     setError("");
 
@@ -73,10 +77,10 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         onSuccess: () => {
           onClose();
           setFk_Cosecha(null);
-          setDescuento(null);
+          setDescuento(0);
           setValorTotal(0);
           setFk_UnidadMedida(null);
-          setCantidad(null);
+          setCantidad(0);
           setError("");
         },
       }
@@ -158,7 +162,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         <Input
           label="Cantidad de producto"
           type="number"
-          value={cantidad ?? ""}
+          value={cantidad.toString()}
           onChange={(e) => setCantidad(Number(e.target.value))}
           required
         />
@@ -173,7 +177,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         <Input
           label="Descuento (opcional)"
           type="number"
-          value={descuento ?? ""}
+          value={descuento.toString()}
           onChange={(e) => setDescuento(Number(e.target.value))}
         />
 

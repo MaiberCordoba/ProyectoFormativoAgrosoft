@@ -25,7 +25,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
   const [fk_Control, setFk_Control] = useState<number | null>(null);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [cantidadProducto, setCantidadProducto] = useState<number | null>(null);
+  const [cantidadProducto, setCantidadProducto] = useState(0);
   const [error,setError] = useState("")
 
   const [insumoModal, setInsumoModal] = useState(false);
@@ -53,6 +53,10 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
       setError("Solo puede elegir una actividad o un control,pero no ambos.")
       return
     }
+    if (cantidadProducto < 0){
+      setError("Ingresa una cantidad valida no negativa")
+      return
+    }
     setError("")
     mutate(
       {
@@ -70,7 +74,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
           setFk_Actividad(null);
           setFk_Control(null);
           setFk_UnidadMedida(null);
-          setCantidadProducto(null);
+          setCantidadProducto(0);
           setError("")
         },
       }
@@ -118,7 +122,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
         <Input
           label="Cantidad Usada"
           type="number"
-          value={cantidadProducto ?? ""}
+          value={cantidadProducto.toString()}
           onChange={(e) => setCantidadProducto(Number(e.target.value))}
           required
         />

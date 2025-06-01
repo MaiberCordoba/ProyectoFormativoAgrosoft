@@ -17,7 +17,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
   const [fk_Insumo, setFk_Insumo] = useState<number>(usoInsumo.fk_Insumo || 0);
   const [fk_Actividad, setFk_Actividad] = useState<number>(usoInsumo.fk_Actividad || 0);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number>(usoInsumo.fk_UnidadMedida || 0);
-  const [cantidadProducto, setCantidadProducto] = useState<number>(usoInsumo.cantidadProducto);
+  const [cantidadProducto, setCantidadProducto] = useState(usoInsumo.cantidadProducto);
   const [fk_Control, setFk_Control] = useState<number>(usoInsumo.fk_Control || 0);
   const [error,setError] = useState("")
 
@@ -33,14 +33,19 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       setError("Puede elegir una actividad o un control, no ambos")
       return
     }
+    if (cantidadProducto < 0){
+      setError("La cantidad no puede ser negativa")
+      return
+    }
+    setError("")
     mutate(
       {
         id: usoInsumo.id,
         data: {
-          fk_Insumo,
-          fk_Actividad,
-          fk_Control,
-          fk_UnidadMedida,
+          fk_Insumo: fk_Insumo || null,
+          fk_Actividad: fk_Actividad || null,
+          fk_Control: fk_Control || null,
+          fk_UnidadMedida: fk_UnidadMedida || null,
           cantidadProducto,
         },
       },
@@ -69,7 +74,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Cantidad Usada"
-        value={cantidadProducto}
+        value={cantidadProducto.toString()}
         type="number"
         onChange={(e) => setCantidadProducto(Number(e.target.value))}
         required
