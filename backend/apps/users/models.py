@@ -46,6 +46,7 @@ class Usuario(AbstractUser):
         ('admin','admin'),
         ('instructor','instructor'),
         ('pasante','pasante'),
+        ('aprendiz','aprendiz'),
         ('visitante','visitante')
     ]
     username = None

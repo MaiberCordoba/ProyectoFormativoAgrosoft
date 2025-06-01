@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 
-import { Input, Checkbox } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import { User } from "../types";
 import { usePatchUsers } from "../hooks/usePatchUsers";
 
@@ -19,6 +19,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     correoElectronico: user.correoElectronico,
     estado: user.estado,
     admin: user.admin,
+    rol: user.rol,
   });
 
   const { mutate, isPending } = usePatchUsers();
@@ -30,13 +31,6 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     setUserData((prev) => ({
       ...prev,
       [field]: e.target.value,
-    }));
-  };
-
-  const handleAdminChange = (isChecked: boolean) => {
-    setUserData((prev) => ({
-      ...prev,
-      admin: isChecked,
     }));
   };
 
@@ -57,6 +51,21 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     );
   };
 
+  const handleRoleChange = (selectedKey: string) => {
+    setUserData((prev) => ({
+      ...prev,
+      rol: selectedKey,
+    }));
+  };
+
+  const roles = [
+    { key: "admin", label: "admin" },
+    { key: "instructor", label: "instructor" },
+    { key: "pasante", label: "pasante" },
+    { key: "aprendiz", label: "aprendiz" },
+    { key: "visitante", label: "visitante" },
+  ];
+
   return (
     <ModalComponent
       isOpen={true}
@@ -73,6 +82,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Input
+          size="sm"
           label="Identificación"
           type="number"
           value={userData.identificacion}
@@ -83,6 +93,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
         <Input
           label="Nombre"
           type="text"
+          size="sm"
           value={userData.nombre}
           onChange={(e) => handleInputChange(e, "nombre")}
           required
@@ -91,6 +102,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
         <Input
           label="Apellidos"
           type="text"
+          size="sm"
           value={userData.apellidos}
           onChange={(e) => handleInputChange(e, "apellidos")}
         />
@@ -98,6 +110,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
         <Input
           label="Teléfono"
           type="tel"
+          size="sm"
           value={userData.telefono}
           onChange={(e) => handleInputChange(e, "telefono")}
         />
@@ -105,6 +118,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
         <Input
           label="Correo Electrónico"
           type="email"
+          size="sm"
           value={userData.correoElectronico}
           onChange={(e) => handleInputChange(e, "correoElectronico")}
           required
@@ -113,19 +127,25 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
         <Input
           label="estado"
           type="text"
+          size="sm"
           value={userData.estado}
           onChange={(e) => handleInputChange(e, "estado")}
           required
         />
 
-        <div className="flex items-center mt-2">
-          <Checkbox
-            isSelected={userData.admin}
-            onValueChange={handleAdminChange}
-          >
-            ¿Es administrador?
-          </Checkbox>
-        </div>
+        <Select
+          label="rol"
+          size="sm"
+          selectedKeys={userData.rol ? [userData.rol] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0] as string;
+            handleRoleChange(selectedKey);
+          }}
+        >
+          {roles.map((rol) => (
+            <SelectItem key={rol.key}>{rol.label}</SelectItem>
+          ))}
+        </Select>
       </div>
     </ModalComponent>
   );

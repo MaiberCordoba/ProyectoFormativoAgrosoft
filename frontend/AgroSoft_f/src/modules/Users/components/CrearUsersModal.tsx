@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react";
 import ModalComponent from "@/components/Modal";
-import { Input, Checkbox, Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import { usePostUsers } from "../hooks/usePostUsers";
 
 interface CrearUsersModalProps {
@@ -25,6 +25,7 @@ const ROLES = [
   { value: "instructor", label: "Instructor" },
   { value: "pasante", label: "Pasante" },
   { value: "visitante", label: "visitante" },
+  { value: "aprendiz", label: "aprendiz" },
 ];
 
 export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
@@ -37,7 +38,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     correoElectronico: "",
     password: "",
     estado: "",
-    rol:"",
+    rol: "",
     admin: false,
   });
 
@@ -54,14 +55,6 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     }));
   };
 
-  // Maneja cambio específico del checkbox
-  const handleAdminChange = (isChecked: boolean) => {
-    setUserData((prev) => ({
-      ...prev,
-      admin: isChecked,
-    }));
-  };
-
   const handleSubmit = () => {
     if (
       !userData.identificacion ||
@@ -74,7 +67,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     }
 
     mutate(userData, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         onClose();
         setUserData({
           id: 0,
@@ -107,6 +100,8 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
       ]}
     >
       <Input
+        isRequired
+        errorMessage="Please enter a valid email"
         label="Identificación"
         type="number"
         value={userData.identificacion}
@@ -168,7 +163,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
         <SelectItem key="inactivo">Inactivo</SelectItem>
       </Select>
 
-       <Select
+      <Select
         isRequired
         label="Rol"
         selectedKeys={userData.rol ? new Set([userData.rol]) : new Set()}
@@ -181,9 +176,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
         }}
       >
         {ROLES.map((role) => (
-          <SelectItem key={role.value}>
-            {role.label}
-          </SelectItem>
+          <SelectItem key={role.value}>{role.label}</SelectItem>
         ))}
       </Select>
     </ModalComponent>
