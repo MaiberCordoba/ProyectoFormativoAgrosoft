@@ -41,7 +41,10 @@ const FormComponent: React.FC<FormComponentProps> = ({
   };
 
   return (
-    <Form className="w-full max-w-xs flex flex-col gap-4" onSubmit={handleSubmit}>
+    <Form
+      className="w-full max-w-xs flex flex-col gap-4"
+      onSubmit={handleSubmit}
+    >
       {fields.map((field) => {
         if (field.options) {
           // Aquí manejamos el caso del Select con valores booleanos
@@ -56,7 +59,9 @@ const FormComponent: React.FC<FormComponentProps> = ({
               label={field.label}
               name={field.name}
               isRequired={field.required}
-              onChange={(e) => handleSelectChange(field.name, e.target.value === "true")}
+              onChange={(e) =>
+                handleSelectChange(field.name, e.target.value === "true")
+              }
             >
               {options.map((option) => (
                 <SelectItem key={option.key}>{option.label}</SelectItem>
@@ -67,6 +72,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
           // Esto mantiene el comportamiento actual para los Inputs
           return (
             <Input
+              size="sm"
               key={field.name}
               isRequired={field.required}
               errorMessage={field.errorMessage}
@@ -81,8 +87,6 @@ const FormComponent: React.FC<FormComponentProps> = ({
       })}
 
       {extraContent && <div className="mt-4">{extraContent}</div>}
-
-      
     </Form>
   );
 };

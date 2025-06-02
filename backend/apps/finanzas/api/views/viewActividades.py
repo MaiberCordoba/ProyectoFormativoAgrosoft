@@ -15,11 +15,15 @@ class ViewActividades(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        # Si el usuario tiene admin=True, devuelve todas las actividades
-        if user.admin:  # Cambiado de is_superuser/is_staff a admin
-            return Actividades.objects.all()
-        # Si no, devuelve solo sus actividades
-        return Actividades.objects.filter(fk_Usuario=user)
+        # Si el usuario es aprendiz solo ve las actividades del mismo 
+        if (user.rol == "aprendiz"):  
+            return  Actividades.objects.filter(fk_Usuario=user)
+            # Si el usuario es visitante no ve ninguna actividad
+        elif (user.rol == "visitante"):  
+            return ("no tienes permitida esta vista")
+        
+        # de tener otro rol , devuelve todas las actividades
+        return Actividades.objects.all()
 
     def perform_create(self, serializer):
         actividad = serializer.save()
