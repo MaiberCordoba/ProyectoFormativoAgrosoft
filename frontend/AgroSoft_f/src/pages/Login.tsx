@@ -3,7 +3,7 @@ import { login, getUser } from "@/api/Auth";
 import { useAuth } from "@/hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
 import FormComponent from "@/components/Form";
-import logo from "../../public/sena.png"; 
+import logo from "../../public/logoAgrosoft.png";
 import { Link } from "@heroui/react";
 import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 import { SolicitarRecuperacionModal } from "@/modules/Users/components/recuperaciones/solicitarRecuperacion";
@@ -13,13 +13,16 @@ const Login = () => {
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
-  const [registerModalUsers, setRegisterModalUsers] = useState(false)
-  const [solicitarRecuperacion, setSolicitarRecuperacion] = useState(false)
+  const [registerModalUsers, setRegisterModalUsers] = useState(false);
+  const [solicitarRecuperacion, setSolicitarRecuperacion] = useState(false);
 
   const handleSubmit = async (data: Record<string, any>) => {
     setErrorMessage("");
     try {
-      const response = await login({ email: data.email, password: data.password });
+      const response = await login({
+        email: data.email,
+        password: data.password,
+      });
       const userData = await getUser(response.access);
       localStorage.setItem("token", response.access);
       localStorage.setItem("user", JSON.stringify(userData));
@@ -33,56 +36,82 @@ const Login = () => {
 
   return (
     <>
+      {/* Changed background to #f3f8f9 */}
       <div
-        className="h-screen w-full flex items-center justify-center bg-cover bg-center relative"
-        style={{ backgroundImage: 'url("/ImagenHome.JPG")' }}
+        className="h-screen w-full flex items-center justify-center"
+        style={{ backgroundColor: "#f3f8f9" }}
       >
-        {/* Capa de fondo semi-transparente */}
-        <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
-
-        {/* Contenedor principal centrado */}
-        <div className="relative z-10 flex items-center justify-center w-[400px] min-h-[500px] rounded-xl shadow-xl bg-white bg-opacity-10 backdrop-blur-lg p-10 text-white">
+        {/* Contenedor principal centrado - adjusted for minimalist design */}
+        <div className="flex items-center justify-center w-[400px] min-h-[500px] rounded-xl shadow-lg bg-white p-10 border border-gray-200">
           <div className="w-full flex flex-col items-center">
             {/* Logo arriba */}
-            <img src={logo} alt="Logo SENA" className="w-16 h-16 mb-4" />
+            <img src={logo} alt="Logo SENA" className="w-36 mb-8" />
 
-            <h2 className="text-2xl font-semibold mb-4 text-center">Bienvenido de vuelta</h2>
-            <p className="text-sm mb-4 text-gray-300 text-center">Por favor, introduce tus credenciales</p>
+            <p className="text-sm mb-4 text-gray-600 text-center">
+              Por favor, introduce tus credenciales
+            </p>
 
             <FormComponent
               fields={[
-                { name: "email", label: "Correo", type: "email", required: true },
-                { name: "password", label: "Contraseña", type: "password", required: true },
+                {
+                  name: "email",
+                  label: "Correo",
+                  type: "email",
+                  required: true,
+                },
+                {
+                  name: "password",
+                  label: "Contraseña",
+                  type: "password",
+                  required: true,
+                },
               ]}
               onSubmit={handleSubmit}
               submitLabel="Iniciar"
             />
 
             {/* Enlace de recuperación */}
-            <div className="flex justify-between items-center w-full mt-2 text-xs text-gray-300">
-              <Link onPress={() => setSolicitarRecuperacion(true)} underline="hover" className="text-white hover:underline">
+            <div className="flex justify-end w-full mt-2 text-xs">
+              <Link
+                onPress={() => setSolicitarRecuperacion(true)}
+                underline="hover"
+                className="text-[#327d45] hover:underline"
+                size="sm"
+              >
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
 
             {/* Error */}
             {errorMessage && (
-              <p className="text-red-500 text-sm font-semibold text-center mt-3">{errorMessage}</p>
+              <p className="text-red-500 text-sm font-semibold text-center mt-3">
+                {errorMessage}
+              </p>
             )}
 
             {/* Botón */}
             <button
               type="submit"
-              onClick={() => document.querySelector("form")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))}
-              className="mt-6 w-full bg-black text-white py-2 rounded-md hover:bg-opacity-80 transition"
+              onClick={() =>
+                document
+                  .querySelector("form")
+                  ?.dispatchEvent(
+                    new Event("submit", { cancelable: true, bubbles: true })
+                  )
+              }
+              className="mt-6 w-full bg-[#327d45] text-white py-2 rounded-md hover:bg-opacity-90 transition"
             >
               Iniciar sesión
             </button>
 
             {/* Registro */}
-            <p className="mt-4 text-center text-xs text-gray-300">
+            <p className="mt-4 text-center text-xs text-gray-600">
               ¿No tienes una cuenta?{" "}
-              <Link onPress={() => setRegisterModalUsers(true)} underline="hover" className="text-white hover:underline">
+              <Link
+                onPress={() => setRegisterModalUsers(true)}
+                underline="hover"
+                className="text-[#327d45] hover:underline"
+              >
                 Regístrate aquí
               </Link>
             </p>
@@ -95,7 +124,9 @@ const Login = () => {
         <CrearUsersModal onClose={() => setRegisterModalUsers(false)} />
       )}
       {solicitarRecuperacion && (
-        <SolicitarRecuperacionModal onClose={() => setSolicitarRecuperacion(false)} />
+        <SolicitarRecuperacionModal
+          onClose={() => setSolicitarRecuperacion(false)}
+        />
       )}
     </>
   );

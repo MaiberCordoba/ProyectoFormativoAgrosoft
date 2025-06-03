@@ -1,7 +1,14 @@
 import React from "react";
 import {
-  Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-  Button, Chip, SortDescriptor
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Button,
+  Chip,
+  SortDescriptor,
 } from "@heroui/react";
 import { useFiltrado } from "../../../hooks/useFiltrado";
 import { useFilasPorPagina } from "../../../hooks/useFilasPorPagina";
@@ -36,7 +43,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   onCrearNuevo,
   onRegistroMasivo = undefined,
   placeholderBusqueda = "Buscar...",
-  initialVisibleColumns = columnas.map(c => c.uid), // Por defecto todas visibles
+  initialVisibleColumns = columnas.map((c) => c.uid), // Por defecto todas visibles
 }: TablaReutilizableProps<T>) => {
   // Hooks existentes
   const {
@@ -52,7 +59,9 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
     usePaginacion(datosFiltrados, filasPorPagina);
 
   // Nuevos hooks
-  const { visibleColumns, setVisibleColumns } = useColumnasVisibles(initialVisibleColumns);
+  const { visibleColumns, setVisibleColumns } = useColumnasVisibles(
+    initialVisibleColumns
+  );
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "id", // Columna por defecto para ordenar
     direction: "ascending", // Dirección por defecto
@@ -61,7 +70,9 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   // Filtrar columnas visibles
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columnas;
-    return columnas.filter((col) => Array.from(visibleColumns).includes(col.uid));
+    return columnas.filter((col) =>
+      Array.from(visibleColumns).includes(col.uid)
+    );
   }, [visibleColumns, columnas]);
 
   // Ordenar datos
@@ -78,11 +89,10 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   }, [datosPaginados, sortDescriptor]);
 
   return (
-    <div className="w-full max-w-full flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
+    <div className="w-full max-w-[1075px] flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
       {/* Barra superior de controles - ESTRUCTURA CORREGIDA */}
       <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[150px]">
-
           <div className="[&>div]:w-full">
             <FiltrosTabla
               valorFiltro={valorFiltro}
@@ -92,48 +102,48 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
               filtroEstado={filtroEstado}
               onCambiarFiltroEstado={setFiltroEstado}
               placeholderBusqueda={placeholderBusqueda}
-              />
+            />
           </div>
 
           <div className="[&>div]:w-full">
             <FilasPorPagina
               filasPorPagina={filasPorPagina}
               onChange={handleChangeFilasPorPagina}
-              />
+            />
           </div>
         </div>
 
-         <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[120px]">
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[120px]">
           <div className="[&>div]:w-full">
             <SelectorColumnas
               columnas={columnas}
               visibleColumns={visibleColumns}
               setVisibleColumns={setVisibleColumns}
-              />
+            />
           </div>
 
           <div className="flex flex-wrap gap-2 [&>button]:flex-1 [&>button]:sm:flex-none">
-          <Button
-            color="success"
-            size="sm"
-            endContent={<PlusIcon size={16} />}
-            onPress={onCrearNuevo}
-            className="self-end text-white"
-            >
-            Agregar
-          </Button>
-          {onRegistroMasivo !== undefined && (
             <Button
-            color="success"
-            size="sm"
-            endContent={<PlusIcon size={16} />}
-            onPress={onRegistroMasivo}
-            className="self-end text-white"
+              color="success"
+              size="sm"
+              endContent={<PlusIcon size={16} />}
+              onPress={onCrearNuevo}
+              className="self-end text-white"
             >
-              Registro masivo
+              Agregar
             </Button>
-          )}
-          {renderReporteAction && renderReporteAction(datos)}
+            {onRegistroMasivo !== undefined && (
+              <Button
+                color="success"
+                size="sm"
+                endContent={<PlusIcon size={16} />}
+                onPress={onRegistroMasivo}
+                className="self-end text-white"
+              >
+                Registro masivo
+              </Button>
+            )}
+            {renderReporteAction && renderReporteAction(datos)}
           </div>
         </div>
       </div>
@@ -145,7 +155,6 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           aria-label="Tabla reutilizable"
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-            
         >
           <TableHeader columns={headerColumns}>
             {(column) => (
@@ -162,7 +171,9 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           <TableBody
             emptyContent={
               <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                <p className="text-gray-500 text-sm mb-2">No se encontraron registros</p>
+                <p className="text-gray-500 text-sm mb-2">
+                  No se encontraron registros
+                </p>
                 <Button size="sm" variant="flat" onPress={onCrearNuevo}>
                   Crear nuevo registro
                 </Button>
@@ -170,7 +181,10 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
             }
           >
             {sortedItems.map((item) => (
-              <TableRow key={item.id} className="hover:bg-gray-50 transition-colors">
+              <TableRow
+                key={item.id}
+                className="hover:bg-gray-50 transition-colors"
+              >
                 {(columnKey) => (
                   <TableCell className="py-3 px-4 border-b text-gray-700">
                     {columnKey === "status" && item.status ? (
@@ -192,7 +206,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           paginaActual={paginaActual}
           totalPaginas={totalPaginas}
           onCambiarPagina={setPaginaActual}
-          />
+        />
       </div>
     </div>
   );
