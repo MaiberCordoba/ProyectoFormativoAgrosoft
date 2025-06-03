@@ -141,20 +141,6 @@ export function ActividadesList() {
 
   return (
     <div className="p-4">
-      {["admin", "instructor", "pasante"].includes(userRole || "") && (
-  <div className="flex justify-end mb-4">
-    <Button
-      onPress={() => setTiempoACModalOpen(true)}
-      title="Finalizar actividad"
-      size="sm"
-      color="warning"
-      
-    >
-    Finalizar Actividad
-    </Button>
-  </div>
-)}
-
       {/* Tabla reutilizable */}
       <TablaReutilizable
         datos={data || []}
@@ -163,6 +149,18 @@ export function ActividadesList() {
         placeholderBusqueda="Buscar por Título"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
+        botonExtra={
+          ["admin", "instructor", "pasante"].includes(userRole || "") && (
+            <Button
+            onPress={() => setTiempoACModalOpen(true)}
+            size="sm"
+            color="warning"
+            className="self-end text-white"
+            >
+              Finalizar Actividad
+            </Button>
+          )
+        }
       />
 
       {/* Modales */}
