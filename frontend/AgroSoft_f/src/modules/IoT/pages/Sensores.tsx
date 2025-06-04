@@ -265,7 +265,7 @@ export default function IoTPages() {
           size="sm"
         />
       </div>
-      <br />
+      <br /><br />
 
       <div className="overflow-x-hidden w-full mt-4 relative">
         <div className="auto-scroll-container flex gap-4 pb-4 px-4">
