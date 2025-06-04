@@ -70,6 +70,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         label="Nombre"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
+        size="sm"
       />
 
       <Textarea
@@ -81,6 +82,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
       <Select
         label="Tiempo de Crecimiento"
         placeholder="Selecciona una opción"
+        size="sm"
         selectedKeys={tiempocrecimiento ? [tiempocrecimiento] : []}
         onSelectionChange={(keys) => {
           const selected = Array.from(keys)[0];
@@ -98,6 +100,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         <Select
           label="Tipo de Especie"
           placeholder="Selecciona un tipo"
+          size="sm"
           selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];

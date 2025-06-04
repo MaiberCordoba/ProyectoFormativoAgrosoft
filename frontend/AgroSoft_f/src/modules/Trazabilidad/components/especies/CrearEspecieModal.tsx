@@ -97,6 +97,7 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
+          size="sm"
         />
 
         <Input
@@ -105,11 +106,13 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
+          size="sm"
         />
 
         <Select
           label="Tiempo de Crecimiento"
           placeholder="Selecciona una opción"
+          size="sm"
           selectedKeys={tiempocrecimiento ? [tiempocrecimiento] : []}
           onSelectionChange={(keys) => {
             const selected = Array.from(keys)[0];
@@ -129,6 +132,7 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
               <Select
                 label="Tipo de Especie"
                 placeholder="Selecciona un tipo"
+                size="sm"
                 selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];

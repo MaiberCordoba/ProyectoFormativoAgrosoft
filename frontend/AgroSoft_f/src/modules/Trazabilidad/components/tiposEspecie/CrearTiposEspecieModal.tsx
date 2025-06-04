@@ -83,6 +83,7 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required
+        size="sm"
       />
 
       <Input
@@ -91,6 +92,7 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
         required
+        size="sm"
       />
 
       <div className="mt-4">

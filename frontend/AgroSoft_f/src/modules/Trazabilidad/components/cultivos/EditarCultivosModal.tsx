@@ -83,6 +83,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
       <Input
         value={nombre}
         label="Nombre del Cultivo"
+        size="sm"
         onChange={(e) => setNombre(e.target.value)}
       />
 
@@ -92,6 +93,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         <Select
           label="Especie"
           placeholder="Selecciona una especie"
+          size="sm"
           selectedKeys={
             fk_EspecieId ? new Set([fk_EspecieId.toString()]) : new Set()
           }

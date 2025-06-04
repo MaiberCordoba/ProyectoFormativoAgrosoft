@@ -89,6 +89,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         <Select
           label="Lote"
           placeholder="Selecciona un lote"
+          size="sm"
           selectedKeys={
             fk_lote !== null ? new Set([fk_lote.toString()]) : new Set()
           }
@@ -105,6 +106,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
 
       <Input
         label="Tipo"
+        size="sm"
         value={tipo}
         onChange={(e) => setTipo(e.target.value)}
         required
@@ -116,12 +118,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latI1 ?? "").toString()}
           onChange={(e) => setLatI1(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Inf. Izquierda"
           type="number"
           value={(longI1 ?? "").toString()}
           onChange={(e) => setLongI1(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -129,12 +133,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latS1 ?? "").toString()}
           onChange={(e) => setLatS1(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Sup.Izquierda"
           type="number"
           value={(longS1 ?? "").toString()}
           onChange={(e) => setLongS1(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -142,12 +148,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latI2 ?? "").toString()}
           onChange={(e) => setLatI2(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Inf. Derecha"
           type="number"
           value={(longI2 ?? "").toString()}
           onChange={(e) => setLongI2(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -155,12 +163,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latS2 ?? "").toString()}
           onChange={(e) => setLatS2(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Sup. Derecha"
           type="number"
           value={(longS2 ?? "").toString()}
           onChange={(e) => setLongS2(Number(e.target.value))}
+          size="sm"
         />
       </div>
     </ModalComponent>

@@ -134,6 +134,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
               <Select
                 label="Lote"
                 placeholder="Selecciona un lote"
+                size="sm"
                 selectedKeys={fk_lote !== null ? [fk_lote.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
@@ -166,6 +167,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
           required
+          size="sm"
         />
 
         <div className="grid grid-cols-2 gap-2 mt-2">
@@ -175,6 +177,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={latI1}
             onChange={(e) => setLatI1(e.target.value)}
+            size="sm"
           />
           <Input
             label="Lon. Inf. Izquierda"
@@ -182,6 +185,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={longI1}
             onChange={(e) => setLongI1(e.target.value)}
+            size="sm"
           />
 
           <Input
@@ -190,6 +194,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={latS1}
             onChange={(e) => setLatS1(e.target.value)}
+            size="sm"
           />
           <Input
             label="Lon. Sup. Izquierda"
@@ -197,6 +202,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={longS1}
             onChange={(e) => setLongS1(e.target.value)}
+            size="sm"
           />
           <Input
             label="Lat. Inf. Derecha"
@@ -204,6 +210,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={latI2}
             onChange={(e) => setLatI2(e.target.value)}
+            size="sm"
           />
           <Input
             label="Lon. Inf. Derecha"
@@ -211,6 +218,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={longI2}
             onChange={(e) => setLongI2(e.target.value)}
+            size="sm"
           />
 
           <Input
@@ -219,6 +227,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={latS2}
             onChange={(e) => setLatS2(e.target.value)}
+            size="sm"
           />
           <Input
             label="Lon. Sup. Derecha"
@@ -226,6 +235,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
             inputMode="decimal"
             value={longS2}
             onChange={(e) => setLongS2(e.target.value)}
+            size="sm"
           />
         </div>
       </ModalComponent>

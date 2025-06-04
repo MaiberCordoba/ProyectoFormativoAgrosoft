@@ -136,6 +136,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required
+        size="sm"
       />
 
       <Input
@@ -143,6 +144,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
         type="text"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
+        size="sm"
       />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
@@ -159,6 +161,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
       <Select
         label="Estado"
         placeholder="Selecciona un estado"
+        size="sm"
         selectedKeys={[estado]}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0]?.toString();

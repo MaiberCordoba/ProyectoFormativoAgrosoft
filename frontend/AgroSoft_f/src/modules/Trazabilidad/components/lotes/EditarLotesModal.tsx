@@ -71,11 +71,13 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required
+        size="sm"
       />
       <Input
         label="Descripción"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
+        size="sm"
       />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
@@ -84,12 +86,14 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           type="number"
           value={(latI1 ?? "").toString()}
           onChange={(e) => setLatI1(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Inf. Izquierda"
           type="number"
           value={(longI1 ?? "").toString()}
           onChange={(e) => setLongI1(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -97,12 +101,14 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           type="number"
           value={(latS1 ?? "").toString()}
           onChange={(e) => setLatS1(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Sup.Izquierda"
           type="number"
           value={(longS1 ?? "").toString()}
           onChange={(e) => setLongS1(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -110,12 +116,14 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           type="number"
           value={(latI2 ?? "").toString()}
           onChange={(e) => setLatI2(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Inf. Derecha"
           type="number"
           value={(longI2 ?? "").toString()}
           onChange={(e) => setLongI2(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -123,12 +131,14 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
           type="number"
           value={(latS2 ?? "").toString()}
           onChange={(e) => setLatS2(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Sup. Derecha"
           type="number"
           value={(longS2 ?? "").toString()}
           onChange={(e) => setLongS2(Number(e.target.value))}
+          size="sm"
         />
       </div>
 

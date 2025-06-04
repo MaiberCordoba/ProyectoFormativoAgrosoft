@@ -57,6 +57,7 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
         <Select
           label="Especie"
           placeholder="Selecciona una especie"
+          size="sm"
           selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
@@ -76,6 +77,7 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
         <Select
           label="Era"
           placeholder="Selecciona una era"
+          size="sm"
           selectedKeys={fk_Era ? [fk_Era.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];

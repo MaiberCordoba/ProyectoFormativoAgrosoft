@@ -108,6 +108,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
             <Select
               label="Especie"
               placeholder="Selecciona una especie"
+              size="sm"
               selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
@@ -132,6 +133,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
             <Select
               label="Cultivo"
               placeholder="Selecciona un cultivo"
+              size="sm"
               selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
@@ -156,6 +158,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
             <Select
               label="Semillero (opcional)"
               placeholder="Selecciona un semillero"
+              size="sm"
               selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
@@ -180,6 +183,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           className="mt-4"
           label="Unidades"
           type="number"
+          size="sm"
           value={unidades.toString()}
           onChange={(e) => setUnidades(Number(e.target.value))}
           isReadOnly={fk_semillero !== null}
@@ -188,6 +192,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           className="mt-2"
           label="Fecha Siembra"
           type="date"
+          size="sm"
           value={fechaSiembra}
           onChange={(e) => setFechaSiembra(e.target.value)}
           isReadOnly={fk_semillero !== null}
@@ -199,6 +204,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
             <Select
               label="Era"
               placeholder="Selecciona una era"
+              size="sm"
               selectedKeys={fk_Era ? [fk_Era.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];

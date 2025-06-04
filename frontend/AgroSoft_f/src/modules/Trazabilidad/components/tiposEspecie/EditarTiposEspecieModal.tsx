@@ -60,12 +60,14 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
         type="text"
         onChange={(e) => setNombre(e.target.value)}
         required
+        size="sm"
       />
       <Textarea
         value={descripcion}
         label="Descripción"
         onChange={(e) => setDescripcion(e.target.value)}
         required
+        size="sm"
       />
 
       <div className="mt-4">
