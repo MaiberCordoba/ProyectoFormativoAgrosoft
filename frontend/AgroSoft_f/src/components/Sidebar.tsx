@@ -108,7 +108,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       submenus: [
         "Actividades",
         "Tipos Actividad",
-        "Tiempo actividad control",
         "Unidades medida",
         "Unidades tiempo",
       ],
@@ -118,12 +117,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       icon: DollarSign,
       color: "text-[#254030]",
       submenus: [
-        "Ventas",
         "Cosechas",
+        "Ventas",
+        "Salarios",
         "Desechos",
         "Tipos de desechos",
         "resumen finanzas",
-        "Salarios",
       ],
     },
     {
@@ -131,11 +130,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       icon: ClipboardList,
       color: "text-[#254030]",
       submenus: [
+        "Bodega",
         "Insumos",
         "Herramientas",
         "Usos Herramientas",
         "Usos Insumos",
-        "Bodega",
       ],
     },
     {
