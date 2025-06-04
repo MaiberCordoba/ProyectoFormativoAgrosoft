@@ -29,6 +29,8 @@ export function CosechasResumenCard() {
     <div className="flex flex-wrap gap-4 mb-6">
       {cosechas.map((cosecha) => {
         const plantacion = plantaciones.find(p => p.id === cosecha.fk_Plantacion);
+
+        if (!cosecha.cantidad || cosecha.cantidad <= 0) return null;
         return (
 
           <>
@@ -97,35 +99,70 @@ export function PlantacionesCard() {
   )
 }
 
-export function InsumosCard(){
-const { data: insumos = [], isLoading: loadingInsumos, isError} = useGetInsumos();
-const { data: unidades = []} = useGetUnidadesMedida();
+export function InsumosCard() {
+  const { data: insumos = [], isLoading: loadingInsumos, isError } = useGetInsumos();
+  const { data: unidades = [] } = useGetUnidadesMedida();
 
-  if(loadingInsumos) return <p>Cargando...</p>
-  if(isError) return <p>Error al cargar...</p>
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
+  } = useCrearUsosInsumo();
 
-  return(
-     <div className="flex flex-wrap gap-4 mb-6">
-      {insumos.map((insumo) => {
-        const unidad = unidades.find(p => p.id === insumo.fk_UnidadMedida)
-        return (
-          <>
-          <CustomCard
-            image={insumo.fichaTecnica}
-            title={insumo.nombre}
-            data={{
-              "Cantidad Disponible": insumo.unidades,
-              "Compuesto Activo": insumo.compuestoActivo,
-              "Contenido Unidad": insumo.contenido
-                ? `${insumo.contenido} ${unidad?.abreviatura}`
-                : "No disponible",
-            }}
-          />
-          </>
-        );
-      })}
-    </div>
-  )
+  const handleUsarInsumo = (idInsumo: number) => {
+    handleCrear({
+      id: 0,
+      fk_Insumo: idInsumo,
+      fk_Actividad: 0,
+      fk_Control: 0,
+      fk_UnidadMedida: 0,
+      cantidadProducto: 0,
+      costoUsoInsumo: 0,
+    });
+  };
+
+  if (loadingInsumos) return <p>Cargando...</p>;
+  if (isError) return <p>Error al cargar los insumos.</p>;
+
+  return (
+    <>
+      <div className="flex flex-wrap gap-4 mb-6">
+        {insumos.map((insumo) => {
+          const unidad = unidades.find((p) => p.id === insumo.fk_UnidadMedida);
+
+          return (
+            <CustomCard
+              key={insumo.id}
+              image={insumo.fichaTecnica}
+              title={insumo.nombre}
+              data={{
+                "Cantidad Disponible": insumo.unidades,
+                "Compuesto Activo": insumo.compuestoActivo,
+                "Contenido Unidad": insumo.contenido
+                  ? `${insumo.contenido} ${unidad?.abreviatura || ""}`
+                  : "No disponible",
+              }}
+              footerButtons={[
+                {
+                  label: "Usar",
+                  color: "primary",
+                  size: "sm",
+                  onPress: () => handleUsarInsumo(insumo.id),
+                },
+              ]}
+            />
+          );
+        })}
+      </div>
+
+      {isCreateModalOpen && (
+        <CrearUsoInsumoModal
+          onClose={closeCreateModal}
+          onCreate={() => closeCreateModal()}
+        />
+      )}
+    </>
+  );
 }
 
 import { Wrench } from "lucide-react";
@@ -139,6 +176,10 @@ import EditarTiempoActividadControlModal from "./components/tiempoActividadContr
 import { useEliminarTiempoActividadControl } from "./hooks/tiempoActividadControl/useEliminarTiempoActividadDesecho";
 import { useEditarTiempoActividadControl } from "./hooks/tiempoActividadControl/useEditarTiempoActividadDesecho";
 import { useGetSalarios } from "./hooks/salarios/useGetSalarios";
+import { useCrearUsosHerramienta } from "./hooks/usosHerramientas/useCrearUsosHerramientas";
+import { CrearUsoHerramientaModal } from "./components/usosHerramientas/CrearUsosHerramientasModal";
+import { useCrearUsosInsumo } from "./hooks/usoInsumos/useCrearUsoInsumos";
+import { CrearUsoInsumoModal } from "./components/usoInsumos/CrearUsosInsumosModal";
 
 export function HerramientasCard() {
   const {
@@ -147,25 +188,54 @@ export function HerramientasCard() {
     isError,
   } = useGetHerramientas();
 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
+  } = useCrearUsosHerramienta();
+
+  const handleUsarHerramienta = (idHerramienta: number) => {
+    handleCrear({
+      id: 0,
+      fk_Herramienta: idHerramienta,
+      fk_Actividad: 0,
+      unidades: 0,
+    });
+  };
+
   if (loadingHerramientas) return <p>Cargando...</p>;
-  if (isError) return <p>Error al cargar...</p>;
+  if (isError) return <p>Error al cargar herramientas...</p>;
 
   return (
-    <div className="flex flex-wrap gap-4 mb-6">
-      {Herramientas?.map((herramienta) => {
-        return (
+    <>
+      <div className="flex flex-wrap gap-4 mb-6">
+        {Herramientas?.map((herramienta) => (
           <CustomCard
+            key={herramienta.id}
             title={herramienta.nombre}
-            icon={
-              <Wrench size={40} className="text-gray-700" />
-            }
-            data={{
-              Unidades: herramienta.unidades,
-            }}
+            icon={<Wrench size={40} className="text-gray-700" />}
+            data={{ Unidades: herramienta.unidades }}
+            footerButtons={[
+              {
+                label: "Usar",
+                color: "primary",
+                size: "sm",
+                onPress: () => handleUsarHerramienta(herramienta.id),
+              },
+            ]}
           />
-        );
-      })}
-    </div>
+        ))}
+      </div>
+
+      {isCreateModalOpen && (
+        <CrearUsoHerramientaModal
+          onClose={closeCreateModal}
+          onCreate={() => {
+            closeCreateModal();
+          }}
+        />
+      )}
+    </>
   );
 }
 
