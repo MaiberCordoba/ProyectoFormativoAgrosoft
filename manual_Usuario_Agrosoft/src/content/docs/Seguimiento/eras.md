@@ -14,14 +14,14 @@ Para gestionar las eras, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Eras**.
 
 ## Página de eras
-![Captura de pantalla eras](../../../../public/eras.png)
+![Captura de pantalla eras](../../../assets/cultivos/paginaEra.png)
 
 ### **Registrar una nueva Era**
 Para agregar una nueva era:
 1. Dentro de la pantalla de **Eras**, haz clic en el botón **"Agregar"**.
 2. Completa los siguientes campos:
 ## Agregar era
-![Captura de pantalla agregar era](../../../../public/agregarEra.png)
+![Captura de pantalla agregar era](../../../assets/cultivos/resgitrarEra.png)
    - **Lote:** Selecciona el lote al que pertenece la era.
    - **Tipo:** Especifica el tipo de era según su uso.
    - **Tamaño X:** Indica la dimensión horizontal del área.
@@ -33,11 +33,11 @@ Para agregar una nueva era:
 ### **Consultar, editar y eliminar eras existentes**
 - Para ver la información de una era, usa la lista disponible en la sección.
 ## Lista de eras
-![Captura de pantalla](../../../../public/listaeras.png)
+![Captura de pantalla](../../../assets/cultivos/listarEra.png)
 - Para **editar** una era, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
-![Captura de pantalla](../../../../public/editarera.png)
+![Captura de pantalla](../../../assets/cultivos/editarEra.png)
 - Para **eliminar** una era, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
    - Si no deseas eliminar la era, haz clic en **Cerrar**.
 ## Ventana eliminar
-![Captura de pantalla](../../../../public/eliminarera.png)
+![Captura de pantalla](../../../assets/cultivos/eliminarEra.png)

@@ -14,14 +14,14 @@ Para gestionar las especies, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Especies**.
 
 ## Página de especies
-![Captura de pantalla especies](../../../../public/especies.png)
+![Captura de pantalla especies](../../../assets/cultivos/paginaEspecies.png)
 
 ### **Registrar una nueva Especie**
 Para agregar una nueva especie:
 1. Dentro de la pantalla de **Especies**, haz clic en el botón **"Agregar"**.
 2. Completa los siguientes campos:
 ## Agregar especie
-![Captura de pantalla agregar especie](../../../../public/agregarEspecie.png)
+![Captura de pantalla agregar especie](../../../assets/cultivos/resgitrarEspecies.png)
    - **Nombre:** Asigna un nombre a la especie.
    - **Descripción:** Proporciona una breve descripción sobre la especie.
    - **Tiempo de Crecimiento (días):** Indica el número de días que tarda la especie en crecer.
@@ -31,11 +31,11 @@ Para agregar una nueva especie:
 ### **Consultar, editar y eliminar especies existentes**
 - Para ver la información de una especie, usa la lista disponible en la sección.
 ## Lista de especies
-![Captura de pantalla](../../../../public/listaespecies.png)
+![Captura de pantalla](../../../assets/cultivos/listaEspecies.png)
 - Para **editar** una especie, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
-![Captura de pantalla](../../../../public/editarespecie.png)
+![Captura de pantalla](../../../assets/cultivos/editarEspecies.png)
 - Para **eliminar** una especie, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
    - Si no deseas eliminar la especie, haz clic en **Cerrar**.
 ## Ventana eliminar
-![Captura de pantalla](../../../../public/eliminarespecie.png)
+![Captura de pantalla](../../../assets/cultivos/eliminarEspecies.png)

@@ -14,7 +14,7 @@ Para gestionar los cultivos, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Cultivos**.
 
 ## Página de cultivos
-![Captura de pantalla cultivos](../../../../public/cultivo.png)
+![Captura de pantalla cultivos](../../../assets/cultivos/paginaCultivo.png)
 
 ### **Registrar un nuevo Cultivo**
 Para agregar un nuevo cultivo:
@@ -22,7 +22,7 @@ Para agregar un nuevo cultivo:
 2. Dentro de la pantalla de **Cultivos**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 ## Agregar cultivo
-![Captura de pantalla agregar cultivo](../../../../public/agregarCultivo.png)
+![Captura de pantalla agregar cultivo](../../../assets/cultivos/regitsrarCultivo.png)
    - **Nombre:** Escribe un nombre para el cultivo.
    - **Especie:** Selecciona la especie al a que pertenece el cultivo.
    - **Unidades:** Cantidades de cultivo. 
@@ -33,11 +33,11 @@ Para agregar un nuevo cultivo:
 ### **Consultar, editar y eliminar cultivos existentes**
 - Para ver la información de un cultivo, usa la lista disponible en la sección.
 ## Lista de cultivos
-![Captura de pantalla](../../../../public/listacultivos.png)
+![Captura de pantalla](../../../assets/cultivos/listaCultivo.png)
 - Para **editar** un cultivo, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
-![Captura de pantalla](../../../../public/editarcultivo.png)
+![Captura de pantalla](../../../assets/cultivos/editarCultivo.png)
 - Para **eliminar** un cultivo, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
    - Si no deseas eliminar el cultivo, haz clic en **Cerrar**.
 ## Ventana eliminar
-![Captura de pantalla](../../../../public/eliminarcultivo.png)
+![Captura de pantalla](../../../assets/cultivos/eliminarCultivo.png)

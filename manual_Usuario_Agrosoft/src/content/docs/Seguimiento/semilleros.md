@@ -14,7 +14,7 @@ Para gestionar los semilleros, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Semilleros**.
 
 ## Pagina semilleros
-![Captura de pantalla semillero](../../../../public/semilleros.png)
+![Captura de pantalla semillero](../../../assets/cultivos/paginaSemillero.png)
 
 ### **Registrar un nuevo Semillero**
 Para agregar un nuevo semillero:
@@ -22,7 +22,7 @@ Para agregar un nuevo semillero:
 2. Dentro de la pantalla de **Semilleros**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 ## Agregar semillero
-![Captura de pantalla agregar semillero](../../../../public/agregarSemillero.png)
+![Captura de pantalla agregar semillero](../../../assets/cultivos/registrarSemillero.png)
    - **Nombre:** Escribe un nombre para el semillero.
    - **Ubicación:** Especifica la localización del semillero.
    - **Fecha de siembra:** Selecciona la fecha en la que se sembraron las semillas.
@@ -33,10 +33,10 @@ Para agregar un nuevo semillero:
 ### **Consultar, editar y eliminar semilleros existentes**
 - Para ver la información de un semillero, usa la lista disponible en la sección.
 ## lista de semilleros
-![Captura de pantalla](../../../../public/listasemilleros.png)
+![Captura de pantalla](../../../assets/cultivos/listaSemillero.png)
 - Para **editar** un semillero, haz clic en los tres puntos debajo de acciones, modifica los datos necesarios y haz click en "guardar".
 ## ventana editar
-![Captura de pantalla](../../../../public/editarsemillero.png)
+![Captura de pantalla](../../../assets/cultivos/editarSemillero.png)
 - Para **eliminar** un semillero, haz clic en los tres puntos debajo de acciones, haz click en borrar y listo se elimina el semillero que elegiste. (Tambien puedes haz click en "cerrar" para no borrar el semillero)
 ## ventana eliminar
-![Captura de pantalla](../../../../public/eliminarsemillero.png)
+![Captura de pantalla](../../../assets/cultivos/eliminarSemillero.png)
