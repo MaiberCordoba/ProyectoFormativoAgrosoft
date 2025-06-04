@@ -36,6 +36,12 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
       setError("Por favor ingresa una cantidad valida")
       return
     }
+    const herramientaSeleccionada = herramientas?.find(h => h.id === fk_Herramienta);
+
+    if (unidades > herramientaSeleccionada.unidades){
+      setError(`Solo hay disponibles ${herramientaSeleccionada?.unidades} unidades de esta herramienta.`)
+      return
+    }
     setError("")
 
     mutate(
@@ -81,6 +87,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
         <Input
           label="Cantidad Usada"
           type="number"
+          size="sm"
           value={unidades.toString()}
           onChange={(e) => setUnidades(Number(e.target.value))}
           required
@@ -94,6 +101,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
               <Select
                 label="Herramienta"
+                size="sm"
                 placeholder="Selecciona una herramienta"
                 selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -128,6 +136,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
             <Select
               label="Actividad"
+              size="sm"
               placeholder="Selecciona una actividad"
               selectedKeys={fk_Actividad ? [fk_Actividad.toString()] : []}
               onSelectionChange={(keys) => {

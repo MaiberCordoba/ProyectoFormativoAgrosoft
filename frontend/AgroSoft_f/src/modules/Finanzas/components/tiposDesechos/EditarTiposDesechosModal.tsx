@@ -50,12 +50,14 @@ const EditarTiposDesechosModal: React.FC<EditarTiposDesechosModalProps> = ({ tip
       <Input
         value={nombre}
         label="Nombre"
+        size="sm"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
       <Textarea
         value={descripcion}
         label="Descripción"
+        size="sm"
         type="text"
         onChange={(e) => setDescripcion(e.target.value)}
       />

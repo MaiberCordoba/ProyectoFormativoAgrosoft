@@ -122,6 +122,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           <div className="flex-1">
           <Select
           label="Cosecha"
+          size="sm"
           placeholder="Selecciona el producto y cantidad"
           selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
           onSelectionChange={(keys) => {
@@ -162,12 +163,14 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         <Input
           label="Cantidad de producto"
           type="number"
+          size="sm"
           value={cantidad.toString()}
           onChange={(e) => setCantidad(Number(e.target.value))}
           required
         />
         <Input
           label="Valor Total"
+          size="sm"
           type="number"
           value={valorTotal ?? ""}
           onChange={(e) => setValorTotal(Number(e.target.value))}
@@ -177,6 +180,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         <Input
           label="Descuento (opcional)"
           type="number"
+          size="sm"
           value={descuento.toString()}
           onChange={(e) => setDescuento(Number(e.target.value))}
         />
@@ -189,6 +193,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
             <div className="flex-1">
               <Select
                 label="Unidades de medida"
+                size="sm"
                 placeholder="Selecciona la unidad de medida"
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {

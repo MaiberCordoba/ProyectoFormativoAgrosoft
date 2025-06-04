@@ -97,6 +97,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Nombre"
+          size="sm"
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
@@ -105,6 +106,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Descripción"
+          size="sm"
           type="text"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
@@ -114,6 +116,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
         <Input
           label="Cantidad"
           type="text"
+          size="sm"
           value={unidades}
           onChange={handleUnidadesChange}
           required
@@ -121,6 +124,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Precio unidad"
+          size="sm"
           type="text"
           value={precio}
           onChange={handlePrecioChange}
@@ -134,6 +138,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
             <div className="flex-1">
               <Select
                 label="Lote"
+                size="sm"
                 placeholder="Selecciona un Lote"
                 selectedKeys={fk_Lote?.toString() ? [fk_Lote.toString()] : []}
                 onSelectionChange={(keys) => {

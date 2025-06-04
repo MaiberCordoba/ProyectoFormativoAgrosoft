@@ -83,6 +83,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
         <Input
           label="Nombre desecho"
           type="text"
+          size="sm"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
@@ -91,6 +92,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
         <Input
           label="Descripción"
           type="text"
+          size="sm"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
@@ -104,6 +106,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
             <div className="flex-1">
             <Select
             label="Plantacion"
+            size="sm"
             placeholder="Selecciona una Plantacion"
             selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} // HeroUI espera un array de strings
             onSelectionChange={(keys) => {
@@ -137,6 +140,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
             <div className="flex-1">
               <Select
                 label="Tipo de desecho"
+                size="sm"
                 placeholder="Selecciona un tipo de desecho"
                 selectedKeys={fk_TipoDesecho ? [fk_TipoDesecho.toString()] : []} // HeroUI espera un array de strings
                 onSelectionChange={(keys) => {

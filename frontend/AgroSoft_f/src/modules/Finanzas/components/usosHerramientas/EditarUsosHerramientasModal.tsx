@@ -60,6 +60,7 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
       <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Cantidad Usada"
+        size="sm"
         value={unidades.toString()}
         type="number"
         onChange={(e) => setUnidades(Number(e.target.value))}
@@ -71,6 +72,7 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
       ) : (
         <Select
           label="Herramienta"
+          size="sm"
           placeholder="Selecciona una herramienta"
           selectedKeys={[fk_Herramienta.toString()]}
           onSelectionChange={(keys) => {
@@ -90,6 +92,7 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
       ) : (
         <Select
           label="Actividad"
+          size="sm"
           placeholder="Selecciona una actividad"
           selectedKeys={[fk_Actividad.toString()]}
           onSelectionChange={(keys) => {

@@ -101,6 +101,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
         <Input
           label="Fecha de Cosecha"
           type="date"
+          size="sm"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
@@ -110,6 +111,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
         <Input
           label="Cantidad cosechada"
           type="text"
+          size="sm"
           value={cantidad}
           onChange={(e) => {
             const valor = e.target.value;
@@ -121,6 +123,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
         <Input
           label="Precio unidad"
           type="text"
+          size="sm"
           value={precioUnidad}
           onChange={(e) => {
             const valor = e.target.value;
@@ -136,6 +139,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
             <div className="flex-1">
               <Select
                 label="Cultivo"
+                size="sm"
                 placeholder="Selecciona una plantacion"
                 selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -167,6 +171,7 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
             <div className="flex-1">
               <Select
                 label="Unidad de medida"
+                size="sm"
                 placeholder="Selecciona una unidad de medida"
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {

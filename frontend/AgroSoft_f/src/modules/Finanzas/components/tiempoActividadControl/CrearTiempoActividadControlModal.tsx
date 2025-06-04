@@ -109,6 +109,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
         <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Tiempo"
+          size="sm"
           type="number"
           value={tiempo.toString()}
           onChange={(e) => setTiempo(Number(e.target.value))}
@@ -122,6 +123,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
             <div className="flex-1">
               <Select
                 label="Unidad de Tiempo"
+                size="sm"
                 placeholder="Selecciona una unidad"
                 selectedKeys={fk_unidadTiempo ? [fk_unidadTiempo.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -152,6 +154,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
           <div className="flex-1">
             <Select
             label="Actividad"
+            size="sm"
             placeholder="Selecciona una actividad"
             selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
             onSelectionChange={(keys) => {
@@ -184,6 +187,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
           <div className="flex-1">
             <Select
               label="Control"
+              size="sm"
               placeholder="Selecciona un control"
               selectedKeys={fk_control ? [fk_control.toString()] : []}
               onSelectionChange={(keys) => {
@@ -214,6 +218,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
           <div className="flex-1">
             <Select
               label="Salario"
+              size="sm"
               placeholder="Selecciona un salario"
               selectedKeys={fk_salario ? [fk_salario.toString()] : []}
               onSelectionChange={(keys) => {

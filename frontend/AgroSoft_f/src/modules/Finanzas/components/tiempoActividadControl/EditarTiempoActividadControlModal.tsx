@@ -76,6 +76,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
       <p className='text-red-500 text-sm '>{error}</p>
       <Input
         value={tiempo.toString()}
+        size="sm"
         label="Tiempo"
         type="number"
         onChange={(e) => setTiempo(Number(e.target.value))}
@@ -84,6 +85,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Unidad de Tiempo"
+        size="sm"
         selectedKeys={fk_unidadTiempo ? [fk_unidadTiempo.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
@@ -97,6 +99,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Actividad"
+        size="sm"
         selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
@@ -110,6 +113,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Control"
+        size="sm"
         selectedKeys={fk_control ? [fk_control.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
@@ -123,6 +127,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Salario"
+        size="sm"
         selectedKeys={fk_salario ? [fk_salario.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];

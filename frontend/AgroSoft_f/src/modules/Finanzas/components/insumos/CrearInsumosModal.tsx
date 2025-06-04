@@ -106,6 +106,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Nombre Insumo"
+          size="sm"
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
@@ -113,6 +114,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
         />
         <Input
           label="Descripción"
+          size="sm"
           type="text"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
@@ -120,6 +122,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
         />
         <Input
           label="Precio unidad insumo"
+          size="sm"
           type="text"
           value={precio}
           onChange={(e) => {
@@ -131,6 +134,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
         <Input
           label="Compuesto activo"
           type="text"
+          size="sm"
           value={compuestoActivo}
           onChange={(e) => setCompuestoActivo(e.target.value)}
           required
@@ -138,6 +142,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           <Input
             label="Unidades compradas"
             type="text"
+            size="sm"
             value={unidades ?? ""}
             onChange={(e) => {
             const valor= e.target.value;
@@ -147,6 +152,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           />
         <Input
           label="Contenido del insumo"
+          size="sm"
           type="text"
           value={contenido ?? ""}
           onChange={(e) => {
@@ -162,6 +168,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
               <div className="flex-1">
                 <Select
                   label="Unidad de Medida"
+                  size="sm"
                   placeholder="Selecciona la Unidad de Medida"
                   selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                   onSelectionChange={(keys) => {
@@ -204,7 +211,7 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
             >
               Ficha Tecnica
             </Button>
-            <span className="flex-1 p-3">Cargar ficha tecnica</span>
+            <span className="flex-1 p-3 text-sm">Cargar ficha tecnica</span>
           </div>
           {preview && (
             <div className="mt-4">

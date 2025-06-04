@@ -74,6 +74,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Cantidad Usada"
+        size="sm"
         value={cantidadProducto.toString()}
         type="number"
         onChange={(e) => setCantidadProducto(Number(e.target.value))}
@@ -87,6 +88,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
         <Select
           label="Insumo"
           placeholder="Selecciona un insumo"
+          size="sm"
           selectedKeys={[fk_Insumo.toString()]}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
@@ -105,6 +107,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       ) : (
         <Select
           label="Actividad"
+          size="sm"
           placeholder="Selecciona una actividad"
           selectedKeys={[fk_Actividad.toString()]}
           onSelectionChange={(keys) => {
@@ -122,6 +125,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       ) : (
         <Select
           label="Control"
+          size="sm"
           placeholder="Selecciona un control"
           selectedKeys={[fk_Control.toString()]}
           onSelectionChange={(keys) => {
@@ -141,6 +145,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       ) : (
         <Select
           label="Unidad de Medida"
+          size="sm"
           placeholder="Selecciona una unidad"
           selectedKeys={[fk_UnidadMedida.toString()]}
           onSelectionChange={(keys) => {

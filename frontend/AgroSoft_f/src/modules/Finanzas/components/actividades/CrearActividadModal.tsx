@@ -146,6 +146,7 @@ export const CrearActividadesModal = ({
         <Input
           label="Titulo"
           type="text"
+          size="sm"
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
           required
@@ -154,6 +155,7 @@ export const CrearActividadesModal = ({
         <Input
           label="Descripción"
           type="text"
+          size="sm"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
@@ -161,6 +163,7 @@ export const CrearActividadesModal = ({
         <Input
           label="Fecha Asignacion"
           type="date"
+          size="sm"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
@@ -173,6 +176,7 @@ export const CrearActividadesModal = ({
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
+                size="sm"
                 label="Cultivo"
                 placeholder="Selecciona un cultivo"
                 selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
@@ -205,6 +209,7 @@ export const CrearActividadesModal = ({
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
+                size="sm"
                 label="Plantacion"
                 placeholder="Selecciona una Plantacion"
                 selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
@@ -247,6 +252,7 @@ export const CrearActividadesModal = ({
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
+                size="sm"
                 label="Usuario"
                 placeholder="Selecciona un Usuario"
                 selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
@@ -280,6 +286,7 @@ export const CrearActividadesModal = ({
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
+                size="sm"
                 label="Tipo Actividad"
                 placeholder="Seleccione el tipo de actividad"
                 selectedKeys={

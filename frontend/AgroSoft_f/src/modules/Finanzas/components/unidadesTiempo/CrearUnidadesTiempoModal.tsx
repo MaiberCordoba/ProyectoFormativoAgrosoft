@@ -57,8 +57,8 @@ export const CrearUnidadesTiempoModal = ({
       ]}
     >
       <p className="text-red-500 text-sm mb-2">{error}</p>
-      <Input label="Nombre" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-      <Input label="equivalencia Minutos" type="number" value={equivalenciaMinutos.toString()} onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))} required />
+      <Input label="Nombre" type="text" size="sm" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+      <Input label="equivalencia Minutos" size="sm" type="number" value={equivalenciaMinutos.toString()} onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))} required />
     </ModalComponent>
   );
 };

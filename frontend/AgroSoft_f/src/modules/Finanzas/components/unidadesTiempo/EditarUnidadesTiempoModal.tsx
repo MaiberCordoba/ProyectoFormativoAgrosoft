@@ -58,12 +58,14 @@ const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ u
       <Input
         value={nombre}
         label="Nombre"
+        size="sm"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
       <Input
         value={equivalenciaMinutos.toString()}
         label="Equivalencia Minutos"
+        size="sm"
         type="number"
         onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))}
       />

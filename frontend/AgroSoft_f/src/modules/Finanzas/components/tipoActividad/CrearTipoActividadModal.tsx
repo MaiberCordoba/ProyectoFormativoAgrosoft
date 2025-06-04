@@ -52,6 +52,7 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
       <Input
         label="Nombre del Tipo de Actividad"
         type="text"
+        size="sm"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required

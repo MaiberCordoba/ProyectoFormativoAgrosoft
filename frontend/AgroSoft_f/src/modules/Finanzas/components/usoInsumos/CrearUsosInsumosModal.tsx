@@ -121,6 +121,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
         <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Cantidad Usada"
+          size="sm"
           type="number"
           value={cantidadProducto.toString()}
           onChange={(e) => setCantidadProducto(Number(e.target.value))}
@@ -135,6 +136,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
             <div className="flex-1">
               <Select
                 label="Insumo"
+                size="sm"
                 placeholder="Selecciona un insumo"
                 selectedKeys={fk_Insumo ? [fk_Insumo.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -167,6 +169,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
             <div className="flex-1">
               <Select
                 label="Actividad"
+                size="sm"
                 placeholder="Selecciona una actividad"
                 selectedKeys={fk_Actividad ? [fk_Actividad.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -200,6 +203,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
             <div className="flex-1">
               <Select
               label="Control"
+              size="sm"
               placeholder="Selecciona un control"
               selectedKeys={fk_Control ? [fk_Control.toString()] : []}
               onSelectionChange={(keys) => {
@@ -233,6 +237,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
             <div className="flex-1">
               <Select
               label="Unidad de Medida"
+              size="sm"
               placeholder="Selecciona una unidad"
               selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
               onSelectionChange={(keys) => {

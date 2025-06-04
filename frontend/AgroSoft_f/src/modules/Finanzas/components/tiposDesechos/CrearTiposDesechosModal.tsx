@@ -53,6 +53,7 @@ export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProp
       <Input
         label="Nombre"
         type="text"
+        size="sm"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required
@@ -61,6 +62,7 @@ export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProp
       <Input
         label="Descripción"
         type="text"
+        size="sm"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
         required

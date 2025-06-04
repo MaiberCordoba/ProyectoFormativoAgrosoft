@@ -73,6 +73,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Input
         label="Nombre Salario"
+        size="sm"
         type="text"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
@@ -81,6 +82,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Input
         label="Monto(valor)"
+        size="sm"
         type="number"
         value={monto}
         onChange={(e) => setMonto(e.target.value)}
@@ -89,6 +91,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Input
         label="Horas de trabajo(día)"
+        size="sm"
         type="number"
         value={horas}
         onChange={(e) => setHoras(e.target.value)}
@@ -97,6 +100,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Select
         label="Estado"
+        size="sm"
         value={estado}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0] as "activo" | "inactivo";
