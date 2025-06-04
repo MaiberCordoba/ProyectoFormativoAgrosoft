@@ -54,7 +54,7 @@ class Usuario(AbstractUser):
     nombre = models.CharField(max_length=30)
     apellidos = models.CharField(max_length=30)
     telefono = models.CharField(max_length=15)
-    correoElectronico = models.CharField(max_length=255, unique=True, null=False)
+    correoElectronico = models.CharField(max_length=255, unique=True, null=True, blank=True)
     estado=models.CharField(max_length=10,choices=ESTADO_CHOICES,default='activo')
     rol = models.CharField(max_length=12 ,choices=ROLES_CHOICES)
 
