@@ -76,7 +76,9 @@ const EditarAfeccionCultivoModal: React.FC<EditarAfeccionCultivoModalProps> = ({
           onSelectionChange={(keys) => setFk_Plantacion(Number(Array.from(keys)[0]))}
         >
           {(plantaciones || []).map((plantacion) => (
-            <SelectItem key={plantacion.id.toString()}>{plantacion.id}</SelectItem>
+            <SelectItem key={plantacion.id.toString()}>
+              {plantacion.cultivo?.nombre || `Plantación #${plantacion.id}`}
+            </SelectItem>
           ))}
         </Select>
       )}

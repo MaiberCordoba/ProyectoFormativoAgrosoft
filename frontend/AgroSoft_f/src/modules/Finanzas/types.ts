@@ -100,6 +100,8 @@ export interface Actividades {
   usuario?: User;
   fk_TipoActividad: number;
   tipoActividad: TipoActividad;
+  fk_Plantacion:number;
+  plantacion:Plantaciones;
   titulo: string;
   descripcion: string;
   fecha?: string;
@@ -112,6 +114,8 @@ export interface Cosechas {
   plantacion?: Plantaciones;
   fk_UnidadMedida: number;
   cantidad: number;
+  valorTotal: number;
+  precioUnidad: number;
   unidadMedida: UnidadesMedida;
   cantidadTotal: number;
   fecha: string;
@@ -134,6 +138,8 @@ export interface Herramientas {
   nombre: string;
   descripcion: string;
   unidades: number;
+  precio : number;
+  valorTotal : number;
 }
 
 export interface Insumos {
@@ -189,6 +195,7 @@ export interface TiempoActividadControl {
   control: Controles;
   fk_salario: number;
   salario: Salarios;
+  fecha:string;
 }
 
 export interface TipoActividad {
@@ -248,5 +255,6 @@ export interface Ventas {
   fk_UnidadMedida: number;
   unidadMedida: UnidadesMedida;
   cantidad: number;
+  descuento?:number;
   valorTotal: number;
 }

@@ -6,7 +6,9 @@ class Cosechas(models.Model):
     fk_Plantacion = models.ForeignKey(Plantaciones, on_delete=models.SET_NULL, null=True)
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida, on_delete=models.SET_NULL, null=True)
     cantidad = models.IntegerField(null=True)
+    precioUnidad = models.IntegerField(null=True)
     cantidadTotal = models.FloatField(null=True, blank=True)
+    valorTotal = models.IntegerField(null=True,blank=True)
     fecha = models.DateField(auto_now=False)
 
     def __str__(self):

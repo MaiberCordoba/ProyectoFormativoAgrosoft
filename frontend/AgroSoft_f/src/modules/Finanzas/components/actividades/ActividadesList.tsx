@@ -11,12 +11,19 @@ import { Actividades } from "../../types";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
 
 export function ActividadesList() {
   const { data, isLoading, error } = useGetActividades();
   const { data: users, isLoading: loadingUser } = useGetUsers(); 
   const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
   const { data : tiposActividad, isLoading: isLoadingTiposActividad } = useGetTipoActividad()
+  const { data : plantacion, isLoading: isLoadingPlantacion } = useGetPlantaciones()
+
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const { 
     isOpen: isEditModalOpen, 
@@ -38,13 +45,39 @@ export function ActividadesList() {
     handleEliminar
   } = useEliminarActividad();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cultivo: 0, fk_Usuario: 0, fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+    const permitido = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
+    
+    if (permitido) {
+      handleCrear({ id: 0, fk_Cultivo: 0, fk_Plantacion:0, fk_Usuario: 0, 
+                   fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (action: () => void, requiredRoles: string[]) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
   };
 
   // Definición de columnas
   const columnas = [
     { name: "Cultivo", uid: "cultivo" },
+    { name: "Plantacion", uid: "plantacion" },
     { name: "Usuario", uid: "usuario" },
     { name: "TipoActividad", uid: "tipoActividad"},
     { name: "Titulo", uid: "titulo" },
@@ -59,7 +92,10 @@ export function ActividadesList() {
     switch (columnKey) {
       case "cultivo":
         const cultivos = cultivo?.find((c) => c.id === item.fk_Cultivo);
-        return <span>{cultivos ? cultivos.nombre : "No definido"}</span>;
+        return <span>{cultivos ? cultivos.nombre : "No aplica"}</span>;
+      case "plantacion":
+        const plantaciones = plantacion?.find((c) => c.id === item.fk_Plantacion);
+        return <span>{plantaciones ? plantaciones.cultivo?.nombre : "No aplica"}</span>;
       case "usuario":
         const usuario = users?.find((c) => c.id === item.fk_Usuario);
         return <span>{usuario ? usuario.nombre : "No definido"}</span>;
@@ -75,10 +111,16 @@ export function ActividadesList() {
       case "estado":
         return <span>{item.estado}</span>;
       case "acciones":
-        return (
+       return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => handleActionWithPermission(
+              () => handleEditar(item), 
+              ["admin", "instructor", "pasante"]
+            )}
+            onEliminar={() => handleActionWithPermission(
+              () => handleEliminar(item), 
+              ["admin", "instructor"]
+            )}
           />
         );
       default:
@@ -86,8 +128,9 @@ export function ActividadesList() {
     }
   };
 
-  if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad) return <p>Cargando...</p>;
+  if (isLoading || loadingUser || loadingCultivo || isLoadingTiposActividad || isLoadingPlantacion) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las actividades</p>;
+
 
   return (
     <div className="p-4">

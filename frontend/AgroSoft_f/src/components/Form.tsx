@@ -82,9 +82,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
 
       {extraContent && <div className="mt-4">{extraContent}</div>}
 
-      <Button color="success" size="sm" radius="sm" type="submit" variant="light">
-        {submitLabel}
-      </Button>
+      
     </Form>
   );
 };

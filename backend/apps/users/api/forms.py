@@ -10,7 +10,6 @@ class UsuarioCreationForm(UserCreationForm):
             "identificacion",
             "nombre",
             "apellidos",
-            "fechaNacimiento",
             "telefono",
             "correoElectronico",
             "admin",

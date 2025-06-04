@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Home,
   Users,
@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { useAuth } from "@/hooks/UseAuth";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -29,19 +30,142 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const location = useLocation();
+  const { user } = useAuth();
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setUserRole(user.rol);
+    } else {
+      setUserRole(null);
+    }
+  }, [user]);
+
+  // Función para filtrar submenús
+  const getFilteredSubmenus = (title: string, submenus: string[]): string[] => {
+    if (title === "Cultivos" && userRole === "visitante") {
+      return submenus.filter(sub => 
+        !["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie"].includes(sub)
+      );
+    }
+
+    if (title === "Fitosanitario" && userRole === "visitante") {
+      return submenus.filter(sub => 
+        !["Tipos de afectaciones", "Afectaciones", "tipos de control"].includes(sub)
+      );
+    }
+    return submenus;
+  };
 
   const toggleMenu = (menu: string) => {
     if (!isOpen && toggleSidebar) {
-      // Si el sidebar está cerrado
-      toggleSidebar(); // Abrir el sidebar
+      toggleSidebar();
       setTimeout(() => {
-        setOpenMenu(menu); // Desplegar el submenú después de la animación
-      }, 300); // Duración igual a la transición (300ms)
+        setOpenMenu(menu);
+      }, 300);
     } else {
-      // Comportamiento normal cuando está abierto
       setOpenMenu(openMenu === menu ? null : menu);
     }
   };
+
+  const mainItems = [
+    { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
+    ...(userRole === "admin" 
+      ? [{
+          icon: Users,
+          color: "text-[#254030]",
+          text: "Usuarios",
+          to: "/usuarios",
+        }]
+      : [])
+  ];
+
+  // Lista base de menús
+  const baseMenuItems = [
+    {
+      title: "IoT",
+      icon: Monitor,
+      submenus: ["sensores", "evapotranspiracion"],
+    },
+    {
+      title: "Cultivos",
+      icon: Leaf,
+      color: "text-[#254030]",
+      submenus: [
+        "Semilleros",
+        "Cultivos",
+        "Lotes",
+        "Eras",
+        "Especies",
+        "Tipos Especie",
+        "Informacion Cultivos Sembrados",
+      ],
+    },
+    {
+      title: "Actividades",
+      icon: Wrench,
+      color: "text-[#254030]",
+      submenus: [
+        "Actividades",
+        "Tipos Actividad",
+        "Tiempo actividad control",
+        "Unidades medida",
+        "Unidades tiempo",
+      ],
+    },
+    {
+      title: "Finanzas",
+      icon: DollarSign,
+      color: "text-[#254030]",
+      submenus: [
+        "Ventas",
+        "Cosechas",
+        "Desechos",
+        "Tipos de desechos",
+        "resumen finanzas",
+        "Salarios",
+      ],
+    },
+    {
+      title: "Inventario",
+      icon: ClipboardList,
+      color: "text-[#254030]",
+      submenus: [
+        "Insumos",
+        "Herramientas",
+        "Usos Herramientas",
+        "Usos Insumos",
+        "Bodega",
+      ],
+    },
+    {
+      title: "Fitosanitario",
+      icon: ShieldCheck,
+      color: "text-[#254030]",
+      submenus: [
+        "Tipos de afectaciones",
+        "Afectaciones",
+        "Afectaciones en cultivos",
+        "tipos de control",
+        "Controles",
+        "Seguimiento de afectaciones",
+      ],
+    },
+  ];
+
+  // Filtrar menús completos para visitantes
+  const filteredMenuItems = baseMenuItems
+    .filter(menu => {
+      // Ocultar completamente el menú "Actividades" para visitantes
+      if (userRole === "visitante" && menu.title === "Actividades") {
+        return false;
+      }
+      return true;
+    })
+    .map(menu => ({
+      ...menu,
+      submenus: getFilteredSubmenus(menu.title, menu.submenus)
+    }));
 
   return (
     <aside
@@ -49,7 +173,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         isOpen ? "w-48" : "w-20"
       }`}
     >
-      {/* Botón de toggle */}
       {toggleSidebar && (
         <button
           onClick={toggleSidebar}
@@ -66,18 +189,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <nav className="flex-1 overflow-y-auto p-2">
-        {/* Elementos principales */}
-        {[
-
-          { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
-          {
-            icon: Users,
-            color: "text-[#254030]",
-            text: "Usuarios",
-            to: "/usuarios",
-          },
-          { icon: Monitor, color: "text-[#254030]", text: "IoT", to: "/iot" },
-        ].map((item) => (
+        {mainItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
@@ -93,85 +205,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           </NavLink>
         ))}
 
-        {/* Menús con submenús */}
-        {[
-        {
-           
-          title: "IoT",
-          icon: Monitor,
-          submenus: [
-            "sensores",
-            "evapotranspiracion"
-          ],
 
-        },
-
-          {
-            title: "Cultivos",
-            icon: Leaf,
-            color: "text-[#254030]",
-            submenus: [
-              "Semilleros",
-              "Cultivos",
-              "Lotes",
-              "Eras",
-              "Especies",
-              "Tipos Especie",
-              "Informacion Cultivos Sembrados",
-            ],
-          },
-          {
-            title: "Actividades",
-            icon: Wrench,
-            color: "text-[#254030]",
-            submenus: [
-              "Actividades",
-              "Tipos Actividad",
-              "Tiempo actividad control",
-              "Unidades medida",
-              "Unidades tiempo",
-            ],
-          },
-          {
-            title: "Finanzas",
-            icon: DollarSign,
-            color: "text-[#254030]",
-            submenus: [
-              "Ventas",
-              "Cosechas",
-              "Desechos",
-              "Tipos de desechos",
-              "resumen finanzas",
-              "Salarios",
-            ],
-          },
-          {
-            title: "Inventario",
-            icon: ClipboardList,
-            color: "text-[#254030]",
-            submenus: [
-              "Insumos",
-              "Herramientas",
-              "Usos Herramientas",
-              "Usos Insumos",
-              "Movimientos Inventario",
-            ],
-          },
-          {
-            title: "Fitosanitario",
-            icon: ShieldCheck,
-            color: "text-[#254030]",
-            submenus: [
-              "Tipos de afectaciones",
-              "Afectaciones",
-              "Afectaciones en cultivos",
-              "tipos de control",
-              "Controles",
-              "Seguimiento de afectaciones",
-            ],
-          },
-          // ... otros menús
-        ].map((menu) => (
+        {/* Usar la lista filtrada de menús */}
+        {filteredMenuItems.map((menu) => (
           <div key={menu.title}>
             <button
               className={`flex items-center w-full p-2 rounded-lg hover:bg-gray-200 ${
@@ -201,11 +237,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               )}
             </button>
 
-            {isOpen && openMenu === menu.title && (
+            {isOpen && openMenu === menu.title && menu.submenus.length > 0 && (
               <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  openMenu === menu.title ? "max-h-40" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-300`}
               >
                 <div className="scroll-custom max-h-[150px] overflow-y-auto">
                   {menu.submenus.map((submenu) => {
@@ -230,7 +264,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ))}
 
-        {/* Elementos finales */}
         <NavLink
           to="/calendario"
           className={({ isActive }) => `

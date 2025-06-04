@@ -1,37 +1,46 @@
 import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
-import { usePatchSalarios } from '../../hooks/salarios/usePatchSalarios'; // Hook para actualizar salarios
+import { usePatchSalarios } from '../../hooks/salarios/usePatchSalarios';
 import { Salarios } from '../../types';
 import { Input, Select, SelectItem } from '@heroui/react';
 
 interface EditarSalariosModalProps {
-  salario: Salarios; // El salario que se está editando
-  onClose: () => void; // Función para cerrar el modal
+  salario: Salarios;
+  onClose: () => void;
 }
 
 const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onClose }) => {
   const [nombre, setNombre] = useState<string>(salario.nombre);
-  const [monto, setMonto] = useState<number>(salario.monto);
-  const [horas, setHoras] = useState<number | null>(salario.horas);
+  const [monto, setMonto] = useState<string>(salario.monto.toString());
+  const [horas, setHoras] = useState<string>(salario.horas.toString());
   const [estado, setEstado] = useState<"activo" | "inactivo">(salario.estado);
-  const [error,setError] = useState("")
+  const [error, setError] = useState("");
 
-  const { mutate, isPending } = usePatchSalarios();  
+  const { mutate, isPending } = usePatchSalarios();
 
   const handleSubmit = () => {
-    if (!nombre || monto === null || horas === null || !estado) {
+    const montoNum = Number(monto);
+    const horasNum = Number(horas);
+
+    if (!nombre || monto === "" || horas === "" || !estado) {
       setError("Por favor, completa todos los campos.");
       return;
     }
-    setError("")
+
+    if (isNaN(montoNum) || isNaN(horasNum) || montoNum <= 0 || horasNum <= 0) {
+      setError("Monto y horas deben ser números mayores que cero.");
+      return;
+    }
+
+    setError("");
 
     mutate(
       {
         id: salario.id,
         data: {
           nombre,
-          monto,
-          horas,
+          monto: montoNum,
+          horas: horasNum,
           estado,
         },
       },
@@ -57,29 +66,31 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
         },
       ]}
     >
-      <p className='text-red-500 text-sm mb-2'>{error}</p>
+      <p className="text-red-500 text-sm mb-2">{error}</p>
+
       <Input
-        value={nombre}
         label="Nombre Salario"
         type="text"
+        value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required
       />
+
       <Input
-        value={monto}
         label="Monto(valor)"
         type="number"
-        onChange={(e) => setMonto(Number(e.target.value))}
+        value={monto}
+        onChange={(e) => setMonto(e.target.value)}
         required
       />
+
       <Input
-        value={horas}
-        label="Horas de trabajo(dia)"
+        label="Horas de trabajo(día)"
         type="number"
-        onChange={(e) => setHoras(Number(e.target.value))}
+        value={horas}
+        onChange={(e) => setHoras(e.target.value)}
         required
       />
-     
 
       <Select
         label="Estado"

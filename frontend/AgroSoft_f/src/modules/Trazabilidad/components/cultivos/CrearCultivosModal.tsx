@@ -6,18 +6,17 @@ import { Input, Select, SelectItem, Switch, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearEspecieModal } from "../especies/CrearEspecieModal";
 import { Cultivo } from "../../types";
-
+import { addToast } from "@heroui/toast";
 
 interface CrearCultivoModalProps {
   onClose: () => void;
-  onCreate: (nuevoCultivo:Cultivo) => void;
+  onCreate: (nuevoCultivo: Cultivo) => void;
 }
 
-export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) => {
+export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps) => {
   const [nombre, setNombre] = useState<string>("");
   const [activo, setActivo] = useState<boolean>(true);
-  const [fk_Especie, setFk_Especie] = useState<{ nombre: string } | null>(null);
-
+  const [fk_EspecieId, setFk_EspecieId] = useState<number | null>(null);
   const [mostrarModalEspecie, setMostrarModalEspecie] = useState(false);
 
   const { mutate, isPending } = usePostCultivos();
@@ -28,14 +27,12 @@ export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) 
   } = useGetEspecies();
 
   const handleSubmit = () => {
-    if (!nombre || !fk_Especie?.nombre) {
-      console.log("Por favor, completa todos los campos obligatorios.");
-      return;
-    }
-
-    const especie = especies?.find((e) => e.nombre === fk_Especie.nombre);
-    if (!especie) {
-      console.log("Especie no encontrada.");
+    if (!nombre || !fk_EspecieId) {
+      addToast({
+        title: "Campos obligatorios",
+        description: "Por favor completa todos los campos.",
+        color: "danger",
+      });
       return;
     }
 
@@ -43,23 +40,35 @@ export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) 
       {
         nombre,
         activo,
-        fk_Especie: especie.id, 
+        fk_Especie: fk_EspecieId,
       },
       {
         onSuccess: (data) => {
-          onClose();
-          onCreate(data)
+          addToast({
+            title: "Creación exitosa",
+            description: "Cultivo registrado con éxito",
+            color: "success",
+          });
           setNombre("");
-          setFk_Especie(null);
+          setFk_EspecieId(null);
           setActivo(true);
+          onCreate(data); // ← Solo notifica desde aquí
+          onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error al crear cultivo",
+            description: "No se pudo registrar el cultivo",
+            color: "danger",
+          });
         },
       }
     );
   };
 
-  const handleEspecieCreada = (nuevaEspecie: { id: number; nombre: string }) => {
+  const handleEspecieCreada = (nuevaEspecie: { id: number }) => {
     refetchEspecies();
-    setFk_Especie({ nombre: nuevaEspecie.nombre });
+    setFk_EspecieId(nuevaEspecie.id);
     setMostrarModalEspecie(false);
   };
 
@@ -93,16 +102,14 @@ export const CrearCultivoModal = ({ onClose,onCreate }: CrearCultivoModalProps) 
               <Select
                 label="Especie"
                 placeholder="Selecciona una especie"
-                selectedKeys={fk_Especie ? [fk_Especie.nombre] : []}
+                selectedKeys={fk_EspecieId ? [fk_EspecieId.toString()] : []}
                 onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0];
-                  if (selectedKey) {
-                    setFk_Especie({ nombre: selectedKey.toString() });
-                  }
+                  const selected = Array.from(keys)[0];
+                  setFk_EspecieId(Number(selected));
                 }}
               >
                 {(especies || []).map((especie) => (
-                  <SelectItem key={especie.nombre}>{especie.nombre}</SelectItem>
+                  <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
                 ))}
               </Select>
             )}

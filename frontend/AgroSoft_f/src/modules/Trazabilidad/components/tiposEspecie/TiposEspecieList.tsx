@@ -8,10 +8,33 @@ import EditarTiposEspecieModal from "./EditarTiposEspecieModal";
 import { CrearTiposEspecieModal } from "./CrearTiposEspecieModal";
 import EliminarTiposEspecieModal from "./EliminarTiposEspecie";
 import { TiposEspecie } from "../../types";
-import { Image } from "@heroui/react"; // ← Asegúrate de tener este importado
+import { Image } from "@heroui/react";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function TiposEspecieList() {
   const { data, isLoading, error } = useGetTiposEspecie();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
+
+  const showAccessDenied = () => {
+    addToast({
+      title: 'Acción no permitida',
+      description: 'No tienes permiso para realizar esta acción',
+      color: 'danger'
+    });
+  };
+
+  const handleActionWithPermission = (
+    action: () => void, 
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
 
   const { 
     isOpen: isEditModalOpen, 
@@ -34,13 +57,19 @@ export function TiposEspecieList() {
   } = useEliminarTiposEspecie();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", descripcion: "", img: "" });
+    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
+    
+    if (permitido) {
+      handleCrear({ id: 0, nombre: "", descripcion: "", img: "" });
+    } else {
+      showAccessDenied();
+    }
   };
 
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Imagen", uid: "img" }, // ← Añadida columna imagen
+    { name: "Imagen", uid: "img" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -62,8 +91,18 @@ export function TiposEspecieList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => 
+              handleActionWithPermission(
+                () => handleEditar(item), 
+                ["admin", "instructor", "pasante"]
+              )
+            }
+            onEliminar={() => 
+              handleActionWithPermission(
+                () => handleEliminar(item), 
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:

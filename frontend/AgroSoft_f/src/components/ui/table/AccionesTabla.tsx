@@ -11,12 +11,54 @@ import { VerticalDotsIcon } from "./Icons";
 interface AccionesTablaProps {
   onEditar: () => void;
   onEliminar: () => void;
+  permitirEditar?: boolean;
+  permitirEliminar?: boolean;
+  onVerDetalles?: () => void;
 }
 
 export const AccionesTabla: React.FC<AccionesTablaProps> = ({
   onEditar,
   onEliminar,
+  permitirEditar = true,
+  permitirEliminar = true,
+  onVerDetalles
 }) => {
+  // Crear elementos de menú de forma condicional
+  const menuItems = React.useMemo(() => {
+    const items = [];
+    
+    if (onVerDetalles) {
+      items.push(
+        <DropdownItem key="ver" onPress={onVerDetalles}>
+          Ver detalles
+        </DropdownItem>
+      );
+    }
+    
+    if (permitirEditar) {
+      items.push(
+        <DropdownItem key="editar" onPress={onEditar}>
+          Editar
+        </DropdownItem>
+      );
+    }
+    
+    if (permitirEliminar) {
+      items.push(
+        <DropdownItem key="eliminar" onPress={onEliminar}>
+          Eliminar
+        </DropdownItem>
+      );
+    }
+    
+    return items;
+  }, [onVerDetalles, permitirEditar, permitirEliminar, onEditar, onEliminar]);
+
+  // Si no hay acciones disponibles
+  if (menuItems.length === 0) {
+    return <span className="text-gray-400 text-sm">Sin acciones</span>;
+  }
+
   return (
     <div className="relative flex justify-end items-center gap-2">
       <Dropdown>
@@ -26,12 +68,7 @@ export const AccionesTabla: React.FC<AccionesTablaProps> = ({
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Acciones">
-          <DropdownItem key="editar" onPress={onEditar}>
-            Editar
-          </DropdownItem>
-          <DropdownItem key="eliminar" onPress={onEliminar}>
-            Eliminar
-          </DropdownItem>
+          {menuItems}
         </DropdownMenu>
       </Dropdown>
     </div>

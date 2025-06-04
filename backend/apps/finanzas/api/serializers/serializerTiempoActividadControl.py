@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadControl
 
 class SerializerTiempoActividadControl(ModelSerializer):
+    fecha = serializers.DateTimeField(format="%Y-%m-%d %H:%M") 
     valorTotal = serializers.FloatField(read_only=True)
 
     class Meta:

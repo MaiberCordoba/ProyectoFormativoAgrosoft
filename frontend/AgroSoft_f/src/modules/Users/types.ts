@@ -3,9 +3,9 @@ export interface User {
   identificacion: number;
   nombre: string;
   apellidos: string;
-  fechaNacimiento: string; // Puedes usar Date si lo parseas antes de usarlo
   telefono: string;
   correoElectronico: string;
+  rol: string;
   admin: boolean;
   password?: string;
   estado: string;

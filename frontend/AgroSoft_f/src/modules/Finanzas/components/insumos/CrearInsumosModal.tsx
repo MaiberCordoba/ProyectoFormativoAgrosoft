@@ -15,11 +15,11 @@ interface CrearInsumosModalProps {
 export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [precio, setPrecio] = useState<number | null>(null);
+  const [precio, setPrecio] = useState<string>("");
   const [compuestoActivo, setCompuestoActivo] = useState("");
-  const [contenido, setContenido] = useState<number | null>(null);
+  const [contenido, setContenido] = useState<string>("");
   const [fichaTecnica, setFichaTecnica] = useState<File | null>(null); 
-  const [unidades, setUnidades] = useState<number | null>(null);
+  const [unidades, setUnidades] = useState<string>("");
   const [fk_UnidadMedida, setfk_UnidadMedida] = useState<number | null>(null);
   const [preview, setPreview] = useState<string | null>(null)
 
@@ -34,15 +34,24 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
     if (
       !nombre ||
       !descripcion ||
-      precio === null ||
+      precio === "" ||
       !compuestoActivo ||
-      contenido === null ||
-      unidades === null ||
+      contenido === "" ||
+      unidades === "" ||
       fk_UnidadMedida === null
     ) {
       setError("Por favor, completa todos los campos.");
       return;
     }
+
+    const precioNumero = Number(precio)
+    const contenidoNumero = Number(contenido)
+    const unidadesNumero = Number(unidades)
+
+    if (precioNumero < 0 || contenidoNumero < 0 || unidadesNumero < 0){
+      setError("Por favor ingresa valores positivos.")
+    }
+
     setError("")
 
       const formData = new FormData()
@@ -62,11 +71,11 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           // Limpiar campos
           setNombre("");
           setDescripcion("");
-          setPrecio(null);
+          setPrecio("");
           setCompuestoActivo("");
-          setContenido(null);
+          setContenido("");
           setFichaTecnica(null);
-          setUnidades(null);
+          setUnidades("");
           setfk_UnidadMedida(null);
           setError("")
         },
@@ -111,9 +120,12 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
         />
         <Input
           label="Precio unidad insumo"
-          type="number"
+          type="text"
           value={precio}
-          onChange={(e) => setPrecio(Number(e.target.value))}
+          onChange={(e) => {
+            const valor= e.target.value;
+            if (/^\d*\.?\d*$/.test(valor)) setPrecio(valor)
+          }}
           required
           />
         <Input
@@ -125,16 +137,22 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           />
           <Input
             label="Unidades compradas"
-            type="number"
+            type="text"
             value={unidades ?? ""}
-            onChange={(e) => setUnidades(Number(e.target.value))}
+            onChange={(e) => {
+            const valor= e.target.value;
+            if (/^\d*\.?\d*$/.test(valor)) setUnidades(valor)
+            }}
             required
           />
         <Input
           label="Contenido del insumo"
-          type="number"
+          type="text"
           value={contenido ?? ""}
-          onChange={(e) => setContenido(Number(e.target.value))}
+          onChange={(e) => {
+            const valor= e.target.value;
+            if (/^\d*\.?\d*$/.test(valor)) setContenido(valor)
+          }}
           required
           />
           {isLoadingUnidad ? (

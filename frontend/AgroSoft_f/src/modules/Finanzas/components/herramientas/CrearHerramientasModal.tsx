@@ -10,47 +10,74 @@ import { CrearLoteModal } from "@/modules/Trazabilidad/components/lotes/CrearLot
 
 interface CrearHerramientasModalProps {
   onClose: () => void;
-  onCreate:  (nuevaHerramienta : Herramientas) => void
+  onCreate: (nuevaHerramienta: Herramientas) => void;
 }
 
 export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps) => {
   const [fk_Lote, setFk_Lote] = useState<number | null>(null);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [unidades, setUnidades] = useState<number | null>(null);
+  const [unidades, setUnidades] = useState<string>("");
+  const [precio, setPrecio] = useState<string>("");
+  const [error, setError] = useState("");
+  const [lotesModal, setLotesModal] = useState(false);
 
-  const [error,setError] = useState("")
-
-  const [lotesModal, setLotesModal] = useState(false)
   const { data: lotes, isLoading: isLoadingLotes, refetch: refetchLotes } = useGetLotes();
   const { mutate, isPending } = usePostHerramienta();
 
+  const handleUnidadesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) setUnidades(value);
+  };
+
+  const handlePrecioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) setPrecio(value);
+  };
+
   const handleSubmit = () => {
-    if (!fk_Lote || !nombre.trim() || !descripcion.trim() || !unidades) {
+    if (!fk_Lote || !nombre.trim() || !descripcion.trim() || unidades.trim() === "" || precio.trim() === "") {
       setError("Por favor, completa todos los campos.");
       return;
     }
-    setError("")
+
+    const unidadesNum = Number(unidades);
+    const precioNum = Number(precio);
+
+    if (isNaN(unidadesNum) || unidadesNum < 0) {
+      setError("La cantidad no puede ser negativa.");
+      return;
+    }
+
+    if (isNaN(precioNum) || precioNum < 0) {
+      setError("El precio no puede ser negativo.");
+      return;
+    }
+
+    setError("");
 
     mutate(
-      { id:0,fk_Lote, unidades, nombre, descripcion },
+      { id: 0, fk_Lote, unidades: unidadesNum, nombre, descripcion, precio: precioNum },
       {
         onSuccess: () => {
           onClose();
           setFk_Lote(null);
-          setUnidades(null);
+          setUnidades("");
           setNombre("");
           setDescripcion("");
-          setError("")
+          setPrecio("");
+          setError("");
         },
       }
     );
   };
-  const handleLoteCreado = (nuevoLote : Lotes) =>{
-    refetchLotes()
-    setFk_Lote(nuevoLote.id)
-    setLotesModal(false)
-  }
+
+  const handleLoteCreado = (nuevoLote: Lotes) => {
+    refetchLotes();
+    setFk_Lote(nuevoLote.id);
+    setLotesModal(false);
+  };
+
   return (
     <>
       <ModalComponent
@@ -65,8 +92,9 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
             onClick: handleSubmit,
           },
         ]}
-        >
-          <p className="text-red-500 text-sm mb-2">{error}</p>
+      >
+        <p className="text-red-500 text-sm mb-2">{error}</p>
+
         <Input
           label="Nombre"
           type="text"
@@ -85,21 +113,28 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Cantidad"
-          type="number"
+          type="text"
           value={unidades}
-          onChange={(e) => setUnidades(e.target.value ? Number(e.target.value) : 0)}
+          onChange={handleUnidadesChange}
           required
         />
 
-        {/* Selector de Lotes */}
+        <Input
+          label="Precio unidad"
+          type="text"
+          value={precio}
+          onChange={handlePrecioChange}
+          required
+        />
+
         {isLoadingLotes ? (
           <p>Cargando Lotes...</p>
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
-              label="Lote"
-              placeholder="Selecciona un Lote"
+                label="Lote"
+                placeholder="Selecciona un Lote"
                 selectedKeys={fk_Lote?.toString() ? [fk_Lote.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
@@ -107,29 +142,22 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
                 }}
               >
                 {(lotes || []).map((lote) => (
-                  <SelectItem key={lote.id.toString()}>
-                    {lote.nombre}
-                  </SelectItem>
+                  <SelectItem key={lote.id.toString()}>{lote.nombre}</SelectItem>
                 ))}
               </Select>
             </div>
             <Button
-            onPress={()=> setLotesModal(true)}
-            color="success"
-            title="Crear Lote"
-            size="sm"
+              onPress={() => setLotesModal(true)}
+              color="success"
+              title="Crear Lote"
+              size="sm"
             >
-                <Plus className="w-5 h-5 text-white"/>
+              <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
         )}
       </ModalComponent>
-      {lotesModal && (
-        <CrearLoteModal
-        onClose={()=>setLotesModal(false)}
-        onCreate={handleLoteCreado}
-        />
-      )}
+      {lotesModal && <CrearLoteModal onClose={() => setLotesModal(false)} onCreate={handleLoteCreado} />}
     </>
   );
 };

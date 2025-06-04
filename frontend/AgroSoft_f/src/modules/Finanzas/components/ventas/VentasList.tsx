@@ -10,10 +10,12 @@ import EliminarVentaModal from "./EliminarVentas";
 import { Ventas } from "../../types";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 
 export function VentasList() {
   const { data, isLoading, error } = useGetVentas();
   const { data : cosechas, isLoading : loadingCosechas } = useGetCosechas();
+  const { data : plantaciones} = useGetPlantaciones();
   const { data : unidadesMedida, isLoading : loadingUnidadesMedida } = useGetUnidadesMedida();
   const { 
     isOpen: isEditModalOpen, 
@@ -36,15 +38,14 @@ export function VentasList() {
   } = useEliminarVenta();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cosecha: 0, precioUnitario: 0, fecha: "", fk_UnidadMedida: 0,cantidad:0,valorTotal:0});
+    handleCrear({ id: 0, fk_Cosecha: 0, fecha: "", fk_UnidadMedida: 0,cantidad:0,valorTotal:0});
   };
 
   const columnas = [
     { name: "Fecha Venta", uid: "fecha" },
-    { name: "fecha de Cosecha", uid: "cosecha" },
+    { name: "Producto", uid: "cosecha" },
     { name: "Unidad de medida", uid: "unidadMedida" },
     { name: "Cantidad", uid: "cantidad" },
-    { name: "Precio Unitario", uid: "precioUnitario" },
     { name: "Valor Total de venta", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -53,7 +54,9 @@ export function VentasList() {
     switch (columnKey) {
       case "cosecha":
         const cosecha = cosechas?.find((c) => c.id === item.fk_Cosecha);
-        return <span>{cosecha ? cosecha.fecha : "No definido"}</span>;
+        const plantacion = plantaciones?.find((p) => p.id === cosecha?.fk_Plantacion);
+        const producto = plantacion?.cultivo?.nombre || "Producto no definido";
+        return <span>{producto}</span>;
       case "precioUnitario":
         return <span>{item.precioUnitario}</span>;
       case "fecha":
