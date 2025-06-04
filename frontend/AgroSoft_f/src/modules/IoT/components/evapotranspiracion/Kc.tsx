@@ -139,8 +139,7 @@ const cropCategories = [
             </p>
           </div>
         </div>
-        <br />
-        {/* Buscador de cultivo */}
+
         <div className="mb-6 flex items-center gap-2">
             <div className="relative">
             <input
@@ -167,65 +166,68 @@ const cropCategories = [
             />
             </div>
         </div>
+        <br/>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map((category) => (
             <div 
               key={category.id} 
-              className="bg-white rounded-2xl shadow-lg overflow-hidden border border-emerald-100 transition-all duration-300 hover:shadow-xl"
+              className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-emerald-300 transition-all duration-300 hover:shadow-xl mb-4"
+              style={{ marginBottom: '1rem', borderRadius: '1rem' }}
             >
               <div 
-                className={`p-5 cursor-pointer flex items-center justify-between transition-all ${
-                  expandedCategory === category.id 
-                    ? 'bg-emerald-600 text-white' 
-                    : 'bg-gradient-to-r from-emerald-50 to-green-50'
-                }`}
-                onClick={() => toggleCategory(category.id)}
+              className={`p-5 cursor-pointer flex items-center justify-between transition-all ${
+              expandedCategory === category.id 
+              ? 'bg-emerald-600 text-white' 
+              : 'bg-gradient-to-r from-emerald-50 to-green-50'
+              } rounded-t-xl`} 
+              onClick={() => toggleCategory(category.id)}
+              style={{ borderBottom: expandedCategory === category.id ? '2px solid #059669' : '2px solid #bbf7d0', borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-emerald-100 rounded-lg">
-                    {category.icon}
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold">{category.name}</h2>
-                    <p className="text-sm opacity-80">{category.crops.length} cultivos</p>
-                  </div>
-                </div>
-                <span className="ml-2 flex items-center">
-                  {expandedCategory === category.id ? (
-                    <ChevronUp className="text-emerald-700" />
-                  ) : (
-                    <ChevronDown className="text-emerald-700" />
-                  )}
-                </span>
+              <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-100 rounded-lg">
+              {category.icon}
+              </div>
+              <div>
+              <h2 className="text-lg font-bold">{category.name}</h2>
+              <p className="text-sm opacity-80">{category.crops.length} cultivos</p>
+              </div>
+              </div>
+              <span className="ml-2 flex items-center">
+              {expandedCategory === category.id ? (
+              <ChevronUp className="text-emerald-700" />
+              ) : (
+              <ChevronDown className="text-emerald-700" />
+              )}
+              </span>
               </div>
               
               {expandedCategory === category.id && (
-            <div className="p-4 bg-emerald-50">
+            <div className="p-4 bg-emerald-50 rounded-b-xl">
               <div className="mb-4">
               </div>
               <div className="grid grid-cols-1 gap-4">
-                {category.crops.map((crop) => (
-                  <div key={crop.name} className="bg-white rounded-xl p-4 border border-emerald-200">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-emerald-700">{crop.name}</h3>
-                  <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
-                    {crop.totalDays} días
-                  </span>
+              {category.crops.map((crop) => (
+              <div key={crop.name} className="bg-white rounded-lg p-4 border border-emerald-200">
+              <div className="flex justify-between items-center mb-3">
+              <h3 className="font-bold text-emerald-700">{crop.name}</h3>
+              <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
+              {crop.totalDays} días
+              </span>
+              </div>
+              
+              <div className="grid grid-cols-4 gap-2">
+              {crop.stages.map((stage, index) => (
+              <div key={index} className="text-center">
+                <div className="bg-gradient-to-b from-white to-emerald-50 rounded p-2 border border-emerald-200">
+              <div className="text-xs text-gray-600 mb-1">Etapa {index + 1}</div>
+              <div className="text-xl font-bold text-emerald-700">{stage.kc}</div>
+              <div className="text-xs text-gray-500 mt-1">{stage.duration} días</div>
                 </div>
-                
-                <div className="grid grid-cols-4 gap-2">
-                  {crop.stages.map((stage, index) => (
-                    <div key={index} className="text-center">
-                      <div className="bg-gradient-to-b from-white to-emerald-50 rounded-lg p-2 border border-emerald-200">
-                    <div className="text-xs text-gray-600 mb-1">Etapa {index + 1}</div>
-                    <div className="text-xl font-bold text-emerald-700">{stage.kc}</div>
-                    <div className="text-xs text-gray-500 mt-1">{stage.duration} días</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                  </div>
-                ))}
+              </div>
+              ))}
+              </div>
+              </div>
+              ))}
               </div>
             </div>
               )}
