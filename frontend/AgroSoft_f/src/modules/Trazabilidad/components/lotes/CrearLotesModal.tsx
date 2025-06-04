@@ -36,14 +36,10 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
     const parsedLongS2 = parseFloat(longS2.replace(",", "."));
 
     const campos = [
-      parsedLatI1,
-      parsedLongI1,
-      parsedLatS1,
-      parsedLongS1,
-      parsedLatI2,
-      parsedLongI2,
-      parsedLatS2,
-      parsedLongS2,
+      parsedLatI1, parsedLongI1,
+      parsedLatS1, parsedLongS1,
+      parsedLatI2, parsedLongI2,
+      parsedLatS2, parsedLongS2,
     ];
 
     const camposInvalidos = campos.some((val) => isNaN(val));
@@ -51,8 +47,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
     if (!nombre || camposInvalidos) {
       addToast({
         title: "Campos Obligatorios",
-        description:
-          "Por favor completa el nombre y asegúrate de que todos los campos de coordenadas sean válidos.",
+        description: "Por favor completa el nombre y asegúrate de que todos los campos de coordenadas sean válidos.",
         color: "warning",
       });
       return;
@@ -99,23 +94,6 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
     );
   };
 
-  const renderInput = (
-    label: string,
-    value: string,
-    setter: (val: string) => void
-  ) => (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-700">{label}</label>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setter(e.target.value)}
-        placeholder={label}
-        className="border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-sm"
-      />
-    </div>
-  );
-
   return (
     <ModalComponent
       isOpen={true}
@@ -148,14 +126,70 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
       />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
-        {renderInput("Lat. Inf. Izquierda", latI1, setLatI1)}
-        {renderInput("Lon. Inf. Izquierda", longI1, setLongI1)}
-        {renderInput("Lat. Sup. Izquierda", latS1, setLatS1)}
-        {renderInput("Lon. Sup. Izquierda", longS1, setLongS1)}
-        {renderInput("Lat. Inf. Derecha", latI2, setLatI2)}
-        {renderInput("Lon. Inf. Derecha", longI2, setLongI2)}
-        {renderInput("Lat. Sup. Derecha", latS2, setLatS2)}
-        {renderInput("Lon. Sup. Derecha", longS2, setLongS2)}
+        <Input
+          label="Lat. Inf. Izquierda"
+          type="text"
+          inputMode="decimal"
+          value={latI1}
+          onChange={(e) => setLatI1(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lon. Inf. Izquierda"
+          type="text"
+          inputMode="decimal"
+          value={longI1}
+          onChange={(e) => setLongI1(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lat. Sup. Izquierda"
+          type="text"
+          inputMode="decimal"
+          value={latS1}
+          onChange={(e) => setLatS1(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lon. Sup. Izquierda"
+          type="text"
+          inputMode="decimal"
+          value={longS1}
+          onChange={(e) => setLongS1(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lat. Inf. Derecha"
+          type="text"
+          inputMode="decimal"
+          value={latI2}
+          onChange={(e) => setLatI2(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lon. Inf. Derecha"
+          type="text"
+          inputMode="decimal"
+          value={longI2}
+          onChange={(e) => setLongI2(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lat. Sup. Derecha"
+          type="text"
+          inputMode="decimal"
+          value={latS2}
+          onChange={(e) => setLatS2(e.target.value)}
+          size="sm"
+        />
+        <Input
+          label="Lon. Sup. Derecha"
+          type="text"
+          inputMode="decimal"
+          value={longS2}
+          onChange={(e) => setLongS2(e.target.value)}
+          size="sm"
+        />
       </div>
 
       <Select
