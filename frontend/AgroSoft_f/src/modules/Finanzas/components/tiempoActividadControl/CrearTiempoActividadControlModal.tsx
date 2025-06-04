@@ -159,7 +159,9 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
               setFk_Actividad(selectedKey ? Number(selectedKey) : null);
             }}
             >
-              {(actividades || []).map((actividad) => (
+              {(actividades || [])
+              .filter((actividad) => actividad.estado === "AS")
+              .map((actividad) => (
               <SelectItem key={actividad.id.toString()}>{actividad.titulo}</SelectItem>
               ))}
             </Select>
