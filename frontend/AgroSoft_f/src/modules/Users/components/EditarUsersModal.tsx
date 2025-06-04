@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 
-import { Input, Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { User } from "../types";
 import { usePatchUsers } from "../hooks/usePatchUsers";
 
@@ -55,6 +55,13 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
     setUserData((prev) => ({
       ...prev,
       rol: selectedKey,
+    }));
+  };
+
+  const handleEstadoSwitchChange = (isSelected: boolean) => {
+    setUserData((prev) => ({
+      ...prev,
+      estado: isSelected ? "activo" : "inactivo",
     }));
   };
 
@@ -124,15 +131,6 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
           required
         />
 
-        <Input
-          label="estado"
-          type="text"
-          size="sm"
-          value={userData.estado}
-          onChange={(e) => handleInputChange(e, "estado")}
-          required
-        />
-
         <Select
           label="rol"
           size="sm"
@@ -146,6 +144,14 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
             <SelectItem key={rol.key}>{rol.label}</SelectItem>
           ))}
         </Select>
+
+        <Switch
+          size="sm"
+          isSelected={userData.estado === "activo"}
+          onValueChange={handleEstadoSwitchChange}
+        >
+          Usuario Activo
+        </Switch>
       </div>
     </ModalComponent>
   );
