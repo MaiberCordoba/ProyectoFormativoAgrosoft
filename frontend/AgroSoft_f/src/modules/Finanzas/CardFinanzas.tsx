@@ -246,6 +246,7 @@ export function TiempoActividadCard() {
   const { data: usuarios = [] } = useGetUsers();
   const { data: controles = [] } = useGetControles();
   const { data: salarios = [] } = useGetSalarios();
+  const { data: plantaciones = [] } = useGetPlantaciones();
 
   const {
     isOpen: isEditModalOpen,
@@ -272,18 +273,20 @@ export function TiempoActividadCard() {
         const usuario = usuarios.find((p) => p.id === actividad?.fk_Usuario);
         const control = controles.find((p) => p.id === tiempoAC?.fk_control);
         const salario = salarios.find((p) => p.id === tiempoAC?.fk_salario);
+        const plantacion = plantaciones.find((p) => p.id === actividad?.fk_Plantacion);
 
         return (
           <CustomCard
             key={tiempoAC.id}
             title={actividad?.titulo || control?.descripcion || "Sin nombre"}
-            description={tiempoAC.salario?.nombre}
+            description={ actividad?.cultivo?.nombre || plantacion?.cultivo?.nombre }
             data={{
               Termino: tiempoAC.fecha,
               Duración: `${tiempoAC.tiempo} ${unidad?.nombre}`,
               "Costo de la actividad": `$${tiempoAC.valorTotal}`,
               Realizo: usuario?.nombre || control?.usuario?.nombre || "No definido",
-              Salario : salario?.nombre
+              Salario : salario?.nombre,
+
             }}
             footerButtons={[
               {
