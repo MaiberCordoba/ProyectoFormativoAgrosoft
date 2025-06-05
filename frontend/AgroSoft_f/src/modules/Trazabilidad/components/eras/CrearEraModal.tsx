@@ -54,7 +54,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
       addToast({
         title: "Campos Obligatorios",
         description: "Por favor completa todos los campos antes de guardar.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

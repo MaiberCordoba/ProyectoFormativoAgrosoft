@@ -22,7 +22,7 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
       addToast({
         title: "Campos incompletos",
         description: "Por favor, completa todos los campos.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

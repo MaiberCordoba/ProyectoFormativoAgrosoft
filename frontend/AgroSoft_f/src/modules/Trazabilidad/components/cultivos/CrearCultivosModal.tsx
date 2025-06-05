@@ -31,7 +31,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
       addToast({
         title: "Campos obligatorios",
         description: "Por favor completa todos los campos.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

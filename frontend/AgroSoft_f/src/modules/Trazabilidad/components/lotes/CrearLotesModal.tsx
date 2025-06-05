@@ -52,7 +52,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
       addToast({
         title: "Campos Obligatorios",
         description: "Por favor completa el nombre y asegúrate de que todos los campos de coordenadas sean válidos.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

@@ -35,7 +35,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
       addToast({
         title: "Campo obligatorio",
         description: "Por favor completa el campo Nombre antes de guardar.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }
