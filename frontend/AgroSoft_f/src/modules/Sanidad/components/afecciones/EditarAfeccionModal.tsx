@@ -61,12 +61,14 @@ const EditarAfeccionModal: React.FC<EditarAfeccionModalProps> = ({ afeccion, onC
         label="Nombre"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
+        size="sm"
       />
       <Textarea
         value={descripcion}
         label="Descripción"
         type="text"
         onChange={(e) => setDescripcion(e.target.value)}
+        size="sm"
       />
 
       {isLoadingTiposPlaga ? (
@@ -76,6 +78,7 @@ const EditarAfeccionModal: React.FC<EditarAfeccionModalProps> = ({ afeccion, onC
           label="Tipo de afectacion"
           placeholder="Selecciona un tipo de afectacion"
           selectedKeys={[fk_Tipo.toString()]}
+          size="sm"
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
             setFk_Tipo(Number(selectedKey));

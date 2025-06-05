@@ -52,9 +52,9 @@ const EditarTipoAfeccionModal: React.FC<EditarTipoAfeccionesModalProps> = ({ tip
         },
       ]}
     >
-    <Input label="Nombre" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+    <Input label="Nombre"  size="sm" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
     
-    <Textarea label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+    <Textarea label="Descripción"   size="sm" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
     
     <div className="mt-4">
       <Button
