@@ -17,5 +17,12 @@ class Eras(models.Model):
     latS2 = models.FloatField(null=True, unique=True)  
     longS2 = models.FloatField(null=True, unique=True)
 
+    def save(self, *args, **kwargs):
+        if self.fk_lote:
+            self.fk_lote = self.fk_lote.capitalize()
+        if self.tipo:
+            self.tipo = self.tipo.capitalize()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Era {self.tipo} en {self.fk_lote.nombre if self.fk_lote else 'sin lote'}"

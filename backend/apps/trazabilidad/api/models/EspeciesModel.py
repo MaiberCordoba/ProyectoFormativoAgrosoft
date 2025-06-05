@@ -16,5 +16,14 @@ class Especies(models.Model):
         default=TiempoCrecimientoChoices.PERENNES
     )
 
+    def save(self, *args, **kwargs):
+        if self.fk_tipoespecie:
+            self.fk_tipoespecie = self.fk_tipoespecie.capitalize()
+        if self.descripcion:
+            self.descripcion = self.descripcion.capitalize()
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.nombre
