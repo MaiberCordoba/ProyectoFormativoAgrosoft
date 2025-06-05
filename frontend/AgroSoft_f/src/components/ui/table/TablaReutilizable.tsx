@@ -31,6 +31,7 @@ interface TablaReutilizableProps<T extends { [key: string]: any }> {
   placeholderBusqueda?: string;
   initialVisibleColumns?: string[]; // Nueva prop
   renderReporteAction?: (data: T[]) => React.ReactNode;
+  botonExtra? : React.ReactNode;
 }
 
 export const TablaReutilizable = <T extends { [key: string]: any }>({
@@ -43,7 +44,10 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   onCrearNuevo,
   onRegistroMasivo = undefined,
   placeholderBusqueda = "Buscar...",
-  initialVisibleColumns = columnas.map((c) => c.uid), // Por defecto todas visibles
+
+  initialVisibleColumns = columnas.map(c => c.uid), // Por defecto todas visibles
+  botonExtra,
+    
 }: TablaReutilizableProps<T>) => {
   // Hooks existentes
   const {
@@ -123,6 +127,19 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           </div>
 
           <div className="flex flex-wrap gap-2 [&>button]:flex-1 [&>button]:sm:flex-none">
+
+          {botonExtra && <div>{botonExtra}</div>} 
+          <Button
+            color="success"
+            size="sm"
+            endContent={<PlusIcon size={16} />}
+            onPress={onCrearNuevo}
+            className="self-end text-white"
+            >
+            Agregar
+          </Button>
+          {onRegistroMasivo !== undefined && (
+
             <Button
               color="success"
               size="sm"

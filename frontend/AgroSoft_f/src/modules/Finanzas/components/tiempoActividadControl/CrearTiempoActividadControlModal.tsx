@@ -13,6 +13,7 @@ import { CrearActividadesModal } from "../actividades/CrearActividadModal";
 import { CrearControlModal } from "@/modules/Sanidad/components/controles/CrearControlesModal";
 import { CrearSalariosModal } from "../salarios/CrearSalariosModal";
 import { CrearUnidadesTiempoModal } from "../unidadesTiempo/CrearUnidadesTiempoModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearTiempoActividadControlModalProps {
   onClose: () => void;
@@ -20,7 +21,7 @@ interface CrearTiempoActividadControlModalProps {
 }
 
 export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActividadControlModalProps) => {
-  const [tiempo, setTiempo] = useState<number | null>(null);
+  const [tiempo, setTiempo] = useState(0);
   const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number | null>(null);
   const [fk_actividad, setFk_Actividad] = useState<number | null>(null);
   const [fk_control, setFk_Control] = useState<number | null>(null);
@@ -42,21 +43,37 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
     if (
       !tiempo || !fk_unidadTiempo || !fk_salario
     ) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos",
+        color:"danger"
+      })
       return;
     }
     if (fk_control && fk_actividad){
-      setError("Solo puede elegir una actividad o un contro,no ambas.")
+      addToast({
+        title:"Error",
+        description:"Solo puede elegir una actividad o un contro,no ambas.",
+        color:"danger"
+      })
+      return
+    }
+    if(tiempo < 0){
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos",
+        color:"danger"
+      })
       return
     }
     setError("")
 
     mutate(
-      {id:0, tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
+      {tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
       {
         onSuccess: () => {
           onClose();
-          setTiempo(null);
+          setTiempo(0);
           setFk_UnidadTiempo(null);
           setFk_Actividad(null);
           setFk_Control(null);
@@ -105,8 +122,9 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
         <p className="text-red-500 text-sm mb-2">{error}</p>
         <Input
           label="Tiempo"
+          size="sm"
           type="number"
-          value={tiempo}
+          value={tiempo.toString()}
           onChange={(e) => setTiempo(Number(e.target.value))}
           required
           />
@@ -118,6 +136,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
             <div className="flex-1">
               <Select
                 label="Unidad de Tiempo"
+                size="sm"
                 placeholder="Selecciona una unidad"
                 selectedKeys={fk_unidadTiempo ? [fk_unidadTiempo.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -147,16 +166,19 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
         <div className="flex items-center gap-2">
           <div className="flex-1">
             <Select
-              label="Actividad"
-              placeholder="Selecciona una actividad"
-              selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
-              onSelectionChange={(keys) => {
-                const selectedKey = Array.from(keys)[0];
-                setFk_Actividad(selectedKey ? Number(selectedKey) : null);
-              }}
+            label="Actividad"
+            size="sm"
+            placeholder="Selecciona una actividad"
+            selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0];
+              setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+            }}
             >
-              {(actividades || []).map((actividad) => (
-                <SelectItem key={actividad.id.toString()}>{actividad.titulo}</SelectItem>
+              {(actividades || [])
+              .filter((actividad) => actividad.estado === "AS")
+              .map((actividad) => (
+              <SelectItem key={actividad.id.toString()}>{actividad.titulo}</SelectItem>
               ))}
             </Select>
           </div>
@@ -178,6 +200,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
           <div className="flex-1">
             <Select
               label="Control"
+              size="sm"
               placeholder="Selecciona un control"
               selectedKeys={fk_control ? [fk_control.toString()] : []}
               onSelectionChange={(keys) => {
@@ -208,6 +231,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
           <div className="flex-1">
             <Select
               label="Salario"
+              size="sm"
               placeholder="Selecciona un salario"
               selectedKeys={fk_salario ? [fk_salario.toString()] : []}
               onSelectionChange={(keys) => {

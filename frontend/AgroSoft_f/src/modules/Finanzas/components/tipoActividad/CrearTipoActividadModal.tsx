@@ -3,6 +3,7 @@ import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { usePostTipoActividad } from "../../hooks/tipoActividad/usePostTiposActividad";
 import { TipoActividad } from "../../types";
+import { addToast } from "@heroui/toast";
 
 interface CrearTipoActividadModalProps {
   onClose: () => void;
@@ -17,7 +18,11 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
 
   const handleSubmit = () => {
     if (!nombre) {
-      setError("Por favor, completa el campo de nombre.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
     setError("")
@@ -52,6 +57,7 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
       <Input
         label="Nombre del Tipo de Actividad"
         type="text"
+        size="sm"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required

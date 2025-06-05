@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchCultivos } from "../../hooks/cultivos/usePatchCultivos";
 import { Cultivo } from "../../types";
 import { Input, Select, SelectItem, Switch } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
+import { addToast } from "@heroui/toast";
 
 interface EditarCultivoModalProps {
   cultivo: Cultivo;
@@ -11,16 +12,28 @@ interface EditarCultivoModalProps {
 }
 
 const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClose }) => {
-  const [nombre, setNombre] = useState<string>(cultivo.nombre);
-  const [fk_Especie, setFk_Especie] = useState<{ nombre: string }>(cultivo.fk_Especie);
-  const [activo, setActivo] = useState<boolean>(cultivo.activo);
+  const [nombre, setNombre] = useState<string>(cultivo?.nombre ?? "");
+  const [fk_EspecieId, setFk_EspecieId] = useState<number | null>(
+    cultivo?.fk_Especie?.id ?? null
+  );
+  const [activo, setActivo] = useState<boolean>(cultivo?.activo ?? true);
 
   const { mutate, isPending } = usePatchCultivos();
   const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
 
+  useEffect(() => {
+    if (!cultivo || !cultivo.fk_Especie) {
+      console.warn("El cultivo o su especie no están definidos correctamente.");
+    }
+  }, [cultivo]);
+
   const handleSubmit = () => {
-    if (cultivo.id === undefined) {
-      console.error("Error: ID del cultivo es undefined");
+    if (!nombre.trim() || !fk_EspecieId || cultivo.id === undefined) {
+      addToast({
+        title: "Campos obligatorios",
+        description: "Por favor completa el nombre y selecciona una especie.",
+        color: "warning",
+      });
       return;
     }
 
@@ -29,13 +42,25 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         id: cultivo.id,
         data: {
           nombre,
-          fk_Especie,
+          fk_Especie: fk_EspecieId,
           activo,
         },
       },
       {
         onSuccess: () => {
+          addToast({
+            title: "Actualización exitosa",
+            description: "El cultivo fue actualizado correctamente.",
+            color: "success",
+          });
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error al actualizar",
+            description: "No fue posible actualizar el cultivo.",
+            color: "danger",
+          });
         },
       }
     );
@@ -58,6 +83,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
       <Input
         value={nombre}
         label="Nombre del Cultivo"
+        size="sm"
         onChange={(e) => setNombre(e.target.value)}
       />
 
@@ -67,23 +93,31 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         <Select
           label="Especie"
           placeholder="Selecciona una especie"
-          selectedKeys={fk_Especie?.nombre ? [fk_Especie.nombre] : []}
+          size="sm"
+          selectedKeys={
+            fk_EspecieId ? new Set([fk_EspecieId.toString()]) : new Set()
+          }
           onSelectionChange={(keys) => {
-            const selectedName = Array.from(keys)[0];
-            if (selectedName) {
-              setFk_Especie({ nombre: selectedName });
+            const selectedId = Array.from(keys)[0];
+            if (selectedId) {
+              setFk_EspecieId(Number(selectedId));
             }
           }}
         >
           {(especies || []).map((especie) => (
-            <SelectItem key={especie.nombre}>{especie.nombre}</SelectItem>
+            <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
           ))}
         </Select>
       )}
 
-      <div className="mt-4 flex items-center">
-        <label className="mr-2">Activo:</label>
-        <Switch isSelected={activo} onChange={(e) => setActivo(e.target.checked)} />
+      <div className="flex items-center gap-4 mt-4">
+        <Switch
+          checked={activo}
+          onChange={(e) => setActivo(e.target.checked)}
+          color="success"
+        >
+          {activo ? "Activo" : "Inactivo"}
+        </Switch>
       </div>
     </ModalComponent>
   );

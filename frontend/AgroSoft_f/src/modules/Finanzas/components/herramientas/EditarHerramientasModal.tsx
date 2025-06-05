@@ -78,22 +78,26 @@ const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herrami
       <Input
         value={nombre}
         label="Nombre"
+        size="sm"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
       <Textarea
         value={descripcion}
+        size="sm"
         label="Descripción"
         onChange={(e) => setDescripcion(e.target.value)}
       />
       <Input
         value={unidades}
         label="Unidades"
+        size="sm"
         type="number"
         onChange={(e) => setUnidades(e.target.value)}
       />
       <Input
         value={precio}
+        size="sm"
         label="Precio Unidad"
         type="number"
         onChange={(e) => setPrecio(e.target.value)}
@@ -105,6 +109,7 @@ const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herrami
       ) : (
         <Select
           label="Lote"
+          size="sm"
           placeholder="Selecciona un lote"
           selectedKeys={fk_Lote ? [fk_Lote.toString()] : []}
           onSelectionChange={(keys) => {

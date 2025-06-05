@@ -19,6 +19,13 @@ class Lote(models.Model):
     latS2 = models.FloatField(null=True, unique=True)  
     longS2 = models.FloatField(null=True, unique=True)
     estado = models.BooleanField(null=True, default=True)
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
+        if self.descripcion:
+            self.descripcion = self.descripcion.capitalize()
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.nombre

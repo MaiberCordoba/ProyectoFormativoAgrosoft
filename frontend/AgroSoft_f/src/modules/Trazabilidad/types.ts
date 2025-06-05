@@ -20,8 +20,10 @@ export interface Cultivo {
   id: number;
   nombre: string;
   activo: boolean;
-  especies: Especies;
-  fk_Especie: number;
+  fk_Especie: {
+    id: number;
+    nombre: string;
+  } | null;
 }
 
 export interface Semillero {

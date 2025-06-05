@@ -9,6 +9,7 @@ import { Cosechas, UnidadesMedida, Ventas } from "../../types";
 import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
 import { Plus } from "lucide-react";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { addToast } from "@heroui/toast";
 
 interface CrearVentasModalProps {
   onClose: () => void;
@@ -18,9 +19,9 @@ interface CrearVentasModalProps {
 export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
   const [valorTotal, setValorTotal] = useState<number | null>(null);
-  const [descuento, setDescuento] = useState<number | null>(null);
+  const [descuento, setDescuento] = useState(0);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
-  const [cantidad, setCantidad] = useState<number | null>(null);
+  const [cantidad, setCantidad] = useState(0);
   const [error, setError] = useState("");
 
   const [CosechaModal, setCosechaModal] = useState(false);
@@ -46,7 +47,11 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Cosecha || !valorTotal || !fk_UnidadMedida || !cantidad) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
 
@@ -54,7 +59,11 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
     const unidadSeleccionada = unidadesMedida?.find(u => u.id === fk_UnidadMedida);
 
     if (!cosechaSeleccionada || !unidadSeleccionada) {
-      setError("Cosecha o unidad de medida no válidas.");
+      addToast({
+        title:"Error",
+        description:"Cosecha o unidad de medida no válidas.",
+        color:"danger"
+      })
       return;
     }
 
@@ -63,6 +72,14 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
     if (cantidadEnBase > cosechaSeleccionada.cantidadTotal) {
       setError(`La cantidad ingresada excede la cantidad disponible.`);
       return;
+    }
+    if (cantidad < 0 || descuento < 0){
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
+      return
     }
 
     setError("");
@@ -73,10 +90,10 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         onSuccess: () => {
           onClose();
           setFk_Cosecha(null);
-          setDescuento(null);
+          setDescuento(0);
           setValorTotal(0);
           setFk_UnidadMedida(null);
-          setCantidad(null);
+          setCantidad(0);
           setError("");
         },
       }
@@ -118,6 +135,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           <div className="flex-1">
           <Select
           label="Cosecha"
+          size="sm"
           placeholder="Selecciona el producto y cantidad"
           selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
           onSelectionChange={(keys) => {
@@ -158,12 +176,14 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         <Input
           label="Cantidad de producto"
           type="number"
-          value={cantidad ?? ""}
+          size="sm"
+          value={cantidad.toString()}
           onChange={(e) => setCantidad(Number(e.target.value))}
           required
         />
         <Input
           label="Valor Total"
+          size="sm"
           type="number"
           value={valorTotal ?? ""}
           onChange={(e) => setValorTotal(Number(e.target.value))}
@@ -173,7 +193,8 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
         <Input
           label="Descuento (opcional)"
           type="number"
-          value={descuento ?? ""}
+          size="sm"
+          value={descuento.toString()}
           onChange={(e) => setDescuento(Number(e.target.value))}
         />
 
@@ -185,6 +206,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
             <div className="flex-1">
               <Select
                 label="Unidades de medida"
+                size="sm"
                 placeholder="Selecciona la unidad de medida"
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {

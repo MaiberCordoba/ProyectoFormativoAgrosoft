@@ -57,9 +57,9 @@ export function TiempoActividadControlList() {
     { name: "Fecha Finalizacion", uid: "fecha" },
     { name: "Control", uid: "control" },
     { name: "Salario", uid: "salario" },
-    { name: "Unidad Tiempo", uid: "unidadTiempo" },
     { name: "Tiempo", uid: "tiempo" },
-    { name: "Valor minuto", uid: "valorTotal" },
+    { name: "Unidad Tiempo", uid: "unidadTiempo" },
+    { name: "Valor actividad", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" }
   ];
 
@@ -82,7 +82,7 @@ export function TiempoActividadControlList() {
       case "fecha":
         return <span>{item.fecha}</span>;
       case "valorTotal":
-        return <span>{item.valorTotal}</span>;
+        return <span>${item.valorTotal}</span>;
       case "acciones":
         return (
           <AccionesTabla

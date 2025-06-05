@@ -14,8 +14,13 @@ import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActivi
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
+import { useState } from "react";
+import { CrearTiempoActividadControlModal } from "../tiempoActividadControl/CrearTiempoActividadControlModal";
+import { Button } from "@heroui/react";
 
 export function ActividadesList() {
+  const [isTiempoACModalOpen, setTiempoACModalOpen] = useState(false);
+
   const { data, isLoading, error } = useGetActividades();
   const { data: users, isLoading: loadingUser } = useGetUsers(); 
   const { data : cultivo, isLoading: loadingCultivo } = useGetCultivos()
@@ -31,13 +36,15 @@ export function ActividadesList() {
     actividadEditada, 
     handleEditar 
   } = useEditarActividad();
-  
+
   const { 
     isOpen: isCreateModalOpen, 
     closeModal: closeCreateModal, 
     handleCrear 
   } = useCrearActividad();
-  
+
+
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
@@ -142,6 +149,18 @@ export function ActividadesList() {
         placeholderBusqueda="Buscar por Título"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
+        botonExtra={
+          ["admin", "instructor", "pasante"].includes(userRole || "") && (
+            <Button
+            onPress={() => setTiempoACModalOpen(true)}
+            size="sm"
+            color="warning"
+            className="self-end text-white"
+            >
+              Finalizar Actividad
+            </Button>
+          )
+        }
       />
 
       {/* Modales */}
@@ -154,6 +173,14 @@ export function ActividadesList() {
       {isDeleteModalOpen && actividadEliminada && (
         <EliminarActividadesModal actividad={actividadEliminada} isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
       )}
+      {isTiempoACModalOpen && (
+      <CrearTiempoActividadControlModal
+        onClose={() => setTiempoACModalOpen(false)}
+        onCreate={() => {
+          setTiempoACModalOpen(false);
+      }}/>
+)}
+
     </div>
   );
 }

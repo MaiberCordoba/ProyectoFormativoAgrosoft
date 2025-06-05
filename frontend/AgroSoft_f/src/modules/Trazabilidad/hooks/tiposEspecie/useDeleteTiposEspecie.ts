@@ -9,9 +9,9 @@ export const useDeleteTiposEspecie = () => {
     return useMutation<TiposEspecie, Error, { id: number }, { previousTiposEspecie?: TiposEspecie[] }>({
         mutationFn: ({ id }) => deleteTiposEspecie(id),
         onMutate: async (variables) => {
-            await queryClient.cancelQueries({ queryKey: ['TiposEspecie'] });
+            await queryClient.cancelQueries({ queryKey: ['tiposEspecie'] });
             const previousTiposEspecie = queryClient.getQueryData<TiposEspecie[]>(['tiposEspecie']);
-            queryClient.setQueryData<TiposEspecie[]>(['TiposEspecie'], (old) => 
+            queryClient.setQueryData<TiposEspecie[]>(['tiposEspecie'], (old) => 
                 old?.filter(tiposEspecie => tiposEspecie.id !== variables.id) || []
             );
             return { previousTiposEspecie };
@@ -29,7 +29,7 @@ export const useDeleteTiposEspecie = () => {
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['TiposEspecie'] });
+            queryClient.invalidateQueries({ queryKey: ['tiposEspecie'] });
             
             addToast({
                 title: "Operación exitosa",

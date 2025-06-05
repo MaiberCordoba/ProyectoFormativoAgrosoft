@@ -11,6 +11,7 @@ import { CrearMovimientoInventarioModal } from "./CrearMovimientosInventarioModa
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 //import { useGetUsosInsumos } from "../../hooks/usoInsumos/useGetUsoInsumos";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
+import { Button } from "@heroui/react";
 //import { useGetUsosHerramientas } from "../../hooks/usosHerramientas/useGetUsosHerramientas";
 
 export function MovimientosList() {
