@@ -36,7 +36,7 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
      addToast({
         title: "Campos Obligatiorios",
         description: "Por favor completa todos los campos antes de guardar.",
-        color: "warning",
+        color: "danger",
       });
       return; 
     }

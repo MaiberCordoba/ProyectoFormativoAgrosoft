@@ -33,7 +33,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
       addToast({
         title: "Campos Obligatorios",
         description: "Completa todos los campos antes de guardar.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

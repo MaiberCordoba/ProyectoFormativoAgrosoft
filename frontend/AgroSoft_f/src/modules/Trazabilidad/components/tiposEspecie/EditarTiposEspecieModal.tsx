@@ -23,7 +23,7 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
       addToast({
         title: "Campos Obligatorios",
         description: "Por favor completa todos los campos antes de guardar.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }
