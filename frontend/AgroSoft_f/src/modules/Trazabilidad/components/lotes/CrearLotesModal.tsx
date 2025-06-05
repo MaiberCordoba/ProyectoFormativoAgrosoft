@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePostLotes } from "../../hooks/lotes/usePostLotes";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem } from "@heroui/react";
+import { Input, Switch } from "@heroui/react";
 import { addToast } from "@heroui/toast";
 import { Lotes } from "../../types";
 
@@ -21,9 +21,13 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
   const [longI2, setLongI2] = useState<string>("");
   const [latS2, setLatS2] = useState<string>("");
   const [longS2, setLongS2] = useState<string>("");
-  const [estado, setEstado] = useState<string>("di");
+  const [estado, setEstado] = useState<string>("di"); // "di" = disponible, "oc" = ocupado
 
   const { mutate, isPending } = usePostLotes();
+
+  const handleEstadoSwitchChange = (isSelected: boolean) => {
+    setEstado(isSelected ? "di" : "oc");
+  };
 
   const handleSubmit = () => {
     const parsedLatI1 = parseFloat(latI1.replace(",", "."));
@@ -126,87 +130,26 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
       />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
-        <Input
-          label="Lat. Inf. Izquierda"
-          type="text"
-          inputMode="decimal"
-          value={latI1}
-          onChange={(e) => setLatI1(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lon. Inf. Izquierda"
-          type="text"
-          inputMode="decimal"
-          value={longI1}
-          onChange={(e) => setLongI1(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lat. Sup. Izquierda"
-          type="text"
-          inputMode="decimal"
-          value={latS1}
-          onChange={(e) => setLatS1(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lon. Sup. Izquierda"
-          type="text"
-          inputMode="decimal"
-          value={longS1}
-          onChange={(e) => setLongS1(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lat. Inf. Derecha"
-          type="text"
-          inputMode="decimal"
-          value={latI2}
-          onChange={(e) => setLatI2(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lon. Inf. Derecha"
-          type="text"
-          inputMode="decimal"
-          value={longI2}
-          onChange={(e) => setLongI2(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lat. Sup. Derecha"
-          type="text"
-          inputMode="decimal"
-          value={latS2}
-          onChange={(e) => setLatS2(e.target.value)}
-          size="sm"
-        />
-        <Input
-          label="Lon. Sup. Derecha"
-          type="text"
-          inputMode="decimal"
-          value={longS2}
-          onChange={(e) => setLongS2(e.target.value)}
-          size="sm"
-        />
+        <Input label="Lat. Inf. Izquierda" type="text" inputMode="decimal" value={latI1} onChange={(e) => setLatI1(e.target.value)} size="sm" />
+        <Input label="Lon. Inf. Izquierda" type="text" inputMode="decimal" value={longI1} onChange={(e) => setLongI1(e.target.value)} size="sm" />
+        <Input label="Lat. Sup. Izquierda" type="text" inputMode="decimal" value={latS1} onChange={(e) => setLatS1(e.target.value)} size="sm" />
+        <Input label="Lon. Sup. Izquierda" type="text" inputMode="decimal" value={longS1} onChange={(e) => setLongS1(e.target.value)} size="sm" />
+        <Input label="Lat. Inf. Derecha" type="text" inputMode="decimal" value={latI2} onChange={(e) => setLatI2(e.target.value)} size="sm" />
+        <Input label="Lon. Inf. Derecha" type="text" inputMode="decimal" value={longI2} onChange={(e) => setLongI2(e.target.value)} size="sm" />
+        <Input label="Lat. Sup. Derecha" type="text" inputMode="decimal" value={latS2} onChange={(e) => setLatS2(e.target.value)} size="sm" />
+        <Input label="Lon. Sup. Derecha" type="text" inputMode="decimal" value={longS2} onChange={(e) => setLongS2(e.target.value)} size="sm" />
       </div>
 
-      <Select
-        label="Estado"
-        placeholder="Selecciona un estado"
-        size="sm"
-        selectedKeys={[estado]}
-        onSelectionChange={(keys) => {
-          const selectedKey = Array.from(keys)[0]?.toString();
-          if (selectedKey) {
-            setEstado(selectedKey);
-          }
-        }}
-      >
-        <SelectItem key="di">Disponible</SelectItem>
-        <SelectItem key="oc">Ocupado</SelectItem>
-      </Select>
+      <div className="mt-4">
+        <Switch
+          size="sm"
+          isSelected={estado === "di"}
+          onValueChange={handleEstadoSwitchChange}
+          color="success"
+        >
+          {estado === "di" ? "Disponible" : "Ocupado"}
+        </Switch>
+      </div>
     </ModalComponent>
   );
 };
