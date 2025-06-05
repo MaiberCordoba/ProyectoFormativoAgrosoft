@@ -3,6 +3,7 @@ import ModalComponent from "@/components/Modal";
 import { usePatchTiposEspecie } from "../../hooks/tiposEspecie/usePatchTiposEspecie";
 import { TiposEspecie } from "../../types";
 import { Input, Textarea, Button } from "@heroui/react";
+import { addToast } from "@heroui/toast"; // ⬅️ Importación del toast
 
 interface EditarTiposEspecieModalProps {
   especie: TiposEspecie;
@@ -19,7 +20,11 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
 
   const handleSubmit = () => {
     if (!nombre || !descripcion) {
-      console.log("Completa todos los campos obligatorios.");
+      addToast({
+        title: "Campos Obligatorios",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "warning",
+      });
       return;
     }
 
@@ -35,6 +40,13 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error",
+            description: "No fue posible actualizar la información.",
+            color: "danger",
+          });
         },
       }
     );

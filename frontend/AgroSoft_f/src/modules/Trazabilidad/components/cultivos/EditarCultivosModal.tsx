@@ -28,11 +28,11 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
   }, [cultivo]);
 
   const handleSubmit = () => {
-    if (!nombre || !fk_EspecieId || cultivo.id === undefined) {
+    if (!nombre.trim() || !fk_EspecieId || cultivo.id === undefined) {
       addToast({
-        title: "Error en datos",
-        description: "Nombre o especie no válidos.",
-        color: "danger",
+        title: "Campos obligatorios",
+        description: "Por favor completa el nombre y selecciona una especie.",
+        color: "warning",
       });
       return;
     }
@@ -110,9 +110,12 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         </Select>
       )}
 
-      <div className="mt-4 flex items-center">
-        <label className="mr-2">Estado: </label>
-        <Switch isSelected={activo} onChange={(e) => setActivo(e.target.checked)}>
+      <div className="flex items-center gap-4 mt-4">
+        <Switch
+          checked={activo}
+          onChange={(e) => setActivo(e.target.checked)}
+          color="success"
+        >
           {activo ? "Activo" : "Inactivo"}
         </Switch>
       </div>

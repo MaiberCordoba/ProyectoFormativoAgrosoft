@@ -3,6 +3,7 @@ import ModalComponent from "@/components/Modal";
 import { usePatchLotes } from "../../hooks/lotes/usePatchLotes";
 import { Lotes } from "../../types";
 import { Input, Switch } from "@heroui/react";
+import { addToast } from "@heroui/toast"; // Importa toast
 
 interface EditarLoteModalProps {
   lote: Lotes;
@@ -29,6 +30,16 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
   };
 
   const handleSubmit = () => {
+    // Validar nombre obligatorio
+    if (!nombre.trim()) {
+      addToast({
+        title: "Campo obligatorio",
+        description: "Por favor completa el campo Nombre antes de guardar.",
+        color: "warning",
+      });
+      return;
+    }
+
     mutate(
       {
         id: lote.id ?? 0,
@@ -49,6 +60,13 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error",
+            description: "No fue posible actualizar el lote.",
+            color: "danger",
+          });
         },
       }
     );

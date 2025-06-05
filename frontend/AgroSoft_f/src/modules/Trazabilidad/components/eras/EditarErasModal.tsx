@@ -4,6 +4,7 @@ import { usePatchEras } from "../../hooks/eras/usePatchEras";
 import { Eras } from "../../types";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetLotes } from "../../hooks/lotes/useGetLotes";
+import { addToast } from "@heroui/toast";
 
 interface EditarEraModalProps {
   era: Eras;
@@ -11,9 +12,7 @@ interface EditarEraModalProps {
 }
 
 const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
-  const [fk_lote, setFkLoteId] = useState<number | null>(
-    era.fk_lote?.id ?? null
-  );
+  const [fk_lote, setFkLoteId] = useState<number | null>(era.fk_lote?.id ?? null);
   const [tipo, setTipo] = useState(era.tipo ?? "");
 
   const [latI1, setLatI1] = useState<number | null>(era.latI1 ?? null);
@@ -41,7 +40,11 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
       latS2 === null ||
       longS2 === null
     ) {
-      console.error("⚠️ Error: Todos los campos son obligatorios.");
+      addToast({
+        title: "Campos obligatorios",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "warning",
+      });
       return;
     }
 
@@ -64,6 +67,13 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error",
+            description: "No fue posible actualizar la era.",
+            color: "danger",
+          });
         },
       }
     );
@@ -90,9 +100,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           label="Lote"
           placeholder="Selecciona un lote"
           size="sm"
-          selectedKeys={
-            fk_lote !== null ? new Set([fk_lote.toString()]) : new Set()
-          }
+          selectedKeys={fk_lote !== null ? new Set([fk_lote.toString()]) : new Set()}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
             setFkLoteId(Number(selectedKey) || null);

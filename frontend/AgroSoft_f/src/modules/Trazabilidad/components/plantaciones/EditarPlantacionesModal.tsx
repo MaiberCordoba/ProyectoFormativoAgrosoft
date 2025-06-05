@@ -5,6 +5,7 @@ import { Plantaciones } from "../../types";
 import { Select, SelectItem } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import { useGetEras } from "../../hooks/eras/useGetEras";
+import { addToast } from "@heroui/toast";
 
 interface EditarPlantacionModalProps {
   plantacion: Plantaciones;
@@ -12,14 +13,23 @@ interface EditarPlantacionModalProps {
 }
 
 const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacion, onClose }) => {
-  const [fk_Especie, setFk_Especie] = useState<number>(plantacion.fk_Especie);
-  const [fk_Era, setFk_Era] = useState<number>(plantacion.fk_Era);
+  const [fk_Especie, setFk_Especie] = useState<number | null>(plantacion.fk_Especie ?? null);
+  const [fk_Era, setFk_Era] = useState<number | null>(plantacion.fk_Era ?? null);
 
   const { mutate, isPending } = usePatchPlantaciones();
   const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
   const { data: eras, isLoading: isLoadingEras } = useGetEras();
 
   const handleSubmit = () => {
+    if (fk_Especie === null || fk_Era === null) {
+      addToast({
+        title: "Campos obligatorios",
+        description: "Por favor selecciona una especie y una era.",
+        color: "warning",
+      });
+      return;
+    }
+
     mutate(
       {
         id: plantacion.id,
@@ -31,6 +41,13 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error",
+            description: "No fue posible actualizar la plantación.",
+            color: "danger",
+          });
         },
       }
     );
@@ -58,10 +75,10 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
           label="Especie"
           placeholder="Selecciona una especie"
           size="sm"
-          selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
+          selectedKeys={fk_Especie ? new Set([fk_Especie.toString()]) : new Set()}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_Especie(Number(selectedKey));
+            setFk_Especie(Number(selectedKey) || null);
           }}
         >
           {(especies || []).map((especie) => (
@@ -78,10 +95,10 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({ plantacio
           label="Era"
           placeholder="Selecciona una era"
           size="sm"
-          selectedKeys={fk_Era ? [fk_Era.toString()] : []}
+          selectedKeys={fk_Era ? new Set([fk_Era.toString()]) : new Set()}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_Era(Number(selectedKey));
+            setFk_Era(Number(selectedKey) || null);
           }}
         >
           {(eras || []).map((era) => (
