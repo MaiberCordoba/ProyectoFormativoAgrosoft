@@ -75,7 +75,7 @@ class RegistroMasivoUsuariosView(APIView):
                 'apellido': row.get('apellido'),
                 'email': row.get('email'),
                 'username': row.get('username'),
-                'password': row.get('password'),
+                'password': row.get('password'),           
             }
 
             serializer = UsuarioSerializer(data=data)

@@ -3,6 +3,7 @@ import { usePostTipoControl } from "../../hooks/tipoControl/usePostTipoControl";
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { TipoControl } from "../../types";
+import { addToast } from "@heroui/toast"; // ← AÑADIDO
 
 interface CrearTipoControlModalProps {
   onClose: () => void;
@@ -12,19 +13,23 @@ interface CrearTipoControlModalProps {
 export const CrearTipoControlModal = ({ onClose, onCreate }: CrearTipoControlModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  
+
   const { mutate, isPending } = usePostTipoControl();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion) {
-      console.log("Por favor, completa todos los campos.");
+    if (!nombre.trim() || !descripcion.trim()) {
+      addToast({
+        title: "error",
+        description: "rellene campos obligatorios",
+        color: "danger",
+      });
       return;
     }
+
     mutate(
       { id: 0, nombre, descripcion },
       {
         onSuccess: (data) => {
-          // Verificar si onCreate existe antes de llamarla
           onCreate?.(data);
           onClose();
           setNombre("");
@@ -54,6 +59,7 @@ export const CrearTipoControlModal = ({ onClose, onCreate }: CrearTipoControlMod
       <Input
         label="Nombre"
         type="text"
+        size="sm"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
         required
@@ -62,6 +68,7 @@ export const CrearTipoControlModal = ({ onClose, onCreate }: CrearTipoControlMod
       <Input
         label="Descripción"
         type="text"
+        size="sm"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
         required

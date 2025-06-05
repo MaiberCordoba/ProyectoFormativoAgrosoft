@@ -1,54 +1,89 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react"; // Necesitas useEffect para el preview
 import { usePostAfeccion } from "../../hooks/afecciones/usePostAfecciones";
 import ModalComponent from "@/components/Modal";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { useGetTipoAfecciones } from "../../hooks/tiposAfecciones/useGetTipoAfecciones";
 import { CrearTipoAfeccionModal } from "../tipoafecciones/CrearTipoAfeccionModal";
 import { Plus } from "lucide-react";
+import { addToast } from "@heroui/toast";
 
 interface CrearAfeccionModalProps {
   onClose: () => void;
-  onCreate?: () => void; // ✅ Prop opcional añadida
+  onCreate?: () => void;
 }
 
-export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProps) => {
+export const CrearAfeccionModal = ({
+  onClose,
+  onCreate,
+}: CrearAfeccionModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Tipo, setFk_Tipo] = useState<number | null>(null);
   const [img, setImagen] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
-  const { data: tiposPlaga, refetch: refetchTiposPlaga } = useGetTipoAfecciones();
+  const { data: tiposPlaga, refetch: refetchTiposPlaga } =
+    useGetTipoAfecciones();
   const { mutate, isPending } = usePostAfeccion();
 
-  const [mostrarModalTipoAfeccion, setMostrarModalTipoAfeccion] = useState(false);
+  const [mostrarModalTipoAfeccion, setMostrarModalTipoAfeccion] =
+    useState(false);
 
+  // --- Efecto para la vista previa de la imagen ---
+  useEffect(() => {
+    if (img instanceof File) {
+      const objectUrl = URL.createObjectURL(img);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl); // Limpieza de memoria
+    } else {
+      setPreview(null);
+    }
+  }, [img]);
+
+  // --- Lógica de Envío con Validación Simple ---
   const handleSubmit = () => {
-    if (!nombre || !descripcion || !fk_Tipo || !img) {
-      console.log("Por favor, completa todos los campos.");
+    // --- Validación de campos vacíos con un solo 'if' ---
+    if (
+      !nombre.trim() ||
+      !descripcion.trim() ||
+      fk_Tipo === null ||
+      fk_Tipo === undefined ||
+      !img
+    ) {
+      addToast({
+        title: "error",
+        description: "rellene campos obligatorios",
+        color: "danger",
+      });
       return;
     }
 
+    // --- Si la validación pasa, procede con el FormData y la mutación ---
     const formData = new FormData();
     formData.append("nombre", nombre);
     formData.append("descripcion", descripcion);
-    formData.append("img", img);
-    formData.append("fk_Tipo", fk_Tipo.toString());
+    formData.append("img", img as File); // Usamos 'as File' porque la validación de 'if (!img)' ya garantiza que no es null.
+    formData.append("fk_Tipo", fk_Tipo.toString()); // Convertimos a string. Usamos '!' para asegurar que no es null/undefined.
 
     mutate(formData, {
       onSuccess: () => {
         onClose();
-        if (onCreate) onCreate(); // ✅ Se ejecuta si se pasó como prop
+        if (onCreate) onCreate();
+        // Limpiar los estados después del éxito
         setNombre("");
         setDescripcion("");
         setImagen(null);
         setFk_Tipo(null);
-        setPreview(null);
+        // El preview se limpiará automáticamente con setImagen(null) gracias al useEffect
       },
     });
   };
 
-  const handleTipoAfeccionCreado = async (nuevoTipo: { id: number; nombre: string }) => {
+  const handleTipoAfeccionCreado = async (nuevoTipo: {
+    id: number;
+    nombre: string;
+  }) => {
     await refetchTiposPlaga();
     setFk_Tipo(nuevoTipo.id);
     setMostrarModalTipoAfeccion(false);
@@ -65,7 +100,7 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
             variant: "light",
-            onClick: handleSubmit,
+            onClick: handleSubmit, // Tu función handleSubmit original
           },
         ]}
       >
@@ -74,7 +109,7 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          required
+          required // Indicador visual de campo requerido
         />
 
         <Input
@@ -90,16 +125,15 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
             <Select
               label="Tipo de Afectacion"
               placeholder="Selecciona un tipo de afectación"
-              selectedKeys={fk_Tipo ? [fk_Tipo.toString()] : []}
+              selectedKeys={fk_Tipo !== null ? [fk_Tipo.toString()] : []} // Asegura que no sea null
               onSelectionChange={(keys) => {
                 const selectedKey = Array.from(keys)[0];
-                setFk_Tipo(Number(selectedKey));
+                setFk_Tipo(selectedKey ? Number(selectedKey) : null); // Manejar el caso de que la selección sea vacía
               }}
+              required
             >
               {(tiposPlaga || []).map((tipo) => (
-                <SelectItem key={tipo.id.toString()}>
-                  {tipo.nombre}
-                </SelectItem>
+                <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
               ))}
             </Select>
           </div>
@@ -117,7 +151,7 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
 
         <div className="mt-4">
           <Button
-            type="submit"
+            type="button" // Cambiar a 'button' para evitar submit accidental
             variant="solid"
             onPress={() => document.getElementById("imagenAfecciones")?.click()}
           >
@@ -130,13 +164,12 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) {
-                setImagen(file);
-                setPreview(URL.createObjectURL(file));
-              }
+              setImagen(file || null); // Asegurarse de que sea File o null
             }}
             className="hidden"
           />
+          {/* Aquí podrías mostrar un pequeño texto de error si deseas, pero no con isInvalid/errorMessage de HeroUI sin más lógica */}
+          {/* {!img && <p className="text-red-500 text-xs mt-1">Debes seleccionar una imagen.</p>} */}
         </div>
 
         {preview && (
