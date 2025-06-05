@@ -2,8 +2,8 @@ import { useState, ChangeEvent } from "react";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { usePostUsers } from "../hooks/usePostUsers";
-//librerias validacion campos
-import { useForm } from "react-hook-form";
+// Librerías validación campos
+import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,20 +14,21 @@ import {
   identificationSchema,
   passwordSchema,
 } from "@/schemas/validacionesTypes";
+import { addToast } from "@heroui/toast"; // Asumo que esta importación es correcta
 
 const userSchema = z.object({
   id: z.number().optional(),
-  identificacion: identificationSchema, // Usando el esquema reutilizable
-  nombre: requiredString, // Usando el esquema reutilizable
-  apellidos: requiredString, // Usando el esquema reutilizable
-  telefono: phoneSchema, // Usando el esquema reutilizable
-  correoElectronico: emailSchema, // Usando el esquema reutilizable
-  password: passwordSchema, // Usando el esquema reutilizable
-  rol: requiredString, // Usando el esquema reutilizable
-  admin: z.boolean().optional(),
+  identificacion: identificationSchema,
+  nombre: requiredString,
+  apellidos: requiredString,
+  telefono: phoneSchema,
+  correoElectronico: emailSchema,
+  password: passwordSchema,
+  rol: requiredString,
 });
 
 type UserFormInputs = z.infer<typeof userSchema>;
+
 interface CrearUsersModalProps {
   onClose: () => void;
 }
@@ -47,7 +48,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     formState: { errors, isSubmitting },
     setValue,
     watch,
-    reset, // Para resetear el formulario si lo necesitas
+    reset,
   } = useForm<UserFormInputs>({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -58,14 +59,13 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
       correoElectronico: "",
       password: "",
       rol: "",
-      admin: false,
     },
   });
 
   const { mutate, isPending } = usePostUsers();
 
   const currentRol = watch("rol");
-  const currentTelefono = watch("telefono"); // Observar el teléfono para el value prop
+  const currentTelefono = watch("telefono");
 
   const handleTelefonoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -88,16 +88,25 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
     setValue("rol", selectedValue, { shouldValidate: true });
   };
 
-  const onSubmit = (data: UserFormInputs) => {
+  const onErrors = (errors: FieldErrors<UserFormInputs>) => {
+    console.log("Errores de validación detectados:", errors);
+
+    addToast({
+      title: "Campos Incompletos",
+      description:
+        "Por favor, completa todos los campos requeridos correctamente.",
+      color: "danger",
+    });
+  };
+
+  const onSubmit: SubmitHandler<UserFormInputs> = (data) => {
     mutate(data, {
       onSuccess: () => {
-        // Tu lógica de toast de éxito (asumimos que la manejas en usePostUsers)
         onClose();
-        reset(); // Resetea el formulario a los defaultValues o a un estado vacío
+        reset();
       },
       onError: (error) => {
-        // Tu lógica de toast de error (asumimos que la manejas en usePostUsers)
-        console.error("Error al registrar usuario:", error);
+        console.error("Error al registrar usuario (desde mutación):", error);
       },
     });
   };
@@ -112,7 +121,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
           label: isSubmitting || isPending ? "Guardando..." : "Guardar",
           color: "success",
           variant: "solid",
-          onClick: handleSubmit(onSubmit),
+          onClick: handleSubmit(onSubmit, onErrors),
         },
       ]}
     >
@@ -120,7 +129,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
         size="sm"
         isRequired
         label="Identificación"
-        type="number" // O "text" si la identificación puede tener letras
+        type="number"
         {...register("identificacion")}
         isInvalid={!!errors.identificacion}
         errorMessage={errors.identificacion?.message}
@@ -151,7 +160,6 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
         isRequired
         label="Teléfono"
         type="tel"
-        // Asegúrate de que el valor del Input esté siempre controlado por `watch`
         value={currentTelefono}
         {...register("telefono", { onChange: handleTelefonoChange })}
         isInvalid={!!errors.telefono}

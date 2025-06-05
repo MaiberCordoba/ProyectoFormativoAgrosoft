@@ -5,6 +5,11 @@ import { z } from "zod";
 // Validación para un campo de texto requerido
 export const requiredString = z.string().min(1, "Este campo es requerido.");
 
+// Validación para un campo de number requerido
+export const requiredNumber = z
+  .number()
+  .min(1, "Este campo es requerido y debe ser un número válido.");
+
 // Validación para un campo de email
 export const emailSchema = z
   .string()

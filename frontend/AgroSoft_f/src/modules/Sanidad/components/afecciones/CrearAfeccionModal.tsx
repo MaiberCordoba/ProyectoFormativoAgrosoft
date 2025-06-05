@@ -11,17 +11,22 @@ interface CrearAfeccionModalProps {
   onCreate?: () => void; // ✅ Prop opcional añadida
 }
 
-export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProps) => {
+export const CrearAfeccionModal = ({
+  onClose,
+  onCreate,
+}: CrearAfeccionModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fk_Tipo, setFk_Tipo] = useState<number | null>(null);
   const [img, setImagen] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
-  const { data: tiposPlaga, refetch: refetchTiposPlaga } = useGetTipoAfecciones();
+  const { data: tiposPlaga, refetch: refetchTiposPlaga } =
+    useGetTipoAfecciones();
   const { mutate, isPending } = usePostAfeccion();
 
-  const [mostrarModalTipoAfeccion, setMostrarModalTipoAfeccion] = useState(false);
+  const [mostrarModalTipoAfeccion, setMostrarModalTipoAfeccion] =
+    useState(false);
 
   const handleSubmit = () => {
     if (!nombre || !descripcion || !fk_Tipo || !img) {
@@ -48,7 +53,10 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
     });
   };
 
-  const handleTipoAfeccionCreado = async (nuevoTipo: { id: number; nombre: string }) => {
+  const handleTipoAfeccionCreado = async (nuevoTipo: {
+    id: number;
+    nombre: string;
+  }) => {
     await refetchTiposPlaga();
     setFk_Tipo(nuevoTipo.id);
     setMostrarModalTipoAfeccion(false);
@@ -97,9 +105,7 @@ export const CrearAfeccionModal = ({ onClose, onCreate }: CrearAfeccionModalProp
               }}
             >
               {(tiposPlaga || []).map((tipo) => (
-                <SelectItem key={tipo.id.toString()}>
-                  {tipo.nombre}
-                </SelectItem>
+                <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
               ))}
             </Select>
           </div>
