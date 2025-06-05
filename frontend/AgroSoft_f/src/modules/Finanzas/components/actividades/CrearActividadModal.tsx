@@ -100,7 +100,6 @@ export const CrearActividadesModal = ({
           setTitulo("");
           setDescripcion("");
           setFecha("");
-          setMensajeError("");
         },
       }
     );
