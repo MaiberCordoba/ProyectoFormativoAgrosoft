@@ -5,5 +5,13 @@ class tipoPlaga(models.Model):
     descripcion = models.TextField()
     img = models.ImageField(upload_to='tipoPlaga/', null=True, blank=True)
 
+
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
+        if self.descripcion:
+            self.descripcion = self.descripcion.capitalize()
+        super().save(*args,**kwargs)
+
     def __str__(self):
         return self.nombre
