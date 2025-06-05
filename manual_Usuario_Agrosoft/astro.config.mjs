@@ -43,13 +43,14 @@ export default defineConfig({
 					label: 'Sanidad',
 					items:[
 						{ label: 'introduccion', slug: 'sanidad/introduccion' },
-						{ label: 'Afecciones en cultivo', slug: 'sanidad/afecciones' },
-						{ label: 'Controles', slug: 'sanidad/controles' },
-						{ label: 'afecciones', slug: 'sanidad/plagas' },	
-						{ label: 'Productos para el Control', slug: 'sanidad/productoscontrol' },
-						{ label: 'Tipo Control', slug: 'sanidad/tipocontrol' },
 						{ label: 'Tipo afeccion', slug: 'sanidad/tipoplaga' },
-						{ label: 'Uso Productos para el Control', slug: 'sanidad/usoproductoscontrol' },
+						{ label: 'afecciones', slug: 'sanidad/plagas' },	
+						{ label: 'Afecciones en cultivo', slug: 'sanidad/afecciones' },
+						{ label: 'Tipo Control', slug: 'sanidad/tipocontrol' },
+						{ label: 'Controles', slug: 'sanidad/controles' },
+						
+						
+					
 					],
 				},
         {
