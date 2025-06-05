@@ -1,16 +1,13 @@
 import { Calendar, dateFnsLocalizer, View } from "react-big-calendar";
-import { format } from "date-fns/format";
-import { parse } from "date-fns/parse";
-import { startOfWeek } from "date-fns/startOfWeek";
-import { getDay } from "date-fns/getDay";
+import { format, parse, startOfWeek, getDay } from "date-fns";
 import { es } from "date-fns/locale";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "@/modules/Trazabilidad/components/calendario/calendario.css";
+
 import { useEffect, useState } from "react";
 import { Actividades } from "@/modules/Finanzas/types";
 import { Controles } from "@/modules/Sanidad/types";
-
-import "@/modules/Trazabilidad/components/calendario/calendario.css";
 
 const locales = { es };
 
@@ -20,7 +17,6 @@ const localizer = dateFnsLocalizer({
   startOfWeek,
   getDay,
   locales,
-  locale: es,
 });
 
 const messages = {
@@ -33,7 +29,7 @@ const messages = {
   day: "Día",
   agenda: "Agenda",
   date: "Fecha",
-  time: "",
+  time: "Hora",
   event: "Actividad",
   noEventsInRange: "No hay actividades en este rango",
   showMore: (total: number) => `+ Ver más (${total})`,
@@ -58,9 +54,7 @@ export default function CalendarioActividades() {
       return;
     }
 
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
+    const headers = { Authorization: `Bearer ${token}` };
 
     const fetchActividades = fetch("http://127.0.0.1:8000/api/actividades/", { headers })
       .then((res) => {
@@ -69,7 +63,7 @@ export default function CalendarioActividades() {
       })
       .then((data: Actividades[]) =>
         data.map((actividad) => ({
-          title: `Actividad: ${actividad.titulo} ${actividad.usuario ? "- " + actividad.usuario.nombre : ""}`,
+          title: `Actividad: ${actividad.titulo}${actividad.usuario ? ` - ${actividad.usuario.nombre}` : ""}`,
           start: new Date(actividad.fecha + "T12:00:00"),
           end: new Date(actividad.fecha + "T12:00:00"),
           tipo: "actividad" as const,
@@ -83,7 +77,7 @@ export default function CalendarioActividades() {
       })
       .then((data: Controles[]) =>
         data.map((control) => ({
-          title: `Control: ${control.descripcion} ${control.usuario ? "- " + control.usuario.nombre : ""}`,
+          title: `Control: ${control.descripcion}${control.usuario ? ` - ${control.usuario.nombre}` : ""}`,
           start: new Date(control.fechaControl + "T12:00:00"),
           end: new Date(control.fechaControl + "T12:00:00"),
           tipo: "control" as const,
@@ -102,8 +96,8 @@ export default function CalendarioActividades() {
       });
   }, []);
 
-  const handleSelectSlot = (slotInfo: { start: Date }) => {
-    setFechaSeleccionada(slotInfo.start);
+  const handleSelectSlot = ({ start }: { start: Date }) => {
+    setFechaSeleccionada(start);
     setVistaActual("agenda");
   };
 
@@ -112,53 +106,28 @@ export default function CalendarioActividades() {
     setVistaActual("agenda");
   };
 
-  const eventosFiltrados = fechaSeleccionada
-    ? eventos.filter(
-        (e) =>
-          e.start.toDateString() === fechaSeleccionada.toDateString()
-      )
+  const eventosFiltrados = vistaActual === "agenda" && fechaSeleccionada
+    ? eventos.filter((e) => e.start.toDateString() === fechaSeleccionada.toDateString())
     : eventos;
 
-  const containerStyle: React.CSSProperties = {
-    backgroundColor: "white",
-    padding: "25px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    maxWidth: "1000px",
-    margin: "0 auto",
-    marginBottom: "25px",
-  };
-
-  const titleStyle: React.CSSProperties = {
-    backgroundColor: "#327D45",
-    color: "white",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    textAlign: "center",
-    marginBottom: "20px",
-    fontSize: "22px",
-    fontWeight: "bold",
-  };
-
   const CustomEvent = ({ event }: { event: EventoCalendario }) => {
-    const baseStyle: React.CSSProperties = {
+    const style: React.CSSProperties = {
+      backgroundColor: event.tipo === "actividad" ? "#2D7844" : "#2D4878",
       color: "white",
-      borderRadius: "10px",
+      borderRadius: "8px",
       padding: "4px 8px",
-      fontSize: "0.8rem",
-      fontWeight: 500,
+      fontSize: "0.75rem",
+      fontWeight: 600,
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      backgroundColor: event.tipo === "actividad" ? "#327D45" : "#325D7D",
     };
-
-    return <div style={baseStyle}>{event.title}</div>;
+    return <div style={style}>{event.title}</div>;
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={titleStyle}>Calendario de Actividades y Controles</div>
+    <div className="calendario-contenedor">
+      <div className="calendario-titulo">Calendario de Actividades y Controles</div>
       <Calendar
         localizer={localizer}
         events={eventosFiltrados}
@@ -169,7 +138,10 @@ export default function CalendarioActividades() {
         style={{ height: 700 }}
         views={["month", "agenda"]}
         view={vistaActual}
-        onView={(view) => setVistaActual(view)}
+        onView={(view) => {
+          setVistaActual(view);
+          if (view === "month") setFechaSeleccionada(null);
+        }}
         date={fechaSeleccionada ?? new Date()}
         onNavigate={(date) => setFechaSeleccionada(date)}
         selectable
@@ -184,8 +156,8 @@ export default function CalendarioActividades() {
         }}
         dayPropGetter={() => ({
           style: {
-            backgroundColor: "#f8fbff",
-            border: "1px solid #e6e6e6",
+            backgroundColor: "#f8fafc",
+            border: "1px solid #e2e8f0",
           },
         })}
       />

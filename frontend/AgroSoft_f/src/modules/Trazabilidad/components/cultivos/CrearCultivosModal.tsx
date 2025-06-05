@@ -31,7 +31,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
       addToast({
         title: "Campos obligatorios",
         description: "Por favor completa todos los campos.",
-        color: "danger",
+        color: "warning",
       });
       return;
     }
@@ -92,6 +92,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
+          size="sm"
         />
 
         <div className="flex items-center gap-2 mt-4">
@@ -102,6 +103,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
               <Select
                 label="Especie"
                 placeholder="Selecciona una especie"
+                size="sm" 
                 selectedKeys={fk_EspecieId ? [fk_EspecieId.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0];

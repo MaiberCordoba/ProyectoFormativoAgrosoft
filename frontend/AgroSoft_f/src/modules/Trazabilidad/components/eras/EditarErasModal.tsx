@@ -4,6 +4,7 @@ import { usePatchEras } from "../../hooks/eras/usePatchEras";
 import { Eras } from "../../types";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetLotes } from "../../hooks/lotes/useGetLotes";
+import { addToast } from "@heroui/toast";
 
 interface EditarEraModalProps {
   era: Eras;
@@ -11,9 +12,7 @@ interface EditarEraModalProps {
 }
 
 const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
-  const [fk_lote, setFkLoteId] = useState<number | null>(
-    era.fk_lote?.id ?? null
-  );
+  const [fk_lote, setFkLoteId] = useState<number | null>(era.fk_lote?.id ?? null);
   const [tipo, setTipo] = useState(era.tipo ?? "");
 
   const [latI1, setLatI1] = useState<number | null>(era.latI1 ?? null);
@@ -41,7 +40,11 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
       latS2 === null ||
       longS2 === null
     ) {
-      console.error("⚠️ Error: Todos los campos son obligatorios.");
+      addToast({
+        title: "Campos obligatorios",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "warning",
+      });
       return;
     }
 
@@ -64,6 +67,13 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
       {
         onSuccess: () => {
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error",
+            description: "No fue posible actualizar la era.",
+            color: "danger",
+          });
         },
       }
     );
@@ -89,9 +99,8 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         <Select
           label="Lote"
           placeholder="Selecciona un lote"
-          selectedKeys={
-            fk_lote !== null ? new Set([fk_lote.toString()]) : new Set()
-          }
+          size="sm"
+          selectedKeys={fk_lote !== null ? new Set([fk_lote.toString()]) : new Set()}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
             setFkLoteId(Number(selectedKey) || null);
@@ -105,6 +114,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
 
       <Input
         label="Tipo"
+        size="sm"
         value={tipo}
         onChange={(e) => setTipo(e.target.value)}
         required
@@ -116,12 +126,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latI1 ?? "").toString()}
           onChange={(e) => setLatI1(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Inf. Izquierda"
           type="number"
           value={(longI1 ?? "").toString()}
           onChange={(e) => setLongI1(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -129,12 +141,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latS1 ?? "").toString()}
           onChange={(e) => setLatS1(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Sup.Izquierda"
           type="number"
           value={(longS1 ?? "").toString()}
           onChange={(e) => setLongS1(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -142,12 +156,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latI2 ?? "").toString()}
           onChange={(e) => setLatI2(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Inf. Derecha"
           type="number"
           value={(longI2 ?? "").toString()}
           onChange={(e) => setLongI2(Number(e.target.value))}
+          size="sm"
         />
 
         <Input
@@ -155,12 +171,14 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
           type="number"
           value={(latS2 ?? "").toString()}
           onChange={(e) => setLatS2(Number(e.target.value))}
+          size="sm"
         />
         <Input
           label="Lon. Sup. Derecha"
           type="number"
           value={(longS2 ?? "").toString()}
           onChange={(e) => setLongS2(Number(e.target.value))}
+          size="sm"
         />
       </div>
     </ModalComponent>

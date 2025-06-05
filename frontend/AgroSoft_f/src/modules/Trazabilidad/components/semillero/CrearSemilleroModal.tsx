@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { usePostSemilleros } from "../../hooks/semilleros/usePostSemilleros";
-import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos"; // Cambiado
+import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
-import { CrearCultivoModal } from "../cultivos/CrearCultivosModal"; // Cambiado
+import { CrearCultivoModal } from "../cultivos/CrearCultivosModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearSemilleroModalProps {
   onClose: () => void;
@@ -24,7 +25,11 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
 
   const handleSubmit = () => {
     if (!unidades || !fechasiembra || !fechaestimada || !fk_Cultivo) {
-      console.log("Por favor, completa todos los campos.");
+      addToast({
+        title: "Campos obligatorios",
+        description: "Por favor, completa todos los campos antes de guardar.",
+        color: "warning",
+      });
       return;
     }
 

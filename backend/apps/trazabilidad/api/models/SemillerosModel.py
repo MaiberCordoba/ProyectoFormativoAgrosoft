@@ -6,6 +6,6 @@ class Semilleros(models.Model):
     fechasiembra = models.DateField()
     fechaestimada = models.DateField()
     fk_Cultivo = models.ForeignKey(Cultivos,on_delete=models.SET_NULL,null=True)
-    
+
     def __str__(self):
         return ('Semillero del cultivo:'+str(self.fk_Cultivo))

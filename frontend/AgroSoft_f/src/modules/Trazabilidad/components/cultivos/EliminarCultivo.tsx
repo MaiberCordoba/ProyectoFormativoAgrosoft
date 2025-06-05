@@ -52,7 +52,7 @@ const EliminarCultivoModal: React.FC<EliminarCultivoModalProps> = ({
         {cultivo ? (
           <>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              ¿Eliminar el cultivo "{cultivo.nombre}" con ID "{cultivo.id}"?
+              ¿Eliminar el cultivo "{cultivo.nombre}"?
             </h3>
             <p className="text-gray-500 mb-4 max-w-md">
               Esta acción eliminará permanentemente el cultivo del sistema.
