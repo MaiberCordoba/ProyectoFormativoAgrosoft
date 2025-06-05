@@ -12,5 +12,4 @@ class UsuarioCreationForm(UserCreationForm):
             "apellidos",
             "telefono",
             "correoElectronico",
-            "admin",
         ]
