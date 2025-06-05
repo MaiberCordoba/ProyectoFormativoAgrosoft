@@ -18,8 +18,6 @@ class Eras(models.Model):
     longS2 = models.FloatField(null=True, unique=True)
 
     def save(self, *args, **kwargs):
-        if self.fk_lote:
-            self.fk_lote = self.fk_lote.capitalize()
         if self.tipo:
             self.tipo = self.tipo.capitalize()
         super().save(*args, **kwargs)

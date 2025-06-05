@@ -10,15 +10,6 @@ class Plantaciones(models.Model):
     fk_Cultivo = models.ForeignKey(Cultivos, on_delete=models.SET_NULL,null=True)
     fk_Era = models.ForeignKey(Eras, on_delete=models.SET_NULL,null=True)
     creado = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        if self.fk_semillero:
-            self.fk_semillero = self.fk_semillero.capitalize()
-        if self.fk_Cultivo:
-            self.fk_Cultivo = self.fk_Cultivo.capitalize()
-        if self.fk_Era:
-            self.fk_Era = self.fk_Era.capitalize()
-        super().save(*args, **kwargs)
     
     def __str__(self):
         info = []
