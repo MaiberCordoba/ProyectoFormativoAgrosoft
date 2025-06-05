@@ -57,12 +57,14 @@ const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClos
     >
       <Input
         value={nombre}
+        size="sm"
         label="Nombre desecho"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
       <Textarea
         value={descripcion}
+        size="sm"
         label="Descripción"
         type="text"
         onChange={(e) => setDescripcion(e.target.value)}
@@ -74,6 +76,7 @@ const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClos
       ) : (
         <Select
             label="Plantacion"
+            size="sm"
             placeholder="Selecciona una Plantacion"
             selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} // HeroUI espera un array de strings
             onSelectionChange={(keys) => {
@@ -95,6 +98,7 @@ const EditarDesechoModal: React.FC<EditarDesechoModalProps> = ({ desecho, onClos
       ) : (
         <Select
           label="Tipo de Desecho"
+          size="sm"
           placeholder="Selecciona un tipo de desecho"
           selectedKeys={[fk_TipoDesecho.toString()]}  // HeroUI espera un array de strings
           onSelectionChange={(keys) => {

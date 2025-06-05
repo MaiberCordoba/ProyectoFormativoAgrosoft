@@ -13,7 +13,6 @@ class UsuarioAdmin(UserAdmin):
         "nombre",
         "apellidos",
         "telefono",
-        "admin",
         "rol",
         
     ]
@@ -27,7 +26,6 @@ class UsuarioAdmin(UserAdmin):
                     "nombre",
                     "apellidos",
                     "telefono",
-                    "admin",
                     "rol",
                     "password",
                 )
@@ -46,7 +44,6 @@ class UsuarioAdmin(UserAdmin):
                     "nombre",
                     "apellidos",
                     "telefono",
-                    "admin",
                     "rol",
                     "password1",
                     "password2",

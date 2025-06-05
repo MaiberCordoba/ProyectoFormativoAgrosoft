@@ -15,9 +15,9 @@ class ControleslModelViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        print(f"[DEBUG] Usuario autenticado: {user}, admin: {user.admin}")  # Añadido para depuración
-        # Si el usuario tiene admin=True, devuelve todos los controles
-        if user.admin:  # Cambiado de is_superuser/is_staff a admin
+        print(f"[DEBUG] Usuario autenticado: {user}, rol: {user.rol}")  # Añadido para depuración
+        # Si el usuario tiene rol admin, instructo o pasante, devuelve todos los controles
+        if (user.rol == "admin" or user.rol == "instructor" or user.rol == "pasante"): 
             qs = Controles.objects.all()
             print(f"[DEBUG] Admin - controles totales: {qs.count()}")
             return qs

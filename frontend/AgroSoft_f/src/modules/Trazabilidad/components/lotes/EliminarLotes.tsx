@@ -44,7 +44,7 @@ const EliminarLoteModal: React.FC<EliminarLoteModalProps> = ({ lote, isOpen, onC
         </div>
 
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          ¿Eliminar el lote con ID "{lote.id}"?
+          ¿Eliminar "{lote.nombre}"?
         </h3>
 
         <p className="text-gray-500 mb-4 max-w-md">

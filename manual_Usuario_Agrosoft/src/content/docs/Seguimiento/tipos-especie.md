@@ -14,7 +14,7 @@ Para gestionar los tipos de especie, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Tipos de Especie**.
 
 ## Página de tipos de especie
-![Captura de pantalla tipos de especie](../../../../public/tiposespecie.png)
+![Captura de pantalla tipos de especie](../../../assets/cultivos/paginaTiposEspecie.png)
 
 ### **Registrar un nuevo Tipo de Especie**
 Para agregar un nuevo tipo de especie:
@@ -22,7 +22,7 @@ Para agregar un nuevo tipo de especie:
 2. Dentro de la pantalla de **Tipos de Especie**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 ## Agregar tipo de especie
-![Captura de pantalla agregar tipo de especie](../../../../public/agregarTiposespecie.png)
+![Captura de pantalla agregar tipo de especie](../../../assets/cultivos/registrarTipoEspecie.png)
    - **Nombre:** Escribe un nombre para el tipo de especie.
    - **Descripción:** (Opcional) Agrega información relevante sobre el tipo de especie.
 4. Haz clic en **"Guardar"** para registrar el tipo de especie.
@@ -30,11 +30,11 @@ Para agregar un nuevo tipo de especie:
 ### **Consultar, editar y eliminar tipos de especie existentes**
 - Para ver la información de un tipo de especie, usa la lista disponible en la sección.
 ## Lista de tipos de especie
-![Captura de pantalla](../../../../public/listatiposespecie.png)
+![Captura de pantalla](../../../assets/cultivos/listaTiposEspecie.png)
 - Para **editar** un tipo de especie, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
-![Captura de pantalla](../../../../public/editartiposespecie.png)
+![Captura de pantalla](../../../assets/cultivos/editarTiposEspecie.png)
 - Para **eliminar** un tipo de especie, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
    - Si no deseas eliminar el tipo de especie, haz clic en **Cerrar**.
 ## Ventana eliminar
-![Captura de pantalla](../../../../public/eliminartiposespecie.png)
+![Captura de pantalla](../../../assets/cultivos/eliminarTiposEspecie.png)

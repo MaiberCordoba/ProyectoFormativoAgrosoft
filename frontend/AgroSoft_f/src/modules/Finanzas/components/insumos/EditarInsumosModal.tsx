@@ -77,12 +77,14 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       <Input
         label="Nombre Insumo"
         value={nombre}
+        size="sm"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
         required
       />
       <Input
         label="Descripción"
+        size="sm"
         value={descripcion}
         type="text"
         onChange={(e) => setDescripcion(e.target.value)}
@@ -90,6 +92,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       />
       <Input
         label="Precio unidad insumo"
+        size="sm"
         value={precio}
         type="text"
         onChange={(e) => {
@@ -100,6 +103,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       />
       <Input
         label="Compuesto Activo"
+        size="sm"
         value={compuestoActivo}
         type="text"
         onChange={(e) => setCompuestoActivo(e.target.value)}
@@ -108,6 +112,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       <Input
         label="Unidades compradas"
         value={unidades}
+        size="sm"
         type="text"
         onChange={(e) => {
           const valor = e.target.value;
@@ -117,6 +122,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       />
       <Input
         label="Contenido del insumo"
+        size="sm"
         value={contenido}
         type="text"
         onChange={(e) => {
@@ -131,6 +137,7 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
       ) : (
         <Select
           label="Unidad de Medida"
+          size="sm"
           placeholder="Selecciona una unidad"
           selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
           onSelectionChange={(keys) => {

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchTiempoActividadControl } from '../../api/tiempoActividadControlApi';
 import { TiempoActividadControl } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchTiempoActividadControl = () => {
   const queryClient = useQueryClient();

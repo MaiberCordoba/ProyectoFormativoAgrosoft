@@ -5,6 +5,7 @@ import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearTiposEspecieModal } from "../tiposEspecie/CrearTiposEspecieModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearEspecieModalProps {
   onClose: () => void;
@@ -30,9 +31,14 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
   const { data: tiposEspecie, isLoading: isLoadingTiposEspecie, refetch: refetchTipos } = useGetTiposEspecie();
 
   const handleSubmit = () => {
+    // Validación antes de mutar
     if (!nombre || !descripcion || !img || !tiempocrecimiento || !fk_tipoespecie) {
-      console.log("Por favor, completa todos los campos.");
-      return;
+     addToast({
+        title: "Campos Obligatiorios",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "danger",
+      });
+      return; 
     }
 
     const formData = new FormData();
@@ -46,12 +52,20 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
       onSuccess: (data) => {
         onCreate(data);
         onClose();
+        // reset form
         setNombre("");
         setDescripcion("");
         setImg(null);
         setPreview(null);
         setTiempocrecimiento("");
         setFk_tipoespecie(null);
+      },
+      onError: () => {
+        addToast({
+          title: "Error",
+          description: "No fue posible registrar la nueva especie.",
+          color: "danger",
+        });
       },
     });
   };
@@ -83,6 +97,7 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
+          size="sm"
         />
 
         <Input
@@ -91,11 +106,13 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
+          size="sm"
         />
 
         <Select
           label="Tiempo de Crecimiento"
           placeholder="Selecciona una opción"
+          size="sm"
           selectedKeys={tiempocrecimiento ? [tiempocrecimiento] : []}
           onSelectionChange={(keys) => {
             const selected = Array.from(keys)[0];
@@ -115,6 +132,7 @@ export const CrearEspecieModal = ({ onClose, onCreate }: CrearEspecieModalProps)
               <Select
                 label="Tipo de Especie"
                 placeholder="Selecciona un tipo"
+                size="sm"
                 selectedKeys={fk_tipoespecie ? [fk_tipoespecie.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];

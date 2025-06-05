@@ -17,7 +17,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
   const [fk_Insumo, setFk_Insumo] = useState<number>(usoInsumo.fk_Insumo || 0);
   const [fk_Actividad, setFk_Actividad] = useState<number>(usoInsumo.fk_Actividad || 0);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number>(usoInsumo.fk_UnidadMedida || 0);
-  const [cantidadProducto, setCantidadProducto] = useState<number>(usoInsumo.cantidadProducto);
+  const [cantidadProducto, setCantidadProducto] = useState(usoInsumo.cantidadProducto);
   const [fk_Control, setFk_Control] = useState<number>(usoInsumo.fk_Control || 0);
   const [error,setError] = useState("")
 
@@ -33,14 +33,19 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       setError("Puede elegir una actividad o un control, no ambos")
       return
     }
+    if (cantidadProducto < 0){
+      setError("La cantidad no puede ser negativa")
+      return
+    }
+    setError("")
     mutate(
       {
         id: usoInsumo.id,
         data: {
-          fk_Insumo,
-          fk_Actividad,
-          fk_Control,
-          fk_UnidadMedida,
+          fk_Insumo: fk_Insumo || null,
+          fk_Actividad: fk_Actividad || null,
+          fk_Control: fk_Control || null,
+          fk_UnidadMedida: fk_UnidadMedida || null,
           cantidadProducto,
         },
       },
@@ -69,7 +74,8 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       <p className="text-red-500 text-sm mb-2">{error}</p>
       <Input
         label="Cantidad Usada"
-        value={cantidadProducto}
+        size="sm"
+        value={cantidadProducto.toString()}
         type="number"
         onChange={(e) => setCantidadProducto(Number(e.target.value))}
         required
@@ -82,6 +88,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
         <Select
           label="Insumo"
           placeholder="Selecciona un insumo"
+          size="sm"
           selectedKeys={[fk_Insumo.toString()]}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
@@ -100,6 +107,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       ) : (
         <Select
           label="Actividad"
+          size="sm"
           placeholder="Selecciona una actividad"
           selectedKeys={[fk_Actividad.toString()]}
           onSelectionChange={(keys) => {
@@ -117,6 +125,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       ) : (
         <Select
           label="Control"
+          size="sm"
           placeholder="Selecciona un control"
           selectedKeys={[fk_Control.toString()]}
           onSelectionChange={(keys) => {
@@ -136,6 +145,7 @@ const EditarUsoInsumoModal: React.FC<EditarUsoInsumoModalProps> = ({ usoInsumo, 
       ) : (
         <Select
           label="Unidad de Medida"
+          size="sm"
           placeholder="Selecciona una unidad"
           selectedKeys={[fk_UnidadMedida.toString()]}
           onSelectionChange={(keys) => {

@@ -48,7 +48,7 @@ const EliminarSemilleroModal: React.FC<EliminarSemilleroModalProps> = ({
         </div>
 
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          ¿Eliminar el semillero con ID "{semillero.id}"?
+          ¿Eliminar el semillero del cultivo "{semillero.cultivo.nombre}"?
         </h3>
 
         <p className="text-gray-500 mb-4 max-w-md">

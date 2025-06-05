@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchUnidadesTiempo } from '../../api/unidadesTiempoApi';
 import { UnidadesTiempo } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchUnidadesTiempo = () => {
   const queryClient = useQueryClient();

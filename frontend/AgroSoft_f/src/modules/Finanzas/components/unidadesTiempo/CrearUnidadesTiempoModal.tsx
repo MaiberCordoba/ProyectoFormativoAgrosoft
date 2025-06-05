@@ -3,6 +3,7 @@ import { usePostUnidadesTiempo } from "../../hooks/unidadesTiempo/usePostUnidade
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { UnidadesTiempo } from "../../types";
+import { addToast } from "@heroui/toast";
 
 interface CrearUnidadesTiempoModalProps {
   onClose: () => void;
@@ -21,8 +22,20 @@ export const CrearUnidadesTiempoModal = ({
 
   const handleSubmit = () => {
     if (!nombre  || !equivalenciaMinutos) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
+    }
+    if (equivalenciaMinutos < 0){
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
+      return
     }
     setError("")
     mutate(
@@ -53,8 +66,8 @@ export const CrearUnidadesTiempoModal = ({
       ]}
     >
       <p className="text-red-500 text-sm mb-2">{error}</p>
-      <Input label="Nombre" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-      <Input label="equivalenciaMinutos" type="number" value={equivalenciaMinutos.toString()} onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))} required />
+      <Input label="Nombre" type="text" size="sm" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+      <Input label="equivalencia Minutos" size="sm" type="number" value={equivalenciaMinutos.toString()} onChange={(e) => setEquivalenciaMinutos(Number(e.target.value))} required />
     </ModalComponent>
   );
 };

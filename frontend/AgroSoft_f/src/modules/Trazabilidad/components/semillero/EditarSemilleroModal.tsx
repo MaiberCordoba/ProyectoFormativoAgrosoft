@@ -4,13 +4,17 @@ import { usePatchSemilleros } from "../../hooks/semilleros/usePatchSemilleros";
 import { Semillero } from "../../types";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
+import { addToast } from "@heroui/toast";
 
 interface EditarSemilleroModalProps {
   semillero: Semillero;
   onClose: () => void;
 }
 
-const EditarSemilleroModal: React.FC<EditarSemilleroModalProps> = ({ semillero, onClose }) => {
+const EditarSemilleroModal: React.FC<EditarSemilleroModalProps> = ({
+  semillero,
+  onClose,
+}) => {
   const [unidades, setUnidades] = useState<number>(semillero.unidades);
   const [fechasiembra, setFechaSiembra] = useState<string>(semillero.fechasiembra);
   const [fechaestimada, setFechaEstimada] = useState<string>(semillero.fechaestimada);
@@ -20,6 +24,20 @@ const EditarSemilleroModal: React.FC<EditarSemilleroModalProps> = ({ semillero, 
   const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
 
   const handleSubmit = () => {
+    if (
+      unidades <= 0 ||
+      !fechasiembra.trim() ||
+      !fechaestimada.trim() ||
+      !fk_especie
+    ) {
+      addToast({
+        title: "Campos incompletos",
+        description: "Por favor completa todos los campos antes de guardar.",
+        color: "danger",
+      });
+      return;
+    }
+
     mutate(
       {
         id: semillero.id,
@@ -32,7 +50,19 @@ const EditarSemilleroModal: React.FC<EditarSemilleroModalProps> = ({ semillero, 
       },
       {
         onSuccess: () => {
+          addToast({
+            title: "Actualización exitosa",
+            description: "El semillero fue actualizado correctamente.",
+            color: "success",
+          });
           onClose();
+        },
+        onError: () => {
+          addToast({
+            title: "Error al actualizar",
+            description: "No fue posible actualizar el semillero.",
+            color: "danger",
+          });
         },
       }
     );

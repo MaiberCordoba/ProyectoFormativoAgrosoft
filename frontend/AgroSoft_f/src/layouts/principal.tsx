@@ -87,7 +87,7 @@ const Principal: React.FC = () => {
           transition-all duration-300
           ${isSidebarOpen ? "md:ml-48" : "md:ml-20"}
           min-w-0
-          bg-gray-150
+        bg-[#f2f8f9]
         `}
       >
         <main className="flex-1 pb-16 relative">

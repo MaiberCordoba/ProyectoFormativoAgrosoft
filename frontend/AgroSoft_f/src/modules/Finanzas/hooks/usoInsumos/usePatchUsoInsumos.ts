@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchUsosInsumos } from '../../api/usoInsumosApi';
 import { UsosInsumos } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchUsosInsumos = () => {
   const queryClient = useQueryClient();
