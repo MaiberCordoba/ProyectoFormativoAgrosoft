@@ -62,7 +62,7 @@ export function UsersList() {
       correoElectronico: "",
       admin: false,
       estado: "",
-      rol: "",
+      rol:"",
     });
   };
 
@@ -115,7 +115,7 @@ export function UsersList() {
   if (error) return <p>Error al cargar los usuarios</p>;
 
   return (
-    <div className="p-4 space-y-4 relative">
+    <div className="p-4 space-y-4">
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}
@@ -152,54 +152,53 @@ export function UsersList() {
             );
           }
           return (
-            <button
-              onClick={() => setShowPreview(true)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              title="Ver reporte"
-            >
-              <Download className="h-5 w-5 text-red-600" />
-            </button>
-          );
-        }}
-      />
+            <>
+              {/* Botón para mostrar previsualización */}
+              <button
+                onClick={() => setShowPreview(true)}
+                className="p-2 rounded-full hover:bg-gray-200 transition-colors mr-2"
+                title="Mostrar previsualización"
+              >
+                👁️
+              </button>
 
-      {/* Vista previa del PDF */}
-      {showPreview && (
-        <div className="border rounded mt-4 relative">
-          <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b">
-            <h2 className="text-lg font-semibold">Vista previa del reporte</h2>
-            <div className="flex space-x-2">
               <PDFDownloadLink
-                document={<ReportePdfUsuarios data={reporteData || []} />}
+                document={<ReportePdfUsuarios data={reporteData} />}
                 fileName="reporte_usuarios.pdf"
+                style={{ textDecoration: "none" }}
               >
                 {({ loading }) => (
                   <button
-                    className="flex items-center px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    title="Descargar reporte"
                     disabled={loading}
                   >
                     {loading ? (
-                      <span className="flex items-center">
-                        <Download className="h-4 w-4 mr-1 animate-spin" />
-                        Generando...
-                      </span>
+                      <Download className="h-4 w-4 animate-spin text-blue-500" />
                     ) : (
-                      <span className="flex items-center text-black">
-                        <Download className="h-4 w-4 mr-1" />
-                        Descargar
-                      </span>
+                      <Download className="h-5 w-5 text-red-600" />
                     )}
                   </button>
                 )}
               </PDFDownloadLink>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
+            </>
+          );
+        }}
+      />
+
+      {/* Mostrar previsualización solo cuando showPreview sea true */}
+      {showPreview && (
+        <div className="border rounded mt-4 relative">
+          <h2 className="text-sm font-semibold px-2 py-1 bg-gray-100 flex justify-between items-center">
+            Vista previa del PDF
+            <button
+              onClick={() => setShowPreview(false)}
+              className="text-red-500 font-bold px-2 hover:text-red-700"
+              title="Cerrar previsualización"
+            >
+              ❌
+            </button>
+          </h2>
           <PDFViewer width="100%" height={600}>
             <ReportePdfUsuarios data={reporteData || []} />
           </PDFViewer>

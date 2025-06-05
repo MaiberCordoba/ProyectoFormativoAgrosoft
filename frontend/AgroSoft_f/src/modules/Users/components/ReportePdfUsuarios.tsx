@@ -1,5 +1,5 @@
-import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
-import { PdfReportes } from "@/components/ui/Reportes";
+import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
+import { PdfReportes } from '@/components/ui/Reportes';
 
 interface ReporteUsuarios {
   total_usuarios: number;
@@ -10,15 +10,15 @@ interface ReporteUsuarios {
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontFamily: "Helvetica",
+    fontFamily: 'Helvetica',
   },
   paragraph: {
     fontSize: 10,
-    textAlign: "justify",
+    textAlign: 'justify',
     lineHeight: 1.5,
     marginVertical: 15,
     paddingHorizontal: 10,
-    fontFamily: "Helvetica",
+    fontFamily: 'Helvetica',
   },
   table: {
     width: "auto",
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
     padding: 5,
   },
   tableCol: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   tableCellHeader: {
     margin: "auto",
     fontSize: 12,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   tableCell: {
     margin: "auto",
@@ -65,12 +65,11 @@ export const ReportePdfUsuarios = ({ data }: { data: ReporteUsuarios }) => (
       <PdfReportes title="REPORTE DE USUARIOS REGISTRADOS" />
 
       <Text style={styles.paragraph}>
-        El presente documento contiene el reporte consolidado de usuarios del
-        sistema Agrosoft, registrados en el Centro de Formación Agroindustrial
-        del SENA Regional Huila. Los datos reflejan el estado actual de los
-        usuarios, discriminando entre cuentas activas e inactivas. Esta
-        información es válida para procesos dentro y fuera del centro de
-        formación, según se requiera.
+        El presente documento contiene el reporte consolidado de usuarios del sistema Agrosoft,
+        registrados en el Centro de Formación Agroindustrial del SENA Regional Huila. 
+        Los datos reflejan el estado actual de los usuarios, discriminando entre cuentas 
+        activas e inactivas. Esta información es válida para procesos dentro y fuera del 
+        centro de formación, según se requiera.
       </Text>
 
       <View style={styles.table}>
