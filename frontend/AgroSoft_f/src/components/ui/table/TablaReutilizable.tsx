@@ -24,6 +24,7 @@ interface TablaReutilizableProps<T extends { [key: string]: any }> {
   placeholderBusqueda?: string;
   initialVisibleColumns?: string[]; // Nueva prop
   renderReporteAction?: (data: T[]) => React.ReactNode;
+  botonExtra? : React.ReactNode;
 }
 
 export const TablaReutilizable = <T extends { [key: string]: any }>({
@@ -37,6 +38,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   onRegistroMasivo = undefined,
   placeholderBusqueda = "Buscar...",
   initialVisibleColumns = columnas.map(c => c.uid), // Por defecto todas visibles
+  botonExtra,
 }: TablaReutilizableProps<T>) => {
   // Hooks existentes
   const {
@@ -78,6 +80,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   }, [datosPaginados, sortDescriptor]);
 
   return (
+    
     <div className="w-full max-w-full flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
       {/* Barra superior de controles - ESTRUCTURA CORREGIDA */}
       <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
@@ -113,6 +116,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           </div>
 
           <div className="flex flex-wrap gap-2 [&>button]:flex-1 [&>button]:sm:flex-none">
+          {botonExtra && <div>{botonExtra}</div>} 
           <Button
             color="success"
             size="sm"

@@ -17,12 +17,12 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
   tiempoActividadControl,
   onClose,
 }) => {
-  const [tiempo, setTiempo] = useState<number>(tiempoActividadControl.tiempo);
-  const [valorTotal, setValorTotal] = useState<number>(tiempoActividadControl.valorTotal);
+  const [tiempo, setTiempo] = useState(tiempoActividadControl.tiempo);
   const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number>(tiempoActividadControl.fk_unidadTiempo);
   const [fk_actividad, setFk_Actividad] = useState<number>(tiempoActividadControl.fk_actividad);
   const [fk_control, setFk_Control] = useState<number>(tiempoActividadControl.fk_control);
   const [fk_salario, setFk_Salario] = useState<number>(tiempoActividadControl.fk_salario);
+  const [error, setError]=useState("")
 
   const { data: actividades } = useGetActividades();
   const { data: unidadesTiempo } = useGetUnidadesTiempo();
@@ -31,9 +31,13 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
   const { mutate, isPending } = usePatchTiempoActividadControl();
 
   const handleSubmit = () => {
-    if (!tiempo || !valorTotal || !fk_unidadTiempo || !fk_salario) {
+    if (!tiempo || !fk_unidadTiempo || !fk_salario) {
       console.log("Por favor, completa todos los campos.");
       return;
+    }
+    if (tiempo < 0){
+      setError("Ingrese un tiempo valido")
+      return
     }
 
     mutate(
@@ -41,7 +45,6 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         id: tiempoActividadControl.id,
         data: {
           tiempo,
-          valorTotal,
           fk_unidadTiempo,
           fk_actividad,
           fk_control,
@@ -70,23 +73,19 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         },
       ]}
     >
+      <p className='text-red-500 text-sm '>{error}</p>
       <Input
-        value={tiempo}
+        value={tiempo.toString()}
+        size="sm"
         label="Tiempo"
         type="number"
         onChange={(e) => setTiempo(Number(e.target.value))}
         required
       />
-      <Input
-        value={valorTotal}
-        label="Valor Total"
-        type="number"
-        onChange={(e) => setValorTotal(Number(e.target.value))}
-        required
-      />
 
       <Select
         label="Unidad de Tiempo"
+        size="sm"
         selectedKeys={fk_unidadTiempo ? [fk_unidadTiempo.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
@@ -100,6 +99,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Actividad"
+        size="sm"
         selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
@@ -113,6 +113,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Control"
+        size="sm"
         selectedKeys={fk_control ? [fk_control.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
@@ -126,6 +127,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
 
       <Select
         label="Salario"
+        size="sm"
         selectedKeys={fk_salario ? [fk_salario.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];

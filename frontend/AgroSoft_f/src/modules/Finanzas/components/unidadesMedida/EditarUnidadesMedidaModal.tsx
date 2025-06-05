@@ -56,17 +56,20 @@ const EditarUnidadesMedidaModal: React.FC<EditarUnidadesMedidaModalProps> = ({
       <Input
         value={nombre}
         label="Nombre"
+        size="sm"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
       />
       <Input
         value={abreviatura}
         label="Abreviatura"
+        size="sm"
         type="text"
         onChange={(e) => setAbreviatura(e.target.value)}
       />
       <Select
         label="Tipo de unidad"
+        size="sm"
         value={tipo}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0] as "MASA" | "VOLUMEN";
@@ -78,6 +81,7 @@ const EditarUnidadesMedidaModal: React.FC<EditarUnidadesMedidaModalProps> = ({
       </Select>
       <Input
         value={equivalenciabase.toString()}
+        size="sm"
         label="Equivalencia en gramos (g)"
         type="number"
         onChange={(e) => setEquivalenciabase(Number(e.target.value))}

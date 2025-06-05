@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TiposDesechos } from "../../types";
 import { deleteTiposDesechos } from "../../api/tiposDesechosApi";
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const useDeleteTiposDesechos = () => {
     const queryClient = useQueryClient();

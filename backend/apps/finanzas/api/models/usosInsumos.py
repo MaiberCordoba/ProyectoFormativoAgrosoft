@@ -11,7 +11,7 @@ class UsosInsumos(models.Model):
     fk_Control = models.ForeignKey(Controles, on_delete=models.SET_NULL, null=True, blank=True)
     cantidadProducto = models.IntegerField()
     fk_UnidadMedida = models.ForeignKey(UnidadesMedida, on_delete=models.SET_NULL, null=True)
-    costoUsoInsumo = models.FloatField(null=True, blank=True)
+    costoUsoInsumo = models.IntegerField(null=True, blank=True)
 
     def clean(self):
         if self.fk_Actividad and self.fk_Control:

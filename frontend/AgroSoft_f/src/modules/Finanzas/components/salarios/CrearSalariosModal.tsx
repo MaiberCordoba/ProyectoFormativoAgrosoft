@@ -3,6 +3,7 @@ import { usePostSalario } from "../../hooks/salarios/usePostSalarios";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { Salarios } from "../../types";
+import { addToast } from "@heroui/toast";
 
 interface CrearSalariosModalProps {
   onClose: () => void;
@@ -23,12 +24,20 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
     const horasNum = Number(horas);
 
     if (!nombre || monto === "" || horas === "" || !estado) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
 
     if (isNaN(montoNum) || isNaN(horasNum) || montoNum <= 0 || horasNum <= 0) {
-      setError("Monto y horas deben ser números mayores que cero.");
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
       return;
     }
 
@@ -73,6 +82,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Input
         label="Nombre Salario"
+        size="sm"
         type="text"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
@@ -81,6 +91,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Input
         label="Monto(valor)"
+        size="sm"
         type="number"
         value={monto}
         onChange={(e) => setMonto(e.target.value)}
@@ -89,6 +100,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Input
         label="Horas de trabajo(día)"
+        size="sm"
         type="number"
         value={horas}
         onChange={(e) => setHoras(e.target.value)}
@@ -97,6 +109,7 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
 
       <Select
         label="Estado"
+        size="sm"
         value={estado}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0] as "activo" | "inactivo";

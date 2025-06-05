@@ -9,6 +9,7 @@ import { CrearTiposDesechosModal } from "../tiposDesechos/CrearTiposDesechosModa
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { Plantaciones } from "@/modules/Trazabilidad/types";
 import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearDesechosModalProps {
   onClose: () => void;
@@ -32,7 +33,11 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Plantacion || !fk_TipoDesecho || !nombre || !descripcion) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"por favor,completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
     setError("")
@@ -83,6 +88,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
         <Input
           label="Nombre desecho"
           type="text"
+          size="sm"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           required
@@ -91,6 +97,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
         <Input
           label="Descripción"
           type="text"
+          size="sm"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
@@ -104,6 +111,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
             <div className="flex-1">
             <Select
             label="Plantacion"
+            size="sm"
             placeholder="Selecciona una Plantacion"
             selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} // HeroUI espera un array de strings
             onSelectionChange={(keys) => {
@@ -137,6 +145,7 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
             <div className="flex-1">
               <Select
                 label="Tipo de desecho"
+                size="sm"
                 placeholder="Selecciona un tipo de desecho"
                 selectedKeys={fk_TipoDesecho ? [fk_TipoDesecho.toString()] : []} // HeroUI espera un array de strings
                 onSelectionChange={(keys) => {

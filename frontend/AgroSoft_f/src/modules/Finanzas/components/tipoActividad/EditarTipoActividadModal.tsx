@@ -51,6 +51,7 @@ const EditarTipoActividadModal: React.FC<EditarTipoActividadModalProps> = ({ tip
       <Input
         value={nombre}
         label="Nombre"
+        size="sm"
         type="text"
         onChange={(e) => setNombre(e.target.value)}
         required
