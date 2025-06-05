@@ -6,8 +6,8 @@ class TiposEspecie(models.Model):
     img = models.ImageField(upload_to="tiposespecie/", null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.titulo:
-            self.titulo = self.titulo.capitalize()
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
         if self.descripcion:
             self.descripcion = self.descripcion.capitalize()
         super().save(*args, **kwargs)

@@ -17,8 +17,6 @@ class Especies(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.fk_tipoespecie:
-            self.fk_tipoespecie = self.fk_tipoespecie.capitalize()
         if self.descripcion:
             self.descripcion = self.descripcion.capitalize()
         if self.nombre:
