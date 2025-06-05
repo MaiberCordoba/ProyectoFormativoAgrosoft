@@ -3,6 +3,7 @@ import { usePostTiposDesechos } from "../../hooks/tiposDesechos/usePostTiposDese
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { TiposDesechos } from "../../types";
+import { addToast } from "@heroui/toast";
 
 interface CrearTiposDesechosModalProps {
   onClose: () => void;
@@ -18,7 +19,11 @@ export const CrearTiposDesechosModal = ({ onClose }: CrearTiposDesechosModalProp
 
   const handleSubmit = () => {
     if (!nombre || !descripcion) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
     setError("")

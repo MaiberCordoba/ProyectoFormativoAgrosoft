@@ -5,6 +5,7 @@ import { MovimientoInventario } from "../../types";
 import { usePostMovimiento } from "../../hooks/movimientoInventario/usePostMovimientos";
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
+import { addToast } from "@heroui/toast";
 
 interface CrearMovimientoInventarioModalProps {
   onClose: () => void;
@@ -26,7 +27,11 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
     const cantidad = Number(unidades);
 
     if (isNaN(cantidad) || cantidad <= 0) {
-      setError("Por favor, ingresa una cantidad válida mayor a 0.");
+      addToast({
+        title:"Valores invalidos",
+        description:"por favor,ingresa valores positivos.",
+        color:"danger"
+      })
       return;
     }
 
@@ -34,12 +39,20 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
     const tieneHerramienta = fk_Herramienta !== null;
 
     if (tieneInsumo && tieneHerramienta) {
-      setError("Solo se puede registrar un movimiento para insumo o herramienta, no ambos.");
+      addToast({
+        title:"Error",
+        description:"Solo se puede registrar un movimiento para insumo o herramienta, no ambos.",
+        color:"danger"
+      })
       return;
     }
 
     if (!tieneInsumo && !tieneHerramienta) {
-      setError("Debes asociar el movimiento a un insumo o herramienta.");
+      addToast({
+        title:"Error",
+        description:"Debes asociar el movimiento a un insumo o herramienta.",
+        color:"danger"
+      })
       return;
     }
 

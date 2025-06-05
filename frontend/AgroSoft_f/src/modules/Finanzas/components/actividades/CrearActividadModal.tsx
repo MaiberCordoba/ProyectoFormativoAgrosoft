@@ -2,6 +2,7 @@ import { useState } from "react";
 import { usePostActividades } from "../../hooks/actividades/usePostActividades";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
@@ -31,8 +32,6 @@ export const CrearActividadesModal = ({
   const [fecha, setFecha] = useState("");
   const [fk_Plantacion, setFkPlantacion] = useState<number | null>(null);
 
-  //manejo de errores
-  const [mensajeError, setMensajeError] = useState("");
   //Creacion de modales
   const [tipoActividadModal, setTipoActividadModal] = useState(false);
   const [usuarioModal, setUsuarioModal] = useState(false);
@@ -71,16 +70,22 @@ export const CrearActividadesModal = ({
       !descripcion ||
       !fecha
     ) {
-      setMensajeError("Por favor, completa todos los campos.");
-
+      addToast({
+        title : "Campos requeridos",
+        description : "Por favor, completa todos los campos.",
+        color : "danger"
+      })
       return;
     }
 
     if (fk_Cultivo && fk_Plantacion) {
-      setMensajeError("No puede elegir cultivo y plantación al mismo tiempo")
+      addToast({
+        title: "Error",
+        description:"No puede elegir cultivo y plantación al mismo tiempo",
+        color:"danger"
+      })
       return
     }
-    setMensajeError("");
 
     mutate(
       { fk_Cultivo, fk_Plantacion, fk_Usuario, fk_TipoActividad,titulo, descripcion, fecha },
@@ -139,9 +144,6 @@ export const CrearActividadesModal = ({
           },
         ]}
       >
-        {mensajeError && (
-          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
-        )}
 
         <Input
           label="Titulo"
@@ -150,7 +152,7 @@ export const CrearActividadesModal = ({
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
           required
-        />
+          />
 
         <Input
           label="Descripción"
@@ -159,7 +161,7 @@ export const CrearActividadesModal = ({
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
-        />
+          />
         <Input
           label="Fecha Asignacion"
           type="date"
@@ -168,7 +170,7 @@ export const CrearActividadesModal = ({
           onChange={(e) => setFecha(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
           required
-        />
+          />
 
         {isLoadingCultivos ? (
           <p>Cargando cultivos...</p>
@@ -217,7 +219,7 @@ export const CrearActividadesModal = ({
                   const selectedKey = Array.from(keys)[0];
                   setFkPlantacion(selectedKey ? Number(selectedKey) : null);
                 }}
-              >
+                >
                 {(plantacion || []).map((p) => (
                   <SelectItem 
                   key={p.id.toString()}
@@ -240,7 +242,7 @@ export const CrearActividadesModal = ({
               title="Crear nueva plantacion"
               radius="full"
               size="sm"
-            >
+              >
               <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
@@ -274,7 +276,7 @@ export const CrearActividadesModal = ({
               title="Crear Usuario"
               radius="full"
               size="sm"
-            >
+              >
               <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
@@ -296,7 +298,7 @@ export const CrearActividadesModal = ({
                   const selectedKey = Array.from(keys)[0];
                   setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
                 }}
-              >
+                >
                 {(tiposActividad || []).map((tipoActividad) => (
                   <SelectItem key={tipoActividad.id.toString()}>
                     {tipoActividad.nombre}
@@ -310,7 +312,7 @@ export const CrearActividadesModal = ({
               title="Crear nuevo tipo de actividad"
               radius="full"
               size="sm"
-            >
+              >
               <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>

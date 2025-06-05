@@ -13,6 +13,7 @@ import { CrearActividadesModal } from "../actividades/CrearActividadModal";
 import { CrearControlModal } from "@/modules/Sanidad/components/controles/CrearControlesModal";
 import { CrearSalariosModal } from "../salarios/CrearSalariosModal";
 import { CrearUnidadesTiempoModal } from "../unidadesTiempo/CrearUnidadesTiempoModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearTiempoActividadControlModalProps {
   onClose: () => void;
@@ -42,15 +43,27 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
     if (
       !tiempo || !fk_unidadTiempo || !fk_salario
     ) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos",
+        color:"danger"
+      })
       return;
     }
     if (fk_control && fk_actividad){
-      setError("Solo puede elegir una actividad o un contro,no ambas.")
+      addToast({
+        title:"Error",
+        description:"Solo puede elegir una actividad o un contro,no ambas.",
+        color:"danger"
+      })
       return
     }
     if(tiempo < 0){
-      setError("Ingrese un timepo valido")
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos",
+        color:"danger"
+      })
       return
     }
     setError("")

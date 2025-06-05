@@ -7,6 +7,7 @@ import { Herramientas } from "../../types";
 import { Lotes } from "@/modules/Trazabilidad/types";
 import { Plus } from "lucide-react";
 import { CrearLoteModal } from "@/modules/Trazabilidad/components/lotes/CrearLotesModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearHerramientasModalProps {
   onClose: () => void;
@@ -37,7 +38,11 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
   const handleSubmit = () => {
     if (!fk_Lote || !nombre.trim() || !descripcion.trim() || unidades.trim() === "" || precio.trim() === "") {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"por favor,completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
 

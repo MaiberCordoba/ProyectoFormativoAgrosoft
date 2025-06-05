@@ -14,6 +14,7 @@ import { Controles } from "@/modules/Sanidad/types";
 import { CrearControlModal } from "@/modules/Sanidad/components/controles/CrearControlesModal";
 import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
 import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
+import { addToast } from "@heroui/toast";
 
 interface CrearUsoInsumoModalProps {
   onClose: () => void;
@@ -46,15 +47,28 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
       !fk_UnidadMedida ||
       cantidadProducto === null
     ) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
     if (fk_Actividad && fk_Control) {
+      addToast({
+        title:"Error",
+        description:"Solo puede elegir una actividad o un control,pero no ambos.",
+        color:"danger"
+      })
       setError("Solo puede elegir una actividad o un control,pero no ambos.")
       return
     }
     if (cantidadProducto < 0){
-      setError("Ingresa una cantidad valida no negativa")
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
       return
     }
     setError("")

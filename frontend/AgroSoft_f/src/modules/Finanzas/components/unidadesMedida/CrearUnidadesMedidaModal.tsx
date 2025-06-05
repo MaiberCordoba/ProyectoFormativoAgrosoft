@@ -3,6 +3,7 @@ import { usePostUnidadesMedida } from "../../hooks/unidadesMedida/usePostUnidade
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { UnidadesMedida } from "../../types";
+import { addToast } from "@heroui/toast";
 
 interface CrearUnidadesMedidaModalProps {
   onClose: () => void;
@@ -19,8 +20,20 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
   const { mutate, isPending } = usePostUnidadesMedida();
 
   const handleSubmit = () => {
-    if (!nombre || !abreviatura || !tipo || equivalenciabase <= 0) {
-      setError("Por favor, completa todos los campos.");
+    if (!nombre || !abreviatura || !tipo || equivalenciabase == 0) {
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
+      return;
+    }
+    if (equivalenciabase < 0) {
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
       return;
     }
     setError("")

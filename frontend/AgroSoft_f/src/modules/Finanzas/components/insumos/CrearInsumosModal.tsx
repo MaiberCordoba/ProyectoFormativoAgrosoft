@@ -6,6 +6,7 @@ import { useGetUnidadesMedida } from "@/modules/Finanzas/hooks/unidadesMedida/us
 import { Insumos, UnidadesMedida } from "../../types";
 import { Plus } from "lucide-react";
 import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearInsumosModalProps {
   onClose: () => void;
@@ -40,7 +41,11 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
       unidades === "" ||
       fk_UnidadMedida === null
     ) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+              title:"Campos requeridos",
+              description:"por favor,completa todos los campos.",
+              color:"danger"
+            })
       return;
     }
 
@@ -48,10 +53,15 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
     const contenidoNumero = Number(contenido)
     const unidadesNumero = Number(unidades)
 
-    if (precioNumero < 0 || contenidoNumero < 0 || unidadesNumero < 0){
-      setError("Por favor ingresa valores positivos.")
-    }
-
+    if (precioNumero < 0 || contenidoNumero < 0 || unidadesNumero < 0)
+      {
+      addToast({
+        title:"Valores invalidos",
+        description:"por favor,ingresa valores positivos.",
+        color:"danger"
+      })
+      return
+      }
     setError("")
 
       const formData = new FormData()

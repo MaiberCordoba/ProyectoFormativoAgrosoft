@@ -9,6 +9,7 @@ import { Cosechas, UnidadesMedida, Ventas } from "../../types";
 import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
 import { Plus } from "lucide-react";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { addToast } from "@heroui/toast";
 
 interface CrearVentasModalProps {
   onClose: () => void;
@@ -46,7 +47,11 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Cosecha || !valorTotal || !fk_UnidadMedida || !cantidad) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
 
@@ -54,7 +59,11 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
     const unidadSeleccionada = unidadesMedida?.find(u => u.id === fk_UnidadMedida);
 
     if (!cosechaSeleccionada || !unidadSeleccionada) {
-      setError("Cosecha o unidad de medida no válidas.");
+      addToast({
+        title:"Error",
+        description:"Cosecha o unidad de medida no válidas.",
+        color:"danger"
+      })
       return;
     }
 
@@ -65,7 +74,11 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       return;
     }
     if (cantidad < 0 || descuento < 0){
-      setError("No se permiten valores negativos")
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
       return
     }
 

@@ -8,6 +8,7 @@ import { Actividades, Herramientas, UsosHerramientas } from "../../types";
 import { Plus } from "lucide-react";
 import { CrearActividadesModal } from "../actividades/CrearActividadModal";
 import { CrearHerramientasModal } from "../herramientas/CrearHerramientasModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearUsoHerramientaModalProps {
   onClose: () => void;
@@ -29,11 +30,19 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
   const handleSubmit = () => {
     if (!fk_Herramienta || !fk_Actividad || !unidades) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
     if(unidades < 0){
-      setError("Por favor ingresa una cantidad valida")
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
       return
     }
     const herramientaSeleccionada = herramientas?.find(h => h.id === fk_Herramienta);

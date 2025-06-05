@@ -3,6 +3,7 @@ import { usePostUnidadesTiempo } from "../../hooks/unidadesTiempo/usePostUnidade
 import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { UnidadesTiempo } from "../../types";
+import { addToast } from "@heroui/toast";
 
 interface CrearUnidadesTiempoModalProps {
   onClose: () => void;
@@ -21,11 +22,19 @@ export const CrearUnidadesTiempoModal = ({
 
   const handleSubmit = () => {
     if (!nombre  || !equivalenciaMinutos) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
     if (equivalenciaMinutos < 0){
-      setError("Ingresa una equivalencia valida")
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
       return
     }
     setError("")

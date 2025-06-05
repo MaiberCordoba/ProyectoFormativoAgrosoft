@@ -9,6 +9,7 @@ import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaM
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { Plantaciones } from "@/modules/Trazabilidad/types";
 import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearCosechasModalProps {
   onClose: () => void;
@@ -32,7 +33,11 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
 
   const handleSubmit = () => {
     if (!fk_Plantacion || cantidad === "" || !fk_UnidadMedida || !fecha || precioUnidad === "") {
-      setMensajeError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
 
