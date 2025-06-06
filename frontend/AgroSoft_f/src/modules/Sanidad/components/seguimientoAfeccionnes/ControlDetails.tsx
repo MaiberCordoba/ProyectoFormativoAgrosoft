@@ -1,7 +1,7 @@
-import { ControlDetails } from "../../types";
 import { useState } from "react";
-import { PDFDownloadLink, Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
-import image from '@/modules/Sanidad/components/seguimientoAfeccionnes/image.png';
+import { PDFDownloadLink, Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
+import { Download } from "lucide-react";
+import { ControlDetails } from "../../types";
 
 interface Props {
   controles: ControlDetails[];
@@ -16,23 +16,23 @@ const estadoLabels: Record<string, string> = {
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontFamily: 'Helvetica',
+    fontFamily: "Helvetica",
     fontSize: 11,
     lineHeight: 1.5,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
-    textAlign: 'center',
-    color: '#2e86de',
+    textAlign: "center",
+    color: "#2e86de",
   },
   paragraph: {
     fontSize: 11,
     marginBottom: 20,
     paddingHorizontal: 5,
-    color: '#333',
+    color: "#333",
   },
   table: {
     display: "table",
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
-    backgroundColor: '#d1e7ff',
+    backgroundColor: "#d1e7ff",
     borderColor: "#aaa",
     paddingVertical: 6,
     paddingHorizontal: 8,
@@ -72,13 +72,13 @@ const styles = StyleSheet.create({
   },
   tableCellHeader: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: '#1b4f72',
+    fontWeight: "bold",
+    color: "#1b4f72",
     textAlign: "center",
   },
   tableCell: {
     fontSize: 11,
-    color: '#222',
+    color: "#222",
     textAlign: "left",
   },
 });
@@ -88,8 +88,8 @@ const ReportePdfControles = ({ controles }: { controles: ControlDetails[] }) => 
     <Page style={styles.page}>
       <Text style={styles.title}>REPORTE DE CONTROLES DE AFECCIONES</Text>
       <Text style={styles.paragraph}>
-        Este documento contiene el reporte consolidado de controles realizados sobre las afecciones detectadas en cultivos.
-        Se presenta información relevante para el seguimiento y gestión de las acciones realizadas.
+        Este documento contiene el reporte consolidado de controles realizados sobre las afecciones detectadas en
+        cultivos. Se presenta información relevante para el seguimiento y gestión de las acciones realizadas.
       </Text>
 
       <View style={styles.table}>
@@ -199,7 +199,7 @@ const ListaControles = ({ controles }: Props) => {
         </div>
       </div>
 
-      {/* Botón de descarga PDF con imagen */}
+      {/* Botón de descarga PDF con ícono Download */}
       <div className="flex justify-end mb-6">
         <PDFDownloadLink
           document={<ReportePdfControles controles={controlesFiltrados} />}
@@ -209,12 +209,14 @@ const ListaControles = ({ controles }: Props) => {
         >
           {({ loading }) =>
             controlesFiltrados.length > 0 && (
-              <img
-                src={image}
-                alt="Descargar PDF"
-                className={`w-12 h-12 object-contain cursor-pointer ${loading ? "opacity-50" : ""}`}
+              <div
+                className={`cursor-pointer p-2 rounded-full hover:bg-blue-100 transition-all ${
+                  loading ? "opacity-50 pointer-events-none" : ""
+                }`}
                 title={loading ? "Generando PDF..." : "Descargar PDF"}
-              />
+              >
+                <Download className="w-6 h-6 text-blue-600" />
+              </div>
             )
           }
         </PDFDownloadLink>
@@ -249,8 +251,7 @@ const ListaControles = ({ controles }: Props) => {
                   <strong>Afección:</strong> {control.afeccion?.plagas?.nombre ?? "No disponible"}
                 </p>
                 <p>
-                  <strong>Tipo de afección:</strong>{" "}
-                  {control.afeccion?.plagas?.tipoPlaga?.nombre ?? "No disponible"}
+                  <strong>Tipo de afección:</strong> {control.afeccion?.plagas?.tipoPlaga?.nombre ?? "No disponible"}
                 </p>
                 <p>
                   <strong>Cultivo:</strong> {control.afeccion?.plantaciones?.cultivo?.nombre ?? "No disponible"}

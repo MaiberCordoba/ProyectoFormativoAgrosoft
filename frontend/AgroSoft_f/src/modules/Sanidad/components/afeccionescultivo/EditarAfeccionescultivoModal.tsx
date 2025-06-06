@@ -72,6 +72,7 @@ const EditarAfeccionCultivoModal: React.FC<EditarAfeccionCultivoModalProps> = ({
         <Select
           label="Plantación"
           placeholder="Selecciona una plantación"
+          size="sm"
           selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
           onSelectionChange={(keys) => setFk_Plantacion(Number(Array.from(keys)[0]))}
         >
@@ -90,6 +91,7 @@ const EditarAfeccionCultivoModal: React.FC<EditarAfeccionCultivoModalProps> = ({
         <Select
           label="Tipo de Plaga"
           placeholder="Selecciona un tipo de plaga"
+          size="sm"
           selectedKeys={fk_Plaga ? [fk_Plaga.toString()] : []}
           onSelectionChange={(keys) => setFk_Plaga(Number(Array.from(keys)[0]))}
         >
@@ -103,6 +105,7 @@ const EditarAfeccionCultivoModal: React.FC<EditarAfeccionCultivoModalProps> = ({
       <Select
         label="Estado de la Afección"
         placeholder="Selecciona el estado"
+        size="sm"
         selectedKeys={estado ? [estado] : []}
         onSelectionChange={(keys) => setEstado(Array.from(keys)[0] as keyof typeof EstadoAfeccion)}
       >
@@ -115,6 +118,7 @@ const EditarAfeccionCultivoModal: React.FC<EditarAfeccionCultivoModalProps> = ({
       <Input
         label="Fecha del Encuentro"
         type="date"
+        size="sm"
         value={fechaEncuentro}
         onChange={(e) => setFechaEncuentro(e.target.value)}
         required

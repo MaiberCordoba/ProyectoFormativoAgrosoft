@@ -43,10 +43,11 @@ const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClos
       footerButtons={[{ label: isPending ? "Guardando..." : "Guardar", onClick: handleSubmit }]}
     >{/*
       <Input label="Fecha" type="date" value={fechaControl} onChange={(e) => setFechaControl(e.target.value)} />*/}
-      <Textarea label="Descripción" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+      <Textarea label="Descripción"  size="sm"  value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
 
       <Select
         label="Afección"
+        size="sm"
         selectedKeys={[fk_Afeccion.toString()]}
         onSelectionChange={(keys) => setFk_Afeccion(Number(Array.from(keys)[0]))}
       >
@@ -57,6 +58,7 @@ const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClos
 
       <Select
         label="Tipo de Control"
+        size="sm"
         selectedKeys={[fk_TipoControl.toString()]}
         onSelectionChange={(keys) => setFk_TipoControl(Number(Array.from(keys)[0]))}
       >
@@ -67,6 +69,7 @@ const EditarControlModal: React.FC<EditarControlModalProps> = ({ control, onClos
 
       <Select
         label="Usuario"
+        size="sm"
         selectedKeys={[fk_Usuario.toString()]}
         onSelectionChange={(keys) => setFk_Usuario(Number(Array.from(keys)[0]))}
       >

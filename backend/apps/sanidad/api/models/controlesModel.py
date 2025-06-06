@@ -10,6 +10,11 @@ class Controles(models.Model):
 
     descripcion = models.TextField()
     fechaControl = models.DateField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.descripcion:
+            self.descripcion = self.descripcion.capitalize()
+        super().save(*args,**kwargs)
     
 
     def __str__(self):
