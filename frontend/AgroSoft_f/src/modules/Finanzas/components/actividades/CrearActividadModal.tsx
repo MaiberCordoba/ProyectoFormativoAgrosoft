@@ -63,32 +63,34 @@ export const CrearActividadesModal = ({
   const { mutate, isPending } = usePostActividades();
 
   const handleSubmit = () => {
-    if (
-      !fk_Usuario ||
-      !fk_TipoActividad ||
-      !titulo ||
-      !descripcion ||
-      !fecha
-    ) {
+    if (!fk_Usuario || !fk_TipoActividad || !titulo || !descripcion || !fecha) {
       addToast({
-        title : "Campos requeridos",
-        description : "Por favor, completa todos los campos.",
-        color : "danger"
-      })
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger",
+      });
       return;
     }
 
     if (fk_Cultivo && fk_Plantacion) {
       addToast({
         title: "Error",
-        description:"No puede elegir cultivo y plantación al mismo tiempo",
-        color:"danger"
-      })
-      return
+        description: "No puede elegir cultivo y plantación al mismo tiempo",
+        color: "danger",
+      });
+      return;
     }
 
     mutate(
-      { fk_Cultivo, fk_Plantacion, fk_Usuario, fk_TipoActividad,titulo, descripcion, fecha },
+      {
+        fk_Cultivo,
+        fk_Plantacion,
+        fk_Usuario,
+        fk_TipoActividad,
+        titulo,
+        descripcion,
+        fecha,
+      },
 
       {
         onSuccess: () => {
@@ -100,7 +102,6 @@ export const CrearActividadesModal = ({
           setTitulo("");
           setDescripcion("");
           setFecha("");
-          setMensajeError("");
         },
       }
     );
@@ -144,7 +145,6 @@ export const CrearActividadesModal = ({
           },
         ]}
       >
-
         <Input
           label="Titulo"
           type="text"
@@ -152,7 +152,7 @@ export const CrearActividadesModal = ({
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
           required
-          />
+        />
 
         <Input
           label="Descripción"
@@ -161,7 +161,7 @@ export const CrearActividadesModal = ({
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           required
-          />
+        />
         <Input
           label="Fecha Asignacion"
           type="date"
@@ -170,7 +170,7 @@ export const CrearActividadesModal = ({
           onChange={(e) => setFecha(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
           required
-          />
+        />
 
         {isLoadingCultivos ? (
           <p>Cargando cultivos...</p>
@@ -219,22 +219,21 @@ export const CrearActividadesModal = ({
                   const selectedKey = Array.from(keys)[0];
                   setFkPlantacion(selectedKey ? Number(selectedKey) : null);
                 }}
-                >
+              >
                 {(plantacion || []).map((p) => (
-                  <SelectItem 
-                  key={p.id.toString()}
-                  textValue={`Cultivo:${p.cultivo.nombre} - Era:${p.eras.tipo}`}
+                  <SelectItem
+                    key={p.id.toString()}
+                    textValue={`Cultivo:${p.cultivo?.nombre} - Era:${p.eras.tipo}`}
                   >
                     <div className="flex flex-col">
-                      <span className="font-semibold">Cultivo:{p.cultivo.nombre}</span>
+                      <span className="font-semibold">
+                        Cultivo:{p.cultivo?.nombre}
+                      </span>
                       <span className="font-semibold">Era: {p.eras.tipo}</span>
                     </div>
-                  
                   </SelectItem>
                 ))}
               </Select>
-
-              
             </div>
             <Button
               onPress={() => setPlantacionModal(true)}
@@ -242,7 +241,7 @@ export const CrearActividadesModal = ({
               title="Crear nueva plantacion"
               radius="full"
               size="sm"
-              >
+            >
               <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
@@ -276,7 +275,7 @@ export const CrearActividadesModal = ({
               title="Crear Usuario"
               radius="full"
               size="sm"
-              >
+            >
               <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
@@ -298,7 +297,7 @@ export const CrearActividadesModal = ({
                   const selectedKey = Array.from(keys)[0];
                   setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
                 }}
-                >
+              >
                 {(tiposActividad || []).map((tipoActividad) => (
                   <SelectItem key={tipoActividad.id.toString()}>
                     {tipoActividad.nombre}
@@ -312,7 +311,7 @@ export const CrearActividadesModal = ({
               title="Crear nuevo tipo de actividad"
               radius="full"
               size="sm"
-              >
+            >
               <Plus className="w-5 h-5 text-white" />
             </Button>
           </div>
