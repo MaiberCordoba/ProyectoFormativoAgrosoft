@@ -10,7 +10,6 @@ import { DetalleCultivoModal } from "../components/finanzasCultivos/DetalleCulti
 import HistorialBeneficioCostoModal from "../components/finanzasCultivos/HistorialBeneficioCostoModal";
 import { ResumenEconomicoListado } from "../types";
 import { useState } from "react";
-import { Button } from "@heroui/react";
 
 const ResumenFinancieroPage = () => {
   // Obtener datos
@@ -49,7 +48,7 @@ const ResumenFinancieroPage = () => {
     nombre?: string;
   } | null>(null);
 
-  // Nuevo handler
+  // Handler para abrir historial
   const handleOpenHistorial = (cultivo?: ResumenEconomicoListado) => {
     if (cultivo) {
       setSelectedCultivoHistorial({
@@ -57,41 +56,45 @@ const ResumenFinancieroPage = () => {
         nombre: cultivo.nombre,
       });
     } else {
-      setSelectedCultivoHistorial({}); // Modal en modo global
+      setSelectedCultivoHistorial({});
     }
     setShowHistorialGlobal(true);
   };
 
   return (
-    <div className="pt-0 px-4 py-2">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold ">Resumen Financiero de Cultivos</h1>
-        <Button className="mt-4" color="success" size="sm" onPress={() => handleOpenHistorial()}>
-          Ver Historial General
-        </Button>
+    <div className="pt-0 px-6 py-4 max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Resumen Financiero de Cultivos
+        </h1>
       </div>
 
-      {/* Filtros */}
-      <FiltrosCultivos
-        tiposEspecie={tiposEspecie || []}
-        especies={especies || []}
-        tipoEspecieId={tipoEspecieId}
-        especieId={especieId}
-        fechaInicio={fechaInicio}
-        fechaFin={fechaFin}
-        onTipoEspecieChange={handleTipoEspecieChange}
-        onEspecieChange={handleEspecieChange}
-        onFechaChange={handleFechaChange}
-        onReset={resetFiltros}
-      />
+      {/* Filtros y botón */}
+      <div className="bg-white shadow-sm rounded-lg p-6 mb-8">
+        <FiltrosCultivos
+          tiposEspecie={tiposEspecie || []}
+          especies={especies || []}
+          tipoEspecieId={tipoEspecieId}
+          especieId={especieId}
+          fechaInicio={fechaInicio}
+          fechaFin={fechaFin}
+          onTipoEspecieChange={handleTipoEspecieChange}
+          onEspecieChange={handleEspecieChange}
+          onFechaChange={handleFechaChange}
+          onReset={resetFiltros}
+          onOpenHistorial={() => handleOpenHistorial()}
+        />
+      </div>
 
       {/* Listado de cultivos */}
-      <CultivoResumenList
-        resumenes={resumenesFiltrados}
-        loading={isLoading}
-        onSelectCultivo={handleSelectCultivo}
-        onOpenHistorial={handleOpenHistorial}
-      />
+      <div className="grid gap-6">
+        <CultivoResumenList
+          resumenes={resumenesFiltrados}
+          loading={isLoading}
+          onSelectCultivo={handleSelectCultivo}
+          onOpenHistorial={handleOpenHistorial}
+        />
+      </div>
 
       {/* Modal de detalle */}
       <DetalleCultivoModal

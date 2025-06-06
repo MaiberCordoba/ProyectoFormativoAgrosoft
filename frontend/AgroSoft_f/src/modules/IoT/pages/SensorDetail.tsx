@@ -612,10 +612,14 @@ export default function AllSensorsDashboard() {
           Generar Reporte PDF
         </Button>
       </div>
+      <div className="h-8" />
+
 
       <h1 className="text-2xl font-bold text-center mb-6 font-extrabold">
         <strong>Todos los Sensores</strong>
       </h1>
+
+      <div className="h-8" />
 
       <div className="col-span-full flex flex-row gap-4 w-full max-w-3xl mx-auto px-4 items-center justify-center mb-6">
         <Select
@@ -624,16 +628,16 @@ export default function AllSensorsDashboard() {
           selectionMode="multiple"
           selectedKeys={selectedTypes}
           onSelectionChange={(keys) => {
-            setSelectedTypes(Array.from(keys) as string[]);
-            setSelectedSensors([]);
+        setSelectedTypes(Array.from(keys) as string[]);
+        setSelectedSensors([]);
           }}
           size="md"
           className="min-w-[180px] text-base"
         >
           {SENSOR_TYPES.map(type => (
-            <SelectItem key={type.key} className="text-base truncate">
-              {type.label}
-            </SelectItem>
+        <SelectItem key={type.key} className="text-base truncate">
+          {type.label}
+        </SelectItem>
           ))}
         </Select>
 
@@ -663,7 +667,6 @@ export default function AllSensorsDashboard() {
           </Select>
         )}
 
-        {/* Lotes */}
         <Select
           label=""
           placeholder="Filtrar por lote"
@@ -680,7 +683,6 @@ export default function AllSensorsDashboard() {
           ))}
         </Select>
 
-        {/* Eras */}
         <Select
           label=""
           placeholder="Filtrar por era"
@@ -697,12 +699,13 @@ export default function AllSensorsDashboard() {
           ))}
         </Select>
       </div>
-
-      <div className="bg-gradient-to-br from-green-50 to-blue-50 p-6 shadow-lg rounded-2xl mb-8 border border-green-100">
+      <div className="h-8" />
+      <div  className="flex flex-col p-3 border border-red-700 rounded-xl bg-red-200 hover:bg-red-300 transition-all shadow-md">
         <h2 className="text-xl font-bold mb-6 text-green-800 flex items-center gap-2">
-          <svg width="24" height="24" fill="none" className="inline-block text-green-500"></svg>
           Datos de Sensores
         </h2>
+          <div className="h-4" />
+
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <p className="text-lg text-gray-500">Cargando datos...</p>
@@ -722,6 +725,8 @@ export default function AllSensorsDashboard() {
                 </Chip>
               ))}
             </div>
+            <div className="h-4" />
+
             <div className="rounded-xl bg-white shadow-inner p-4 border border-gray-100">
               <ResponsiveContainer width="100%" height={420}>
                 <LineChart 
@@ -790,8 +795,8 @@ export default function AllSensorsDashboard() {
           </>
         )}
       </div>
-      
-      <div className="bg-gradient-to-br from-red-200 to-red-400 p-6 shadow-lg rounded-2xl border border-red-700 backdrop-blur-sm">
+      <div className="h-8" />
+      <div className="flex flex-col p-3 border rounded-xl bg-red-200 hover:bg-red-300 transition-all shadow-md">
         <h2 className="text-xl font-bold mb-5 text-red-900 flex items-center gap-2">
           <svg width="22" height="22" fill="none" className="inline-block text-red-700">
             <circle cx="11" cy="11" r="10" stroke="#b91c1c" strokeWidth="2" fill="#fee2e2"/>
