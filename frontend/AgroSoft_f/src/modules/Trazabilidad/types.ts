@@ -20,6 +20,7 @@ export interface Cultivo {
   id: number;
   nombre: string;
   activo: boolean;
+  especies: Especies;
   fk_Especie: {
     id: number;
     nombre: string;
@@ -67,7 +68,7 @@ export interface Eras {
 export interface Plantaciones {
   id: number;
   semillero: Semillero | null;
-  cultivo: Cultivo;
+  cultivo: Cultivo | null;
   eras: Eras;
   unidades: number;
   fechaSiembra: string;
@@ -76,7 +77,6 @@ export interface Plantaciones {
   fk_Cultivo: number;
   fk_Era: number;
 }
-
 
 export interface PlantacionCreate {
   fk_Cultivo: number;

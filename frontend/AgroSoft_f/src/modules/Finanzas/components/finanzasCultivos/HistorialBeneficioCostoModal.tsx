@@ -117,6 +117,8 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
         backgroundColor: `hsl(${index * 60}, 70%, 50%, 0.2)`,
         fill: false,
         tension: 0.3,
+        pointRadius: 5, // Tamaño de los puntos para facilitar la interacción
+        pointHitRadius: 10, // Área de interacción para tooltips
       };
     });
 
@@ -172,7 +174,7 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
       plugins: {
         legend: { display: !cultivoId },
         tooltip: {
-          enabled: true, // Habilitar tooltips
+          enabled: true,
           mode: "nearest",
           intersect: false,
           callbacks: {
@@ -187,12 +189,12 @@ const HistorialBeneficioCostoModal: React.FC<Props> = ({
               });
             },
             label: (context) => {
-              return `Relación B/C: ${context.parsed.y.toFixed(2)}`;
+              return `${context.dataset.label}: Relación B/C: ${context.parsed.y.toFixed(2)}`;
             },
           },
         },
       },
-      events: [],
+      // Eliminamos events: [] para habilitar interacciones
       animation: false,
     }),
     [cultivoId]

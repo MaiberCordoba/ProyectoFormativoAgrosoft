@@ -9,98 +9,127 @@ import { useGetHerramientas } from "./hooks/herramientas/useGetHerramientas";
 import CustomCard from "./CustomCard";
 
 export function CosechasResumenCard() {
+  const [modalVentas, setModalVentas] = useState(false);
+  const [cosechaSeleccionada, setCosechaSeleccionada] =
+    useState<Cosechas | null>(null);
 
-  const [modalVentas,setModalVentas] = useState(false)
-  const [cosechaSeleccionada, setCosechaSeleccionada] = useState<Cosechas | null>(null)
+  const {
+    data: cosechas = [],
+    isLoading: loadingCosechas,
+    isError,
+  } = useGetCosechas();
+  const { data: plantaciones = [], isLoading: loadingPlantaciones } =
+    useGetPlantaciones();
 
-  const { data: cosechas = [], isLoading: loadingCosechas, isError } = useGetCosechas();
-  const { data: plantaciones = [], isLoading: loadingPlantaciones } = useGetPlantaciones();
-
-
-  if (loadingCosechas || loadingPlantaciones ) return <p>Cargando...</p>;
+  if (loadingCosechas || loadingPlantaciones) return <p>Cargando...</p>;
   if (isError) return <p>Hubo un error al cargar la información</p>;
 
-  const handleVentaCosecha = (cosecha: Cosechas) =>{
-    setCosechaSeleccionada(cosecha)
-    setModalVentas(true)
-  }
+  const handleVentaCosecha = (cosecha: Cosechas) => {
+    setCosechaSeleccionada(cosecha);
+    setModalVentas(true);
+  };
 
   return (
     <div className="flex flex-wrap gap-4 mb-6">
       {cosechas.map((cosecha) => {
-        const plantacion = plantaciones.find(p => p.id === cosecha.fk_Plantacion);
+        const plantacion = plantaciones.find(
+          (p) => p.id === cosecha.fk_Plantacion
+        );
 
         if (!cosecha.cantidad || cosecha.cantidad <= 0) return null;
-        return (
 
-          <>
-            <CustomCard
-              title={plantacion?.cultivo?.nombre ?? "Desconocido"}
-              image={plantacion?.cultivo.especies.img}
-              data={{
-                "Especie": plantacion?.cultivo.especies.nombre,
-                "Cantidad": cosecha.cantidad,
-                "Valor cosecha": `$${cosecha.valorTotal}`,
-                "Fecha Cosecha": cosecha.fecha,
-              }}
-              backgroundColor="white"
-              borderColor="green-500"
-              textColor="green-800"
-              footerButtons={[
-                {
-                  label: "Vender",
-                  color: "primary",
-                  size : "sm",
-                  onPress: () => handleVentaCosecha(cosecha),
-                },
-              ]}
-            />
-          </>
+        // Acceso seguro a las propiedades anidadas
+        const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
+        const imagenEspecie = plantacion?.cultivo?.especies?.img;
+        const nombreEspecie =
+          plantacion?.cultivo?.especies?.nombre ?? "Desconocido";
+
+        return (
+          <CustomCard
+            key={cosecha.id}
+            title={nombreCultivo}
+            image={imagenEspecie}
+            data={{
+              Especie: nombreEspecie,
+              Cantidad: cosecha.cantidad,
+              "Valor cosecha": `$${cosecha.valorTotal}`,
+              "Fecha Cosecha": cosecha.fecha,
+            }}
+            backgroundColor="white"
+            borderColor="green-500"
+            textColor="green-800"
+            footerButtons={[
+              {
+                label: "Vender",
+                color: "primary",
+                size: "sm",
+                onPress: () => handleVentaCosecha(cosecha),
+              },
+            ]}
+          />
         );
       })}
       {modalVentas && cosechaSeleccionada && (
         <CrearVentasModal
-        onClose={() => setModalVentas(false)}
-        onCreate={handleVentaCosecha}
-        cosecha={cosechaSeleccionada}
-      />
+          onClose={() => setModalVentas(false)}
+          onCreate={handleVentaCosecha}
+          cosecha={cosechaSeleccionada}
+        />
       )}
     </div>
   );
 }
 
 export function PlantacionesCard() {
+  const {
+    data: plantaciones = [],
+    isLoading: loadingPlantaciones,
+    isError,
+  } = useGetPlantaciones();
 
-  const { data: plantaciones = [], isLoading: loadingPlantaciones, isError} = useGetPlantaciones();
+  if (loadingPlantaciones) return <p>Cargando...</p>;
+  if (isError) return <p>Error al cargar...</p>;
 
-  if(loadingPlantaciones) return <p>Cargando...</p>
-  if(isError) return <p>Error al cargar...</p>
-
-  return(
-     <div className="flex flex-wrap gap-4 mb-6">
+  return (
+    <div className="flex flex-wrap gap-4 mb-6">
       {plantaciones.map((plantacion) => {
+        // Manejo seguro de propiedades anidadas
+        const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
+        const estado =
+          plantacion?.cultivo?.activo !== undefined
+            ? plantacion.cultivo.activo
+              ? "Activo"
+              : "Inactivo"
+            : "Estado desconocido";
+        const fechaSiembra = plantacion.fechaSiembra || "Fecha no disponible";
 
         return (
-          
           <div
-          key={plantacion.id}
-          className="w-30 h-30 bg-white shadow-md rounded-md border p-2 text-sm flex flex-col justify-center"
+            key={plantacion.id}
+            className="w-30 h-30 bg-white shadow-md rounded-md border p-2 text-sm flex flex-col justify-center"
           >
             <p>
-              <strong>Cultivo</strong>: {plantacion?.cultivo?.nombre ?? "Desconocido"}
+              <strong>Cultivo</strong>: {nombreCultivo}
             </p>
-            <p><strong>Estado</strong>: {plantacion?.cultivo.activo ? "Activo" : "Inactivo"}</p>
-            <p><strong>Fecha de siembra</strong>: {plantacion.fechaSiembra}</p>
+            <p>
+              <strong>Estado</strong>: {estado}
+            </p>
+            <p>
+              <strong>Fecha de siembra</strong>: {fechaSiembra}
+            </p>
           </div>
         );
       })}
     </div>
-
-  )
+  );
 }
 
 export function InsumosCard() {
-  const { data: insumos = [], isLoading: loadingInsumos, isError } = useGetInsumos();
+  const {
+    data: insumos = [],
+    isLoading: loadingInsumos,
+    isError,
+  } = useGetInsumos();
   const { data: unidades = [] } = useGetUnidadesMedida();
 
   const {
@@ -240,7 +269,11 @@ export function HerramientasCard() {
 }
 
 export function TiempoActividadCard() {
-  const { data: tiempoActividad, isLoading, isError } = useGetTiempoActividadControl();
+  const {
+    data: tiempoActividad,
+    isLoading,
+    isError,
+  } = useGetTiempoActividadControl();
   const { data: unidades = [] } = useGetUnidadesTiempo();
   const { data: Actividades = [] } = useGetActividades();
   const { data: usuarios = [] } = useGetUsers();
@@ -268,7 +301,9 @@ export function TiempoActividadCard() {
     <div className="flex flex-wrap gap-4 mb-6">
       {tiempoActividad?.map((tiempoAC) => {
         const unidad = unidades.find((p) => p.id === tiempoAC.fk_unidadTiempo);
-        const actividad = Actividades.find((p) => p.id === tiempoAC.fk_actividad);
+        const actividad = Actividades.find(
+          (p) => p.id === tiempoAC.fk_actividad
+        );
         const usuario = usuarios.find((p) => p.id === actividad?.fk_Usuario);
         const control = controles.find((p) => p.id === tiempoAC?.fk_control);
         const salario = salarios.find((p) => p.id === tiempoAC?.fk_salario);
@@ -282,8 +317,9 @@ export function TiempoActividadCard() {
               Termino: tiempoAC.fecha,
               Duración: `${tiempoAC.tiempo} ${unidad?.nombre}`,
               "Costo de la actividad": `$${tiempoAC.valorTotal}`,
-              Realizo: usuario?.nombre || control?.usuario?.nombre || "No definido",
-              Salario : salario?.nombre
+              Realizo:
+                usuario?.nombre || control?.usuario?.nombre || "No definido",
+              Salario: salario?.nombre,
             }}
             footerButtons={[
               {
@@ -320,5 +356,3 @@ export function TiempoActividadCard() {
     </div>
   );
 }
-
-
