@@ -417,6 +417,12 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
     );
   }
 
+  // Mostrar advertencia si se ha pasado del día de cosecha recomendado
+  const diasTotales = cultivoInfo?.totalDays;
+  const nombreCultivo = cultivoInfo?.name?.toLowerCase();
+  const nombreActual = cultivo?.nombre?.toLowerCase();
+  const sePasoCosecha = diasTotales && nombreCultivo && nombreActual && nombreCultivo === nombreActual && cultivo.dias_siembra > diasTotales;
+
   return (
     <Card
       className="rounded-xl shadow w-full max-w-xl flex flex-col justify-between mx-auto"
@@ -440,6 +446,26 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       </CardHeader>
       
       <CardBody className="p-0">
+        {sePasoCosecha && (
+          <div className="flex items-start gap-3 p-3 rounded-xl border border-red-200 bg-red-50 mb-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-base font-semibold text-red-600 animate-pulse">
+                  ¡Atención! Cultivo pasado de cosecha
+                </h3>
+              </div>
+              <p className="text-gray-700 text-sm mb-2">
+                El cultivo de <b>{cultivo.nombre}</b> ha superado el tiempo recomendado de cosecha ({diasTotales} días).
+              </p>
+              <div className="mt-2 p-2 bg-white rounded-lg border border-green-200">
+                <span className="text-sm font-bold text-green-700">Acción recomendada:</span>
+                <p className="text-sm font-medium mt-1 ml-2 text-gray-800">
+                  Realice la cosecha lo antes posible para evitar pérdida de calidad o deterioro del producto.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         {recomendaciones.length > 0 ? (
           <div className="space-y-4 p-3">
             {cultivoInfo && (
@@ -476,7 +502,6 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
                 </div>
               </div>
             )}
-            {/* Lista de recomendaciones */}
             {recomendaciones.map((rec, index) => (
               <div
                 key={index}
@@ -491,7 +516,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className={`text-base font-semibold ${
-                          rec.severidad === 'urgente' ? 'text-red-800' :
+                          rec.severidad === 'urgente' ? 'text-red-700' :
                           rec.severidad === 'advertencia' ? 'text-amber-800' :
                           'text-blue-800'
                         }`}>
