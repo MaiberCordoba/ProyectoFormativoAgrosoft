@@ -1,4 +1,3 @@
-// src/components/RecomendacionesDetalladas.tsx
 import { useState, useMemo } from "react";
 import { 
   Card,
@@ -147,31 +146,50 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
 ];
 
     for (const category of cropCategories) {
-      const foundCrop = category.crops.find((c: Crop) => 
-        c.name.toLowerCase() === cultivo.nombre.toLowerCase()
-      );
-      
-      if (foundCrop) {
-        let etapaActual = null;
-        for (let i = 0; i < foundCrop.stages.length; i++) {
-          const [start, end] = foundCrop.stages[i].duration.split('-').map(Number);
-          if (cultivo.dias_siembra >= start && cultivo.dias_siembra <= end) {
-            etapaActual = {
-              numero: i + 1,
-              kcRecomendado: foundCrop.stages[i].kc,
-              duracion: foundCrop.stages[i].duration,
-              diasTotales: foundCrop.totalDays
-            };
-            break;
-          }
-        }
-        
-        return {
-          ...foundCrop,
-          categoria: category.name,
-          etapaActual
-        };
-      }
+    const foundCrop = category.crops.find((c: Crop) => 
+    c.name.toLowerCase() === cultivo.nombre.toLowerCase()
+    );
+    
+    if (foundCrop) {
+    let etapaActual = null;
+    
+    // Determinar la etapa basándose en los días de siembra
+    for (let i = 0; i < foundCrop.stages.length; i++) {
+    const [start, end] = foundCrop.stages[i].duration.split('-').map(Number);
+    if (cultivo.dias_siembra >= start && cultivo.dias_siembra <= end) {
+    etapaActual = {
+    numero: i + 1,
+    kcRecomendado: foundCrop.stages[i].kc,
+    duracion: foundCrop.stages[i].duration,
+    diasTotales: foundCrop.totalDays,
+    nombre: i === 0 ? 'Germinación/Establecimiento' :
+    i === 1 ? 'Crecimiento vegetativo' :
+    i === 2 ? 'Floración/Desarrollo' :
+    'Maduración/Cosecha'
+    };
+    break;
+    }
+    }
+    
+    // Si no se encontró etapa (cultivo pasado de tiempo), asignar la última etapa
+    if (!etapaActual && cultivo.dias_siembra > foundCrop.totalDays) {
+    const lastStageIndex = foundCrop.stages.length - 1;
+    etapaActual = {
+    numero: lastStageIndex + 1,
+    kcRecomendado: foundCrop.stages[lastStageIndex].kc,
+    duracion: foundCrop.stages[lastStageIndex].duration,
+    diasTotales: foundCrop.totalDays,
+    nombre: 'Maduración/Cosecha (Pasado de tiempo)',
+    pasadoDeTiempo: true
+    };
+    }
+    
+    return {
+    ...foundCrop,
+    categoria: category.name,
+    etapaActual
+    };
+    }
     }
     return null;
   }, [cultivo]);
@@ -376,7 +394,25 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
 
-    // 6. Recomendaciones para cultivos tropicales
+    // 6. Recomendación urgente si el cultivo está pasado de tiempo
+    if (cultivoInfo?.etapaActual?.pasadoDeTiempo) {
+      nuevasRecomendaciones.unshift({
+        tipo: 'manejo',
+        titulo: "¡COSECHA URGENTE REQUERIDA!",
+        mensaje: `El cultivo ha superado su tiempo óptimo de cosecha (${cultivoInfo.totalDays} días). Días actuales: ${cultivo.dias_siembra}`,
+        severidad: 'urgente',
+        accion: "Realizar cosecha inmediatamente para evitar pérdida total del cultivo",
+        icon: <Scissors className="text-red-600" />,
+        detalles: [
+          `Días de retraso: ${cultivo.dias_siembra - cultivoInfo.totalDays}`,
+          "El producto puede estar perdiendo calidad rápidamente",
+          "Evaluar si el cultivo aún es comercializable",
+          "Considerar uso alternativo si la calidad está comprometida"
+        ]
+      });
+    }
+
+    // 7. Recomendaciones para cultivos tropicales
     if (cultivoInfo?.categoria === 'Cultivos Tropicales') {
       // Recomendación de riego profundo
       nuevasRecomendaciones.push({
@@ -471,30 +507,80 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
             {cultivoInfo && (
               <div className="mb-4 p-3 bg-white rounded-xl border border-green-200">
                 <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium">Días desde siembra:</span>
-                    <span className="font-semibold">{cultivo.dias_siembra}</span>
-                  </div>
-                  {cultivoInfo.etapaActual && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium">Etapa:</span>
-                      <Badge color="success" variant="flat">
-                        Etapa {cultivoInfo.etapaActual.numero} ({cultivoInfo.etapaActual.duracion} días)
-                      </Badge>
+                  
+                  {cultivoInfo?.etapaActual ? (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Etapa:</span>
+                        <Badge 
+                          color={cultivoInfo.etapaActual.pasadoDeTiempo ? "danger" : "success"} 
+                          variant="flat"
+                        >
+                          Etapa {cultivoInfo.etapaActual.numero} ({cultivoInfo.etapaActual.duracion} días)
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Fase:</span>
+                        <span className="text-xs text-gray-600">
+                          {cultivoInfo.etapaActual.nombre}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium">Progreso:</span>
+                          <span className="text-xs text-gray-600">
+                            Día {cultivo.dias_siembra} de {cultivoInfo.etapaActual.diasTotales} 
+                            ({((cultivo.dias_siembra / cultivoInfo.etapaActual.diasTotales) * 100).toFixed(1)}%)
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              cultivoInfo.etapaActual.pasadoDeTiempo 
+                                ? 'bg-red-500' 
+                                : ((cultivo.dias_siembra / cultivoInfo.etapaActual.diasTotales) * 100) > 80 
+                                  ? 'bg-yellow-500' 
+                                  : 'bg-green-500'
+                            }`}
+                            style={{ 
+                              width: `${Math.min(((cultivo.dias_siembra / cultivoInfo.etapaActual.diasTotales) * 100), 100)}%` 
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Etapa:</span>
+                        <Badge color="warning" variant="flat">
+                          No determinada
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Cultivo:</span>
+                        <span className="text-xs text-gray-600">
+                          {cultivo.nombre} (No encontrado en base de datos)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Días siembra:</span>
+                        <span className="text-xs text-gray-600">
+                          {cultivo.dias_siembra} días
+                        </span>
+                      </div>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium">Temperatura:</span>
-                    <span className="font-semibold">{datosActuales.temperatura}°C</span>
-                  </div>
+                  
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium">Humedad suelo:</span>
                     <Chip
                       color={
-                        datosActuales.estado_humedad === 'bajo' ? 'danger' :
-                        datosActuales.estado_humedad === 'alto' ? 'warning' : 'success'
+                      datosActuales.estado_humedad === 'bajo' ? 'danger' :
+                      datosActuales.estado_humedad === 'alto' ? 'warning' : 'success'
                       }
                       variant="flat"
+                      startContent={<Droplet className="w-4 h-4 mr-1" />}
                     >
                       {datosActuales.humedad_suelo}%
                     </Chip>
