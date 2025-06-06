@@ -82,9 +82,9 @@ export default function EvapotranspiracionCard({ etReal, kc, detalles, estadoHum
             </li>
             
             <li className="flex items-center gap-3">
-              <WiStrongWind size={24} className="text-blue-500" />
+              <WiStrongWind size={24} style={{ color: "#5DADE2" }} />
               <div>
-                <span className="block text-sm text-gray-600">Viento</span>
+                <span className="block text-sm text-gray-600" >Viento</span>
                 <span className="font-medium">
                   {detalles.viento} km/h
                 </span>
