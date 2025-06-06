@@ -110,7 +110,7 @@ export default function EvapotranspiracionC() {
               padding: 24,
               }}
             >
-            <h2 className="text-2xl font-bold text-green-800 mb-6 flex items-center justify-center gap-2 text-center">
+            <h2 className="text-2xl font-bold text-green-800 mb-8 flex items-center justify-center gap-2 text-center">
               <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#166534" }}/>
               Calculadora de Evapotranspiración
             </h2>
@@ -121,9 +121,9 @@ export default function EvapotranspiracionC() {
               placeholder="Selecciona una plantación"
               selectedKeys={selectedPlantacion ? [String(selectedPlantacion)] : []}
               onSelectionChange={(keys) => {
-                const selected = Array.from(keys)[0] as string;
-                setSelectedPlantacion(selected);
-                setErrorET(null);
+              const selected = Array.from(keys)[0] as string;
+              setSelectedPlantacion(selected);
+              setErrorET(null);
               }}
               className={`w-full ${errorET ? "border border-red-500" : ""}`}
               errorMessage={errorET}
