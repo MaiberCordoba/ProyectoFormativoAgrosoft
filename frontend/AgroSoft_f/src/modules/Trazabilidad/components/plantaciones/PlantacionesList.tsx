@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetPlantaciones } from "../../hooks/plantaciones/useGetPlantaciones";
 import { useEditarPlantaciones } from "../../hooks/plantaciones/useEditarPlantaciones";
 import { useCrearPlantaciones } from "../../hooks/plantaciones/useCrearPlantaciones";
@@ -10,12 +10,24 @@ import { CrearPlantacionModal } from "./CrearPlantacionesModal";
 import EliminarPlantacionModal from "./EliminarPlantaciones";
 import { Plantaciones } from "../../types";
 
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer } from "@react-pdf/renderer";
+import { Download, X } from "lucide-react";
 import { ReportePdfPlantaciones } from "./ReportePdfPlantaciones";
-import { Download } from "lucide-react";
 
 export function PlantacionesList() {
   const { data, isLoading, error } = useGetPlantaciones();
+  const [filteredData, setFilteredData] = useState<Plantaciones[]>([]);
+
+  // Efecto para manejar los datos y posibles errores
+  useEffect(() => {
+    if (data) {
+      console.log("Datos recibidos:", data);
+      setFilteredData(data);
+    }
+    if (error) {
+      console.error("Error al cargar plantaciones:", error);
+    }
+  }, [data, error]);
 
   const {
     isOpen: isEditModalOpen,
@@ -37,7 +49,6 @@ export function PlantacionesList() {
     handleEliminar,
   } = useEliminarPlantaciones();
 
-  // Estado para mostrar/ocultar previsualización PDF
   const [showPreview, setShowPreview] = useState(false);
 
   const handleCrearNuevo = () => {
@@ -47,15 +58,10 @@ export function PlantacionesList() {
         id: 0,
         nombre: "",
         activo: false,
-        especies: {
+        fk_Especie: {
           id: 0,
           nombre: "",
-          descripcion: "",
-          tiempocrecimiento: "",
-          tiposEspecie: { id: 0, nombre: "", descripcion: "", img: "" },
-          fk_tipoespecie: 0,
         },
-        fk_Especie: 0,
       },
       semillero: null,
       eras: {
@@ -131,7 +137,7 @@ export function PlantacionesList() {
               <>
                 {item.eras.tipo}
                 {" - "}
-                {item.eras.Lote?.nombre ?? "Sin lote"}
+                {item.eras.fk_lote?.nombre ?? "Sin lote"}
               </>
             ) : (
               `Era ${item.eras?.id ?? "N/A"}`
@@ -151,57 +157,66 @@ export function PlantacionesList() {
         );
     }
   };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p>Cargando plantaciones...</p>
+      </div>
+    );
+  }
 
-  if (isLoading) return <p>Cargando...</p>;
-  if (error) return <p>Error al cargar las plantaciones</p>;
+  if (error || !data) {
+    return (
+      <div className="p-4 bg-red-50 rounded-lg text-red-600">
+        <p>Error al cargar las plantaciones</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-2 px-4 py-2 bg-red-100 rounded hover:bg-red-200"
+        >
+          Reintentar
+        </button>
+        <p className="text-sm mt-2">
+          Detalle: {error?.message || "Error desconocido"}
+        </p>
+      </div>
+    );
+  }
 
-  const datosConCultivoNombre = (data || []).map((item) => ({
+  const datosConCultivoNombre = filteredData.map((item) => ({
     ...item,
     cultivoNombre: item.cultivo?.nombre?.toLowerCase() || "",
   }));
 
   return (
     <div className="p-4 space-y-4">
-      <TablaReutilizable
-        datos={datosConCultivoNombre}
-        columnas={columnas}
-        claveBusqueda="cultivoNombre"
-        placeholderBusqueda="Buscar por cultivo"
-        renderCell={renderCell}
-        onCrearNuevo={handleCrearNuevo}
-        renderReporteAction={(data) => (
-          <>
-            {/* Botón para mostrar la previsualización */}
+      {/* Agrega un título para confirmar que el componente se renderiza */}
+      <h2 className="text-xl font-semibold">Listado de Plantaciones</h2>
+
+      {filteredData.length === 0 ? (
+        <div className="p-4 bg-yellow-50 rounded-lg text-yellow-700">
+          <p>No se encontraron plantaciones registradas</p>
+        </div>
+      ) : (
+        <TablaReutilizable
+          datos={datosConCultivoNombre}
+          columnas={columnas}
+          claveBusqueda="cultivoNombre"
+          placeholderBusqueda="Buscar por cultivo"
+          renderCell={renderCell}
+          onCrearNuevo={handleCrearNuevo}
+          renderReporteAction={() => (
             <button
               onClick={() => setShowPreview(true)}
-              className="p-2 rounded-full hover:bg-gray-200 transition-colors mr-2"
-              title="Mostrar previsualización"
+              className="p-2 rounded-full hover:bg-red-100 transition-colors"
+              title="Ver y descargar reporte"
+              aria-label="Descargar reporte"
             >
-              👁️
+              <Download className="h-5 w-5 text-red-600" />
             </button>
+          )}
+        />
+      )}
 
-            <PDFDownloadLink
-              document={<ReportePdfPlantaciones plantaciones={data} />}
-              fileName="reporte_plantaciones.pdf"
-            >
-              {({ loading }) => (
-                <button
-                  className="p-2 rounded-full hover:bg-red-100 transition-colors"
-                  title="Descargar reporte"
-                >
-                  {loading ? (
-                    <Download className="h-4 w-4 animate-spin text-blue-500" />
-                  ) : (
-                    <Download className="h-5 w-5 text-red-600" />
-                  )}
-                </button>
-              )}
-            </PDFDownloadLink>
-          </>
-        )}
-      />
-
-      {/* Mostrar previsualización solo cuando showPreview sea true */}
       {showPreview && (
         <div className="border rounded mt-4 relative">
           <h2 className="text-sm font-semibold px-2 py-1 bg-gray-100 flex justify-between items-center">
@@ -211,7 +226,7 @@ export function PlantacionesList() {
               className="text-red-500 font-bold px-2 hover:text-red-700"
               title="Cerrar previsualización"
             >
-              ❌
+              <X />
             </button>
           </h2>
           <PDFViewer width="100%" height={600}>

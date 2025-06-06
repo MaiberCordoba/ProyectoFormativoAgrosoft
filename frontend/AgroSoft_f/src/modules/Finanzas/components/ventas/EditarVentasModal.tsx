@@ -58,6 +58,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       <Input
         label="Precio Unitario"
         type="number"
+        size="sm"
         value={precioUnitario}
         onChange={(e) => setPrecioUnitario(Number(e.target.value))}
         required
@@ -65,7 +66,8 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       <Input
         label="Cantidad de producto"
         type="number"
-        value={cantidad}
+        size="sm"
+        value={cantidad.toString()}
         onChange={(e) => setCantidad(Number(e.target.value))}
         required
       />
@@ -73,6 +75,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       <Input
         label="Fecha de venta"
         type="date"
+        size="sm"
         value={fecha}
         onChange={(e) => setFecha(e.target.value)}
         required
@@ -84,6 +87,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       ) : (
         <Select
           label="Cosecha"
+          size="sm"
           placeholder="Selecciona la cantidad y fecha"
           selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
           onSelectionChange={(keys) => {
@@ -106,6 +110,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
             ) : (
               <Select
                 label="Unidades de medida"
+                size="sm"
                 placeholder="Selecciona la unidad de medida"
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []} 
                 onSelectionChange={(keys) => {

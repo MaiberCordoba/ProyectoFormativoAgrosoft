@@ -103,6 +103,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
 
       <Input
         value={fecha}
+        size="sm"
         label="Fecha de Cosecha"
         type="date"
         onChange={(e) => setFecha(e.target.value)}
@@ -110,6 +111,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
 
       <Input
         value={cantidad}
+        size="sm"
         label="Cantidad cosechada"
         type="text"
         onChange={(e) => {
@@ -121,6 +123,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
 
       <Input
         value={precioUnidad}
+        size="sm"
         label="Precio unidad"
         type="text"
         onChange={(e) => {
@@ -135,6 +138,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
       ) : (
         <Select
           label="Plantaciones"
+          size="sm"
           placeholder="Selecciona una plantacion"
           selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
           onSelectionChange={(keys) => {
@@ -144,7 +148,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
         >
           {(plantaciones || []).map((plantacion) => (
             <SelectItem key={plantacion.id.toString()}>
-              {plantacion.cultivo.nombre}
+              {plantacion.cultivo?.nombre}
             </SelectItem>
           ))}
         </Select>
@@ -155,6 +159,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
       ) : (
         <Select
           label="Unidad de medida"
+          size="sm"
           placeholder="Selecciona una unidad de medida"
           selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
           onSelectionChange={(keys) => {

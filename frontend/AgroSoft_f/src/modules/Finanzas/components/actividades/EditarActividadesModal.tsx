@@ -96,6 +96,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       <Input
         value={titulo}
         label="Título"
+        size="sm"
         type="text"
         onChange={(e) => setTitulo(e.target.value)}
         required
@@ -103,18 +104,21 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       <Textarea
         value={descripcion}
         label="Descripción"
+        size="sm"
         onChange={(e) => setDescripcion(e.target.value)}
         required
       />
       <Input
         value={fecha}
         label="Fecha"
+        size="sm"
         onChange={(e) => setFecha(e.target.value)}
         required
       />
 
       <Select
         label="Estado"
+        size="sm"
         value={estado}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0] as "AS" | "CO" | "CA";
@@ -132,6 +136,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       ) : (
         <Select
           label="Cultivo"
+          size="sm"
           placeholder="Selecciona un cultivo"
           selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
           onSelectionChange={(keys) => {
@@ -151,6 +156,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       ) : (
         <Select
           label="Plantacion"
+          size="sm"
           placeholder="Selecciona una plantacion"
           selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
           onSelectionChange={(keys) => {
@@ -169,6 +175,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       ) : (
         <Select
           label="Usuario"
+          size="sm"
           placeholder="Selecciona un Usuario"
           selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
           onSelectionChange={(keys) => {
@@ -189,6 +196,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       ) : (
         <Select
           label="Tipos de actividad"
+          size="sm"
           placeholder="Selecciona el tipo de actividad"
           selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
           onSelectionChange={(keys) => {

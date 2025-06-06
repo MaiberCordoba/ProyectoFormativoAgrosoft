@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchUnidadesMedida } from '../../api/unidadesMedidaApi';
 import { UnidadesMedida } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchUnidadesMedida = () => {
   const queryClient = useQueryClient();

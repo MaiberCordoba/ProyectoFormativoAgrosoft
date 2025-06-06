@@ -70,6 +70,7 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
 
       <Input
         label="Nombre Salario"
+        size="sm"
         type="text"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
@@ -78,6 +79,7 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
 
       <Input
         label="Monto(valor)"
+        size="sm"
         type="number"
         value={monto}
         onChange={(e) => setMonto(e.target.value)}
@@ -87,6 +89,7 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
       <Input
         label="Horas de trabajo(día)"
         type="number"
+        size="sm"
         value={horas}
         onChange={(e) => setHoras(e.target.value)}
         required
@@ -94,6 +97,7 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
 
       <Select
         label="Estado"
+        size="sm"
         value={estado}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0] as "activo" | "inactivo";

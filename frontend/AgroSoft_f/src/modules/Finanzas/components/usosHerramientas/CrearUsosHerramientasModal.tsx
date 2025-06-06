@@ -8,6 +8,7 @@ import { Actividades, Herramientas, UsosHerramientas } from "../../types";
 import { Plus } from "lucide-react";
 import { CrearActividadesModal } from "../actividades/CrearActividadModal";
 import { CrearHerramientasModal } from "../herramientas/CrearHerramientasModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearUsoHerramientaModalProps {
   onClose: () => void;
@@ -17,7 +18,7 @@ interface CrearUsoHerramientaModalProps {
 export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalProps) => {
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
-  const [unidades, setUnidades] = useState<number | null>(null)
+  const [unidades, setUnidades] = useState(0)
   const [error,setError] = useState("")
 
   const [herramientaModal, setHerramientaModal] = useState(false)
@@ -29,8 +30,26 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
   const handleSubmit = () => {
     if (!fk_Herramienta || !fk_Actividad || !unidades) {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"Por favor, completa todos los campos.",
+        color:"danger"
+      })
       return;
+    }
+    if(unidades < 0){
+      addToast({
+        title:"Valores invalidos",
+        description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
+      return
+    }
+    const herramientaSeleccionada = herramientas?.find(h => h.id === fk_Herramienta);
+
+    if (unidades > herramientaSeleccionada.unidades){
+      setError(`Solo hay disponibles ${herramientaSeleccionada?.unidades} unidades de esta herramienta.`)
+      return
     }
     setError("")
 
@@ -41,7 +60,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
           onClose();
           setFk_Herramienta(null);
           setFk_Actividad(null);
-          setUnidades(null)
+          setUnidades(0)
           setError("")
         },
       }
@@ -77,7 +96,8 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
         <Input
           label="Cantidad Usada"
           type="number"
-          value={unidades}
+          size="sm"
+          value={unidades.toString()}
           onChange={(e) => setUnidades(Number(e.target.value))}
           required
         />
@@ -90,6 +110,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
               <Select
                 label="Herramienta"
+                size="sm"
                 placeholder="Selecciona una herramienta"
                 selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
                 onSelectionChange={(keys) => {
@@ -124,6 +145,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
 
             <Select
               label="Actividad"
+              size="sm"
               placeholder="Selecciona una actividad"
               selectedKeys={fk_Actividad ? [fk_Actividad.toString()] : []}
               onSelectionChange={(keys) => {

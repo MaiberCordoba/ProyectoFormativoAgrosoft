@@ -60,7 +60,7 @@ import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
 import CalendarioPage from "./modules/Trazabilidad/pages/calendario";
-import NotificationsPage from "./modules/Notificaciones/pages/notificationsPage";
+import NotificationsPage from "./modules/Notificaciones/pages/NotificationsPage";
 
 
 

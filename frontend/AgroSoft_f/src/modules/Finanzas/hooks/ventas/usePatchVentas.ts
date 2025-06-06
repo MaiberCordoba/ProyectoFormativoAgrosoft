@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchVentas } from '../../api/ventasApi';
 import { Ventas } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchVentas = () => {
   const queryClient = useQueryClient();

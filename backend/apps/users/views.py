@@ -41,7 +41,7 @@ class UsuarioViewSet(ModelViewSet):
 
 class RegistroMasivoUsuariosView(APIView):
     parser_classes = [MultiPartParser]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]  # Cambiado a autenticado por seguridad
 
     def post(self, request, *args, **kwargs):
         archivo = request.FILES.get('archivo')
@@ -50,44 +50,73 @@ class RegistroMasivoUsuariosView(APIView):
 
         try:
             df = pd.read_excel(archivo)
+            # Normalizar nombres de columnas
+            df.columns = [col.strip().lower() for col in df.columns]
         except Exception as e:
             return Response({'error': f'Error al leer el archivo: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if df.empty:
-            return Response({'error': 'El archivo no contiene datos.'}, status=status.HTTP_400_BAD_REQUEST)
+        required_columns = {'nombre', 'apellido', 'identificacion'}
+        if not required_columns.issubset(df.columns):
+            missing = required_columns - set(df.columns)
+            return Response({'error': f'Columnas faltantes: {", ".join(missing)}'}, status=status.HTTP_400_BAD_REQUEST)
 
         errores = []
+        registros_exitosos = 0
+        
         for index, row in df.iterrows():
-            fila = index + 2  # Para tener en cuenta el encabezado
-
-            campos_requeridos = ['nombre', 'apellido', 'email', 'username', 'password']
-            faltantes = [campo for campo in campos_requeridos if not row.get(campo)]
-
-            if faltantes:
+            fila = index + 2  # Contar desde fila 2
+            
+            # Validar campos requeridos
+            if any(pd.isna(row.get(col)) for col in required_columns):
                 errores.append({
                     'fila': fila,
-                    'errores': f"Campos vacíos: {', '.join(faltantes)}"
+                    'errores': "Campos requeridos vacíos: nombre, apellido o identificación"
                 })
                 continue
 
-            data = {
-                'nombre': row.get('nombre'),
-                'apellido': row.get('apellido'),
-                'email': row.get('email'),
-                'username': row.get('username'),
-                'password': row.get('password'),           
-            }
+            try:
+                data = {
+                    'nombre': str(row['nombre']).strip(),
+                    'apellidos': str(row['apellido']).strip(),
+                    'identificacion': int(row['identificacion']),
+                    'rol': 'visitante'
+                }
+            except ValueError:
+                errores.append({
+                    'fila': fila,
+                    'errores': "La identificación debe ser un número válido"
+                })
+                continue
+            except Exception as e:
+                errores.append({
+                    'fila': fila,
+                    'errores': f"Error inesperado: {str(e)}"
+                })
+                continue
 
             serializer = UsuarioSerializer(data=data)
             if serializer.is_valid():
-                serializer.save()
+                try:
+                    serializer.save()
+                    registros_exitosos += 1
+                except Exception as e:
+                    errores.append({
+                        'fila': fila,
+                        'errores': f"Error al guardar: {str(e)}"
+                    })
             else:
                 errores.append({'fila': fila, 'errores': serializer.errors})
 
+        response_data = {
+            'mensaje': f'Registro masivo completado: {registros_exitosos} usuarios creados',
+            'exitosos': registros_exitosos,
+            'errores': len(errores)
+        }
+        
         if errores:
-            return Response({
-                'mensaje': 'Algunos usuarios no se pudieron registrar.',
-                'errores': errores
-            }, status=status.HTTP_400_BAD_REQUEST)
+            response_data['detalle_errores'] = errores
+            status_code = status.HTTP_207_MULTI_STATUS
+        else:
+            status_code = status.HTTP_201_CREATED
 
-        return Response({'mensaje': 'Todos los usuarios se registraron exitosamente.'}, status=status.HTTP_201_CREATED)
+        return Response(response_data, status=status_code)

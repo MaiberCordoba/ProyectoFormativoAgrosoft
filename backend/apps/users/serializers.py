@@ -2,9 +2,8 @@ from rest_framework import serializers
 from .models import Usuario
 
 class UsuarioSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    admin = serializers.BooleanField(default=False)  # 🔹 Asegura que sea un booleano
-
+    password = serializers.CharField(write_only=True, required=False)
+    
     class Meta:
         model = Usuario
         fields = [
@@ -15,24 +14,39 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "telefono",
             "correoElectronico",
             "password",
-            "admin",
             "estado",
             "rol",
         ]
         extra_kwargs = {
-            "password": {"write_only": True},
+            "password": {"write_only": True, "required": False},
+            "telefono": {"required": False},
+            "correoElectronico": {"required": False},
         }
 
     def create(self, validated_data):
-        password = validated_data.pop("password", None)
+        # Generar correo temporal si no se proporciona
+        if not validated_data.get('correoElectronico'):
+            identificacion = validated_data.get('identificacion')
+            validated_data['correoElectronico'] = f'{identificacion}@example.com'
         
-        # 🔹 Forzar que 'admin' sea un booleano (True o False)
-        validated_data["admin"] = bool(validated_data.get("admin", False))
-
+        # Establecer valores por defecto
+        validated_data.setdefault('rol', 'visitante')
+        validated_data.setdefault('telefono', '')
+        validated_data.setdefault('estado', 'activo')
+        
+        # Extraer la contraseña si existe, o usar identificación
+        password = validated_data.pop('password', None)
+        if password is None:
+            # Si no hay contraseña, usar la identificación
+            password = str(validated_data['identificacion'])
+        
+        # Crear usuario sin contraseña primero
         user = Usuario.objects.create(**validated_data)
-        if password:
-            user.set_password(password)
+        
+        # Establecer contraseña correctamente
+        user.set_password(password)
         user.save()
+        
         return user
     
     def update(self, instance, validated_data):

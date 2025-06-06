@@ -6,7 +6,7 @@ import {
 
 const CropKCoefficientTable = () => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>('leafy');
-  const [searchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Categorías y cultivos con sus coeficientes Kc
 const cropCategories = [
@@ -139,7 +139,34 @@ const cropCategories = [
             </p>
           </div>
         </div>
-        <br/>
+        <br />
+        {/* Buscador de cultivo */}
+        <div className="mb-6 flex items-center gap-2">
+            <div className="relative">
+            <input
+              type="text"
+              placeholder="Buscar cultivo..."
+              className="w-44 md:w-56 pl-12 pr-3 py-2 border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm"
+              value={searchTerm}
+              onChange={e => {
+              const value = e.target.value;
+              setSearchTerm(value);
+
+              if (value.trim() === "") {
+                setExpandedCategory('leafy');
+              } else {
+                const foundCategory = cropCategories.find(category =>
+                category.crops.some(crop =>
+                  crop.name.toLowerCase().includes(value.toLowerCase())
+                )
+                );
+                setExpandedCategory(foundCategory ? foundCategory.id : null);
+              }
+              }}
+              style={{ paddingLeft: 20, paddingRight: 12 }}
+            />
+            </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map((category) => (
             <div 

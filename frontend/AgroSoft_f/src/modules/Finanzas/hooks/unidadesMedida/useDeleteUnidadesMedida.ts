@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UnidadesMedida } from "../../types";
 import { deleteUnidadesMedida } from "../../api/unidadesMedidaApi";
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const useDeleteUnidadesMedida = () => {
   const queryClient = useQueryClient();

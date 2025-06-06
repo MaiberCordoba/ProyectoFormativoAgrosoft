@@ -73,6 +73,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
 
       <Select
         label="Tipo de Movimiento"
+        size="sm"
         selectedKeys={[tipo]}
         onSelectionChange={(keys) => setTipo(keys.values().next().value as 'entrada' | 'salida')}
       >
@@ -83,6 +84,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
       <Input
         label="Unidades"
         type="text"
+        size="sm"
         value={unidades}
         onChange={(e) => setUnidades(e.target.value)}
         required
@@ -90,6 +92,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
 
       <Select
         label="Herramienta"
+        size="sm"
         placeholder="Selecciona una herramienta"
         selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
         onSelectionChange={(keys) => {
@@ -105,6 +108,7 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
 
       <Select
         label="Insumo"
+        size="sm"
         placeholder="Selecciona un insumo"
         selectedKeys={fkInsumo ? [fkInsumo.toString()] : []}
         onSelectionChange={(keys) => {

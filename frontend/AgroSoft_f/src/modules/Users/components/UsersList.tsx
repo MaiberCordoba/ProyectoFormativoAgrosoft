@@ -13,9 +13,9 @@ import { Chip } from "@heroui/react";
 import { CrearUsersModal } from "./CrearUsersModal";
 import RegistroMasivoModal from "./registroMasivoModal";
 
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer } from "@react-pdf/renderer";
 import { ReportePdfUsuarios } from "./ReportePdfUsuarios";
-import { Download } from "lucide-react";
+import { Download, X } from "lucide-react";
 
 export function UsersList() {
   const { data, isLoading, error } = useGetUsers();
@@ -62,7 +62,7 @@ export function UsersList() {
       correoElectronico: "",
       admin: false,
       estado: "",
-      rol:"",
+      rol: "",
     });
   };
 
@@ -153,34 +153,14 @@ export function UsersList() {
           }
           return (
             <>
-              {/* Botón para mostrar previsualización */}
+              {/* Botón con icono de descarga que abre la previsualización */}
               <button
                 onClick={() => setShowPreview(true)}
-                className="p-2 rounded-full hover:bg-gray-200 transition-colors mr-2"
-                title="Mostrar previsualización"
+                className="p-2 rounded-full hover:bg-gray-200 transition-colors"
+                title="Mostrar previsualización y descargar"
               >
-                👁️
+                <Download className="h-5 w-5 text-red-600" />
               </button>
-
-              <PDFDownloadLink
-                document={<ReportePdfUsuarios data={reporteData} />}
-                fileName="reporte_usuarios.pdf"
-                style={{ textDecoration: "none" }}
-              >
-                {({ loading }) => (
-                  <button
-                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                    title="Descargar reporte"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Download className="h-4 w-4 animate-spin text-blue-500" />
-                    ) : (
-                      <Download className="h-5 w-5 text-red-600" />
-                    )}
-                  </button>
-                )}
-              </PDFDownloadLink>
             </>
           );
         }}
@@ -196,7 +176,7 @@ export function UsersList() {
               className="text-red-500 font-bold px-2 hover:text-red-700"
               title="Cerrar previsualización"
             >
-              ❌
+              <X />
             </button>
           </h2>
           <PDFViewer width="100%" height={600}>

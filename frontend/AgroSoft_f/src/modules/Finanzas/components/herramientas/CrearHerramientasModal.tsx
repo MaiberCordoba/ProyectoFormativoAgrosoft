@@ -7,6 +7,7 @@ import { Herramientas } from "../../types";
 import { Lotes } from "@/modules/Trazabilidad/types";
 import { Plus } from "lucide-react";
 import { CrearLoteModal } from "@/modules/Trazabilidad/components/lotes/CrearLotesModal";
+import { addToast } from "@heroui/toast";
 
 interface CrearHerramientasModalProps {
   onClose: () => void;
@@ -37,7 +38,11 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
   const handleSubmit = () => {
     if (!fk_Lote || !nombre.trim() || !descripcion.trim() || unidades.trim() === "" || precio.trim() === "") {
-      setError("Por favor, completa todos los campos.");
+      addToast({
+        title:"Campos requeridos",
+        description:"por favor,completa todos los campos.",
+        color:"danger"
+      })
       return;
     }
 
@@ -97,6 +102,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Nombre"
+          size="sm"
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
@@ -105,6 +111,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Descripción"
+          size="sm"
           type="text"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
@@ -114,6 +121,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
         <Input
           label="Cantidad"
           type="text"
+          size="sm"
           value={unidades}
           onChange={handleUnidadesChange}
           required
@@ -121,6 +129,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
 
         <Input
           label="Precio unidad"
+          size="sm"
           type="text"
           value={precio}
           onChange={handlePrecioChange}
@@ -134,6 +143,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
             <div className="flex-1">
               <Select
                 label="Lote"
+                size="sm"
                 placeholder="Selecciona un Lote"
                 selectedKeys={fk_Lote?.toString() ? [fk_Lote.toString()] : []}
                 onSelectionChange={(keys) => {

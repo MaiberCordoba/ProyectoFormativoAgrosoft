@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Cosechas } from "../../types";
 import { deleteCosechas } from "../../api/cosechasApi";
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const useDeleteCosecha = () => {
     const queryClient = useQueryClient();

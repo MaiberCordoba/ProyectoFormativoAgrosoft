@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { patchTipoActividad } from '../../api/tipoActividadApi';
 import { TipoActividad } from '../../types';
-import { addToast } from "@heroui/react";
+import { addToast } from "@heroui/toast";
 
 export const usePatchTipoActividades = () => {
   const queryClient = useQueryClient();

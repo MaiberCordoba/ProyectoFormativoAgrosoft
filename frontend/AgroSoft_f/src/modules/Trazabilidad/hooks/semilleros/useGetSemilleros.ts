@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSemilleros } from "../../api/semillerosApi";
-import { Semilleros } from "../../types";
+import { Semillero } from "../../types";
 
 export const useGetSemilleros = () => {
-  return useQuery<Semilleros[], Error>({
+  return useQuery<Semillero[], Error>({
     queryKey: ["Semilleros"], 
     queryFn: getSemilleros, 
   });
