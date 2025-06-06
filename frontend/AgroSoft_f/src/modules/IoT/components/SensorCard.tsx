@@ -22,12 +22,13 @@ export default function SensorCard({
       isPressable
       onPress={onClick}
       className={`
-        w-[280px] min-w-[280px] h-[220px]
-        flex flex-col items-center justify-between
-        rounded-2xl shadow-lg hover:shadow-xl
-        transition bg-white p-4 mx-1 my-2
-        ${alert ? "border-2 border-red-500" : ""}
+      w-[280px] min-w-[280px] h-[220px]
+      flex flex-col items-center justify-between
+      rounded-2xl shadow-lg hover:shadow-xl
+      transition bg-white p-4 mx-1 my-2
+      ${alert ? "border-2 border-red-500" : ""}
       `}
+      style={{ borderRadius: "1.5rem" }} // Asegura bordes redondeados
     >
       <CardBody className="flex flex-col items-center justify-center w-full pb-3">
         <div className="text-gray-700 text-5xl mb-2">{icon}</div>
