@@ -306,7 +306,7 @@ export default function EvapotranspiracionC() {
                     showAdditionalInfo={true}
                   />
                 </div>
-                    <div className="h-4" />
+                    <div className="h-6" />
                 {/* Recomendaciones */}
                 <div >
                   <Recomendaciones 
