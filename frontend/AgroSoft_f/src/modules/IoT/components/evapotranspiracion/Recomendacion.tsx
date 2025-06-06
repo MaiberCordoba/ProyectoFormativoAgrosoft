@@ -479,8 +479,6 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
     );
   }
 
-  // Verificar si el cultivo está pasado de cosecha (ya se maneja en las recomendaciones)
-  const sePasoCosecha = false; // Eliminamos esta lógica duplicada
 
   return (
     <Card
@@ -505,23 +503,6 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       </CardHeader>
       
       <CardBody className="p-0">
-        {sePasoCosecha && (
-          <div className="flex items-start gap-3 p-3 rounded-xl border border-red-200 bg-red-50 mb-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base font-semibold text-red-600 animate-pulse">
-                  ¡Atención! Cultivo pasado de cosecha
-                </h3>
-              </div>
-              <div className="mt-2 p-2 bg-white rounded-lg border border-green-200">
-                <span className="text-sm font-bold text-green-700">Acción recomendada:</span>
-                <p className="text-sm font-medium mt-1 ml-2 text-gray-800">
-                  Realice la cosecha lo antes posible para evitar pérdida de calidad o deterioro del producto.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
         {recomendaciones.length > 0 ? (
           <div className="space-y-4 p-3">
             {cultivoInfo && (
@@ -554,18 +535,34 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
                           </span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full transition-all duration-300 ${
-                              cultivoInfo.etapaActual.pasadoDeTiempo 
-                                ? 'bg-red-500' 
-                                : ((cultivo.dias_siembra / cultivoInfo.etapaActual.diasTotales) * 100) > 80 
-                                  ? 'bg-yellow-500' 
-                                  : 'bg-green-500'
-                            }`}
-                            style={{ 
-                              width: `${Math.min(((cultivo.dias_siembra / cultivoInfo.etapaActual.diasTotales) * 100), 100)}%` 
-                            }}
-                          />
+                          {(() => {
+                            if (cultivoInfo.etapaActual.pasadoDeTiempo) {
+                              return (
+                                <div 
+                                  className="h-2 rounded-full transition-all duration-300"
+                                  style={{ 
+                                    width: '100%',
+                                    backgroundColor: '#ef4444' // red-500
+                                  }}
+                                />
+                              );
+                            }
+                            
+                            const [start, end] = cultivoInfo.etapaActual.duracion.split('-').map(Number);
+                            const stageProgress = Math.min(((cultivo.dias_siembra - start + 1) / (end - start + 1)) * 100, 100);
+                            const progressWidth = Math.max(stageProgress, 0);
+                            const backgroundColor = stageProgress > 80 ? '#eab308' : '#22c55e'; // yellow-500 : green-500
+                            
+                            return (
+                              <div 
+                                className="h-2 rounded-full transition-all duration-300"
+                                style={{ 
+                                  width: `${progressWidth}%`,
+                                  backgroundColor: backgroundColor
+                                }}
+                              />
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>
