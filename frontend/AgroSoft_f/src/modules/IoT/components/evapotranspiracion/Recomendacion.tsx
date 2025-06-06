@@ -200,6 +200,47 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
     
     const nuevasRecomendaciones: Recomendacion[] = [];
     
+    // Verificar si el cultivo está pasado de tiempo
+    const cultivoPasadoDeTiempo = cultivoInfo?.etapaActual?.pasadoDeTiempo;
+    
+    // Si el cultivo está pasado de tiempo, solo mostrar recomendación de cosecha urgente
+    if (cultivoPasadoDeTiempo) {
+      nuevasRecomendaciones.push({
+        tipo: 'manejo',
+        titulo: "¡COSECHA URGENTE REQUERIDA!",
+        mensaje: `El cultivo ha superado su tiempo óptimo de cosecha (${cultivoInfo.totalDays} días). Días actuales: ${cultivo.dias_siembra}`,
+        severidad: 'urgente',
+        accion: "Realizar cosecha inmediatamente para evitar pérdida total del cultivo",
+        icon: <Scissors className="text-red-600" />,
+        detalles: [
+          `Días de retraso: ${cultivo.dias_siembra - cultivoInfo.totalDays}`,
+          "El producto puede estar perdiendo calidad rápidamente",
+          "Evaluar si el cultivo aún es comercializable",
+          "Considerar uso alternativo si la calidad está comprometida"
+        ]
+      });
+      
+      // Solo agregar recomendación básica de suspender riego si está pasado de tiempo
+      nuevasRecomendaciones.push({
+        tipo: 'riego',
+        titulo: "Suspender riego",
+        mensaje: "El cultivo está pasado de tiempo, suspender riego hasta cosecha",
+        severidad: 'advertencia',
+        accion: "Suspender riego inmediatamente para evitar deterioro del producto",
+        icon: <Droplets className="text-red-500" />,
+        detalles: [
+          "El exceso de agua puede acelerar el deterioro",
+          "Concentrarse en la cosecha inmediata",
+          "Evaluar la calidad del producto antes de comercializar"
+        ]
+      });
+      
+      setLoading(false);
+      return nuevasRecomendaciones;
+    }
+    
+    // Si el cultivo NO está pasado de tiempo, generar recomendaciones normales
+    
     // 1. Calcular déficit de riego
     const kcRecomendado = cultivoInfo?.etapaActual?.kcRecomendado;
     const requiredETc = datosActuales.et * (kcRecomendado ?? datosActuales.kc);
@@ -266,6 +307,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
     
+    // 2. Recomendaciones de temperatura (solo si no está pasado de tiempo)
     if (datosActuales.temperatura > 30) {
       nuevasRecomendaciones.push({
         tipo: 'proteccion',
@@ -296,6 +338,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
     
+    // 3. Recomendaciones específicas por categoría de cultivo
     if (cultivoInfo) {
       // Para hortalizas de hoja
       if (cultivoInfo.categoria === 'Hortalizas de Hoja') {
@@ -313,12 +356,12 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
           ]
         });
         
-        // Recomendación especial para lechuga
-        if (cultivo.nombre.toLowerCase().includes('lechuga')) {
+        // Recomendación especial para lechuga (solo si está en etapa de cosecha normal)
+        if (cultivo.nombre.toLowerCase().includes('lechuga') && cultivoInfo?.etapaActual?.numero === 4) {
           nuevasRecomendaciones.push({
             tipo: 'manejo',
             titulo: "Cosecha de lechuga",
-            mensaje: "La lechuga está cerca de su punto óptimo de cosecha",
+            mensaje: "La lechuga está en su punto óptimo de cosecha",
             severidad: 'info',
             accion: "Cosechar en las primeras horas de la mañana para mantener frescura",
             icon: <Scissors className="text-gray-600" />,
@@ -347,8 +390,8 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
           ]
         });
         
-        // Recomendación para tomate
-        if (cultivo.nombre.toLowerCase().includes('tomate')) {
+        // Recomendación para tomate (solo en etapas apropiadas)
+        if (cultivo.nombre.toLowerCase().includes('tomate') && cultivoInfo?.etapaActual?.numero && cultivoInfo.etapaActual.numero <= 3) {
           nuevasRecomendaciones.push({
             tipo: 'manejo',
             titulo: "Poda de tomates",
@@ -366,6 +409,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       }
     }
 
+    // 4. Recomendaciones por etapa específica
     if (cultivoInfo?.etapaActual?.numero === 3) { // Etapa 3: Floración
       nuevasRecomendaciones.push({
         tipo: 'riego',
@@ -379,7 +423,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
           "Evitar riegos pesados que puedan lavar polen"
         ]
       });
-    } else if (cultivoInfo?.etapaActual?.numero === 4) { // Etapa 4: Fructificación
+    } else if (cultivoInfo?.etapaActual?.numero === 4) { // Etapa 4: Fructificación/Cosecha
       nuevasRecomendaciones.push({
         tipo: 'riego',
         titulo: "Etapa crítica - Fructificación",
@@ -394,27 +438,8 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
 
-    // 6. Recomendación urgente si el cultivo está pasado de tiempo
-    if (cultivoInfo?.etapaActual?.pasadoDeTiempo) {
-      nuevasRecomendaciones.unshift({
-        tipo: 'manejo',
-        titulo: "¡COSECHA URGENTE REQUERIDA!",
-        mensaje: `El cultivo ha superado su tiempo óptimo de cosecha (${cultivoInfo.totalDays} días). Días actuales: ${cultivo.dias_siembra}`,
-        severidad: 'urgente',
-        accion: "Realizar cosecha inmediatamente para evitar pérdida total del cultivo",
-        icon: <Scissors className="text-red-600" />,
-        detalles: [
-          `Días de retraso: ${cultivo.dias_siembra - cultivoInfo.totalDays}`,
-          "El producto puede estar perdiendo calidad rápidamente",
-          "Evaluar si el cultivo aún es comercializable",
-          "Considerar uso alternativo si la calidad está comprometida"
-        ]
-      });
-    }
-
-    // 7. Recomendaciones para cultivos tropicales
+    // 5. Recomendaciones para cultivos tropicales
     if (cultivoInfo?.categoria === 'Cultivos Tropicales') {
-      // Recomendación de riego profundo
       nuevasRecomendaciones.push({
         tipo: 'riego',
         titulo: "Riego profundo para raíces",
@@ -429,6 +454,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
 
+    // Ordenar recomendaciones por prioridad
     nuevasRecomendaciones.sort((a, b) => {
       const priority = { 'urgente': 1, 'advertencia': 2, 'info': 3 };
       return priority[a.severidad] - priority[b.severidad] || a.tipo.localeCompare(b.tipo);
@@ -453,11 +479,8 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
     );
   }
 
-  // Mostrar advertencia si se ha pasado del día de cosecha recomendado
-  const diasTotales = cultivoInfo?.totalDays;
-  const nombreCultivo = cultivoInfo?.name?.toLowerCase();
-  const nombreActual = cultivo?.nombre?.toLowerCase();
-  const sePasoCosecha = diasTotales && nombreCultivo && nombreActual && nombreCultivo === nombreActual && cultivo.dias_siembra > diasTotales;
+  // Verificar si el cultivo está pasado de cosecha (ya se maneja en las recomendaciones)
+  const sePasoCosecha = false; // Eliminamos esta lógica duplicada
 
   return (
     <Card
@@ -490,9 +513,6 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
                   ¡Atención! Cultivo pasado de cosecha
                 </h3>
               </div>
-              <p className="text-gray-700 text-sm mb-2">
-                El cultivo de <b>{cultivo.nombre}</b> ha superado el tiempo recomendado de cosecha ({diasTotales} días).
-              </p>
               <div className="mt-2 p-2 bg-white rounded-lg border border-green-200">
                 <span className="text-sm font-bold text-green-700">Acción recomendada:</span>
                 <p className="text-sm font-medium mt-1 ml-2 text-gray-800">
