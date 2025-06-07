@@ -119,6 +119,7 @@ export interface Cosechas {
   unidadMedida: UnidadesMedida;
   cantidadTotal: number;
   fecha: string;
+  valorGramo:number;
 }
 
 export interface Desechos {
