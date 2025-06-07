@@ -70,7 +70,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
     const cantidadEnBase = cantidad * unidadSeleccionada.equivalenciabase;
 
     if (cantidadEnBase > cosechaSeleccionada.cantidadTotal) {
-      setError(`La cantidad ingresada excede la cantidad disponible.`);
+      setError(`La cantidad ingresada ${cantidadEnBase} (g), excede la cantidad disponible ${cosechaSeleccionada.cantidadTotal} (g).`);
       return;
     }
     if (cantidad < 0 || descuento < 0){
@@ -153,7 +153,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
             >
               <div className="flex flex-col">
                 <span className="font-semibold">Producto: {producto}</span>
-                <span>Cantidad: {cosecha.cantidad}</span>
+                <span>Cantidad: {cosecha.cantidadTotal} (g)</span>
               </div>
             </SelectItem>
           );
