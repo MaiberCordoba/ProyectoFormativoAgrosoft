@@ -30,7 +30,7 @@ export function CosechasResumenCard() {
       {cosechas.map((cosecha) => {
         const plantacion = plantaciones.find(p => p.id === cosecha.fk_Plantacion);
 
-        if (!cosecha.cantidad || cosecha.cantidad <= 0) return null;
+        if (!cosecha.cantidadTotal || cosecha.cantidadTotal <= 0) return null;
         return (
 
           <>
@@ -39,7 +39,8 @@ export function CosechasResumenCard() {
               image={plantacion?.cultivo.especies.img}
               data={{
                 "Especie": plantacion?.cultivo.especies.nombre,
-                "Cantidad": cosecha.cantidad,
+                "Cantidad": cosecha.cantidadTotal +" (gramos)",
+                "Valor *(g)" : cosecha.valorGramo,
                 "Valor cosecha": `$${cosecha.valorTotal}`,
                 "Fecha Cosecha": cosecha.fecha,
               }}
