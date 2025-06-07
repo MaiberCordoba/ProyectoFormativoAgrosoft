@@ -244,6 +244,8 @@ export interface UsosHerramientas {
   herramienta?: Herramientas;
   fk_Actividad?: number;
   actividad?: Actividades;
+  fk_Control: number;
+  control?: Controles;
   unidades: number;
 }
 

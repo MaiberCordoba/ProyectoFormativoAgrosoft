@@ -9,6 +9,9 @@ import { Plus } from "lucide-react";
 import { CrearActividadesModal } from "../actividades/CrearActividadModal";
 import { CrearHerramientasModal } from "../herramientas/CrearHerramientasModal";
 import { addToast } from "@heroui/toast";
+import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
+import { Controles } from "@/modules/Sanidad/types";
+import { CrearControlModal } from "@/modules/Sanidad/components/controles/CrearControlesModal";
 
 interface CrearUsoHerramientaModalProps {
   onClose: () => void;
@@ -18,18 +21,21 @@ interface CrearUsoHerramientaModalProps {
 export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalProps) => {
   const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
   const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
+  const [fk_Control, setFk_Control] = useState<number | null>(null);
   const [unidades, setUnidades] = useState(0)
   const [error,setError] = useState("")
 
   const [herramientaModal, setHerramientaModal] = useState(false)
   const [actividadModal, setActividadModal] = useState(false)
+  const [controlModal, setControlModal] = useState(false)
 
   const { data: herramientas, isLoading: isLoadingHerramientas, refetch : refetchHerramienta } = useGetHerramientas();
   const { data: actividades, isLoading: isLoadingActividades, refetch : refetchActividad } = useGetActividades();
+  const { data: controles, isLoading: isLoadingControles, refetch : refetchControl } = useGetControles();
   const { mutate, isPending } = usePostUsoHerramienta();
 
   const handleSubmit = () => {
-    if (!fk_Herramienta || !fk_Actividad || !unidades) {
+    if (!fk_Herramienta || !unidades) {
       addToast({
         title:"Campos requeridos",
         description:"Por favor, completa todos los campos.",
@@ -41,6 +47,14 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
       addToast({
         title:"Valores invalidos",
         description:"Por favor, ingresa valores positivos.",
+        color:"danger"
+      })
+      return
+    }
+    if(fk_Control && fk_Actividad){
+      addToast({
+        title:"Error",
+        description:"Solo puede relacionar a una actividad o un control, no ambos.",
         color:"danger"
       })
       return
@@ -60,6 +74,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
           onClose();
           setFk_Herramienta(null);
           setFk_Actividad(null);
+          setFk_Control(null);
           setUnidades(0)
           setError("")
         },
@@ -75,6 +90,11 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
     refetchHerramienta()
     setFk_Herramienta(nuevaHerramienta.id)
     setHerramientaModal(false)
+  }
+  const handleControlCreado = (nuevoControl : Controles) => {
+    refetchControl()
+    setFk_Control(nuevoControl.id)
+    setControlModal(false)
   }
 
   return (
@@ -170,6 +190,39 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
             </Button>
           </div>
         )}
+        {isLoadingControles ? (
+          <p>Cargando controles...</p>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+
+            <Select
+              label="Control"
+              size="sm"
+              placeholder="Selecciona un control"
+              selectedKeys={fk_Control ? [fk_Control.toString()] : []}
+              onSelectionChange={(keys) => {
+                const selectedKey = Array.from(keys)[0];
+                setFk_Control(selectedKey ? Number(selectedKey) : null);
+              }}
+            >
+              {(controles || []).map((control) => (
+                <SelectItem key={control.id.toString()}>
+                  {control.descripcion}
+                </SelectItem>
+              ))}
+            </Select>
+            </div>
+            <Button
+            onPress={()=>setControlModal(true)}
+            color="success"
+            title="Crear control"
+            size="sm"
+            >
+              <Plus className="w-5 h-5 text-white"/>
+            </Button>
+          </div>
+        )}
       </ModalComponent>
       {actividadModal && (
         <CrearActividadesModal
@@ -181,6 +234,12 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
         <CrearHerramientasModal
         onClose={()=>setHerramientaModal(false)}
         onCreate={handleHerramientaCreada}
+        />
+      )}
+      {controlModal && (
+        <CrearControlModal
+        onClose={()=>setControlModal(false)}
+        onCreate={handleControlCreado}
         />
       )}
     </>
