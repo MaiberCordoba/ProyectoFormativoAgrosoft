@@ -27,17 +27,31 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
   const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
   const [PlantacionModal, setPlantacionModal] = useState(false);
 
-  const { data: plantaciones, isLoading: isLoadingPlantaciones, refetch: refetchPlantaciones } = useGetPlantaciones();
-  const { data: UnidadMedida, isLoading: isLoadingUnidadMedida, refetch: refetchUnidadMedida } = useGetUnidadesMedida();
+  const {
+    data: plantaciones,
+    isLoading: isLoadingPlantaciones,
+    refetch: refetchPlantaciones,
+  } = useGetPlantaciones();
+  const {
+    data: UnidadMedida,
+    isLoading: isLoadingUnidadMedida,
+    refetch: refetchUnidadMedida,
+  } = useGetUnidadesMedida();
   const { mutate, isPending } = usePostCosecha();
 
   const handleSubmit = () => {
-    if (!fk_Plantacion || cantidad === "" || !fk_UnidadMedida || !fecha || precioUnidad === "") {
+    if (
+      !fk_Plantacion ||
+      cantidad === "" ||
+      !fk_UnidadMedida ||
+      !fecha ||
+      precioUnidad === ""
+    ) {
       addToast({
-        title:"Campos requeridos",
-        description:"Por favor, completa todos los campos.",
-        color:"danger"
-      })
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger",
+      });
       return;
     }
 
@@ -101,7 +115,9 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           },
         ]}
       >
-        {mensajeError && <p className="text-red-500 text-sm mb-2">{mensajeError}</p>}
+        {mensajeError && (
+          <p className="text-red-500 text-sm mb-2">{mensajeError}</p>
+        )}
 
         <Input
           label="Fecha de Cosecha"
@@ -153,7 +169,9 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
                 }}
               >
                 {(plantaciones || []).map((plantacion) => (
-                  <SelectItem key={plantacion.id.toString()}>{plantacion.cultivo.nombre}</SelectItem>
+                  <SelectItem key={plantacion.id.toString()}>
+                    {plantacion.cultivo?.nombre}
+                  </SelectItem>
                 ))}
               </Select>
             </div>
@@ -178,14 +196,18 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
                 label="Unidad de medida"
                 size="sm"
                 placeholder="Selecciona una unidad de medida"
-                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
+                selectedKeys={
+                  fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []
+                }
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
                   setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
                 }}
               >
                 {(UnidadMedida || []).map((unidadesMedida) => (
-                  <SelectItem key={unidadesMedida.id.toString()}>{unidadesMedida.nombre}</SelectItem>
+                  <SelectItem key={unidadesMedida.id.toString()}>
+                    {unidadesMedida.nombre}
+                  </SelectItem>
                 ))}
               </Select>
             </div>
@@ -203,11 +225,17 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
       </ModalComponent>
 
       {PlantacionModal && (
-        <CrearPlantacionModal onClose={() => setPlantacionModal(false)} onCreate={handlePlantacionCreada} />
+        <CrearPlantacionModal
+          onClose={() => setPlantacionModal(false)}
+          onCreate={handlePlantacionCreada}
+        />
       )}
 
       {unidadMedidaModal && (
-        <CrearUnidadesMedidaModal onClose={() => setUnidadMedidaModal(false)} onCreate={handleUnidadMedidaCreada} />
+        <CrearUnidadesMedidaModal
+          onClose={() => setUnidadMedidaModal(false)}
+          onCreate={handleUnidadMedidaCreada}
+        />
       )}
     </>
   );

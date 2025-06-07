@@ -13,31 +13,40 @@ import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/us
 
 export function CosechasList() {
   const { data, isLoading, error } = useGetCosechas();
-    const { data : plantacion, isLoading: loadingPlantaciones } = useGetPlantaciones()
-    const { data : unidadesMedida, isLoading: loadingUnidadMedida } = useGetUnidadesMedida()
-  
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    cosechaEditada, 
-    handleEditar 
+  const { data: plantacion, isLoading: loadingPlantaciones } =
+    useGetPlantaciones();
+  const { data: unidadesMedida, isLoading: loadingUnidadMedida } =
+    useGetUnidadesMedida();
+
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    cosechaEditada,
+    handleEditar,
   } = useEditarCosecha();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearCosecha();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     cosechaEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarCosecha();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Plantacion: 0, fk_UnidadMedida: 0,cantidad: 0, fecha: "",precioUnidad:0});
+    handleCrear({
+      id: 0,
+      fk_Plantacion: 0,
+      fk_UnidadMedida: 0,
+      cantidad: 0,
+      fecha: "",
+      precioUnidad: 0,
+    });
   };
 
   // Definición de columnas movida aquí
@@ -55,11 +64,21 @@ export function CosechasList() {
   const renderCell = (item: Cosechas, columnKey: React.Key) => {
     switch (columnKey) {
       case "plantacion":
-        const plantaciones = plantacion?.find((c) => c.id === item.fk_Plantacion);
-        return <span>{plantaciones ? plantaciones.cultivo.nombre : "No definido"}</span>;
+        const plantaciones = plantacion?.find(
+          (c) => c.id === item.fk_Plantacion
+        );
+        return (
+          <span>
+            {plantaciones ? plantaciones?.cultivo?.nombre : "No definido"}
+          </span>
+        );
       case "unidadMedida":
-        const unidadMedida = unidadesMedida?.find((c) => c.id === item.fk_UnidadMedida);
-        return <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>;
+        const unidadMedida = unidadesMedida?.find(
+          (c) => c.id === item.fk_UnidadMedida
+        );
+        return (
+          <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>
+        );
       case "cantidad":
         return <span>{item.cantidad}</span>;
       case "totalGramos":
@@ -80,7 +99,8 @@ export function CosechasList() {
     }
   };
 
-  if (isLoading || loadingPlantaciones || loadingUnidadMedida) return <p>Cargando...</p>;
+  if (isLoading || loadingPlantaciones || loadingUnidadMedida)
+    return <p>Cargando...</p>;
   if (error) return <p>Error al cargar las Cosechas</p>;
 
   return (
@@ -103,11 +123,7 @@ export function CosechasList() {
         />
       )}
 
-      {isCreateModalOpen && (
-        <CrearCosechasModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearCosechasModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && cosechaEliminada && (
         <EliminarCosechasModal

@@ -195,13 +195,14 @@ export default function IoTPages() {
   return (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-6 justify-center items-center w-full max-w-6xl mx-auto">
     <div className="col-span-full">
-      <br /><br />
+      <div className="h-8" />
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full max-w-6xl mx-auto px-4 mb-4 gap-4">
         <h2 className="text-2xl font-bold text-blue-800 text-center md:text-left w-full md:w-auto">
           <strong>Promedio de sensores</strong>
         </h2>
 
-      </div><br />
+      </div>
+      <div className="h-8" />
       <div className="col-span-full flex flex-row gap-4 w-full max-w-3xl mx-auto px-4 items-center justify-center">
         <Select
           label=""
@@ -265,8 +266,7 @@ export default function IoTPages() {
           size="sm"
         />
       </div>
-      <br />
-
+      <div className="h-8" />
       <div className="overflow-x-hidden w-full mt-4 relative">
         <div className="auto-scroll-container flex gap-4 pb-4 px-4">
           {[...sensoresFiltrados, ...sensoresFiltrados].map((sensor, index) => {
@@ -306,7 +306,7 @@ export default function IoTPages() {
         </div>
       </div>
     </div>
-          <br /><br />
+    <div className="h-8" />
     <div className="col-span-full mt-6 flex flex-col items-center">
       <button
         className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"

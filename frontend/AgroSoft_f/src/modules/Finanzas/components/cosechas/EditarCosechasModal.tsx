@@ -148,7 +148,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
         >
           {(plantaciones || []).map((plantacion) => (
             <SelectItem key={plantacion.id.toString()}>
-              {plantacion.cultivo.nombre}
+              {plantacion.cultivo?.nombre}
             </SelectItem>
           ))}
         </Select>

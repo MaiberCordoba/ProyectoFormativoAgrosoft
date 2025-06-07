@@ -32,7 +32,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
       addToast({
         title: "Campos obligatorios",
         description: "Por favor completa el nombre y selecciona una especie.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

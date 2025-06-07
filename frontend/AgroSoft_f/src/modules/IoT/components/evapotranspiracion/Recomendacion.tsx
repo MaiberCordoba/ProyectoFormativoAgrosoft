@@ -1,4 +1,3 @@
-// src/components/RecomendacionesDetalladas.tsx
 import { useState, useMemo } from "react";
 import { 
   Card,
@@ -147,31 +146,50 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
 ];
 
     for (const category of cropCategories) {
-      const foundCrop = category.crops.find((c: Crop) => 
-        c.name.toLowerCase() === cultivo.nombre.toLowerCase()
-      );
-      
-      if (foundCrop) {
-        let etapaActual = null;
-        for (let i = 0; i < foundCrop.stages.length; i++) {
-          const [start, end] = foundCrop.stages[i].duration.split('-').map(Number);
-          if (cultivo.dias_siembra >= start && cultivo.dias_siembra <= end) {
-            etapaActual = {
-              numero: i + 1,
-              kcRecomendado: foundCrop.stages[i].kc,
-              duracion: foundCrop.stages[i].duration,
-              diasTotales: foundCrop.totalDays
-            };
-            break;
-          }
-        }
-        
-        return {
-          ...foundCrop,
-          categoria: category.name,
-          etapaActual
-        };
-      }
+    const foundCrop = category.crops.find((c: Crop) => 
+    c.name.toLowerCase() === cultivo.nombre.toLowerCase()
+    );
+    
+    if (foundCrop) {
+    let etapaActual = null;
+    
+    // Determinar la etapa basándose en los días de siembra
+    for (let i = 0; i < foundCrop.stages.length; i++) {
+    const [start, end] = foundCrop.stages[i].duration.split('-').map(Number);
+    if (cultivo.dias_siembra >= start && cultivo.dias_siembra <= end) {
+    etapaActual = {
+    numero: i + 1,
+    kcRecomendado: foundCrop.stages[i].kc,
+    duracion: foundCrop.stages[i].duration,
+    diasTotales: foundCrop.totalDays,
+    nombre: i === 0 ? 'Germinación/Establecimiento' :
+    i === 1 ? 'Crecimiento vegetativo' :
+    i === 2 ? 'Floración/Desarrollo' :
+    'Maduración/Cosecha'
+    };
+    break;
+    }
+    }
+    
+    // Si no se encontró etapa (cultivo pasado de tiempo), asignar la última etapa
+    if (!etapaActual && cultivo.dias_siembra > foundCrop.totalDays) {
+    const lastStageIndex = foundCrop.stages.length - 1;
+    etapaActual = {
+    numero: lastStageIndex + 1,
+    kcRecomendado: foundCrop.stages[lastStageIndex].kc,
+    duracion: foundCrop.stages[lastStageIndex].duration,
+    diasTotales: foundCrop.totalDays,
+    nombre: 'Maduración/Cosecha (Pasado de tiempo)',
+    pasadoDeTiempo: true
+    };
+    }
+    
+    return {
+    ...foundCrop,
+    categoria: category.name,
+    etapaActual
+    };
+    }
     }
     return null;
   }, [cultivo]);
@@ -181,6 +199,47 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
     if (!cultivo || !datosActuales) return [];
     
     const nuevasRecomendaciones: Recomendacion[] = [];
+    
+    // Verificar si el cultivo está pasado de tiempo
+    const cultivoPasadoDeTiempo = cultivoInfo?.etapaActual?.pasadoDeTiempo;
+    
+    // Si el cultivo está pasado de tiempo, solo mostrar recomendación de cosecha urgente
+    if (cultivoPasadoDeTiempo) {
+      nuevasRecomendaciones.push({
+        tipo: 'manejo',
+        titulo: "¡COSECHA URGENTE REQUERIDA!",
+        mensaje: `El cultivo ha superado su tiempo óptimo de cosecha (${cultivoInfo.totalDays} días). Días actuales: ${cultivo.dias_siembra}`,
+        severidad: 'urgente',
+        accion: "Realizar cosecha inmediatamente para evitar pérdida total del cultivo",
+        icon: <Scissors className="text-red-600" />,
+        detalles: [
+          `Días de retraso: ${cultivo.dias_siembra - cultivoInfo.totalDays}`,
+          "El producto puede estar perdiendo calidad rápidamente",
+          "Evaluar si el cultivo aún es comercializable",
+          "Considerar uso alternativo si la calidad está comprometida"
+        ]
+      });
+      
+      // Solo agregar recomendación básica de suspender riego si está pasado de tiempo
+      nuevasRecomendaciones.push({
+        tipo: 'riego',
+        titulo: "Suspender riego",
+        mensaje: "El cultivo está pasado de tiempo, suspender riego hasta cosecha",
+        severidad: 'advertencia',
+        accion: "Suspender riego inmediatamente para evitar deterioro del producto",
+        icon: <Droplets className="text-red-500" />,
+        detalles: [
+          "El exceso de agua puede acelerar el deterioro",
+          "Concentrarse en la cosecha inmediata",
+          "Evaluar la calidad del producto antes de comercializar"
+        ]
+      });
+      
+      setLoading(false);
+      return nuevasRecomendaciones;
+    }
+    
+    // Si el cultivo NO está pasado de tiempo, generar recomendaciones normales
     
     // 1. Calcular déficit de riego
     const kcRecomendado = cultivoInfo?.etapaActual?.kcRecomendado;
@@ -248,6 +307,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
     
+    // 2. Recomendaciones de temperatura (solo si no está pasado de tiempo)
     if (datosActuales.temperatura > 30) {
       nuevasRecomendaciones.push({
         tipo: 'proteccion',
@@ -278,6 +338,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
     
+    // 3. Recomendaciones específicas por categoría de cultivo
     if (cultivoInfo) {
       // Para hortalizas de hoja
       if (cultivoInfo.categoria === 'Hortalizas de Hoja') {
@@ -295,12 +356,12 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
           ]
         });
         
-        // Recomendación especial para lechuga
-        if (cultivo.nombre.toLowerCase().includes('lechuga')) {
+        // Recomendación especial para lechuga (solo si está en etapa de cosecha normal)
+        if (cultivo.nombre.toLowerCase().includes('lechuga') && cultivoInfo?.etapaActual?.numero === 4) {
           nuevasRecomendaciones.push({
             tipo: 'manejo',
             titulo: "Cosecha de lechuga",
-            mensaje: "La lechuga está cerca de su punto óptimo de cosecha",
+            mensaje: "La lechuga está en su punto óptimo de cosecha",
             severidad: 'info',
             accion: "Cosechar en las primeras horas de la mañana para mantener frescura",
             icon: <Scissors className="text-gray-600" />,
@@ -329,8 +390,8 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
           ]
         });
         
-        // Recomendación para tomate
-        if (cultivo.nombre.toLowerCase().includes('tomate')) {
+        // Recomendación para tomate (solo en etapas apropiadas)
+        if (cultivo.nombre.toLowerCase().includes('tomate') && cultivoInfo?.etapaActual?.numero && cultivoInfo.etapaActual.numero <= 3) {
           nuevasRecomendaciones.push({
             tipo: 'manejo',
             titulo: "Poda de tomates",
@@ -348,6 +409,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       }
     }
 
+    // 4. Recomendaciones por etapa específica
     if (cultivoInfo?.etapaActual?.numero === 3) { // Etapa 3: Floración
       nuevasRecomendaciones.push({
         tipo: 'riego',
@@ -361,7 +423,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
           "Evitar riegos pesados que puedan lavar polen"
         ]
       });
-    } else if (cultivoInfo?.etapaActual?.numero === 4) { // Etapa 4: Fructificación
+    } else if (cultivoInfo?.etapaActual?.numero === 4) { // Etapa 4: Fructificación/Cosecha
       nuevasRecomendaciones.push({
         tipo: 'riego',
         titulo: "Etapa crítica - Fructificación",
@@ -376,9 +438,8 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
 
-    // 6. Recomendaciones para cultivos tropicales
+    // 5. Recomendaciones para cultivos tropicales
     if (cultivoInfo?.categoria === 'Cultivos Tropicales') {
-      // Recomendación de riego profundo
       nuevasRecomendaciones.push({
         tipo: 'riego',
         titulo: "Riego profundo para raíces",
@@ -393,6 +454,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       });
     }
 
+    // Ordenar recomendaciones por prioridad
     nuevasRecomendaciones.sort((a, b) => {
       const priority = { 'urgente': 1, 'advertencia': 2, 'info': 3 };
       return priority[a.severidad] - priority[b.severidad] || a.tipo.localeCompare(b.tipo);
@@ -416,6 +478,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
       </div>
     );
   }
+
 
   return (
     <Card
@@ -445,30 +508,96 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
             {cultivoInfo && (
               <div className="mb-4 p-3 bg-white rounded-xl border border-green-200">
                 <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium">Días desde siembra:</span>
-                    <span className="font-semibold">{cultivo.dias_siembra}</span>
-                  </div>
-                  {cultivoInfo.etapaActual && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium">Etapa:</span>
-                      <Badge color="success" variant="flat">
-                        Etapa {cultivoInfo.etapaActual.numero} ({cultivoInfo.etapaActual.duracion} días)
-                      </Badge>
+                  
+                  {cultivoInfo?.etapaActual ? (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Etapa:</span>
+                        <Badge 
+                          color={cultivoInfo.etapaActual.pasadoDeTiempo ? "danger" : "success"} 
+                          variant="flat"
+                        >
+                          Etapa {cultivoInfo.etapaActual.numero} ({cultivoInfo.etapaActual.duracion} días)
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Fase:</span>
+                        <span className="text-xs text-gray-600">
+                          {cultivoInfo.etapaActual.nombre}
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium">Progreso:</span>
+                          <span className="text-xs text-gray-600">
+                            Día {cultivo.dias_siembra} de {cultivoInfo.etapaActual.diasTotales} 
+                            ({((cultivo.dias_siembra / cultivoInfo.etapaActual.diasTotales) * 100).toFixed(1)}%)
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          {(() => {
+                            if (cultivoInfo.etapaActual.pasadoDeTiempo) {
+                              return (
+                                <div 
+                                  className="h-2 rounded-full transition-all duration-300"
+                                  style={{ 
+                                    width: '100%',
+                                    backgroundColor: '#ef4444' // red-500
+                                  }}
+                                />
+                              );
+                            }
+                            
+                            const [start, end] = cultivoInfo.etapaActual.duracion.split('-').map(Number);
+                            const stageProgress = Math.min(((cultivo.dias_siembra - start + 1) / (end - start + 1)) * 100, 100);
+                            const progressWidth = Math.max(stageProgress, 0);
+                            const backgroundColor = stageProgress > 80 ? '#eab308' : '#22c55e'; // yellow-500 : green-500
+                            
+                            return (
+                              <div 
+                                className="h-2 rounded-full transition-all duration-300"
+                                style={{ 
+                                  width: `${progressWidth}%`,
+                                  backgroundColor: backgroundColor
+                                }}
+                              />
+                            );
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Etapa:</span>
+                        <Badge color="warning" variant="flat">
+                          No determinada
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Cultivo:</span>
+                        <span className="text-xs text-gray-600">
+                          {cultivo.nombre} (No encontrado en base de datos)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium">Días siembra:</span>
+                        <span className="text-xs text-gray-600">
+                          {cultivo.dias_siembra} días
+                        </span>
+                      </div>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium">Temperatura:</span>
-                    <span className="font-semibold">{datosActuales.temperatura}°C</span>
-                  </div>
+                  
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium">Humedad suelo:</span>
                     <Chip
                       color={
-                        datosActuales.estado_humedad === 'bajo' ? 'danger' :
-                        datosActuales.estado_humedad === 'alto' ? 'warning' : 'success'
+                      datosActuales.estado_humedad === 'bajo' ? 'danger' :
+                      datosActuales.estado_humedad === 'alto' ? 'warning' : 'success'
                       }
                       variant="flat"
+                      startContent={<Droplet className="w-4 h-4 mr-1" />}
                     >
                       {datosActuales.humedad_suelo}%
                     </Chip>
@@ -476,7 +605,6 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
                 </div>
               </div>
             )}
-            {/* Lista de recomendaciones */}
             {recomendaciones.map((rec, index) => (
               <div
                 key={index}
@@ -491,7 +619,7 @@ export default function Recomendaciones({ cultivo, datosActuales }: Props) {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className={`text-base font-semibold ${
-                          rec.severidad === 'urgente' ? 'text-red-800' :
+                          rec.severidad === 'urgente' ? 'text-red-700' :
                           rec.severidad === 'advertencia' ? 'text-amber-800' :
                           'text-blue-800'
                         }`}>

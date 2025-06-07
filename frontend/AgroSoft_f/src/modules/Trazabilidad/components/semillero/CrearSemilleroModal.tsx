@@ -28,7 +28,7 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
       addToast({
         title: "Campos obligatorios",
         description: "Por favor, completa todos los campos antes de guardar.",
-        color: "warning",
+        color: "danger",
       });
       return;
     }

@@ -120,58 +120,51 @@ const RegistroMasivoModal: React.FC<RegistroMasivoModalProps> = ({ isOpen, onClo
 
   return (
     <ModalComponent
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Registro Masivo de Usuarios"
-      footerButtons={[]}
-    >
-      <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-2">
-          El archivo Excel debe contener solo estas 3 columnas:
-        </p>
-        <ul className="list-disc pl-5 text-sm">
-          <li><strong>nombre</strong> (texto)</li>
-          <li><strong>apellido</strong> (texto)</li>
-          <li><strong>identificacion</strong> (número)</li>
-        </ul>
-      </div>
+  isOpen={isOpen}
+  onClose={onClose}
+  title="Registro Masivo de Usuarios"
+  footerButtons={[
+    {
+      label: isLoading ? "Subiendo..." : "Subir Excel",
+      color: "success",
+      variant: "solid",
+      onClick: handleSeleccionarArchivo,
+    },
+    {
+      label: "Descargar Plantilla",
+      color: "success",
+      variant: "solid",
+      onClick: exportarAExcel,
+    },
+  ]}
+>
+  <div className="bg-gray-100 p-4 rounded-md border border-gray-300">
+    <p className="text-sm text-gray-700 mb-2">
+      El archivo Excel debe contener solo estas 3 columnas:
+    </p>
+    <ul className="list-disc pl-5 text-sm text-gray-800 space-y-1">
+      <li><strong>nombre</strong> (texto)</li>
+      <li><strong>apellido</strong> (texto)</li>
+      <li><strong>identificacion</strong> (número)</li>
+    </ul>
+  </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <button
-          onClick={handleSeleccionarArchivo}
-          disabled={isLoading}
-          className={`px-4 py-2 rounded-lg font-semibold ${
-            isLoading 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-green-600 hover:bg-green-700 text-black'
-          } transition-all duration-300`}
-        >
-          {isLoading ? 'Subiendo...' : 'Subir Excel'}
-        </button>
+  <input
+    type="file"
+    accept=".xlsx, .xls"
+    ref={inputFileRef}
+    onChange={handleArchivoChange}
+    className="hidden"
+    disabled={isLoading}
+  />
 
-        <input
-          type="file"
-          accept=".xlsx, .xls"
-          ref={inputFileRef}
-          onChange={handleArchivoChange}
-          className="hidden"
-          disabled={isLoading}
-        />
+  {isLoading && (
+    <div className="text-center text-sm text-gray-600 mt-2">
+      Procesando archivo, por favor espera...
+    </div>
+  )}
+</ModalComponent>
 
-        <button
-          onClick={exportarAExcel}
-          className="px-4 py-2 bg-blue-600 text-black font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300"
-        >
-          Descargar Plantilla
-        </button>
-      </div>
-
-      {isLoading && (
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600">Procesando archivo, por favor espera...</p>
-        </div>
-      )}
-    </ModalComponent>
   );
 };
 
