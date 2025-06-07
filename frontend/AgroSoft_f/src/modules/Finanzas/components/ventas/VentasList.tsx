@@ -44,8 +44,8 @@ export function VentasList() {
   const columnas = [
     { name: "Fecha Venta", uid: "fecha" },
     { name: "Producto", uid: "cosecha" },
-    { name: "Unidad de medida", uid: "unidadMedida" },
     { name: "Cantidad", uid: "cantidad" },
+    { name: "Unidad de medida", uid: "unidadMedida" },
     { name: "Valor Total de venta", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" },
   ];
