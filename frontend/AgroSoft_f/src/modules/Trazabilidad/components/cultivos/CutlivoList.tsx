@@ -101,10 +101,6 @@ export function CultivosList() {
               () => handleEditar(item), 
               ["admin", "instructor", "pasante"]
             )}
-            onEliminar={() => handleActionWithPermission(
-              () => handleEliminar(item), 
-              ["admin", "instructor"]
-            )}
           />
         );
       default:
