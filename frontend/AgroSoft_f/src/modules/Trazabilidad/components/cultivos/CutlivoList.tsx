@@ -10,6 +10,7 @@ import EliminarCultivoModal from "./EliminarCultivo";
 import { Cultivo } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
+import { Chip } from "@heroui/react";
 
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
@@ -83,7 +84,16 @@ export function CultivosList() {
       case "especies":
         return <span>{item.especies?.nombre || "Sin especie"}</span>;
       case "activo":
-        return <span>{item.activo ? "Activo" : "Inactivo"}</span>;
+              return (
+                <Chip
+                  size="sm"
+                  className="capitalize"
+                  variant="dot"
+                  color={item.activo ? "success" : "danger"}
+                >
+                  {item.activo ? "Activo" : "Inactivo"}
+                </Chip>
+              );
       case "acciones":
         return (
           <AccionesTabla

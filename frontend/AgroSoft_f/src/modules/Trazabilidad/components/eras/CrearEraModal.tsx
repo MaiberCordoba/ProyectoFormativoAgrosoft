@@ -121,7 +121,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
+            variant: "solid",
             onClick: handleSubmit,
           },
         ]}

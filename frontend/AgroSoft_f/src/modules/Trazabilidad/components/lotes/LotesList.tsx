@@ -10,6 +10,7 @@ import EliminarLoteModal from "./EliminarLotes";
 import { Lotes } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
+import { Chip } from "@heroui/react";
 
 export function LoteList() {
   const { data, isLoading, error } = useGetLotes();
@@ -106,8 +107,17 @@ export function LoteList() {
       case "latS2":
       case "longS2":
         return <span>{item[columnKey as keyof Lotes]}</span>;
-      case "estado":
-        return <span>{item.estado ? "Disponible" : "Ocupado"}</span>;
+ case "estado":
+        return (
+          <Chip
+            size="sm"
+            className="capitalize"
+            variant="dot"
+            color={item.estado ? "success" : "danger"}
+          >
+            {item.estado ? "Disponible" : "Ocupado"}
+          </Chip>
+        );
       case "acciones":
         return (
           <AccionesTabla

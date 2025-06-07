@@ -61,7 +61,7 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}

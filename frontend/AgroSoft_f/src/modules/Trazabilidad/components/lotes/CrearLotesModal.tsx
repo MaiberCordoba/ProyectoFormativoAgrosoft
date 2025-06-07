@@ -107,7 +107,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}

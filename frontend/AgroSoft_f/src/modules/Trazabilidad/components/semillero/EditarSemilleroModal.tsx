@@ -18,7 +18,7 @@ const EditarSemilleroModal: React.FC<EditarSemilleroModalProps> = ({
   const [unidades, setUnidades] = useState<number>(semillero.unidades);
   const [fechasiembra, setFechaSiembra] = useState<string>(semillero.fechasiembra);
   const [fechaestimada, setFechaEstimada] = useState<string>(semillero.fechaestimada);
-  const [fk_especie, setFk_Especie] = useState<number>(semillero.fk_especie);
+  const [fk_especie, setFk_Especie] = useState<number>(semillero.cultivo.fk_Especie);
 
   const { mutate, isPending } = usePatchSemilleros();
   const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
@@ -77,7 +77,7 @@ const EditarSemilleroModal: React.FC<EditarSemilleroModalProps> = ({
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}
