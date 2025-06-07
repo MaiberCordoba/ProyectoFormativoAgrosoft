@@ -119,6 +119,7 @@ export interface Cosechas {
   unidadMedida: UnidadesMedida;
   cantidadTotal: number;
   fecha: string;
+  valorGramo:number;
 }
 
 export interface Desechos {
@@ -243,6 +244,8 @@ export interface UsosHerramientas {
   herramienta?: Herramientas;
   fk_Actividad?: number;
   actividad?: Actividades;
+  fk_Control: number;
+  control?: Controles;
   unidades: number;
 }
 

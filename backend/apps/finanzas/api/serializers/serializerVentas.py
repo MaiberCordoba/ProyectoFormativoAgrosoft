@@ -28,10 +28,6 @@ class SerializerVentas(ModelSerializer):
                     raise ValidationError(
                         f"La cantidad solicitada ({cantidad_en_base}) excede la cantidad disponible ({cantidad_disponible_total})."
                     )
-                if cantidad > cosecha.cantidad:
-                    raise ValidationError(
-                        f"La cantidad ingresada ({cantidad}) excede la cantidad cosechada ({cosecha.cantidad})"
-                    )
             else:
                 if cantidad_en_base > cosecha.cantidadTotal:
                     raise ValidationError(
@@ -60,7 +56,6 @@ class SerializerVentas(ModelSerializer):
         if cosecha and unidad_medida:
             cantidad_en_base = cantidad * unidad_medida.equivalenciabase
             cosecha.cantidadTotal -= cantidad_en_base
-            cosecha.cantidad -= cantidad
             cosecha.save()
 
         return super().create(validated_data)
@@ -77,8 +72,6 @@ class SerializerVentas(ModelSerializer):
         cosecha.cantidadTotal += cantidad_anterior_base
         cosecha.cantidadTotal -= cantidad_nueva_base
 
-        cosecha.cantidad += instance.cantidad
-        cosecha.cantidad -= cantidad_nueva
 
         cosecha.save()
 

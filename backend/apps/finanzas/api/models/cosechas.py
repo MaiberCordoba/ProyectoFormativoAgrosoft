@@ -9,6 +9,7 @@ class Cosechas(models.Model):
     precioUnidad = models.IntegerField(null=True)
     cantidadTotal = models.FloatField(null=True, blank=True)
     valorTotal = models.IntegerField(null=True,blank=True)
+    valorGramo = models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
     fecha = models.DateField(auto_now=False)
 
     def __str__(self):
