@@ -8,38 +8,74 @@ import EditarTipoActividadModal from "./EditarTipoActividadModal";
 import { CrearTipoActividadModal } from "./CrearTipoActividadModal";
 import EliminarTipoActividadModal from "./EliminarTipoActividad";
 import { TipoActividad } from "../../types";
+import { useAuth } from "@/hooks/UseAuth"; // Asegúrate de que la ruta sea correcta
+import { addToast } from "@heroui/toast";
 
 export function TipoActividadList() {
   const { data, isLoading, error } = useGetTipoActividad();
+  // No necesitamos `role` ni `user` directamente aquí, solo `hasRole` y `isLoading`
+  const { hasRole, isLoading: isAuthLoading } = useAuth();
 
   const {
     isOpen: isEditModalOpen,
     closeModal: closeEditModal,
     tipoActividadEditada,
-    handleEditar,
+    handleEditar, // Esta función abre el modal de edición
   } = useEditarTipoActividad();
 
   const {
     isOpen: isCreateModalOpen,
     closeModal: closeCreateModal,
-    handleCrear,
+    handleCrear, // Esta función abre el modal de creación
   } = useCrearTipoActividad();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     tipoActividadEliminada,
-    handleEliminar,
+    handleEliminar, // Esta función abre el modal de eliminación
   } = useEliminarTipoActividad();
 
-  const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "" });
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "Solo los administradores pueden realizar esta acción",
+      color: "danger",
+    });
   };
 
-  // Columnas de la tabla
+  // Verificación de permiso para el botón de crear
+  const handleCrearNuevo = () => {
+    if (hasRole("admin")) {
+      handleCrear({ id: 0, nombre: "" }); // Abre el modal de creación
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para manejar la edición con verificación de permisos
+  const handleEditarConPermiso = (item: TipoActividad) => {
+    if (hasRole("admin")) {
+      handleEditar(item); // Abre el modal de edición
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para manejar la eliminación con verificación de permisos
+  const handleEliminarConPermiso = (item: TipoActividad) => {
+    if (hasRole("admin")) {
+      handleEliminar(item); // Abre el modal de eliminación
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Columnas de la tabla (Acciones siempre visible)
   const columnas = [
     { name: "Nombre", uid: "nombre" },
-    { name: "Acciones", uid: "acciones" },
+    { name: "Acciones", uid: "acciones" }, // La columna de acciones siempre está presente
   ];
 
   // Render de cada celda
@@ -50,8 +86,8 @@ export function TipoActividadList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() => handleEditarConPermiso(item)} // Llama a la función con verificación
+            onEliminar={() => handleEliminarConPermiso(item)} // Llama a la función con verificación
           />
         );
       default:
@@ -59,7 +95,8 @@ export function TipoActividadList() {
     }
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  // Manejo de estados de carga
+  if (isLoading || isAuthLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los tipos de actividad</p>;
 
   return (
@@ -71,6 +108,7 @@ export function TipoActividadList() {
         placeholderBusqueda="Buscar por nombre"
         renderCell={renderCell}
         onCrearNuevo={handleCrearNuevo}
+        // El botón de crear no está deshabilitado a nivel de prop, la lógica está en handleCrearNuevo
       />
 
       {isEditModalOpen && tipoActividadEditada && (

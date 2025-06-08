@@ -2,49 +2,54 @@ import { createContext, useState, useEffect, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
 import { User } from "@/modules/Users/types";
 import apiClient from "@/api/apiClient";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  role: string | null;
+  isLoading: boolean;
   login: (token: string, userData: User) => void;
   logout: () => void;
   updateUser: (userData: User) => void;
+  refreshUser: () => Promise<void>;
 }
 
 interface JwtPayload {
   exp: number;
   user_id: number;
-  // Agrega aquí otras propiedades que necesites
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
+  const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem("token");
   });
 
+  const {
+    data: user,
+    isLoading,
+    refetch: refetchUser,
+  } = useQuery({
+    queryKey: ["current-user"],
+    queryFn: async () => {
+      if (!token) return null;
+      const response = await apiClient.get("/usuarios/me/");
+      return response.data;
+    },
+    enabled: !!token,
+    staleTime: 0,
+  });
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  // Verifica si el token es válido (no expirado y formato correcto)
   const isTokenValid = useCallback((tokenString: string): boolean => {
     try {
       const decoded = jwtDecode<JwtPayload>(tokenString);
-      const currentTime = Date.now() / 1000; // Tiempo actual en segundos
-      
-      // Verificar expiración
-      if (decoded.exp < currentTime) {
-        console.warn("Token expirado");
-        return false;
-      }
-      
-      return true;
+      return decoded.exp > Date.now() / 1000;
     } catch (error) {
       console.error("Token inválido:", error);
       return false;
@@ -52,70 +57,95 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    const verifyToken = async () => {
-      if (token) {
-        if (isTokenValid(token)) {
-          // Si el token es válido, actualizamos el estado
-          setIsAuthenticated(true);
-          
-          // Opcional: Si no tenemos datos de usuario, los obtenemos
-          if (!user) {
-            try {
-              const response = await apiClient.get("/usuarios/me/");
-              setUser(response.data);
-              localStorage.setItem("user", JSON.stringify(response.data));
-            } catch (error) {
-              console.error("Error obteniendo datos de usuario:", error);
-            }
-          }
-        } else {
-          // Token inválido - hacemos logout
+    const verifyToken = () => {
+      console.log(
+        "Verificando token:",
+        token,
+        "Ruta:",
+        window.location.pathname
+      );
+      const storedToken = localStorage.getItem("token");
+
+      // Actualizar el estado si el token en localStorage cambió
+      if (storedToken !== token) {
+        setToken(storedToken);
+        if (!storedToken) {
+          console.log("Token eliminado de localStorage, ejecutando logout");
           logout();
+          return;
         }
-      } else {
+      }
+
+      if (window.location.pathname === "/login") {
         setIsAuthenticated(false);
+        return;
+      }
+
+      if (token && isTokenValid(token)) {
+        setIsAuthenticated(true);
+        refetchUser();
+      } else {
+        console.log("Token no válido, ejecutando logout");
+        logout();
       }
     };
 
     verifyToken();
-    
-    // Verificar cada minuto para detectar tokens expirados
-    const interval = setInterval(verifyToken, 60 * 1000);
+    const interval = setInterval(verifyToken, 5 * 1000); // Reducido a 5 segundos
     return () => clearInterval(interval);
-  }, [token, isTokenValid, user]);
+  }, [token, isTokenValid, refetchUser]);
+
+  // Escuchar cambios en localStorage desde otras pestañas
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "token" && event.newValue === null) {
+        console.log("Token eliminado de localStorage, ejecutando logout");
+        logout();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const login = (token: string, userData: User) => {
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(userData));
     setToken(token);
-    setUser(userData);
+    queryClient.setQueryData(["current-user"], userData);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
+    console.log("Ejecutando logout, ruta actual:", window.location.pathname);
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     setToken(null);
-    setUser(null);
+    queryClient.removeQueries({ queryKey: ["current-user"] });
     setIsAuthenticated(false);
-    // Redirigir a login
-    window.location.href = "/login";
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
   };
 
   const updateUser = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+    queryClient.setQueryData(["current-user"], userData);
+  };
+
+  const refreshUser = async () => {
+    await refetchUser();
   };
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        user, 
-        token, 
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
         isAuthenticated,
-        login, 
-        logout, 
-        updateUser
+        role: user?.rol || null,
+        isLoading,
+        login,
+        logout,
+        updateUser,
+        refreshUser,
       }}
     >
       {children}

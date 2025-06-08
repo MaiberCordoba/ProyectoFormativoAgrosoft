@@ -24,9 +24,10 @@ const Login = () => {
         password: data.password,
       });
       const userData = await getUser(response.access);
+      console.log("Login exitoso, token:", response.access, "user:", userData);
       localStorage.setItem("token", response.access);
       localStorage.setItem("user", JSON.stringify(userData));
-      authLogin(response.access);
+      authLogin(response.access, userData); // Asegúrate de pasar userData
       navigate("/home");
     } catch (error) {
       console.error("Error de autenticación:", error);
