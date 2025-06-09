@@ -146,7 +146,9 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
                   setFk_Cosecha(selectedKey ? Number(selectedKey) : null);
                 }}
               >
-                {(cosechas || []).map((cosecha) => {
+                {(cosechas || [])
+                .filter((cosecha)=> cosecha.cantidadTotal > 0)
+                .map((cosecha) => {
                   const plantacion = plantaciones?.find(p => p.id === cosecha.fk_Plantacion);
                   const producto = plantacion?.cultivo?.nombre || "Sin producto";
                   return (
