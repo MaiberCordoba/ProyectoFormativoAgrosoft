@@ -51,12 +51,14 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                     if unidades > herramienta_obj.unidades:
                         raise serializers.ValidationError("No hay suficientes unidades en stock.")
                     herramienta_obj.unidades -= unidades
+
+                # Recalcular valorTotal = unidades * precio
+                herramienta_obj.valorTotal = herramienta_obj.unidades * herramienta_obj.precio
                 herramienta_obj.save()
 
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        # Guardar datos antiguos para revertir el movimiento
         tipo_anterior = instance.tipo
         unidades_anteriores = instance.unidades
         insumo_anterior = instance.fk_Insumo
@@ -70,12 +72,14 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
             elif tipo_anterior == 'salida':
                 insumo.unidades += unidades_anteriores
             insumo.save()
+
         elif herramienta_anterior:
             herramienta = Herramientas.objects.get(pk=herramienta_anterior.id)
             if tipo_anterior == 'entrada':
                 herramienta.unidades -= unidades_anteriores
             elif tipo_anterior == 'salida':
                 herramienta.unidades += unidades_anteriores
+            herramienta.valorTotal = herramienta.unidades * herramienta.precio
             herramienta.save()
 
         # Aplicar el nuevo movimiento
@@ -93,6 +97,7 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                     raise serializers.ValidationError("No hay suficientes unidades en stock.")
                 insumo.unidades -= unidades_nuevas
             insumo.save()
+
         elif herramienta_nueva:
             herramienta = Herramientas.objects.get(pk=herramienta_nueva.id)
             if tipo_nuevo == 'entrada':
@@ -101,6 +106,7 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                 if unidades_nuevas > herramienta.unidades:
                     raise serializers.ValidationError("No hay suficientes unidades en stock.")
                 herramienta.unidades -= unidades_nuevas
+            herramienta.valorTotal = herramienta.unidades * herramienta.precio
             herramienta.save()
 
         return super().update(instance, validated_data)

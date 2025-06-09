@@ -71,6 +71,7 @@ class UsosHerramientasSerializer(ModelSerializer):
         # Actualizar el uso
         instance.fk_Herramienta = nueva_herramienta
         instance.fk_Actividad = validated_data.get("fk_Actividad", instance.fk_Actividad)
+        instance.fk_Control = validated_data.get("fk_Control", instance.fk_Control)
         instance.unidades = nueva_cantidad
         instance.save()
 
