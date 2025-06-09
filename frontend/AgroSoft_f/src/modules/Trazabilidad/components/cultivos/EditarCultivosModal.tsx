@@ -11,21 +11,42 @@ interface EditarCultivoModalProps {
   onClose: () => void;
 }
 
-const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClose }) => {
-  const [nombre, setNombre] = useState<string>(cultivo?.nombre ?? "");
-  const [fk_EspecieId, setFk_EspecieId] = useState<number | null>(
-    cultivo?.fk_Especie?.id ?? null
-  );
-  const [activo, setActivo] = useState<boolean>(cultivo?.activo ?? true);
+const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({
+  cultivo,
+  onClose,
+}) => {
 
+  const [nombre, setNombre] = useState<string>("");
+  const [fk_EspecieId, setFk_EspecieId] = useState<number | null>(null);
+  const [selectedSpeciesKeys, setSelectedSpeciesKeys] = useState<Set<string>>(
+    new Set()
+  );
+  const [activo, setActivo] = useState<boolean>(true);
   const { mutate, isPending } = usePatchCultivos();
-  const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
+  const {
+    data: especies,
+    isLoading: isLoadingEspecies,
+  } = useGetEspecies();
 
   useEffect(() => {
-    if (!cultivo || !cultivo.fk_Especie) {
-      console.warn("El cultivo o su especie no están definidos correctamente.");
-    }
+    if (!cultivo) return;
+    setNombre(cultivo.nombre ?? "");
+
+    const especieId =
+      typeof cultivo.fk_Especie === "number"
+        ? cultivo.fk_Especie
+        : cultivo.fk_Especie?.id;
+
+    setFk_EspecieId(especieId ?? null);
+
+    setActivo(!!cultivo.activo);
   }, [cultivo]);
+
+  useEffect(() => {
+    if (!isLoadingEspecies && fk_EspecieId !== null) {
+      setSelectedSpeciesKeys(new Set([String(fk_EspecieId)]));
+    }
+  }, [isLoadingEspecies, fk_EspecieId]);
 
   const handleSubmit = () => {
     if (!nombre.trim() || !fk_EspecieId || cultivo.id === undefined) {
@@ -40,11 +61,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
     mutate(
       {
         id: cultivo.id,
-        data: {
-          nombre,
-          fk_Especie: fk_EspecieId,
-          activo,
-        },
+        data: { nombre, fk_Especie: fk_EspecieId, activo },
       },
       {
         onSuccess: () => {
@@ -66,6 +83,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
     );
   };
 
+  /* ---------------------------- render ---------------------------- */
   return (
     <ModalComponent
       isOpen={true}
@@ -75,11 +93,12 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}
     >
+      {/* Nombre */}
       <Input
         value={nombre}
         label="Nombre del Cultivo"
@@ -87,29 +106,27 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({ cultivo, onClos
         onChange={(e) => setNombre(e.target.value)}
       />
 
+      {/* Especie */}
       {isLoadingEspecies ? (
-        <p>Cargando especies...</p>
+        <p>Cargando especies…</p>
       ) : (
         <Select
           label="Especie"
           placeholder="Selecciona una especie"
           size="sm"
-          selectedKeys={
-            fk_EspecieId ? new Set([fk_EspecieId.toString()]) : new Set()
-          }
+          selectedKeys={selectedSpeciesKeys}
           onSelectionChange={(keys) => {
-            const selectedId = Array.from(keys)[0];
-            if (selectedId) {
-              setFk_EspecieId(Number(selectedId));
-            }
+            const id = Array.from(keys)[0];
+            if (id) setFk_EspecieId(Number(id));
           }}
         >
-          {(especies || []).map((especie) => (
-            <SelectItem key={especie.id.toString()}>{especie.nombre}</SelectItem>
+          {(especies || []).map((esp) => (
+            <SelectItem key={esp.id.toString()}>{esp.nombre}</SelectItem>
           ))}
         </Select>
       )}
 
+      {/* Activo / Inactivo */}
       <div className="flex items-center gap-4 mt-4">
         <Switch
           checked={activo}

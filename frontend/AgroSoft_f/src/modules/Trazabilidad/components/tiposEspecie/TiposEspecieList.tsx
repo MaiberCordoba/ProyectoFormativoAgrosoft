@@ -97,12 +97,6 @@ export function TiposEspecieList() {
                 ["admin", "instructor", "pasante"]
               )
             }
-            onEliminar={() => 
-              handleActionWithPermission(
-                () => handleEliminar(item), 
-                ["admin", "instructor"]
-              )
-            }
           />
         );
       default:

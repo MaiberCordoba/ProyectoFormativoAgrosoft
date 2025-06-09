@@ -88,7 +88,7 @@ const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}

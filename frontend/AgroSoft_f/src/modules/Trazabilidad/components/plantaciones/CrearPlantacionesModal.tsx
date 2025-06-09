@@ -18,7 +18,6 @@ interface CrearPlantacionModalProps {
 }
 
 export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModalProps) => {
-  // -------------- estados --------------
   const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
   const [fk_semillero, setFk_semillero] = useState<number | null>(null);
   const [fk_Era, setFk_Era] = useState<number | null>(null);
@@ -29,15 +28,12 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
   const [modalSemilleroVisible, setModalSemilleroVisible] = useState(false);
   const [modalEraVisible, setModalEraVisible] = useState(false);
 
-  // -------------- queries / mutations --------------
   const { mutate, isPending } = usePostPlantaciones();
   const { data: cultivos = [], refetch: refetchCultivos } = useGetCultivos();
   const { data: semilleros = [], refetch: refetchSemilleros } = useGetSemilleros();
   const { data: eras = [], refetch: refetchEras } = useGetEras();
 
-  // -------------- helpers --------------
   const handleSubmit = () => {
-    // debe elegirse UNO: cultivo o semillero
     const seleccionInvalida =
       (!fk_Cultivo && !fk_semillero) || (fk_Cultivo && fk_semillero);
 
@@ -53,9 +49,9 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
 
     mutate(
       {
-        fk_Cultivo, // null si eligió semillero
+        fk_Cultivo,
         fk_Era,
-        fk_semillero, // null si eligió cultivo
+        fk_semillero,
         unidades,
         fechaSiembra,
       },
@@ -63,7 +59,6 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
         onSuccess: (data) => {
           onCreate(data);
           onClose();
-          // limpiar
           setFk_Cultivo(null);
           setFk_semillero(null);
           setFk_Era(null);
@@ -74,7 +69,6 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
     );
   };
 
-  // -------------- render --------------
   return (
     <>
       <ModalComponent
@@ -85,12 +79,12 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
+            variant: "solid",
             onClick: handleSubmit,
           },
         ]}
       >
-        {/* Cultivo (mutuamente excluyente con Semillero) */}
+        {/* Cultivo */}
         <div className="flex items-end gap-2">
           <div className="flex-1">
             <Select
@@ -100,12 +94,16 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
               selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
-                setFk_Cultivo(Number(selected));
-                // deselecciona semillero si lo hubiera
-                setFk_semillero(null);
+                if (selected) {
+                  setFk_Cultivo(Number(selected));
+                  setFk_semillero(null);
+                } else {
+                  setFk_Cultivo(null);
+                }
               }}
-              isDisabled={fk_semillero !== null} // deshabilitado si eligió semillero
+              isDisabled={false}
             >
+              <SelectItem key="">Ninguno</SelectItem>
               {cultivos.map((cultivo: Cultivo) => (
                 <SelectItem key={cultivo.id.toString()}>
                   {cultivo.nombre}
@@ -123,7 +121,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           </Button>
         </div>
 
-        {/* Semillero (mutuamente excluyente con Cultivo) */}
+        {/* Semillero */}
         <div className="flex items-end gap-2 mt-4">
           <div className="flex-1">
             <Select
@@ -133,12 +131,16 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
               selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
-                setFk_semillero(Number(selected));
-                // deselecciona cultivo si lo hubiera
-                setFk_Cultivo(null);
+                if (selected) {
+                  setFk_semillero(Number(selected));
+                  setFk_Cultivo(null);
+                } else {
+                  setFk_semillero(null);
+                }
               }}
-              isDisabled={fk_Cultivo !== null} // deshabilitado si eligió cultivo
+              isDisabled={false}
             >
+              <SelectItem key="">Ninguno</SelectItem>
               {semilleros.map((semillero: Semillero) => (
                 <SelectItem key={semillero.id.toString()}>
                   {`Semillero #${semillero.id} - ${semillero.unidades} unidades`}
@@ -156,7 +158,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           </Button>
         </div>
 
-        {/* Unidades y Fecha Siembra (siempre editables) */}
+        {/* Unidades y Fecha Siembra */}
         <Input
           className="mt-4"
           label="Unidades"
@@ -205,7 +207,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
         </div>
       </ModalComponent>
 
-      {/* ---- Modales secundarios ---- */}
+      {/* Modales secundarios */}
       {modalCultivoVisible && (
         <CrearCultivoModal
           onClose={() => setModalCultivoVisible(false)}
@@ -213,6 +215,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
             refetchCultivos();
             setFk_Cultivo(nuevoCultivo.id);
             setModalCultivoVisible(false);
+            setFk_semillero(null);
           }}
         />
       )}
@@ -224,6 +227,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
             refetchSemilleros();
             setFk_semillero(nuevoSemillero.id);
             setModalSemilleroVisible(false);
+            setFk_Cultivo(null);
           }}
         />
       )}

@@ -38,7 +38,7 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({
       addToast({
         title: "Campos obligatorios",
         description:
-          "Debes seleccionar un Cultivo o un Semillero, una Era, y completar unidades y fecha.",
+          "Debes seleccionar solo un Cultivo o un Semillero, una Era, y completar unidades y fecha.",
         color: "danger",
       });
       return;
@@ -79,7 +79,7 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}
@@ -92,11 +92,15 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({
         selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
         onSelectionChange={(keys) => {
           const selected = Array.from(keys)[0];
-          setFk_Cultivo(Number(selected));
-          setFk_semillero(null); // deseleccionar semillero
+          if (selected) {
+            setFk_Cultivo(Number(selected));
+            setFk_semillero(null);
+          } else {
+            setFk_Cultivo(null);
+          }
         }}
-        isDisabled={fk_semillero !== null}
       >
+        <SelectItem key="">Ninguno</SelectItem>
         {cultivos.map((cultivo) => (
           <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
         ))}
@@ -111,11 +115,15 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({
         selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
         onSelectionChange={(keys) => {
           const selected = Array.from(keys)[0];
-          setFk_semillero(Number(selected));
-          setFk_Cultivo(null); // deseleccionar cultivo
+          if (selected) {
+            setFk_semillero(Number(selected));
+            setFk_Cultivo(null);
+          } else {
+            setFk_semillero(null);
+          }
         }}
-        isDisabled={fk_Cultivo !== null}
       >
+        <SelectItem key="">Ninguno</SelectItem>
         {semilleros.map((semillero) => (
           <SelectItem key={semillero.id.toString()}>
             {`Semillero #${semillero.id} - ${semillero.unidades} unidades`}
