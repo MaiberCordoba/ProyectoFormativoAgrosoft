@@ -38,7 +38,6 @@ export function CosechasResumenCard() {
 
         if (!cosecha.cantidadTotal || cosecha.cantidadTotal <= 0) return null;
 
-        // Acceso seguro a las propiedades anidadas
         const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
         const imagenEspecie = plantacion?.cultivo?.especies?.img;
         const nombreEspecie =
@@ -94,6 +93,7 @@ export function PlantacionesCard() {
   return (
     <div className="flex flex-wrap gap-4 mb-6">
       {plantaciones.map((plantacion) => {
+        
         // Manejo seguro de propiedades anidadas
         const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
         const estado =
@@ -103,6 +103,8 @@ export function PlantacionesCard() {
               : "Inactivo"
             : "Estado desconocido";
         const fechaSiembra = plantacion.fechaSiembra || "Fecha no disponible";
+        
+        if (estado == "Inactivo") return null
 
         return (
           <div
