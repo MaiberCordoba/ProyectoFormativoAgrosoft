@@ -10,6 +10,8 @@ import EliminarCosechasModal from "./EliminarCosechas";
 import { Cosechas } from "../../types";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function CosechasList() {
   const { data, isLoading, error } = useGetCosechas();
@@ -17,6 +19,8 @@ export function CosechasList() {
     useGetPlantaciones();
   const { data: unidadesMedida, isLoading: loadingUnidadMedida } =
     useGetUnidadesMedida();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -38,29 +42,55 @@ export function CosechasList() {
     handleEliminar,
   } = useEliminarCosecha();
 
-  const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      fk_Plantacion: 0,
-      fk_UnidadMedida: 0,
-      cantidad: 0,
-      fecha: "",
-      precioUnidad: 0,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
-  // Definición de columnas movida aquí
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nueva cosecha con verificación de permisos
+  const handleCrearNuevo = () => {
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          fk_Plantacion: 0,
+          fk_UnidadMedida: 0,
+          cantidad: 0,
+          fecha: "",
+          precioUnidad: 0,
+        }),
+      ["admin", "instructor", "pasante"]
+    );
+  };
+
+  // Definición de columnas
   const columnas = [
-    { name: "Cultivo", uid: "plantacion"  },
+    { name: "Cultivo", uid: "plantacion" },
     { name: "Cantidad Cosechada", uid: "cantidad" },
-    { name: "Unidad Medida", uid: "unidadMedida"  },
-    { name: "Cantidad total (g)", uid: "totalGramos"  },
+    { name: "Unidad Medida", uid: "unidadMedida" },
+    { name: "Cantidad total (g)", uid: "totalGramos" },
     { name: "Fecha de cosecha", uid: "fecha" },
     { name: "Valor Cosecha", uid: "valorTotal" },
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Función de renderizado movida aquí
+  // Función de renderizado
   const renderCell = (item: Cosechas, columnKey: React.Key) => {
     switch (columnKey) {
       case "plantacion":
@@ -90,7 +120,12 @@ export function CosechasList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
           />
         );
       default:
@@ -100,11 +135,10 @@ export function CosechasList() {
 
   if (isLoading || loadingPlantaciones || loadingUnidadMedida)
     return <p>Cargando...</p>;
-  if (error) return <p>Error al cargar las Cosechas</p>;
+  if (error) return <p>Error al cargar las cosechas</p>;
 
   return (
     <div className="p-4">
-      {/* Tabla reutilizable directa */}
       <TablaReutilizable
         datos={data || []}
         columnas={columnas}

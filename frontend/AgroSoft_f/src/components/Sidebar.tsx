@@ -44,14 +44,36 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Función para filtrar submenús
   const getFilteredSubmenus = (title: string, submenus: string[]): string[] => {
     if (title === "Cultivos" && userRole === "visitante") {
-      return submenus.filter(sub => 
-        !["Semilleros", "Cultivos", "Lotes", "Eras", "Especies", "Tipos Especie"].includes(sub)
+      return submenus.filter(
+        (sub) =>
+          ![
+            "Semilleros",
+            "Cultivos",
+            "Lotes",
+            "Eras",
+            "Especies",
+            "Tipos Especie",
+          ].includes(sub)
       );
     }
 
     if (title === "Fitosanitario" && userRole === "visitante") {
-      return submenus.filter(sub => 
-        !["Tipos de afectaciones", "Afectaciones", "tipos de control"].includes(sub)
+      return submenus.filter(
+        (sub) =>
+          ![
+            "Tipos de afectaciones",
+            "Afectaciones",
+            "tipos de control",
+          ].includes(sub)
+      );
+    }
+
+    if (
+      (title === "Inventario" && userRole === "aprendiz") ||
+      userRole === "visitante"
+    ) {
+      return submenus.filter(
+        (sub) => !["Usos Herramientas", "Usos Insumos"].includes(sub)
       );
     }
     return submenus;
@@ -70,14 +92,16 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const mainItems = [
     { icon: Home, color: "text-[#254030]", text: "Home", to: "/home" },
-    ...(userRole === "admin" 
-      ? [{
-          icon: Users,
-          color: "text-[#254030]",
-          text: "Usuarios",
-          to: "/usuarios",
-        }]
-      : [])
+    ...(userRole === "admin"
+      ? [
+          {
+            icon: Users,
+            color: "text-[#254030]",
+            text: "Usuarios",
+            to: "/usuarios",
+          },
+        ]
+      : []),
   ];
 
   // Lista base de menús
@@ -116,14 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       title: "Finanzas",
       icon: DollarSign,
       color: "text-[#254030]",
-      submenus: [
-        "Cosechas",
-        "Ventas",
-        "Salarios",
-        "Desechos",
-        "Tipos de desechos",
-        "resumen finanzas",
-      ],
+      submenus: ["Cosechas", "Ventas", "Salarios", "resumen finanzas"],
     },
     {
       title: "Inventario",
@@ -152,18 +169,25 @@ const Sidebar: React.FC<SidebarProps> = ({
     },
   ];
 
-  // Filtrar menús completos para visitantes
+  // Filtrar menús completos para visitantes y aprendices
   const filteredMenuItems = baseMenuItems
-    .filter(menu => {
+    .filter((menu) => {
       // Ocultar completamente el menú "Actividades" para visitantes
       if (userRole === "visitante" && menu.title === "Actividades") {
         return false;
       }
+      // Ocultar completamente el menú "Finanzas" para visitantes y aprendices
+      if (
+        ["visitante", "aprendiz"].includes(userRole || "") &&
+        menu.title === "Finanzas"
+      ) {
+        return false;
+      }
       return true;
     })
-    .map(menu => ({
+    .map((menu) => ({
       ...menu,
-      submenus: getFilteredSubmenus(menu.title, menu.submenus)
+      submenus: getFilteredSubmenus(menu.title, menu.submenus),
     }));
 
   return (
@@ -204,7 +228,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           </NavLink>
         ))}
 
-
         {/* Usar la lista filtrada de menús */}
         {filteredMenuItems.map((menu) => (
           <div key={menu.title}>
@@ -237,9 +260,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             {isOpen && openMenu === menu.title && menu.submenus.length > 0 && (
-              <div
-                className={`overflow-hidden transition-all duration-300`}
-              >
+              <div className={`overflow-hidden transition-all duration-300`}>
                 <div className="scroll-custom max-h-[150px] overflow-y-auto">
                   {menu.submenus.map((submenu) => {
                     const path = `/${submenu.toLowerCase().replace(/\s+/g, "-")}`;

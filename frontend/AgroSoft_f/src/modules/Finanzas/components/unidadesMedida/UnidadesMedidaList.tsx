@@ -8,9 +8,13 @@ import EditarUnidadesMedidaModal from "./EditarUnidadesMedidaModal";
 import { CrearUnidadesMedidaModal } from "./CrearUnidadesMedidaModal";
 import EliminarUnidadesMedidaModal from "./EliminarUnidadesMedida";
 import { UnidadesMedida } from "../../types";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function UnidadesMedidaList() {
   const { data, isLoading, error } = useGetUnidadesMedida();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -32,14 +36,40 @@ export function UnidadesMedidaList() {
     handleEliminar,
   } = useEliminarUnidadesMedida();
 
-  const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      nombre: "",
-      abreviatura: "",
-      tipo: "MASA",
-      equivalenciabase: 0,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nueva unidad de medida con verificación de permisos
+  const handleCrearNuevo = () => {
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          nombre: "",
+          abreviatura: "",
+          tipo: "MASA",
+          equivalenciabase: 0,
+        }),
+      ["admin", "instructor", "pasante"]
+    );
   };
 
   const columnas = [
@@ -63,7 +93,12 @@ export function UnidadesMedidaList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
           />
         );
       default:
@@ -82,7 +117,11 @@ export function UnidadesMedidaList() {
         claveBusqueda="nombre"
         placeholderBusqueda="Buscar por nombre"
         renderCell={renderCell}
-        onCrearNuevo={handleCrearNuevo}
+        onCrearNuevo={
+          ["admin", "instructor", "pasante"].includes(userRole || "")
+            ? handleCrearNuevo
+            : undefined // Oculta el botón de crear si no tiene permisos
+        }
       />
 
       {/* Modales */}
@@ -94,9 +133,7 @@ export function UnidadesMedidaList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearUnidadesMedidaModal
-          onClose={closeCreateModal}
-        />
+        <CrearUnidadesMedidaModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && unidadMedidaEliminada && (

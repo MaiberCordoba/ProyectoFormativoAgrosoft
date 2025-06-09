@@ -7,6 +7,7 @@ import logo from "../../public/logoAgrosoft.png";
 import { Link } from "@heroui/react";
 import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 import { SolicitarRecuperacionModal } from "@/modules/Users/components/recuperaciones/solicitarRecuperacion";
+import { addToast } from "@heroui/toast";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,9 +25,18 @@ const Login = () => {
         password: data.password,
       });
       const userData = await getUser(response.access);
+      console.log("Login exitoso, token:", response.access, "user:", userData);
+      if (userData.estado === "inactivo") {
+        addToast({
+          title: "Cuenta inactiva",
+          description: "Tu cuenta está inactiva. Contacta al administrador.",
+          color: "danger",
+        });
+        return;
+      }
       localStorage.setItem("token", response.access);
       localStorage.setItem("user", JSON.stringify(userData));
-      authLogin(response.access);
+      authLogin(response.access, userData);
       navigate("/home");
     } catch (error) {
       console.error("Error de autenticación:", error);
@@ -36,15 +46,12 @@ const Login = () => {
 
   return (
     <>
-      {/* Changed background to #f3f8f9 */}
       <div
         className="h-screen w-full flex items-center justify-center"
         style={{ backgroundColor: "#f3f8f9" }}
       >
-        {/* Contenedor principal centrado - adjusted for minimalist design */}
         <div className="flex items-center justify-center w-[400px] min-h-[500px] rounded-xl shadow-lg bg-white p-10 border border-gray-200">
           <div className="w-full flex flex-col items-center">
-            {/* Logo arriba */}
             <img src={logo} alt="Logo SENA" className="w-36 mb-8" />
 
             <p className="text-sm mb-4 text-gray-600 text-center">
@@ -70,7 +77,6 @@ const Login = () => {
               submitLabel="Iniciar"
             />
 
-            {/* Enlace de recuperación */}
             <div className="flex justify-end w-full mt-2 text-xs">
               <Link
                 onPress={() => setSolicitarRecuperacion(true)}
@@ -82,14 +88,12 @@ const Login = () => {
               </Link>
             </div>
 
-            {/* Error */}
             {errorMessage && (
               <p className="text-red-500 text-sm font-semibold text-center mt-3">
                 {errorMessage}
               </p>
             )}
 
-            {/* Botón */}
             <button
               type="submit"
               onClick={() =>
@@ -104,7 +108,6 @@ const Login = () => {
               Iniciar sesión
             </button>
 
-            {/* Registro */}
             <p className="mt-4 text-center text-xs text-gray-600">
               ¿No tienes una cuenta?{" "}
               <Link
@@ -119,7 +122,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Modales */}
       {registerModalUsers && (
         <CrearUsersModal onClose={() => setRegisterModalUsers(false)} />
       )}
