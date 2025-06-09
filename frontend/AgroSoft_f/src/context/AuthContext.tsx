@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { User } from "@/modules/Users/types";
 import apiClient from "@/api/apiClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { addToast } from "@heroui/toast";
 
 interface AuthContextType {
   user: User | null;
@@ -38,7 +39,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     queryFn: async () => {
       if (!token) return null;
       const response = await apiClient.get("/usuarios/me/");
-      return response.data;
+      const userData = response.data;
+      if (userData.estado === "inactivo") {
+        logout();
+        addToast({
+          title: "Cuenta inactiva",
+          description: "Tu cuenta está inactiva. Contacta al administrador.",
+          color: "danger",
+        });
+        return null;
+      }
+      return userData;
     },
     enabled: !!token,
     staleTime: 0,
@@ -105,10 +116,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    return () => window.addEventListener("storage", handleStorageChange);
   }, []);
 
   const login = (token: string, userData: User) => {
+    if (userData.estado === "inactivo") {
+      localStorage.removeItem("token");
+      setToken(null);
+      addToast({
+        title: "Cuenta inactiva",
+        description: "Tu cuenta está inactiva. Contacta al administrador.",
+        color: "danger",
+      });
+      return;
+    }
     localStorage.setItem("token", token);
     setToken(token);
     queryClient.setQueryData(["current-user"], userData);
