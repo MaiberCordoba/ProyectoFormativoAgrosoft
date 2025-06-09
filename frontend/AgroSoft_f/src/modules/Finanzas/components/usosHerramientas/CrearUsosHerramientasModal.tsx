@@ -68,7 +68,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
     setError("")
 
     mutate(
-      { fk_Herramienta, fk_Actividad, unidades },
+      { fk_Herramienta, fk_Actividad,fk_Control, unidades },
       {
         onSuccess: () => {
           onClose();
@@ -127,7 +127,6 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
-
               <Select
                 label="Herramienta"
                 size="sm"
@@ -137,10 +136,16 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
                   const selectedKey = Array.from(keys)[0];
                   setFk_Herramienta(selectedKey ? Number(selectedKey) : null);
                 }}
-              >
+                >
                 {(herramientas || []).map((herramienta) => (
-                  <SelectItem key={herramienta.id.toString()}>
-                    {herramienta.nombre}
+                  <SelectItem
+                    key={herramienta.id.toString()}
+                    textValue={`Nombre: ${herramienta.nombre} - Disponible: ${herramienta.unidades}`}
+                  >
+                    <div>
+                      <p className="font-medium">{herramienta.nombre}</p>
+                      <p className="text-sm text-gray-500">Disponible: {herramienta.unidades}</p>
+                    </div>
                   </SelectItem>
                 ))}
               </Select>
