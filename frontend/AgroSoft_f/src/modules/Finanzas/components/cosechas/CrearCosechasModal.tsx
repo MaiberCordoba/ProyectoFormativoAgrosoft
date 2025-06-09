@@ -168,7 +168,9 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
                   setFk_Plantacion(selectedKey ? Number(selectedKey) : null);
                 }}
               >
-                {(plantaciones || []).map((plantacion) => (
+                {(plantaciones || [])
+                .filter((plantacion) => plantacion.cultivo?.activo)
+                .map((plantacion) => (
                   <SelectItem key={plantacion.id.toString()}>
                     {plantacion.cultivo?.nombre}
                   </SelectItem>
