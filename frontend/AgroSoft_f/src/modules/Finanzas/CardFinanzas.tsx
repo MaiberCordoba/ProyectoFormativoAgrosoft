@@ -36,7 +36,7 @@ export function CosechasResumenCard() {
           (p) => p.id === cosecha.fk_Plantacion
         );
 
-        if (!cosecha.cantidad || cosecha.cantidad <= 0) return null;
+        if (!cosecha.cantidadTotal || cosecha.cantidadTotal <= 0) return null;
 
         // Acceso seguro a las propiedades anidadas
         const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
