@@ -1,16 +1,14 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework import serializers
+from decimal import Decimal
 from apps.finanzas.api.models.ventas import Ventas
 from apps.finanzas.api.serializers.serializerUnidadesMedida import serializerUnidadesMedida
 
 class SerializerVentas(ModelSerializer):
-    unidadMedida = serializerUnidadesMedida(source='fk_UnidadMedida', read_only=True)
-    precioUnitario = serializers.IntegerField(required=False,read_only=True)
-    descuento = serializers.FloatField(required=False, min_value=0, max_value=100)
-
     class Meta:
         model = Ventas
         fields = '__all__'
+        read_only_fields = ['valorTotal',]
 
     def validate(self, data):
         cosecha = data.get('fk_Cosecha')
@@ -36,22 +34,26 @@ class SerializerVentas(ModelSerializer):
 
         return data
 
-    def calcular_valor_total(self, precio_unitario: int, cantidad: int, descuento: float = 0.0) -> int:
-        subtotal = precio_unitario * cantidad
-        descuento_aplicado = subtotal * (descuento / 100)
+    def calcular_valor_total(self, precioGramo: float, cantidadTotal: float, descuento: float = 0) -> int:
+        precioGramo = Decimal(precioGramo)
+        cantidadTotal = Decimal(cantidadTotal)
+        descuento = Decimal(descuento)
+
+        subtotal = precioGramo * cantidadTotal
+        descuento_aplicado = subtotal * (descuento / Decimal('100'))
+
         return int(subtotal - descuento_aplicado)
 
     def create(self, validated_data):
         cosecha = validated_data.get('fk_Cosecha')
         unidad_medida = validated_data.get('fk_UnidadMedida')
         cantidad = validated_data.get('cantidad')
-        descuento = validated_data.get('descuento', 0.0)
+        descuento = validated_data.get('descuento') or 0
 
-        if 'precioUnitario' not in validated_data or validated_data['precioUnitario'] is None:
-            validated_data['precioUnitario'] = cosecha.precioUnidad
+        precioGramo = cosecha.valorGramo
+        cantidadTotal = cantidad * unidad_medida.equivalenciabase
 
-        precio = validated_data['precioUnitario']
-        validated_data['valorTotal'] = self.calcular_valor_total(precio, cantidad, descuento)
+        validated_data['valorTotal'] = self.calcular_valor_total(precioGramo, cantidadTotal, descuento)
 
         if cosecha and unidad_medida:
             cantidad_en_base = cantidad * unidad_medida.equivalenciabase
@@ -61,21 +63,29 @@ class SerializerVentas(ModelSerializer):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        nueva_cantidad = validated_data.get('cantidad', instance.cantidad)
+        nueva_unidad = validated_data.get('fk_UnidadMedida', instance.fk_UnidadMedida)
+        nueva_descuento = validated_data.get('descuento', instance.descuento)
         cosecha = validated_data.get('fk_Cosecha', instance.fk_Cosecha)
-        unidad_medida = validated_data.get('fk_UnidadMedida', instance.fk_UnidadMedida)
-        cantidad_nueva = validated_data.get('cantidad', instance.cantidad)
-        descuento = validated_data.get('descuento', instance.descuento or 0.0)
 
-        cantidad_nueva_base = cantidad_nueva * unidad_medida.equivalenciabase
         cantidad_anterior_base = instance.cantidad * instance.fk_UnidadMedida.equivalenciabase
+        nueva_cantidad_base = nueva_cantidad * nueva_unidad.equivalenciabase
 
-        cosecha.cantidadTotal += cantidad_anterior_base
-        cosecha.cantidadTotal -= cantidad_nueva_base
+        diferencia = nueva_cantidad_base - cantidad_anterior_base
 
+        # Validar que no se exceda la cantidad disponible
+        if diferencia > 0 and diferencia > cosecha.cantidadTotal:
+            raise ValidationError(
+                f"La cantidad adicional solicitada ({diferencia}) excede la cantidad disponible ({cosecha.cantidadTotal})."
+            )
 
+        # Actualizar la cantidad de la cosecha
+        cosecha.cantidadTotal -= diferencia
         cosecha.save()
 
-        precio = validated_data.get('precioUnitario', instance.precioUnitario)
-        validated_data['valorTotal'] = self.calcular_valor_total(precio, cantidad_nueva, descuento)
+        # Calcular nuevo valor total
+        precioGramo = cosecha.valorGramo
+        nuevo_valor_total = self.calcular_valor_total(precioGramo, nueva_cantidad_base, nueva_descuento)
+        validated_data['valorTotal'] = nuevo_valor_total
 
         return super().update(instance, validated_data)
