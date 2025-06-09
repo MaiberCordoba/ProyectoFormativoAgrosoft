@@ -124,10 +124,6 @@ export function ActividadesList() {
               () => handleEditar(item), 
               ["admin", "instructor", "pasante"]
             )}
-            onEliminar={() => handleActionWithPermission(
-              () => handleEliminar(item), 
-              ["admin", "instructor"]
-            )}
           />
         );
       default:
