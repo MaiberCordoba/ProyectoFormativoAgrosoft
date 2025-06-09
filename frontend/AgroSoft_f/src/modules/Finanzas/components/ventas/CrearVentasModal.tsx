@@ -33,17 +33,20 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
   const { mutate, isPending } = usePostVentas();
 
   useEffect(() => {
-    if (!cantidad || !fk_Cosecha || !cosechas) return;
-
+    if (!cantidad || !fk_Cosecha || !cosechas || !fk_UnidadMedida || !unidadesMedida) return;
+    
     const cosecha = cosechas.find(c => c.id === fk_Cosecha);
-    if (!cosecha) return;
-
-    const precioUnitario = cosecha.precioUnidad || 0;
+    const unidad = unidadesMedida.find(u => u.id === fk_UnidadMedida);
+    
+    if (!cosecha || !unidad) return;
+    
+    const cantidadEnBase = cantidad * unidad.equivalenciabase;
+    const precioUnitario = cosecha.valorGramo || 0;
     const porcentajeDescuento = descuento ? descuento / 100 : 0;
-    const total = cantidad * precioUnitario * (1 - porcentajeDescuento);
-
+    const total = cantidadEnBase * precioUnitario * (1 - porcentajeDescuento);
+    
     setValorTotal(Number(total.toFixed(2)));
-  }, [cantidad, descuento, fk_Cosecha, cosechas]);
+  }, [cantidad, descuento, fk_Cosecha, cosechas, fk_UnidadMedida, unidadesMedida]);
 
   const handleSubmit = () => {
     if (!fk_Cosecha || !valorTotal || !fk_UnidadMedida || !cantidad) {

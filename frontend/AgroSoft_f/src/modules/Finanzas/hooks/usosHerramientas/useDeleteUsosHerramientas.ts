@@ -29,7 +29,7 @@ export const useDeleteUsoHerramienta = () => {
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['usoHerramientas'] });
+            queryClient.invalidateQueries({ queryKey: ['usosHerramientas'] });
             
             addToast({
                 title: "Operación exitosa",

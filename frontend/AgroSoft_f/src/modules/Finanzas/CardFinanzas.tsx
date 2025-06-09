@@ -51,7 +51,7 @@ export function CosechasResumenCard() {
             image={imagenEspecie}
             data={{
               Especie: nombreEspecie,
-              Cantidad: cosecha.cantidad,
+              Cantidad: cosecha.cantidadTotal +"(g)",
               "Valor *(g)" : cosecha.valorGramo,
               "Valor cosecha": `$${cosecha.valorTotal}`,
               "Fecha Cosecha": cosecha.fecha,
