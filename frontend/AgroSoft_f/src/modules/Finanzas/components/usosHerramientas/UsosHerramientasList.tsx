@@ -10,40 +10,76 @@ import EliminarUsosHerramientasModal from "./EliminarUsosHerramientas";
 import { UsosHerramientas } from "../../types";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
+import { addToast } from "@heroui/toast";
+import { useAuth } from "@/hooks/UseAuth";
 
 export function UsosHerramientasList() {
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
   const { data, isLoading, error } = useGetUsosHerramientas();
-  const { data : herramientas, isLoading : loadingHerramientas } = useGetHerramientas();
-  const { data : actividades, isLoading : loadingActividades } = useGetActividades();
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    usoHerramientaEdidata, 
-    handleEditar 
+  const { data: herramientas, isLoading: loadingHerramientas } =
+    useGetHerramientas();
+  const { data: actividades, isLoading: loadingActividades } =
+    useGetActividades();
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    usoHerramientaEdidata,
+    handleEditar,
   } = useEditarUsoHerramienta();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearUsosHerramienta();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     usoHerramientaEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarUsoHerramienta();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Herramienta: 0, fk_Actividad: 0,unidades:0 });
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          fk_Herramienta: 0,
+          fk_Actividad: 0,
+          unidades: 0,
+        }),
+      ["admin", "instructor", "pasante"]
+    );
   };
 
   // Definición de columnas
   const columnas = [
     { name: "Herramienta", uid: "herramienta" },
     { name: "Actividad", uid: "actividad" },
-    { name: "Unidades", uid: "unidades"},
+    { name: "Unidades", uid: "unidades" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -51,7 +87,9 @@ export function UsosHerramientasList() {
   const renderCell = (item: UsosHerramientas, columnKey: React.Key) => {
     switch (columnKey) {
       case "herramienta":
-        const herramienta = herramientas?.find((c) => c.id === item.fk_Herramienta);
+        const herramienta = herramientas?.find(
+          (c) => c.id === item.fk_Herramienta
+        );
         return <span>{herramienta ? herramienta.nombre : "No definido"}</span>;
       case "actividad":
         const actividad = actividades?.find((c) => c.id === item.fk_Actividad);
@@ -61,8 +99,18 @@ export function UsosHerramientasList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor"]
+              )
+            }
+            onEliminar={() =>
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -70,7 +118,8 @@ export function UsosHerramientasList() {
     }
   };
 
-  if (isLoading || loadingHerramientas || loadingActividades) return <p>Cargando...</p>;
+  if (isLoading || loadingHerramientas || loadingActividades)
+    return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Usos de Herramientas</p>;
 
   return (

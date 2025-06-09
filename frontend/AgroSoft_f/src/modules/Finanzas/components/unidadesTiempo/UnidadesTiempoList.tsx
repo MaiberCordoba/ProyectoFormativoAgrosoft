@@ -8,9 +8,13 @@ import EditarUnidadesTiempoModal from "./EditarUnidadesTiempoModal";
 import { CrearUnidadesTiempoModal } from "./CrearUnidadesTiempoModal";
 import EliminarUnidadesTiempoModal from "./EliminarUnidadesTiempo";
 import { UnidadesTiempo } from "../../types";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function UnidadesTiempoList() {
   const { data, isLoading, error } = useGetUnidadesTiempo();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -32,12 +36,37 @@ export function UnidadesTiempoList() {
     handleEliminar,
   } = useEliminarUnidadesTiempo();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nueva unidad de tiempo con verificación de permisos
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", equivalenciaMinutos: 0 });
+    handleActionWithPermission(
+      () => handleCrear({ id: 0, nombre: "", equivalenciaMinutos: 0 }),
+      ["admin"]
+    );
   };
 
   const columnas = [
-    { name: "Nombre", uid: "nombre"},
+    { name: "Nombre", uid: "nombre" },
     { name: "Equivalencia minutos", uid: "equivalenciaMinutos" },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -51,8 +80,12 @@ export function UnidadesTiempoList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() =>
+              handleActionWithPermission(() => handleEditar(item), ["admin"])
+            }
+            onEliminar={() =>
+              handleActionWithPermission(() => handleEliminar(item), ["admin"])
+            }
           />
         );
       default:
@@ -83,9 +116,7 @@ export function UnidadesTiempoList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearUnidadesTiempoModal
-          onClose={closeCreateModal}
-        />
+        <CrearUnidadesTiempoModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && unidadTiempoEliminada && (

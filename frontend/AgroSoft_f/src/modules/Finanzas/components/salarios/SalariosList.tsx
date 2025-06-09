@@ -8,32 +8,69 @@ import EditarSalarioModal from "./EditarSalariosModal";
 import { CrearSalariosModal } from "./CrearSalariosModal";
 import EliminarSalarioModal from "./EliminarSalarios";
 import { Salarios } from "../../types";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function SalariosList() {
   const { data, isLoading, error } = useGetSalarios();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    salarioEditado, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    salarioEditado,
+    handleEditar,
   } = useEditarSalarios();
 
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearSalarios();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     salarioEliminado,
-    handleEliminar
+    handleEliminar,
   } = useEliminarSalarios();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nuevo salario con verificación de permisos
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, nombre: "", monto: 0, horas: 0, monto_minutos: 0, estado: "AS" });
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          nombre: "",
+          monto: 0,
+          horas: 0,
+          monto_minutos: 0,
+          estado: "AS",
+        }),
+      ["admin"]
+    );
   };
 
   // Definición de columnas
@@ -62,8 +99,12 @@ export function SalariosList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() =>
+              handleActionWithPermission(() => handleEditar(item), ["admin"])
+            }
+            onEliminar={() =>
+              handleActionWithPermission(() => handleEliminar(item), ["admin"])
+            }
           />
         );
       default:
@@ -94,7 +135,11 @@ export function SalariosList() {
       {isCreateModalOpen && <CrearSalariosModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && salarioEliminado && (
-        <EliminarSalarioModal salario={salarioEliminado} isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
+        <EliminarSalarioModal
+          salario={salarioEliminado}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+        />
       )}
     </div>
   );

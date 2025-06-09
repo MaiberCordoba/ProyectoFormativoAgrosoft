@@ -40,7 +40,7 @@ export function TipoActividadList() {
   const showAccessDenied = () => {
     addToast({
       title: "Acción no permitida",
-      description: "Solo los administradores pueden realizar esta acción",
+      description: "No tienes permiso para realizar esta acción",
       color: "danger",
     });
   };

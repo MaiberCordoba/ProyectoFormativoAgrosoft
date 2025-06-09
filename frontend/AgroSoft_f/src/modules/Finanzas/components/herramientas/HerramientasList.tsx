@@ -9,46 +9,83 @@ import { CrearHerramientasModal } from "./CrearHerramientasModal";
 import EliminarHerramientaModal from "./EliminarHerramientas";
 import { Herramientas } from "../../types";
 import { useGetLotes } from "@/modules/Trazabilidad/hooks/lotes/useGetLotes";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function HerramientasList() {
   const { data, isLoading, error } = useGetHerramientas();
-  const { data : lotes, isLoading : loadingLotes } = useGetLotes();
+  const { data: lotes, isLoading: loadingLotes } = useGetLotes();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    herramientaEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    herramientaEditada,
+    handleEditar,
   } = useEditarHerramienta();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearHerramienta();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     herramientaEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarHerramienta();
 
-  const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Lote: 0, nombre: "", descripcion: "", unidades: 0, precio:0 });
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
   };
 
-  // Definición de columnas movida aquí
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nueva herramienta con verificación de permisos
+  const handleCrearNuevo = () => {
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          fk_Lote: 0,
+          nombre: "",
+          descripcion: "",
+          unidades: 0,
+          valorTotal: 0,
+        }),
+      ["admin", "instructor", "pasante"]
+    );
+  };
+
+  // Definición de columnas
   const columnas = [
-    { name: "Lote", uid: "lote"  },
+    { name: "Lote", uid: "lote" },
     { name: "Nombre", uid: "nombre" },
-    { name: "Descripcion", uid: "descripcion" },
+    { name: "Descripción", uid: "descripcion" },
     { name: "Unidades", uid: "unidades" },
     { name: "Valor Herramientas", uid: "valor" },
     { name: "Acciones", uid: "acciones" },
   ];
 
-  // Función de renderizado movida aquí
+  // Función de renderizado
   const renderCell = (item: Herramientas, columnKey: React.Key) => {
     switch (columnKey) {
       case "lote":
@@ -65,8 +102,18 @@ export function HerramientasList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor"]
+              )
+            }
+            onEliminar={() =>
+              handleActionWithPermission(
+                () => handleEliminar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -98,9 +145,7 @@ export function HerramientasList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearHerramientasModal
-          onClose={closeCreateModal}
-        />
+        <CrearHerramientasModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && herramientaEliminada && (
