@@ -14,7 +14,7 @@ import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/us
 
 export function VentasList() {
   const { data, isLoading, error } = useGetVentas();
-  const { data : cosechas, isLoading : loadingCosechas } = useGetCosechas();
+  const { data : cosechas, isLoading : loadingCosechas, } = useGetCosechas();
   const { data : plantaciones} = useGetPlantaciones();
   const { data : unidadesMedida, isLoading : loadingUnidadesMedida } = useGetUnidadesMedida();
   const { 
@@ -38,7 +38,7 @@ export function VentasList() {
   } = useEliminarVenta();
 
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cosecha: 0, fecha: "", fk_UnidadMedida: 0,cantidad:0,valorTotal:0});
+    handleCrear({ id: 0, fk_Cosecha: 0, fk_UnidadMedida: 0, cantidad:0,valorTotal:0});
   };
 
   const columnas = [
