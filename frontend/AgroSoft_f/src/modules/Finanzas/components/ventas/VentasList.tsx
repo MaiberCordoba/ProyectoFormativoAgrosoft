@@ -122,12 +122,6 @@ export function VentasList() {
                 ["admin", "instructor"]
               )
             }
-            onEliminar={() =>
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
-              )
-            }
           />
         );
       default:
