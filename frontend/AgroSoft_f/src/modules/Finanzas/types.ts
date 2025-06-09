@@ -253,7 +253,6 @@ export interface Ventas {
   id: number;
   fk_Cosecha?: number;
   cosecha?: Cosechas;
-  precioUnitario: number;
   fecha: string;
   fk_UnidadMedida: number;
   unidadMedida: UnidadesMedida;
