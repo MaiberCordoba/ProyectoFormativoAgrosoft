@@ -6,7 +6,7 @@ description: Endpoint para gestionar los lotes dentro del sistema AgroSoft.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de lotes, incluyendo su creación, consulta, actualización y eliminación.
+Este endpoint permite la gestión de lotes, incluyendo su creación, consulta, actualización.
 
 Cada lote contiene información clave como nombre, descripción, dimensiones, estado y coordenadas de ubicación.
 
@@ -115,12 +115,5 @@ Este método permite actualizar/editar un lote
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Método DELETE
-<ApiBaseBanner
-  method="DELETE"
-  path="/lotes/{id}/"
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
-###### ❌ Respuesta Error (500 - Internal Server Error)
+
 

@@ -155,37 +155,3 @@ Este endpoint permite actualizar un producto con control existente.
 }
 ```
 
-## Eliminación de ProductoControl
-
-<ApiBaseBanner
-  method="DELETE"
-  path="/productosControl/:id"
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-Este endpoint permite eliminar un producto con control existente.
-
-### Campos requeridos
-
-```json
-{
-  "id": 2
-}
-```
-
-### Parámetros del Request
-
-| Parámetro | Tipo    | Requerido | Descripción                    | Ejemplo |
-|-----------|---------|-----------|--------------------------------|---------|
-| `id`      | number  | Sí        | ID del producto con control    | 2       |
-
-### Respuesta Exitosa
-
-✅ 200 - ProductoControl eliminado correctamente
-```json
-{
-  "detail": "ProductoControl eliminado correctamente"
-}
-```
-
-❌ 400 - Error

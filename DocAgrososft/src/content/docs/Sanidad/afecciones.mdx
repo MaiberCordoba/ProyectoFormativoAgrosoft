@@ -7,7 +7,7 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ### Descripción
 
-Este endpoint permite la gestión de afecciones en los cultivos, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de afecciones en los cultivos, incluyendo su creación, consulta, actualización.  
 Cada afección está asociada a una plantación y una plaga, y contiene información clave como fecha de detección y estado.
 
 ## Métodos
@@ -108,15 +108,6 @@ Este método permite actualizar/editar una afección.
 ###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### 🔹 Método DELETE
 
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/afecciones/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
-###### 🔍 Respuesta ID No encontrado (404 - Not Found)
-###### ❌ Respuesta Error (500 - Internal Server Error)
 ```
 

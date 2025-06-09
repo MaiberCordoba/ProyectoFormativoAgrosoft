@@ -181,33 +181,4 @@ El endpoint `PUT /usuarios/{id}/` permite actualizar la información de un usuar
 }
 ```
 
----
 
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/usuarios/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-## Eliminar usuario
-
-El endpoint `DELETE /usuarios/{id}/` permite eliminar un usuario del sistema.
-
-### Parámetros
-| Parámetro | Tipo | Requerido | Descripción |
-|-----------|------|-----------|-------------|
-| `id` | integer | ✅ Sí | Identificador único del usuario |
-
-### Respuesta Exitosa (204)
-(Sin contenido)
-
----
-
-### Posibles Errores
-| Código | Descripción |
-|--------|-------------|
-| 400    | ID inválido |
-| 404    | Usuario no encontrado |
-| 500    | Error interno del servidor |
-
----

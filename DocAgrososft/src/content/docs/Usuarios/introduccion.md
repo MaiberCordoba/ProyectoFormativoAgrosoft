@@ -29,14 +29,13 @@ description: Administración de usuarios en AgroSoft API
   }
 </style>
 
-Gestión de usuarios en la API de AgroSoft, permitiendo crear, actualizar, consultar y eliminar usuarios del sistema.
+Gestión de usuarios en la API de AgroSoft, permitiendo crear, actualizar, consultar usuarios del sistema.
 
 ## Funcionalidades Principales
 1. **Listar usuarios**: Obtén un listado de los usuarios registrados.
 2. **Registrar usuario**: Crea nuevos usuarios en el sistema.
 3. **Consultar usuario**: Obtén información detallada de un usuario específico.
 4. **Actualizar usuario**: Modifica los datos de un usuario existente.
-5. **Eliminar usuario**: Elimina un usuario del sistema.
 
 <div class="card-grid">
   <a href="/usuarios/usuarios" class="card">
@@ -63,9 +62,4 @@ Gestión de usuarios en la API de AgroSoft, permitiendo crear, actualizar, consu
     <p>Modifica los datos de un usuario existente</p>
   </a>
 
-  <a href="/usuarios/usuarios" class="card">
-    <div class="card-icon"></div>
-    <h3>Eliminar Usuario</h3>
-    <p>Borra un usuario del sistema de forma permanente</p>
-  </a>
 </div>

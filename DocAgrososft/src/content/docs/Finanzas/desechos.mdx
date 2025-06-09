@@ -7,7 +7,7 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
 ###  Descripción
-Este endpoint permite la gestión de desechos agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de desechos agrícolas, incluyendo su creación, consulta, actualización.  
 
 Cada desecho está asociado a un cultivo y un tipo de desecho, y contiene información clave como nombre y descripcion.
 
@@ -115,12 +115,3 @@ Este metodo permite actualizar/editar una desecho
 ###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### 🔹Metodo DELETE
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/desechos/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
-###### 🔍 Respuesta ID No encontrado (404 - Not Found)
-###### ❌ Respuesta Error (500 - Internal Server Error)

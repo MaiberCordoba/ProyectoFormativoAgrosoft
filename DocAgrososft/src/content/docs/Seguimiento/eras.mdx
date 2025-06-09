@@ -6,7 +6,7 @@ description: Endpoint para gestionar las eras dentro del sistema AgroSoft.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de eras agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de eras agrícolas, incluyendo su creación, consulta, actualización.
 Cada era está asociada a un lote y contiene información clave como tamaño, posición y estado.
 
 ## Métodos
@@ -110,15 +110,4 @@ Este método permite actualizar/editar una era.
   "fk_lote": 2,
 }
 ```
-###### ❌ Respuesta Error (500 - Internal Server Error)
-
-### Método DELETE
-
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/eras/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-###### ✅ Respuesta Exitosa (204 - No Content)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
