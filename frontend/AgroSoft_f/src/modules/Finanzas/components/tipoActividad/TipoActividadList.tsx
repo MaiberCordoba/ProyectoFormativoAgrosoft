@@ -87,7 +87,6 @@ export function TipoActividadList() {
         return (
           <AccionesTabla
             onEditar={() => handleEditarConPermiso(item)} // Llama a la función con verificación
-            onEliminar={() => handleEliminarConPermiso(item)} // Llama a la función con verificación
           />
         );
       default:

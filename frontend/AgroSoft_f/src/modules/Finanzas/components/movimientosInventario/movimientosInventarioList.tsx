@@ -12,6 +12,7 @@ import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
+//import { useGetUsosHerramientas } from "../../hooks/usosHerramientas/useGetUsosHerramientas";
 
 export function MovimientosList() {
   const { data, isLoading, error } = useGetMovimientoInventario();
@@ -94,9 +95,6 @@ export function MovimientosList() {
           <AccionesTabla
             onEditar={() =>
               handleActionWithPermission(() => handleEditar(item), ["admin"])
-            }
-            onEliminar={() =>
-              handleActionWithPermission(() => handleEliminar(item), ["admin"])
             }
           />
         );

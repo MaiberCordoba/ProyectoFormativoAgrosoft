@@ -83,9 +83,6 @@ export function UnidadesTiempoList() {
             onEditar={() =>
               handleActionWithPermission(() => handleEditar(item), ["admin"])
             }
-            onEliminar={() =>
-              handleActionWithPermission(() => handleEliminar(item), ["admin"])
-            }
           />
         );
       default:

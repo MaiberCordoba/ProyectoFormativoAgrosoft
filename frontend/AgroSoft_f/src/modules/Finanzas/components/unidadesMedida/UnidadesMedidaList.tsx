@@ -99,12 +99,6 @@ export function UnidadesMedidaList() {
                 ["admin", "instructor", "pasante"]
               )
             }
-            onEliminar={() =>
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"] // Solo admin e instructor pueden eliminar
-              )
-            }
           />
         );
       default:

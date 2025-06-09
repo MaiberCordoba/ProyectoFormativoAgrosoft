@@ -111,13 +111,13 @@ export function PlantacionesList() {
   const renderCell = (item: Plantaciones, columnKey: React.Key) => {
     switch (columnKey) {
       case "cultivo":
-        return <span>{item.cultivo?.nombre || "Sin nombre"}</span>;
+        return <span>{item.cultivo?.nombre || "No aplica"}</span>;
       case "semillero":
         return (
           <span>
             {item.semillero
               ? `Semillero: ${item.semillero.cultivo?.nombre || "Sin nombre"}`
-              : "Sin semillero"}
+              : "No aplica"}
           </span>
         );
       case "unidades":
@@ -137,7 +137,7 @@ export function PlantacionesList() {
               <>
                 {item.eras.tipo}
                 {" - "}
-                {item.eras.fk_lote?.nombre ?? "Sin lote"}
+                {item.eras.Lote?.nombre ?? "Sin lote"}
               </>
             ) : (
               `Era ${item.eras?.id ?? "N/A"}`
@@ -148,7 +148,6 @@ export function PlantacionesList() {
         return (
           <AccionesTabla
             onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
           />
         );
       default:

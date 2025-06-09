@@ -126,12 +126,6 @@ export function CosechasList() {
                 ["admin", "instructor", "pasante"]
               )
             }
-            onEliminar={() =>
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
-              )
-            }
           />
         );
       default:

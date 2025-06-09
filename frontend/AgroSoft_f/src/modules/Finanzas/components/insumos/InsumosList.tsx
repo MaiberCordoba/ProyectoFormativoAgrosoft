@@ -92,12 +92,6 @@ export function InsumosList() {
                 ["admin", "instructor"]
               )
             }
-            onEliminar={() =>
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
-              )
-            }
           />
         );
       default:

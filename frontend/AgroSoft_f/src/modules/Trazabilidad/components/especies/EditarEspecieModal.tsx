@@ -69,7 +69,7 @@ const EditarEspecieModal: React.FC<EditarEspecieModalProps> = ({ especie, onClos
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}

@@ -12,20 +12,20 @@ import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas"
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 import { addToast } from "@heroui/toast";
 import { useAuth } from "@/hooks/UseAuth";
+import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
 
 export function UsosHerramientasList() {
   const { user } = useAuth();
   const userRole = user?.rol || null;
   const { data, isLoading, error } = useGetUsosHerramientas();
-  const { data: herramientas, isLoading: loadingHerramientas } =
-    useGetHerramientas();
-  const { data: actividades, isLoading: loadingActividades } =
-    useGetActividades();
-  const {
-    isOpen: isEditModalOpen,
-    closeModal: closeEditModal,
-    usoHerramientaEdidata,
-    handleEditar,
+  const { data : herramientas, isLoading : loadingHerramientas } = useGetHerramientas();
+  const { data : actividades, isLoading : loadingActividades } = useGetActividades();
+  const { data : controles, isLoading : loadingControles } = useGetControles();
+  const { 
+    isOpen: isEditModalOpen, 
+    closeModal: closeEditModal, 
+    usoHerramientaEdidata, 
+    handleEditar 
   } = useEditarUsoHerramienta();
 
   const {
@@ -69,17 +69,20 @@ export function UsosHerramientasList() {
           id: 0,
           fk_Herramienta: 0,
           fk_Actividad: 0,
+          fk_Control:0,
           unidades: 0,
         }),
       ["admin", "instructor", "pasante"]
     );
+
   };
 
   // Definición de columnas
   const columnas = [
     { name: "Herramienta", uid: "herramienta" },
     { name: "Actividad", uid: "actividad" },
-    { name: "Unidades", uid: "unidades" },
+    { name: "Control", uid: "control" },
+    { name: "Unidades", uid: "unidades"},
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -93,7 +96,10 @@ export function UsosHerramientasList() {
         return <span>{herramienta ? herramienta.nombre : "No definido"}</span>;
       case "actividad":
         const actividad = actividades?.find((c) => c.id === item.fk_Actividad);
-        return <span>{actividad ? actividad.titulo : "No definido"}</span>;
+        return <span>{actividad ? actividad.titulo : "No aplica"}</span>;
+      case "control":
+        const control = controles?.find((c) => c.id === item.fk_Control);
+        return <span>{control ? control?.descripcion : "No aplica"}</span>;
       case "unidades":
         return <span>{item.unidades}</span>;
       case "acciones":
@@ -118,8 +124,7 @@ export function UsosHerramientasList() {
     }
   };
 
-  if (isLoading || loadingHerramientas || loadingActividades)
-    return <p>Cargando...</p>;
+  if (isLoading || loadingHerramientas || loadingActividades || loadingControles) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Usos de Herramientas</p>;
 
   return (

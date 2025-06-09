@@ -102,9 +102,6 @@ export function SalariosList() {
             onEditar={() =>
               handleActionWithPermission(() => handleEditar(item), ["admin"])
             }
-            onEliminar={() =>
-              handleActionWithPermission(() => handleEliminar(item), ["admin"])
-            }
           />
         );
       default:

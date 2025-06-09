@@ -81,7 +81,7 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}
@@ -101,64 +101,15 @@ const EditarLoteModal: React.FC<EditarLoteModalProps> = ({ lote, onClose }) => {
       />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
-        <Input
-          label="Lat. Inf. Izquierda"
-          type="number"
-          value={(latI1 ?? "").toString()}
-          onChange={(e) => setLatI1(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lon. Inf. Izquierda"
-          type="number"
-          value={(longI1 ?? "").toString()}
-          onChange={(e) => setLongI1(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lat. Sup. Izquierda"
-          type="number"
-          value={(latS1 ?? "").toString()}
-          onChange={(e) => setLatS1(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lon. Sup. Izquierda"
-          type="number"
-          value={(longS1 ?? "").toString()}
-          onChange={(e) => setLongS1(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lat. Inf. Derecha"
-          type="number"
-          value={(latI2 ?? "").toString()}
-          onChange={(e) => setLatI2(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lon. Inf. Derecha"
-          type="number"
-          value={(longI2 ?? "").toString()}
-          onChange={(e) => setLongI2(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lat. Sup. Derecha"
-          type="number"
-          value={(latS2 ?? "").toString()}
-          onChange={(e) => setLatS2(Number(e.target.value))}
-          size="sm"
-        />
-        <Input
-          label="Lon. Sup. Derecha"
-          type="number"
-          value={(longS2 ?? "").toString()}
-          onChange={(e) => setLongS2(Number(e.target.value))}
-          size="sm"
-        />
+        <Input label="Lat. Inf. Izquierda" type="text" inputMode="decimal" value={latI1} onChange={(e) => setLatI1(e.target.value)} size="sm" />
+        <Input label="Lon. Inf. Izquierda" type="text" inputMode="decimal" value={longI1} onChange={(e) => setLongI1(e.target.value)} size="sm" />
+        <Input label="Lat. Sup. Izquierda" type="text" inputMode="decimal" value={latS1} onChange={(e) => setLatS1(e.target.value)} size="sm" />
+        <Input label="Lon. Sup. Izquierda" type="text" inputMode="decimal" value={longS1} onChange={(e) => setLongS1(e.target.value)} size="sm" />
+        <Input label="Lat. Inf. Derecha" type="text" inputMode="decimal" value={latI2} onChange={(e) => setLatI2(e.target.value)} size="sm" />
+        <Input label="Lon. Inf. Derecha" type="text" inputMode="decimal" value={longI2} onChange={(e) => setLongI2(e.target.value)} size="sm" />
+        <Input label="Lat. Sup. Derecha" type="text" inputMode="decimal" value={latS2} onChange={(e) => setLatS2(e.target.value)} size="sm" />
+        <Input label="Lon. Sup. Derecha" type="text" inputMode="decimal" value={longS2} onChange={(e) => setLongS2(e.target.value)} size="sm" />
       </div>
-
       <div className="mt-4">
         <Switch
           size="sm"
