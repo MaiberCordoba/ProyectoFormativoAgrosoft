@@ -18,14 +18,14 @@ export function TipoControlList() {
 
   const showAccessDenied = () => {
     addToast({
-      title: 'Acción no permitida',
-      description: 'No tienes permiso para realizar esta acción',
-      color: 'danger'
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
   const handleActionWithPermission = (
-    action: () => void, 
+    action: () => void,
     requiredRoles: string[]
   ) => {
     if (requiredRoles.includes(userRole || "")) {
@@ -35,29 +35,31 @@ export function TipoControlList() {
     }
   };
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    tipoControlEditado, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    tipoControlEditado,
+    handleEditar,
   } = useEditarTipoControl();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearTipoControl();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     tipoControlEliminado,
-    handleEliminar
+    handleEliminar,
   } = useEliminarTipoControl();
 
   const handleCrearNuevo = () => {
-    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
-    
+    const permitido = ["admin", "instructor", "pasante"].includes(
+      userRole || ""
+    );
+
     if (permitido) {
       handleCrear({ id: 0, nombre: "", descripcion: "" });
     } else {
@@ -82,16 +84,10 @@ export function TipoControlList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => 
+            onEditar={() =>
               handleActionWithPermission(
                 () => handleEditar(item),
                 ["admin", "instructor", "pasante"]
-              )
-            }
-            onEliminar={() => 
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
               )
             }
           />
@@ -125,9 +121,7 @@ export function TipoControlList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearTipoControlModal
-          onClose={closeCreateModal}
-        />
+        <CrearTipoControlModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && tipoControlEliminado && (

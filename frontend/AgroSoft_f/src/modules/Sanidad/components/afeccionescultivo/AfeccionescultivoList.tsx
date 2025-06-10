@@ -6,7 +6,7 @@ import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarAfeccionCultivoModal from "./EditarAfeccionescultivoModal";
-import {CrearAfeccionCultivoModal } from "./CrearAfeccionescultivoModal";
+import { CrearAfeccionCultivoModal } from "./CrearAfeccionescultivoModal";
 import EliminarAfeccionCultivoModal from "./EliminarAfeccionescultivo";
 import { AfeccionesCultivo, EstadoAfeccion } from "../../types";
 import { useAuth } from "@/hooks/UseAuth"; // Importa useAuth
@@ -20,14 +20,14 @@ export function AfeccionesCultivoList() {
 
   const showAccessDenied = () => {
     addToast({
-      title: 'Acción no permitida',
-      description: 'No tienes permiso para realizar esta acción',
-      color: 'danger'
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
   const handleActionWithPermission = (
-    action: () => void, 
+    action: () => void,
     requiredRoles: string[]
   ) => {
     if (requiredRoles.includes(userRole || "")) {
@@ -37,31 +37,38 @@ export function AfeccionesCultivoList() {
     }
   };
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    afeccionCultivoEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    afeccionCultivoEditada,
+    handleEditar,
   } = useEditarAfeccionCultivo();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearAfeccionCultivo();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     afeccionCultivoEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarAfeccionCultivo();
 
   const handleCrearNuevo = () => {
-    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
-    
+    const permitido = ["admin", "instructor", "pasante"].includes(
+      userRole || ""
+    );
+
     if (permitido) {
-      handleCrear({ fk_Plantacion: 0, fk_Plaga: 0, fechaEncuentro: "", estado: "ST" });
+      handleCrear({
+        fk_Plantacion: 0,
+        fk_Plaga: 0,
+        fechaEncuentro: "",
+        estado: "ST",
+      });
     } else {
       showAccessDenied();
     }
@@ -82,13 +89,21 @@ export function AfeccionesCultivoList() {
   const renderCell = (item: AfeccionesCultivo, columnKey: React.Key) => {
     switch (columnKey) {
       case "cultivo":
-        return <span>{item.plantaciones?.cultivo?.nombre || "No definido"}</span>;
+        return (
+          <span>{item.plantaciones?.cultivo?.nombre || "No definido"}</span>
+        );
       case "especie":
-        return <span>{item.plantaciones?.cultivo?.especies?.nombre || "No definido"}</span>;
+        return (
+          <span>
+            {item.plantaciones?.cultivo?.especies?.nombre || "No definido"}
+          </span>
+        );
       case "era":
         return <span>{item.plantaciones?.eras?.tipo || "No definido"}</span>;
       case "lote":
-        return <span>{item.plantaciones?.eras?.Lote?.nombre || "No definido"}</span>;
+        return (
+          <span>{item.plantaciones?.eras?.Lote?.nombre || "No definido"}</span>
+        );
       case "plaga":
         return <span>{item.plagas?.nombre || "No definido"}</span>;
       case "tipoPlaga":
@@ -96,26 +111,26 @@ export function AfeccionesCultivoList() {
       case "fechaEncuentro":
         return <span>{item.fechaEncuentro}</span>;
       case "estado":
-        return <span>{item.estado ? EstadoAfeccion[item.estado] : "No definido"}</span>;
+        return (
+          <span>
+            {item.estado ? EstadoAfeccion[item.estado] : "No definido"}
+          </span>
+        );
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => 
+            onEditar={() =>
               handleActionWithPermission(
                 () => handleEditar(item),
                 ["admin", "instructor", "pasante"]
               )
             }
-            onEliminar={() => 
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
-              )
-            }
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof AfeccionesCultivo])}</span>;
+        return (
+          <span>{String(item[columnKey as keyof AfeccionesCultivo])}</span>
+        );
     }
   };
 
@@ -141,9 +156,7 @@ export function AfeccionesCultivoList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearAfeccionCultivoModal
-          onClose={closeCreateModal}
-        />
+        <CrearAfeccionCultivoModal onClose={closeCreateModal} />
       )}
 
       {isDeleteModalOpen && afeccionCultivoEliminada && (

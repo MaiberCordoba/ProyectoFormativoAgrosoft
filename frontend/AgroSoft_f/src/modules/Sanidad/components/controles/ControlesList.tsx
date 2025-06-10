@@ -18,14 +18,14 @@ export function ControlesList() {
 
   const showAccessDenied = () => {
     addToast({
-      title: 'Acción no permitida',
-      description: 'No tienes permiso para realizar esta acción',
-      color: 'danger'
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
   const handleActionWithPermission = (
-    action: () => void, 
+    action: () => void,
     requiredRoles: string[]
   ) => {
     if (requiredRoles.includes(userRole || "")) {
@@ -56,8 +56,10 @@ export function ControlesList() {
   } = useEliminarControl();
 
   const handleCrearNuevo = () => {
-    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
-    
+    const permitido = ["admin", "instructor", "pasante"].includes(
+      userRole || ""
+    );
+
     if (permitido) {
       handleCrear({
         id: 0,
@@ -88,11 +90,7 @@ export function ControlesList() {
       case "descripcion":
         return <span>{item.descripcion}</span>;
       case "afeccion":
-        return (
-          <span>
-            {item.afeccion?.plagas?.tipoPlaga?.nombre || "Sin nombre"}
-          </span>
-        );
+        return <span>{item.afeccion?.plagas?.nombre || "Sin nombre"}</span>;
       case "tipocontrol":
         return <span>{item.tipoControl?.nombre || "No definido"}</span>;
       case "usuario":
@@ -100,16 +98,10 @@ export function ControlesList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => 
+            onEditar={() =>
               handleActionWithPermission(
                 () => handleEditar(item),
                 ["admin", "instructor", "pasante"]
-              )
-            }
-            onEliminar={() => 
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
               )
             }
           />

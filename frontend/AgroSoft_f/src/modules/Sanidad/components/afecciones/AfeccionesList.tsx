@@ -17,21 +17,21 @@ export function AfeccionesList() {
   const { data, isLoading, error } = useGetAfecciones();
   const { user } = useAuth(); // Obtiene el usuario autenticado
   const userRole = user?.rol || null; // Obtiene el rol del usuario
-  
+
   useEffect(() => {
     console.log(data);
   }, [data]);
 
   const showAccessDenied = () => {
     addToast({
-      title: 'Acción no permitida',
-      description: 'No tienes permiso para realizar esta acción',
-      color: 'danger'
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
   const handleActionWithPermission = (
-    action: () => void, 
+    action: () => void,
     requiredRoles: string[]
   ) => {
     if (requiredRoles.includes(userRole || "")) {
@@ -41,29 +41,31 @@ export function AfeccionesList() {
     }
   };
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    afeccionEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    afeccionEditada,
+    handleEditar,
   } = useEditarAfeccion();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearAfeccion();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     afeccionEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarAfeccion();
 
   const handleCrearNuevo = () => {
-    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
-    
+    const permitido = ["admin", "instructor", "pasante"].includes(
+      userRole || ""
+    );
+
     if (permitido) {
       handleCrear({ id: 0, nombre: "", descripcion: "", fk_Tipo: 0, img: "" });
     } else {
@@ -92,22 +94,16 @@ export function AfeccionesList() {
           <Image
             src={item.img}
             alt={item.nombre}
-            className="w-14 h-14 object-contain rounded-lg" 
+            className="w-14 h-14 object-contain rounded-lg"
           />
         );
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => 
+            onEditar={() =>
               handleActionWithPermission(
                 () => handleEditar(item),
                 ["admin", "instructor", "pasante"]
-              )
-            }
-            onEliminar={() => 
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
               )
             }
           />
@@ -138,11 +134,7 @@ export function AfeccionesList() {
         />
       )}
 
-      {isCreateModalOpen && (
-        <CrearAfeccionModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearAfeccionModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && afeccionEliminada && (
         <EliminarAfeccionModal

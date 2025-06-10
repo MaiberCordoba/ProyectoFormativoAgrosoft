@@ -94,7 +94,7 @@ export interface Afecciones {
 export enum EstadoAfeccion {
   ST = "Detectado",
   EC = "EnTratamiento",
-  EL = "Erradicado"
+  EL = "Erradicado",
 }
 
 export interface AfeccionesCultivo {
@@ -108,31 +108,31 @@ export interface AfeccionesCultivo {
 }
 
 export interface TipoControl {
-    id: number;
-    nombre: string;
-    descripcion: string;
-  }
-  
-  export interface Controles {
-    id: number;
-    fk_Afeccion?: number;
-    fk_TipoControl?: number;
-    fechaControl: string;
-    descripcion: string;
-    fk_Usuario?: number;
+  id: number;
+  nombre: string;
+  descripcion: string;
+}
+
+export interface Controles {
+  id: number;
+  fk_Afeccion?: number;
+  fk_TipoControl?: number;
+  fechaControl: string;
+  descripcion: string;
+  fk_Usuario?: number;
   usuario?: {
     id: number;
     nombre: string;
   };
+  afeccion: Afecciones;
 }
-  
 
-  export interface ControlDetails {
-    id: number;
-    descripcion: string;
-    fechaControl: string;
-    tipoControl: TipoControl;
-    afeccionCultivo: AfeccionesCultivo & {
-      plaga: Afecciones;
-    };
-  }
+export interface ControlDetails {
+  id: number;
+  descripcion: string;
+  fechaControl: string;
+  tipoControl: TipoControl;
+  afeccionCultivo: AfeccionesCultivo & {
+    plaga: Afecciones;
+  };
+}

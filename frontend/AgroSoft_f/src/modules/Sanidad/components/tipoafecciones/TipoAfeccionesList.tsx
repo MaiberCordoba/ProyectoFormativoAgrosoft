@@ -19,14 +19,14 @@ export function TipoAfeccionesList() {
 
   const showAccessDenied = () => {
     addToast({
-      title: 'Acción no permitida',
-      description: 'No tienes permiso para realizar esta acción',
-      color: 'danger'
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
   const handleActionWithPermission = (
-    action: () => void, 
+    action: () => void,
     requiredRoles: string[]
   ) => {
     if (requiredRoles.includes(userRole || "")) {
@@ -36,29 +36,31 @@ export function TipoAfeccionesList() {
     }
   };
 
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    tipoafeccionEditada, 
-    handleEditar 
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    tipoafeccionEditada,
+    handleEditar,
   } = useEditarTipoAfeccion();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearTipoAfeccion();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     tipoafeccionEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarTipoAfeccion();
 
   const handleCrearNuevo = () => {
-    const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
-    
+    const permitido = ["admin", "instructor", "pasante"].includes(
+      userRole || ""
+    );
+
     if (permitido) {
       handleCrear({ id: 0, nombre: "", descripcion: "", img: "" });
     } else {
@@ -71,7 +73,7 @@ export function TipoAfeccionesList() {
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
     { name: "Img", uid: "img" },
-    { name: "Acciones", uid: "acciones" }
+    { name: "Acciones", uid: "acciones" },
   ];
 
   // Función de renderizado
@@ -87,22 +89,16 @@ export function TipoAfeccionesList() {
             isZoomed
             src={item.img}
             alt={item.nombre}
-            className="w-14 h-14 object-contain rounded-lg" 
+            className="w-14 h-14 object-contain rounded-lg"
           />
         );
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => 
+            onEditar={() =>
               handleActionWithPermission(
                 () => handleEditar(item),
                 ["admin", "instructor", "pasante"]
-              )
-            }
-            onEliminar={() => 
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
               )
             }
           />
