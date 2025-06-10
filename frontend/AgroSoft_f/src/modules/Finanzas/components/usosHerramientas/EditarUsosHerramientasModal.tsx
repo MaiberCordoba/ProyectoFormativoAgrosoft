@@ -38,6 +38,14 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
       })
       return
     }
+    if (!fk_Actividad && !fk_Control){
+      addToast({
+        title:"Error",
+        description:"Debe relacionar a una actividad o un control.",
+        color:"danger"
+      })
+      return
+    }
     mutate(
       {
         id: usoHerramienta.id,
@@ -137,8 +145,11 @@ const EditarUsoHerramientaModal: React.FC<EditarUsoHerramientaModalProps> = ({ u
           }}
         >
           {(controles || []).map((control) => (
-            <SelectItem key={control.id.toString()}>{control.descripcion}</SelectItem>
+            <SelectItem key={control.id.toString()}>
+              {control.descripcion}
+            </SelectItem>
           ))}
+          
         </Select>
       )}
     </ModalComponent>

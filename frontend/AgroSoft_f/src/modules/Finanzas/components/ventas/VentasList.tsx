@@ -16,18 +16,16 @@ import { addToast } from "@heroui/toast";
 
 export function VentasList() {
   const { data, isLoading, error } = useGetVentas();
-  const { data: cosechas, isLoading: loadingCosechas } = useGetCosechas();
-  const { data: plantaciones } = useGetPlantaciones();
-  const { data: unidadesMedida, isLoading: loadingUnidadesMedida } =
-    useGetUnidadesMedida();
-  const { user } = useAuth();
-  const userRole = user?.rol || null;
 
-  const {
-    isOpen: isEditModalOpen,
-    closeModal: closeEditModal,
-    ventaEditada,
-    handleEditar,
+  const { data : cosechas, isLoading : loadingCosechas, } = useGetCosechas();
+  const { data : plantaciones} = useGetPlantaciones();
+  const { data : unidadesMedida, isLoading : loadingUnidadesMedida } = useGetUnidadesMedida();
+  const { 
+    isOpen: isEditModalOpen, 
+    closeModal: closeEditModal, 
+    ventaEditada, 
+    handleEditar 
+
   } = useEditarVenta();
 
   const {
