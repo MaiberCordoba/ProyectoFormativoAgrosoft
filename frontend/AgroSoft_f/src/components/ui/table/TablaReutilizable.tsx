@@ -7,7 +7,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  Chip,
   SortDescriptor,
 } from "@heroui/react";
 import { useFiltrado } from "../../../hooks/useFiltrado";
@@ -181,17 +180,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
               >
                 {(columnKey) => (
                   <TableCell className="py-3 px-4 border-b text-gray-700">
-                    {columnKey === "estado" && item.estado ? (
-                      <Chip
-                        size="sm"
-                        variant="dot"
-                        color={item.estado === "activo" ? "success" : "danger"}
-                      >
-                        {item.estado}
-                      </Chip>
-                    ) : (
-                      renderCell(item, columnKey)
-                    )}
+                    {renderCell(item, columnKey)}
                   </TableCell>
                 )}
               </TableRow>

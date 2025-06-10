@@ -64,7 +64,7 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
+            variant: "solid",
             onClick: handleSubmit,
           },
         ]}

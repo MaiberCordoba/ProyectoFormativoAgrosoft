@@ -12,13 +12,18 @@ import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function UsosInsumosList() {
   const { data, isLoading, error, refetch } = useGetUsosInsumos();
   const { data: insumos, isLoading: loadingInsumos } = useGetInsumos();
-  const { data: actividades, isLoading: loadingActividades } = useGetActividades();
-  const { data: controles, isLoading: loadingControles } = useGetControles()
-  const { data: unidades, isLoading: loadingUnidades } = useGetUnidadesMedida()
+  const { data: actividades, isLoading: loadingActividades } =
+    useGetActividades();
+  const { data: controles, isLoading: loadingControles } = useGetControles();
+  const { data: unidades, isLoading: loadingUnidades } = useGetUnidadesMedida();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -40,8 +45,41 @@ export function UsosInsumosList() {
     handleEliminar,
   } = useEliminarUsoInsumo();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Insumo: 0, fk_Actividad: 0,fk_Control:0,fk_UnidadMedida:0, cantidadProducto: 0,costoUsoInsumo:0 });
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          fk_Insumo: 0,
+          fk_Actividad: 0,
+          fk_Control: 0,
+          fk_UnidadMedida: 0,
+          cantidadProducto: 0,
+          costoUsoInsumo: 0,
+        }),
+      ["admin", "instructor", "pasante"]
+    );
   };
 
   const columnas = [
@@ -64,7 +102,7 @@ export function UsosInsumosList() {
         return <span>{actividad ? actividad.titulo : "No aplica"}</span>;
       case "control":
         const control = controles?.find((a) => a.id === item.fk_Control);
-        return <span>{control ? control.descripcion: "No aplica"}</span>;
+        return <span>{control ? control.descripcion : "No aplica"}</span>;
       case "unidad":
         const unidad = unidades?.find((a) => a.id === item.fk_UnidadMedida);
         return <span>{unidad ? unidad.nombre : "No definido"}</span>;
@@ -75,7 +113,12 @@ export function UsosInsumosList() {
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -83,7 +126,14 @@ export function UsosInsumosList() {
     }
   };
 
-  if (isLoading || loadingInsumos || loadingActividades || loadingControles || loadingUnidades) return <p>Cargando...</p>;
+  if (
+    isLoading ||
+    loadingInsumos ||
+    loadingActividades ||
+    loadingControles ||
+    loadingUnidades
+  )
+    return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los Usos de Insumos</p>;
 
   return (

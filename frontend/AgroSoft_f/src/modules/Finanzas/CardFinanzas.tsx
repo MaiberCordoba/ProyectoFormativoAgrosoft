@@ -7,6 +7,8 @@ import { useGetInsumos } from "./hooks/insumos/useGetInsumos";
 import { useGetUnidadesMedida } from "./hooks/unidadesMedida/useGetUnidadesMedida";
 import { useGetHerramientas } from "./hooks/herramientas/useGetHerramientas";
 import CustomCard from "./CustomCard";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function CosechasResumenCard() {
   const [modalVentas, setModalVentas] = useState(false);
@@ -20,13 +22,38 @@ export function CosechasResumenCard() {
   } = useGetCosechas();
   const { data: plantaciones = [], isLoading: loadingPlantaciones } =
     useGetPlantaciones();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
+
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
 
   if (loadingCosechas || loadingPlantaciones) return <p>Cargando...</p>;
   if (isError) return <p>Hubo un error al cargar la información</p>;
 
   const handleVentaCosecha = (cosecha: Cosechas) => {
-    setCosechaSeleccionada(cosecha);
-    setModalVentas(true);
+    handleActionWithPermission(() => {
+      setCosechaSeleccionada(cosecha);
+      setModalVentas(true);
+    }, ["admin", "instructor", "pasante"]);
   };
 
   return (
@@ -50,6 +77,7 @@ export function CosechasResumenCard() {
             image={imagenEspecie}
             data={{
               Especie: nombreEspecie,
+
               Cantidad: cosecha.cantidadTotal +"(g)",
               "Valor *(g)" : cosecha.valorGramo,
               "Valor cosecha": `$${cosecha.valorTotal}`,
@@ -79,7 +107,6 @@ export function CosechasResumenCard() {
     </div>
   );
 }
-
 export function PlantacionesCard() {
   const {
     data: plantaciones = [],
@@ -134,6 +161,8 @@ export function InsumosCard() {
     isError,
   } = useGetInsumos();
   const { data: unidades = [] } = useGetUnidadesMedida();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isCreateModalOpen,
@@ -141,16 +170,39 @@ export function InsumosCard() {
     handleCrear,
   } = useCrearUsosInsumo();
 
-  const handleUsarInsumo = (idInsumo: number) => {
-    handleCrear({
-      id: 0,
-      fk_Insumo: idInsumo,
-      fk_Actividad: 0,
-      fk_Control: 0,
-      fk_UnidadMedida: 0,
-      cantidadProducto: 0,
-      costoUsoInsumo: 0,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  const handleUsarInsumo = (idInsumo: number) => {
+    handleActionWithPermission(() => {
+      handleCrear({
+        id: 0,
+        fk_Insumo: idInsumo,
+        fk_Actividad: 0,
+        fk_Control: 0,
+        fk_UnidadMedida: 0,
+        cantidadProducto: 0,
+        costoUsoInsumo: 0,
+      });
+    }, ["admin", "instructor", "pasante"]);
   };
 
   if (loadingInsumos) return <p>Cargando...</p>;
@@ -219,6 +271,8 @@ export function HerramientasCard() {
     isLoading: loadingHerramientas,
     isError,
   } = useGetHerramientas();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isCreateModalOpen,
@@ -226,13 +280,36 @@ export function HerramientasCard() {
     handleCrear,
   } = useCrearUsosHerramienta();
 
-  const handleUsarHerramienta = (idHerramienta: number) => {
-    handleCrear({
-      id: 0,
-      fk_Herramienta: idHerramienta,
-      fk_Actividad: 0,
-      unidades: 0,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  const handleUsarHerramienta = (idHerramienta: number) => {
+    handleActionWithPermission(() => {
+      handleCrear({
+        id: 0,
+        fk_Herramienta: idHerramienta,
+        fk_Actividad: 0,
+        unidades: 0,
+      });
+    }, ["admin", "instructor", "pasante"]);
   };
 
   if (loadingHerramientas) return <p>Cargando...</p>;
@@ -283,6 +360,8 @@ export function TiempoActividadCard() {
   const { data: controles = [] } = useGetControles();
   const { data: salarios = [] } = useGetSalarios();
   const { data: plantaciones = [] } = useGetPlantaciones();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const {
     isOpen: isEditModalOpen,
@@ -298,6 +377,27 @@ export function TiempoActividadCard() {
     handleEliminar,
   } = useEliminarTiempoActividadControl();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
   if (isLoading) return <p>Cargando...</p>;
   if (isError) return <p>Error al cargar...</p>;
 
@@ -311,13 +411,17 @@ export function TiempoActividadCard() {
         const usuario = usuarios.find((p) => p.id === actividad?.fk_Usuario);
         const control = controles.find((p) => p.id === tiempoAC?.fk_control);
         const salario = salarios.find((p) => p.id === tiempoAC?.fk_salario);
-        const plantacion = plantaciones.find((p) => p.id === actividad?.fk_Plantacion);
+        const plantacion = plantaciones.find(
+          (p) => p.id === actividad?.fk_Plantacion
+        );
 
         return (
           <CustomCard
             key={tiempoAC.id}
             title={actividad?.titulo || control?.descripcion || "Sin nombre"}
-            description={ actividad?.cultivo?.nombre || plantacion?.cultivo?.nombre }
+            description={
+              actividad?.cultivo?.nombre || plantacion?.cultivo?.nombre
+            }
             data={{
               Termino: tiempoAC.fecha,
               Duración: `${tiempoAC.tiempo} ${unidad?.nombre}`,
@@ -331,13 +435,21 @@ export function TiempoActividadCard() {
                 label: "Editar",
                 color: "primary",
                 size: "sm",
-                onPress: () => handleEditar(tiempoAC),
+                onPress: () =>
+                  handleActionWithPermission(
+                    () => handleEditar(tiempoAC),
+                    ["admin", "instructor"]
+                  ),
               },
               {
                 label: "Eliminar",
                 color: "danger",
                 size: "sm",
-                onPress: () => handleEliminar(tiempoAC),
+                onPress: () =>
+                  handleActionWithPermission(
+                    () => handleEliminar(tiempoAC),
+                    ["admin", "instructor"]
+                  ),
               },
             ]}
           />

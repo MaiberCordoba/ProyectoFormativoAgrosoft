@@ -7,11 +7,19 @@ import { useGetInsumos } from "../hooks/insumos/useGetInsumos";
 import { useGetHerramientas } from "../hooks/herramientas/useGetHerramientas";
 import { Button } from "@heroui/react";
 import { Package, Wrench, PlusCircle } from "lucide-react";
+import { useAuth } from "@/hooks/UseAuth";
 
 export function MovimientosInventario() {
-  const [mostrarSeccion, setMostrarSeccion] = useState<"insumos" | "herramientas" | null>(null);
+  const [mostrarSeccion, setMostrarSeccion] = useState<
+    "insumos" | "herramientas" | null
+  >(null);
   const [herramientasModal, setHerramientasModal] = useState(false);
   const [insumosModal, setInsumosModal] = useState(false);
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
+  const canViewResources = ["admin", "instructor", "pasante"].includes(
+    userRole || ""
+  );
 
   const { refetch: refetchInsumos } = useGetInsumos();
   const { refetch: refetchHerramientas } = useGetHerramientas();
@@ -20,7 +28,9 @@ export function MovimientosInventario() {
     setMostrarSeccion((prev) => (prev === "insumos" ? null : "insumos"));
 
   const toggleHerramientas = () =>
-    setMostrarSeccion((prev) => (prev === "herramientas" ? null : "herramientas"));
+    setMostrarSeccion((prev) =>
+      prev === "herramientas" ? null : "herramientas"
+    );
 
   const handleCrearInsumo = () => {
     refetchInsumos();
@@ -36,14 +46,15 @@ export function MovimientosInventario() {
     <div className="p-4">
       {/* Fila de botones */}
       <div className="flex items-center gap-4 mb-4">
-        <Button
-          color={"warning"}
-          size="sm"
-          title="Insumos"
-          onPress={toggleInsumos}
-          startContent={<Package size={16} className="text-white"/>}
-        >
-        </Button>
+        {canViewResources && (
+          <Button
+            color={"warning"}
+            size="sm"
+            title="Insumos"
+            onPress={toggleInsumos}
+            startContent={<Package size={16} className="text-white" />}
+          ></Button>
+        )}
 
         {mostrarSeccion === "insumos" && (
           <Button
@@ -52,18 +63,18 @@ export function MovimientosInventario() {
             size="sm"
             onPress={() => setInsumosModal(true)}
             startContent={<PlusCircle size={16} />}
-          >
-          </Button>
+          ></Button>
         )}
 
-        <Button
-          color={"warning"}
-          size="sm"
-          title="Herramientas"
-          onPress={toggleHerramientas}
-          startContent={<Wrench size={16} className="text-white" />}
-        >
-        </Button>
+        {canViewResources && (
+          <Button
+            color={"warning"}
+            size="sm"
+            title="Herramientas"
+            onPress={toggleHerramientas}
+            startContent={<Wrench size={16} className="text-white" />}
+          ></Button>
+        )}
 
         {mostrarSeccion === "herramientas" && (
           <Button
@@ -71,9 +82,8 @@ export function MovimientosInventario() {
             size="sm"
             title="Agregar Herramienta"
             onPress={() => setHerramientasModal(true)}
-            startContent={<PlusCircle size={16} className="text-white"/>}
-          >
-          </Button>
+            startContent={<PlusCircle size={16} className="text-white" />}
+          ></Button>
         )}
       </div>
 

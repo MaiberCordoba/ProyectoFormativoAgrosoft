@@ -11,9 +11,12 @@ import { Ventas } from "../../types";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function VentasList() {
   const { data, isLoading, error } = useGetVentas();
+
   const { data : cosechas, isLoading : loadingCosechas, } = useGetCosechas();
   const { data : plantaciones} = useGetPlantaciones();
   const { data : unidadesMedida, isLoading : loadingUnidadesMedida } = useGetUnidadesMedida();
@@ -22,23 +25,57 @@ export function VentasList() {
     closeModal: closeEditModal, 
     ventaEditada, 
     handleEditar 
+
   } = useEditarVenta();
-  
-  const { 
-    isOpen: isCreateModalOpen, 
-    closeModal: closeCreateModal, 
-    handleCrear 
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
   } = useCrearVenta();
-  
+
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     ventaEliminada,
-    handleEliminar
+    handleEliminar,
   } = useEliminarVenta();
 
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
+    });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nueva venta con verificación de permisos
   const handleCrearNuevo = () => {
-    handleCrear({ id: 0, fk_Cosecha: 0, fk_UnidadMedida: 0, cantidad:0,valorTotal:0});
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: 0,
+          fk_Cosecha: 0,
+          fecha: "",
+          fk_UnidadMedida: 0,
+          cantidad: 0,
+          valorTotal: 0,
+        }),
+      ["admin", "instructor", "pasante"]
+    );
   };
 
   const columnas = [
@@ -54,7 +91,9 @@ export function VentasList() {
     switch (columnKey) {
       case "cosecha":
         const cosecha = cosechas?.find((c) => c.id === item.fk_Cosecha);
-        const plantacion = plantaciones?.find((p) => p.id === cosecha?.fk_Plantacion);
+        const plantacion = plantaciones?.find(
+          (p) => p.id === cosecha?.fk_Plantacion
+        );
         const producto = plantacion?.cultivo?.nombre || "Producto no definido";
         return <span>{producto}</span>;
       case "precioUnitario":
@@ -62,17 +101,25 @@ export function VentasList() {
       case "fecha":
         return <span>{item.fecha}</span>;
       case "unidadMedida":
-        const unidadMedida = unidadesMedida?.find((c) => c.id === item.fk_UnidadMedida);
-        return <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>;
+        const unidadMedida = unidadesMedida?.find(
+          (c) => c.id === item.fk_UnidadMedida
+        );
+        return (
+          <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>
+        );
       case "cantidad":
-          return <span>{item.cantidad}</span>;
+        return <span>{item.cantidad}</span>;
       case "valorTotal":
-          return <span>{item.valorTotal}</span>;
+        return <span>{item.valorTotal}</span>;
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -80,8 +127,9 @@ export function VentasList() {
     }
   };
 
-  if (isLoading || loadingCosechas || loadingUnidadesMedida) return <p>Cargando...</p>;
-  if (error) return <p>Error al cargar las Ventas</p>;
+  if (isLoading || loadingCosechas || loadingUnidadesMedida)
+    return <p>Cargando...</p>;
+  if (error) return <p>Error al cargar las ventas</p>;
 
   return (
     <div className="p-4">
@@ -95,17 +143,10 @@ export function VentasList() {
       />
 
       {isEditModalOpen && ventaEditada && (
-        <EditarVentasModal
-          venta={ventaEditada}
-          onClose={closeEditModal}
-        />
+        <EditarVentasModal venta={ventaEditada} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && (
-        <CrearVentasModal
-          onClose={closeCreateModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearVentasModal onClose={closeCreateModal} />}
 
       {isDeleteModalOpen && ventaEliminada && (
         <EliminarVentaModal

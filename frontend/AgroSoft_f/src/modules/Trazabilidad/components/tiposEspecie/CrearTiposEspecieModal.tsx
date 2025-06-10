@@ -72,7 +72,7 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}

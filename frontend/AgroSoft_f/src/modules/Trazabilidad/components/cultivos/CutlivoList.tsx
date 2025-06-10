@@ -10,10 +10,11 @@ import EliminarCultivoModal from "./EliminarCultivo";
 import { Cultivo } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
+import { Chip } from "@heroui/react";
 
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
-  
+
   const { user } = useAuth();
   const userRole = user?.rol || null;
 
@@ -40,14 +41,17 @@ export function CultivosList() {
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
     addToast({
-      title: 'Acción no permitida',
-      description: 'No tienes permiso para realizar esta acción',
-      color: 'danger'
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
   };
 
   // Función para manejar acciones con verificación de permisos
-  const handleActionWithPermission = (action: () => void, requiredRoles: string[]) => {
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
     if (requiredRoles.includes(userRole || "")) {
       action();
     } else {
@@ -56,8 +60,11 @@ export function CultivosList() {
   };
 
   const handleCrearNuevo = () => {
-    const permitido = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
-    
+    const permitido =
+      userRole === "admin" ||
+      userRole === "instructor" ||
+      userRole === "pasante";
+
     if (permitido) {
       handleCrear({
         nombre: "",
@@ -83,18 +90,25 @@ export function CultivosList() {
       case "especies":
         return <span>{item.especies?.nombre || "Sin especie"}</span>;
       case "activo":
-        return <span>{item.activo ? "Activo" : "Inactivo"}</span>;
+              return (
+                <Chip
+                  size="sm"
+                  className="capitalize"
+                  variant="dot"
+                  color={item.activo ? "success" : "danger"}
+                >
+                  {item.activo ? "Activo" : "Inactivo"}
+                </Chip>
+              );
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleActionWithPermission(
-              () => handleEditar(item), 
-              ["admin", "instructor", "pasante"]
-            )}
-            onEliminar={() => handleActionWithPermission(
-              () => handleEliminar(item), 
-              ["admin", "instructor"]
-            )}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor", "pasante"]
+              )
+            }
           />
         );
       default:

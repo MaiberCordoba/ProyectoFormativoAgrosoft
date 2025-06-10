@@ -1,87 +1,97 @@
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
-import { useEditarInsumos } from "../../hooks/insumos/useEditarInsumos";
 import { useCrearInsumos } from "../../hooks/insumos/useCrearInsumos";
+import { useEditarInsumos } from "../../hooks/insumos/useEditarInsumos";
 import { useEliminarInsumos } from "../../hooks/insumos/useEliminarInsumos";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
-import EditarInsumoModal from "./EditarInsumosModal";
 import { CrearInsumosModal } from "./CrearInsumosModal";
-import EliminarInsumoModal from "./EliminarInsumos";
+import EditarInsumosModal from "./EditarInsumosModal";
+import EliminarInsumosModal from "./EliminarInsumos";
 import { Insumos } from "../../types";
-import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
-import { Image } from "@heroui/react";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function InsumosList() {
   const { data, isLoading, error } = useGetInsumos();
-  const { data: unidades, isLoading: loadingUnidades } = useGetUnidadesMedida();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
+
+  const {
+    isOpen: isCreateModalOpen,
+    closeModal: closeCreateModal,
+    handleCrear,
+  } = useCrearInsumos();
 
   const {
     isOpen: isEditModalOpen,
     closeModal: closeEditModal,
     insumoEditado,
-    handleEditar
+    handleEditar,
   } = useEditarInsumos();
-
-  const {
-    isOpen: isCreateModalOpen,
-    closeModal: closeCreateModal,
-    handleCrear
-  } = useCrearInsumos();
 
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     insumoEliminado,
-    handleEliminar
+    handleEliminar,
   } = useEliminarInsumos();
 
-  const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      nombre: "",
-      descripcion: "",
-      precio: 0,
-      compuestoActivo: "",
-      contenido: 0,
-      fichaTecnica: "",
-      unidades: 0,
-      fk_UnidadMedida: null,
-      valorTotalInsumos: 0,
-      cantidadTotal: 0,
-      cantidadDisponible: 0,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "No tienes permiso para realizar esta acción",
+      color: "danger",
     });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[]
+  ) => {
+    if (requiredRoles.includes(userRole || "")) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nuevo insumo con verificación de permisos
+  const handleCrearNuevo = () => {
+    handleActionWithPermission(
+      () =>
+        handleCrear({
+          id: null,
+          nombre: "",
+          fk_UnidadMedida: 0,
+          descripcion: "",
+        }),
+      ["admin", "instructor", "pasante"]
+    );
   };
 
   const columnas = [
     { name: "Nombre", uid: "nombre" },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Precio Unidad", uid: "precio" },
-    { name: "Compuesto Activo", uid: "compuestoActivo" },
-    { name: "Contenido", uid: "contenido" },
-    { name: "Ficha Técnica", uid: "fichaTecnica" },
-    { name: "Unidades", uid: "unidades" },
-    { name: "Unidad Medida", uid: "unidadMedida" },
-    { name: "Valor Total Insumos", uid: "valorTotalInsumos" },
     { name: "Acciones", uid: "acciones" },
   ];
 
   const renderCell = (item: Insumos, columnKey: React.Key) => {
     switch (columnKey) {
-      case "unidadMedida":
-        const unidad = unidades?.find((u) => u.id === item.fk_UnidadMedida);
-        return <span>{unidad ? unidad.nombre : "No definido"}</span>;
-      case "valorTotalInsumos":
-        return <span>{item.valorTotalInsumos.toLocaleString("es-CO", { style: "currency", currency: "COP" })}</span>
-      case "fichaTecnica":
-        return <Image
-        src={item.fichaTecnica}
-        alt={item.nombre}
-        className="w-14 h-14 object-contain rounded-lg"
-        />
+      case "nombre":
+        return <span>{item.nombre}</span>;
+      case "descripcion":
+        return <span>{item.descripcion}</span>;
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
+            onEditar={() =>
+              handleActionWithPermission(
+                () => handleEditar(item),
+                ["admin", "instructor"]
+              )
+            }
           />
         );
       default:
@@ -89,7 +99,7 @@ export function InsumosList() {
     }
   };
 
-  if (isLoading || loadingUnidades) return <p>Cargando...</p>;
+  if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar los insumos</p>;
 
   return (
@@ -103,14 +113,18 @@ export function InsumosList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {isEditModalOpen && insumoEditado && (
-        <EditarInsumoModal insumo={insumoEditado} onClose={closeEditModal} />
-      )}
-
       {isCreateModalOpen && <CrearInsumosModal onClose={closeCreateModal} />}
 
+      {isEditModalOpen && insumoEditado && (
+        <EditarInsumosModal insumo={insumoEditado} onClose={closeEditModal} />
+      )}
+
       {isDeleteModalOpen && insumoEliminado && (
-        <EliminarInsumoModal insumo={insumoEliminado} isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
+        <EliminarInsumosModal
+          insumo={insumoEliminado}
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+        />
       )}
     </div>
   );

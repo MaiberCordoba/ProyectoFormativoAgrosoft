@@ -212,6 +212,7 @@ const EditarUserModal: React.FC<EditarUserModalProps> = ({ user, onClose }) => {
 
         <Switch
           size="sm"
+          color="success"
           isSelected={otherUserData.estado === "activo"}
           onValueChange={handleEstadoSwitchChange}
         >
