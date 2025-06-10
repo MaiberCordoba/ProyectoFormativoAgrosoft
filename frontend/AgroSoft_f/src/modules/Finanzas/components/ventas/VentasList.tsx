@@ -15,17 +15,19 @@ import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
 
 export function VentasList() {
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
   const { data, isLoading, error } = useGetVentas();
 
-  const { data : cosechas, isLoading : loadingCosechas, } = useGetCosechas();
-  const { data : plantaciones} = useGetPlantaciones();
-  const { data : unidadesMedida, isLoading : loadingUnidadesMedida } = useGetUnidadesMedida();
-  const { 
-    isOpen: isEditModalOpen, 
-    closeModal: closeEditModal, 
-    ventaEditada, 
-    handleEditar 
-
+  const { data: cosechas, isLoading: loadingCosechas } = useGetCosechas();
+  const { data: plantaciones } = useGetPlantaciones();
+  const { data: unidadesMedida, isLoading: loadingUnidadesMedida } =
+    useGetUnidadesMedida();
+  const {
+    isOpen: isEditModalOpen,
+    closeModal: closeEditModal,
+    ventaEditada,
+    handleEditar,
   } = useEditarVenta();
 
   const {
@@ -38,7 +40,6 @@ export function VentasList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     ventaEliminada,
-    handleEliminar,
   } = useEliminarVenta();
 
   // Función para mostrar alerta de acceso denegado
@@ -96,8 +97,6 @@ export function VentasList() {
         );
         const producto = plantacion?.cultivo?.nombre || "Producto no definido";
         return <span>{producto}</span>;
-      case "precioUnitario":
-        return <span>{item.precioUnitario}</span>;
       case "fecha":
         return <span>{item.fecha}</span>;
       case "unidadMedida":
