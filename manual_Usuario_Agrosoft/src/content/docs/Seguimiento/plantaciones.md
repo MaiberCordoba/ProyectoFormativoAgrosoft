@@ -26,14 +26,11 @@ Para agregar una nueva plantación:
    - **Era:** Especifica en qué era se encuentra la plantación.
 3. Haz clic en **"Guardar"** para registrar la plantación.
 
-### **Consultar, editar y eliminar plantaciones existentes**
+### **Consultar y editar plantaciones existentes**
 - Para ver la información de una plantación, usa la lista disponible en la sección.
 ## Lista de plantaciones
 ![Captura de pantalla](../../../../public/listaplantaciones.png)
 - Para **editar** una plantación, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
 ![Captura de pantalla](../../../../public/editarplantacion.png)
-- Para **eliminar** una plantación, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
-   - Si no deseas eliminar la plantación, haz clic en **Cerrar**.
-## Ventana eliminar
-![Captura de pantalla](../../../../public/eliminarplantacion.png)
+

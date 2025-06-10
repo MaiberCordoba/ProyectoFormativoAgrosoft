@@ -29,7 +29,7 @@ Para agregar un nuevo tipo de control:
 
 3. Haz clic en **"Guardar"** para registrar el tipo de control.
 
-### 3️⃣ **Consultar, editar y eliminar Tipos de Control**
+### 3️⃣ **Consultar y editar Tipos de Control**
 - Para ver la información de un tipo de control, usa la lista disponible en la sección de:
 
 ## Lista de Tipos de Control
@@ -39,8 +39,5 @@ Para agregar un nuevo tipo de control:
 
 ## Ventana Editar Tipo de Control
 ![Captura de pantalla](../../../../public/tipo%20de%20control%20editar.png)
-- Para **eliminar** un tipo de control, haz clic en los tres puntos debajo de acciones, selecciona "Borrar" y confirma la eliminación. También puedes hacer clic en "Cerrar" si decides no eliminarlo.
 
-## Ventana Eliminar Tipo de Control
-![Captura de pantalla](../../../../public/eliminar%20tipos%20de%20control.png)
 

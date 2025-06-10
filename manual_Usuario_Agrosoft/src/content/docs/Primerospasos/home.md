@@ -11,41 +11,36 @@ description: A guide in my new Starlight docs site.
 ## **Elementos de la Página**
 
 ### **1. Barra de Navegación (Superior)**
-- **Buscador**: Permite realizar búsquedas dentro del sistema.
 - **Cerrar sesión**: Opción para salir de la plataforma.
 - **Usuario Estándar**: Indica el tipo de usuario actual.
 - **Notificaciones**: Icono de campana para acceder a recordatorios y alertas.
 
 ### **2. Menú Lateral (Izquierda)**
+
 El menú lateral permite acceder a diferentes módulos:
-- **Home**: Página principal del sistema.
-- **Usuarios**: Gestión de usuarios registrados en el sistema.
-- **IoT**: Información de sensores y dispositivos IoT.
-- **Calendario**: Programación de actividades y eventos.
-- **Mapa**: Representación visual de los cultivos y sensores en el área de producción.
-- **Cultivos**: Registro y control de los cultivos en producción.
-- **Finanzas**: Información sobre costos, ingresos y administración financiera.
 
-### **3. Sección de Productos**
-- Muestra un producto agrícola destacado con su imagen, nombre y precio.
-- Contiene botones de navegación para visualizar diferentes productos.
+- **Home**: Página principal del sistema.  
+- **Usuarios**: Gestión de usuarios registrados en el sistema.  
+- **IoT**: Información de sensores y dispositivos IoT.  
+- **Cultivos**: Registro y control de los cultivos en producción.  
+- **Actividades**: Programación y seguimiento de las actividades agrícolas.  
+- **Finanzas**: Información sobre costos, ingresos y administración financiera.  
+- **Inventario**: Control de insumos y recursos almacenados.  
+- **Fitosanitario**: Registro de tratamientos para control de plagas y enfermedades.  
+- **Calendario**: Programación de actividades y eventos.  
+- **Mapa**: Representación visual de los cultivos y sensores en el área de producción.  
 
-### **4. Información Climática**
-- **Temperatura**: Muestra la temperatura actual en grados Celsius.
-- **Humedad**: Indica el porcentaje de humedad ambiental.
 
-### **5. Actividades y Recordatorios**
-- **Actividades**: Acceso rápido a la gestión de tareas y actividades pendientes.
-- **Recordatorios**: Sección para configurar alertas y eventos importantes.
+### **3. Botón de acceso directo a IoT**  
+- Permite ir directamente al módulo IoT desde esta sección.  
+- Facilita el acceso rápido a datos de sensores como temperatura, humedad, riego, entre otros.
 
-### **6. Mapa Interactivo**
-- Representación gráfica del área de producción con ubicaciones de sensores y puntos de interés.
-
-### **7. Calendario**
-- Muestra el mes actual con fechas resaltadas para eventos o actividades programadas.
 
 ## **Funcionamiento General**
-- El usuario puede interactuar con los diferentes módulos a través del menú lateral.
-- Se pueden visualizar datos en tiempo real sobre temperatura y humedad.
-- Es posible gestionar actividades y recordatorios desde la pantalla de inicio.
-- El sistema permite la navegación rápida entre productos y cultivos.
+
+- El usuario navega por los módulos mediante el menú lateral organizado.  
+- Desde cada módulo puede gestionar funciones específicas, como usuarios, cultivos, finanzas, inventario y fitosanitario.  
+- El módulo IoT permite visualizar datos en tiempo real de sensores instalados.  
+- Se puede acceder rápidamente a IoT mediante un botón directo en la sección correspondiente.  
+- Las actividades y calendario permiten planificar y programar tareas agrícolas y eventos.  
+- El mapa ofrece una vista geográfica para monitorear cultivos y sensores.  

@@ -55,12 +55,5 @@ Para agregar un nuevo desecho:
 ### 📸 Ventana editar  
 
 
-- Para **eliminar** un desecho:
-  1. Haz clic en los tres puntos debajo de **Acciones**.
-  2. Selecciona **Eliminar**.
-  3. Confirma la acción.
-
-Si no deseas eliminar el desecho, haz clic en **Cerrar**.
-
-### 📸 Ventana eliminar  
+ 
 

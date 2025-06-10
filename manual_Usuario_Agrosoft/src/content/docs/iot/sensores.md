@@ -82,10 +82,9 @@ El boron "**Agregar**" que se encuentra en la parte derecha de la tabla registro
 
 ![Acciones](../iot/public/acciones.png)
 
-En la tabla de sensores, el usuario puede ver una lista de registros. Al hacer clic en el icono de opciones (⋮) en la columna "Acciones", se despliega un menú con dos opciones:
+En la tabla de sensores, el usuario puede ver una lista de registros. Al hacer clic en el icono de opciones (⋮) en la columna "Acciones", se despliega un menú con la opción de editar:
 
 - **Editar**: Permite modificar los datos del sensor seleccionado.
-- **Eliminar**: Borra el registro de forma permanente después de confirmar la acción.
 
 #### Editar un Sensor
 ![Editar](../iot/public/editar.png)
@@ -96,12 +95,6 @@ En la tabla de sensores, el usuario puede ver una lista de registros. Al hacer c
 - **Tipo de Sensor** : Lista desplegable con los tipos disponibles.
 - **Botón "Guardar"** : Guarda los cambios realizados.
 - **Botón "Cerrar"** : Cancela la edición y cierra la ventana.
-
-#### Eliminar un Sensor
-![Eliminar](../iot/public/eliminar.png)
-<br/>Si el usuario elige eliminar un sensor, aparecerá un mensaje de confirmación advirtiendo que esta acción es irreversible. Debe elegir entre:
-- **"Eliminar"** : Borra el sensor permanentemente.
-- **"Cerrar"** : Cancela la acción y mantiene el sensor en la lista.
 
 ### Detalles del Sensor
 ![Detalles](../iot/public/ultima.png)

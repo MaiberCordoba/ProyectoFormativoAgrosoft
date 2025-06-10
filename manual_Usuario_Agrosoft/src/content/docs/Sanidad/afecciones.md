@@ -32,7 +32,7 @@ Para agregar una nueva afección en el cultivo:
 
 4. Haz clic en **"Guardar"** para registrar la afección.
 
-### 3️⃣ **Consultar, editar y eliminar afecciones existentes**
+### 3️⃣ **Consultar y editar afecciones existentes**
 - Para ver la información de una afección en el cultivo, usa la lista disponible en la sección de:
 
 ## Lista de Afecciones en el Cultivo
@@ -42,8 +42,5 @@ Para agregar una nueva afección en el cultivo:
 
 ## Ventana Editar Afección en el Cultivo
 ![Captura de pantalla](../../../../public/afeccionescultivoeditar.png)
-- Para **eliminar** una afección en el cultivo, haz clic en los tres puntos debajo de acciones, selecciona "Borrar" y confirma la eliminación. También puedes hacer clic en "Cerrar" si decides no eliminar la afección.
 
-## Ventana Eliminar Afección en el Cultivo
-![Captura de pantalla](../../../../public/efeccioenes%20cultivo%20eliminar.png)
 
