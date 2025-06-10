@@ -9,25 +9,26 @@ import CrearSensorModal from "./CrearSensorModal";
 import EliminarSensorModal from "./EliminarSensorModal";
 import { SensorData, SENSOR_TYPES } from "../../types/sensorTypes";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/UseAuth";
+import { addToast } from "@heroui/toast";
 
 export function SensorLista() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const userRole = user?.rol || null;
 
   const { data, isLoading, error } = useGetSensor();
-
   const {
     isOpen: isEditModalOpen,
     closeModal: closeEditModal,
     sensorEditado,
     handleEditar,
   } = useEditarSensor();
-
   const {
     isOpen: isCreateModalOpen,
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearSensor();
-
   const {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
@@ -35,17 +36,41 @@ export function SensorLista() {
     handleEliminar,
   } = useEliminarSensor();
 
-  const handleCrearNuevo = () => {
-    handleCrear({
-      id: 0,
-      fk_lote: null,
-      fk_eras: null,
-      fecha: "",
-      tipo: "TEM",
-      valor: 0,
-      umbral_minimo: null,
-      umbral_maximo: null,
+  // Función para mostrar alerta de acceso denegado
+  const showAccessDenied = () => {
+    addToast({
+      title: "Acción no permitida",
+      description: "Solo los administradores pueden realizar esta acción",
+      color: "danger",
     });
+  };
+
+  // Función para manejar acciones con verificación de permisos
+  const handleActionWithPermission = (
+    action: () => void,
+    requiredRoles: string[] = ["admin"] // Solo admin por defecto
+  ) => {
+    if (userRole && requiredRoles.includes(userRole)) {
+      action();
+    } else {
+      showAccessDenied();
+    }
+  };
+
+  // Función para crear nuevo sensor con verificación de permisos
+  const handleCrearNuevo = () => {
+    handleActionWithPermission(() =>
+      handleCrear({
+        id: 0,
+        fk_lote: null,
+        fk_eras: null,
+        fecha: "",
+        tipo: "TEM",
+        valor: 0,
+        umbral_minimo: null,
+        umbral_maximo: null,
+      })
+    );
   };
 
   const irADetalleSensor = (id: number) => {
@@ -63,7 +88,7 @@ export function SensorLista() {
     { name: "Valor", uid: "valor" },
     { name: "Umbral Mínimo", uid: "umbral_minimo" },
     { name: "Umbral Máximo", uid: "umbral_maximo" },
-    { name: "Ubicación", uid: "ubicacion" }, // Columna Ubicación
+    { name: "Ubicación", uid: "ubicacion" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -102,17 +127,29 @@ export function SensorLista() {
         return <span>{item.umbral_maximo ?? "—"}</span>;
       case "ubicacion":
         if (item.fk_lote !== null && item.fk_lote !== undefined) {
-          return <span className="text-green-600 font-medium">Lote {item.fk_lote}</span>;
+          return (
+            <span className="text-green-600 font-medium">
+              Lote {item.fk_lote}
+            </span>
+          );
         } else if (item.fk_eras !== null && item.fk_eras !== undefined) {
-          return <span className="text-blue-600 font-medium">Era {item.fk_eras}</span>;
+          return (
+            <span className="text-blue-600 font-medium">
+              Era {item.fk_eras}
+            </span>
+          );
         } else {
           return <span className="text-gray-400 italic">No asignado</span>;
         }
       case "acciones":
         return (
           <AccionesTabla
-            onEditar={() => handleEditar(item)}
-            onEliminar={() => handleEliminar(item)}
+            onEditar={() =>
+              handleActionWithPermission(() => handleEditar(item))
+            }
+            onEliminar={() =>
+              handleActionWithPermission(() => handleEliminar(item))
+            }
           />
         );
       default:
