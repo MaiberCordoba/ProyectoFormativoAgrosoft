@@ -7,7 +7,7 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 
 ###  Descripción
-Este endpoint permite la gestión de herramientas de uso agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de herramientas de uso agrícolas, incluyendo su creación, consulta, actualización.  
 
 Cada herramienta está asociada a un lote, y contiene información clave como nombre, descripción, unidades.
 
@@ -114,12 +114,3 @@ Este metodo permite actualizar/editar una herramienta
 ###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### 🔹Metodo DELETE
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/herramientas/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
-###### 🔍 Respuesta ID No encontrado (404 - Not Found)
-###### ❌ Respuesta Error (500 - Internal Server Error)

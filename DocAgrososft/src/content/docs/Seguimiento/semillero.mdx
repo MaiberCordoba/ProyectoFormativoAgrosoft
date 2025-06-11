@@ -6,7 +6,7 @@ description: Endpoint para la gestión de semilleros en AgroSoft API.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de los semilleros en el sistema AgroSoft. Se puede crear, consultar, actualizar y eliminar información relacionada con los semilleros registrados.
+Este endpoint permite la gestión de los semilleros en el sistema AgroSoft. Se puede crear, consultar, actualizar información relacionada con los semilleros registrados.
 
 Cada semillero contiene los siguientes campos:
 - `fk_Especie`: ID de la especie asociada.
@@ -113,14 +113,4 @@ Este método permite actualizar/editar un tipo de especie.
 ]
 ```
 
-###### ❌ Respuesta Error (500 - Internal Server Error)
-
-### Método DELETE
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/tiposespecie/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-###### ✅ Respuesta Exitosa (204 - No Content)
 ###### ❌ Respuesta Error (500 - Internal Server Error)

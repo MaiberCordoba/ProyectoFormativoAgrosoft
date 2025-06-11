@@ -6,7 +6,7 @@ description: Endpoint para gestionar los tipos de especie en AgroSoft API.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de los tipos de especie dentro del sistema AgroSoft, incluyendo su creación, consulta, actualización y eliminación.
+Este endpoint permite la gestión de los tipos de especie dentro del sistema AgroSoft, incluyendo su creación, consulta, actualización.
 
 ## Métodos
 
@@ -109,33 +109,5 @@ Este método permite actualizar un tipo de especie.
 ```json
 {
   "detail": "No se pudo actualizar el tipo de especie"
-}
-```
-
-### Método DELETE
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/tiposespecie/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-Este método permite eliminar un tipo de especie.
-
-#### **Parámetros del Request**
-
-| Parámetro | Tipo   | Requerido | Descripción                | Ejemplo |
-|----------|--------|-----------|----------------------------|---------|
-| `id`     | number | Sí        | ID del tipo de especie     | 4       |
-
-###### ✅ **Respuesta exitosa (204 - No Content)**
-```json
-{
-  "detail": "Tipo de especie eliminado correctamente"
-}
-```
-###### ❌ **Respuesta Error (400 - Bad Request)**
-```json
-{
-  "detail": "No se pudo eliminar el tipo de especie"
 }
 ```

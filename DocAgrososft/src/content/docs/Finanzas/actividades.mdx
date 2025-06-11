@@ -8,7 +8,7 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ###  Descripción
 
-Este endpoint permite la gestión de actividades agrícolas, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de actividades agrícolas, incluyendo su creación, consulta, actualización.  
 Cada actividad está asociada a un cultivo y un usuario, y contiene información clave como título, descripción, fecha y estado.
 
 ## Metodos
@@ -124,12 +124,3 @@ Este metodo permite actualizar/editar una actividad
 ###### 🔍 Respuesta ID No encontrado (404 - Not Found)
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### 🔹Metodo DELETE
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/actividades/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
-###### 🔍 Respuesta ID No encontrado (404 - Not Found)
-###### ❌ Respuesta Error (500 - Internal Server Error)

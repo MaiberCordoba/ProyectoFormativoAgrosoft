@@ -6,7 +6,7 @@ description: Endpoint para gestionar las plantaciones dentro del sistema AgroSof
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de plantaciones, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de plantaciones, incluyendo su creación, consulta, actualización.
 
 Cada plantación está asociada a un cultivo y una era.
 
@@ -90,14 +90,4 @@ Este método permite actualizar/editar una plantación.
   "fk_Era": 3
 }
 ```
-###### ❌ Respuesta Error (500 - Internal Server Error)
-
-### Método DELETE
-
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/plantaciones/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
 ###### ❌ Respuesta Error (500 - Internal Server Error)

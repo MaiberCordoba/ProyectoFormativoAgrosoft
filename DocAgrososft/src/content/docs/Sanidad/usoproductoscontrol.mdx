@@ -7,7 +7,7 @@ import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ### Descripción
 
-Este endpoint permite la gestión de registros de uso de productos con control, incluyendo su creación, consulta, actualización y eliminación.  
+Este endpoint permite la gestión de registros de uso de productos con control, incluyendo su creación, consulta, actualización. 
 Cada registro está asociado a un producto con control y un control específico, e incluye la cantidad utilizada.
 
 ## Métodos
@@ -150,15 +150,3 @@ Este método permite actualizar/editar un registro de uso de producto con contro
 ###### ❌ **Respuesta Error (500 - Internal Server Error)**
 
 ---
-
-### 🔹 Método DELETE
-
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/usoproductosControl/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-
-###### ✅ **Respuesta Exitosa (204 - No Content)**
-###### 🔍 **Respuesta ID No encontrado (404 - Not Found)**
-###### ❌ **Respuesta Error (500 - Internal Server Error)**

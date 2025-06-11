@@ -6,7 +6,7 @@ description: Endpoint para gestionar las especies dentro del sistema AgroSoft.
 import ApiBaseBanner from "../../../componets/ApiEndpoint.astro";
 
 ## 🔹 **Descripción**
-Este endpoint permite la gestión de especies, incluyendo su creación, consulta, actualización y eliminación.
+Este endpoint permite la gestión de especies, incluyendo su creación, consulta, actualización.
 
 Cada especie contiene información clave como nombre, descripción, imagen, tiempo de crecimiento y tipo de especie asociado.
 
@@ -105,11 +105,3 @@ Este metodo permite actualizar/editar una especie
 ```
 ###### ❌ Respuesta Error (500 - Internal Server Error)
 
-### Metodo DELETE
-<ApiBaseBanner 
-  method="DELETE" 
-  path="/especies/{id}/" 
-  baseUrl="http://127.0.0.1:8000"
-/>
-###### ✅ Respuesta Exitosa (204 - No Content)
-###### ❌ Respuesta Error (500 - Internal Server Error)
