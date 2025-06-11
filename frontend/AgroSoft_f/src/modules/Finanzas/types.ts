@@ -171,6 +171,7 @@ export interface MovimientoInventario {
   herramienta: Herramientas;
   fk_UsoHerramienta?: number;
   usoHerramienta: UsosHerramientas;
+  fecha?:string;
   /* fk_Cosecha : number,
     cosecha : Cosechas, */
 }

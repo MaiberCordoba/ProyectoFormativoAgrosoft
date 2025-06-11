@@ -2,8 +2,11 @@ from rest_framework import serializers
 from apps.finanzas.api.models.movimientosInventario import MovimientoInventario
 from apps.finanzas.api.models.insumos import Insumos
 from apps.trazabilidad.api.models.HerramientasModel import Herramientas
+from django.utils import timezone
 
 class SerializerMovimientoInventario(serializers.ModelSerializer):
+    fecha = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', default_timezone=timezone.get_default_timezone())
+
     class Meta:
         model = MovimientoInventario
         fields = '__all__'
@@ -14,6 +17,7 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
         herramienta = data.get('fk_Herramienta')
         uso_insumo = data.get('fk_UsoInsumo')
         uso_herramienta = data.get('fk_UsoHerramienta')
+        fecha = data.get('fecha')
 
         if insumo and herramienta:
             raise serializers.ValidationError("Solo se puede registrar un insumo o una herramienta, no ambos.")
@@ -23,6 +27,11 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                 raise serializers.ValidationError("El tipo es obligatorio para movimientos manuales.")
             if 'unidades' not in data:
                 raise serializers.ValidationError("Las unidades son obligatorias para movimientos manuales.")
+            if not fecha:
+                data['fecha'] = timezone.now()
+
+        if fecha and fecha > timezone.now():
+            raise serializers.ValidationError("La fecha no puede ser futura.")
 
         return data
 

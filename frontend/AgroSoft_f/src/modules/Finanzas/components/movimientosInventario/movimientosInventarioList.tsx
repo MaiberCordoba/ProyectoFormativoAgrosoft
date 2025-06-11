@@ -81,6 +81,7 @@ export function MovimientosList() {
   };
 
   const columnas = [
+    { name: "Fecha", uid: "fecha" },
     { name: "Tipo", uid: "tipo" },
     { name: "Unidades", uid: "unidades" },
     { name: "Insumo", uid: "fk_Insumo" },

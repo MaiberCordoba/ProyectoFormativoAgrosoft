@@ -15,6 +15,7 @@ class MovimientoInventario(models.Model):
     fk_UsoInsumo = models.ForeignKey(UsosInsumos, models.SET_NULL, null=True, blank=True)
     fk_UsoHerramienta = models.ForeignKey(UsosHerramientas, models.SET_NULL, null=True, blank=True)
     unidades = models.IntegerField()
+    fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         if self.fk_Insumo:
