@@ -42,7 +42,7 @@ Para agregar un nuevo tipo de desecho:
 
 ---
 
-## 3️⃣ Consultar, editar y eliminar tipos de desechos existentes
+## 3️⃣ Consultar y editar tipos de desechos existentes
 
 - Para **ver** los tipos registrados, utiliza la lista disponible en la sección.
 
@@ -59,14 +59,4 @@ Para agregar un nuevo tipo de desecho:
 ### 📸 Ventana editar  
 ![Captura de pantalla de registro desechos](../../../../public/etiposdesecho.png) 
 
-
-- Para **eliminar** un tipo de desecho:
-  1. Haz clic en los tres puntos debajo de **Acciones**.
-  2. Selecciona **Eliminar**.
-  3. Confirma la acción.
-
-Si no deseas eliminar el tipo de desecho, haz clic en **Cerrar**.
-
-### 📸 Ventana eliminar  
-![Captura de pantalla de registro desechos](../../../../public/eltiposdesecho.png) 
 

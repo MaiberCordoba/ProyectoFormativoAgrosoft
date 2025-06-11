@@ -39,7 +39,7 @@ Para agregar un nuevo desecho:
 
 ---
 
-## 3️⃣ Consultar, editar y eliminar desechos existentes
+## 3️⃣ Consultar y editar desechos existentes
 
 - Para **ver la información** de un desecho, usa la lista disponible en la sección.
 
