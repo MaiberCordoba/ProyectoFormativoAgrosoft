@@ -69,12 +69,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const verifyToken = () => {
-      console.log(
-        "Verificando token:",
-        token,
-        "Ruta:",
-        window.location.pathname
-      );
       const storedToken = localStorage.getItem("token");
 
       // Actualizar el estado si el token en localStorage cambió

@@ -78,8 +78,8 @@ export function CosechasResumenCard() {
             data={{
               Especie: nombreEspecie,
 
-              Cantidad: cosecha.cantidadTotal +"(g)",
-              "Valor *(g)" : cosecha.valorGramo,
+              Cantidad: cosecha.cantidadTotal + "(g)",
+              "Valor *(g)": cosecha.valorGramo,
               "Valor cosecha": `$${cosecha.valorTotal}`,
               "Fecha Cosecha": cosecha.fecha,
             }}
@@ -120,7 +120,6 @@ export function PlantacionesCard() {
   return (
     <div className="flex flex-wrap gap-4 mb-6">
       {plantaciones.map((plantacion) => {
-        
         // Manejo seguro de propiedades anidadas
         const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
         const estado =
@@ -130,8 +129,8 @@ export function PlantacionesCard() {
               : "Inactivo"
             : "Estado desconocido";
         const fechaSiembra = plantacion.fechaSiembra || "Fecha no disponible";
-        
-        if (estado == "Inactivo") return null
+
+        if (estado == "Inactivo") return null;
 
         return (
           <div
@@ -438,16 +437,6 @@ export function TiempoActividadCard() {
                 onPress: () =>
                   handleActionWithPermission(
                     () => handleEditar(tiempoAC),
-                    ["admin", "instructor"]
-                  ),
-              },
-              {
-                label: "Eliminar",
-                color: "danger",
-                size: "sm",
-                onPress: () =>
-                  handleActionWithPermission(
-                    () => handleEliminar(tiempoAC),
                     ["admin", "instructor"]
                   ),
               },
