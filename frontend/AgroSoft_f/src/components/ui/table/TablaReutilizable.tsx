@@ -84,9 +84,9 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
 
   return (
     <div className="w-full max-w-[1075px] flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
-      <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[150px]">
-          <div className="[&>div]:w-full">
+      <div className="flex flex-col sm:flex-row justify-between gap-4 items-center w-full">
+        <div className="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
+          <div className="w-full sm:w-[250px]">
             <FiltrosTabla
               valorFiltro={valorFiltro}
               onCambiarBusqueda={setValorFiltro}
@@ -97,7 +97,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
               placeholderBusqueda={placeholderBusqueda}
             />
           </div>
-          <div className="[&>div]:w-full">
+          <div className="w-full sm:w-[120px]">
             <FilasPorPagina
               filasPorPagina={filasPorPagina}
               onChange={handleChangeFilasPorPagina}
@@ -105,23 +105,23 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
           </div>
         </div>
 
-        <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 [&>*]:min-w-[120px]">
-          <div className="[&>div]:w-full">
+        <div className="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
+          <div className="w-full sm:w-[120px]">
             <SelectorColumnas
               columnas={columnas}
               visibleColumns={visibleColumns}
               setVisibleColumns={setVisibleColumns}
             />
           </div>
-          <div className="flex flex-wrap gap-2 [&>button]:flex-1 [&>button]:sm:flex-none">
-            {botonExtra && <div className="self-end">{botonExtra}</div>}
+          <div className="flex flex-wrap gap-2 items-center">
+            {botonExtra && <div>{botonExtra}</div>}
             {onCrearNuevo && (
               <Button
                 color="success"
                 size="sm"
                 endContent={<PlusIcon size={16} />}
                 onPress={onCrearNuevo}
-                className="self-end text-white"
+                className="text-white"
               >
                 Agregar
               </Button>
@@ -132,7 +132,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
                 size="sm"
                 endContent={<PlusIcon size={16} />}
                 onPress={onRegistroMasivo}
-                className="self-end text-white"
+                className="text-white"
               >
                 Registro masivo
               </Button>
