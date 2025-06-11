@@ -10,6 +10,10 @@ class SerializerUsosInsumos(ModelSerializer):
         read_only_fields = ["costoUsoInsumo"]
 
     def validate(self, data):
+        # Validar que el usuario esté autenticado
+        if not self.context['request'].user.is_authenticated:
+            raise ValidationError("Debe estar autenticado para registrar un uso de insumo.")
+        
         fk_actividad = data.get('fk_Actividad')
         fk_control = data.get('fk_Control')
 
@@ -24,6 +28,7 @@ class SerializerUsosInsumos(ModelSerializer):
         insumo = validated_data['fk_Insumo']
         unidad_medida = validated_data['fk_UnidadMedida']
         cantidad_producto = validated_data['cantidadProducto']
+        usuario = self.context['request'].user  # Obtener el usuario autenticado
         equivalencia_base = unidad_medida.equivalenciabase if unidad_medida else 1
         cantidad_gramos = cantidad_producto * equivalencia_base
 
@@ -42,12 +47,14 @@ class SerializerUsosInsumos(ModelSerializer):
             tipo='salida',
             fk_Insumo=insumo,
             fk_UsoInsumo=uso,
-            unidades=cantidad_producto
+            unidades=cantidad_producto,
+            usuario=usuario
         )
 
         return uso
 
     def update(self, instance, validated_data):
+        usuario = self.context['request'].user  # Obtener el usuario autenticado
         insumo = instance.fk_Insumo
         unidad_medida_anterior = instance.fk_UnidadMedida
         cantidad_producto_anterior = instance.cantidadProducto
@@ -69,11 +76,23 @@ class SerializerUsosInsumos(ModelSerializer):
             raise ValidationError("No hay suficiente cantidad disponible del insumo para esta actualización.")
 
         # Calcular nuevo costo
-        precio_uso_insumo = (insumo.valorTotalInsumos * cantidad_gramos_nueva) / insumo.cantidadGramos
+        precio_uso_insumo = (insumo.valorTotalInsumos * cantidad_gramos_nueva) / insumo.totalGramos
         validated_data['costoUsoInsumo'] = precio_uso_insumo
 
         # Aplicar nuevo descuento
         insumo.cantidadGramos -= cantidad_gramos_nueva
         insumo.save()
+
+        # Si la cantidad cambió, registrar movimiento de inventario
+        if cantidad_producto_nuevo != cantidad_producto_anterior:
+            diferencia = cantidad_producto_nuevo - cantidad_producto_anterior
+            tipo_movimiento = 'salida' if diferencia > 0 else 'entrada'
+            MovimientoInventario.objects.create(
+                tipo=tipo_movimiento,
+                fk_Insumo=insumo,
+                fk_UsoInsumo=instance,
+                unidades=abs(diferencia),
+                usuario=usuario
+            )
 
         return super().update(instance, validated_data)

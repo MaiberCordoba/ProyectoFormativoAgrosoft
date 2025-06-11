@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 from apps.finanzas.api.models.insumos import Insumos
 from apps.finanzas.api.models.movimientosInventario import MovimientoInventario
 
@@ -8,12 +8,19 @@ class SerializerInsumos(ModelSerializer):
         fields = '__all__'
         read_only_fields = ["valorTotalInsumos", "cantidadGramos", "totalGramos"]
 
+    def validate(self, data):
+        # Validar que el usuario esté autenticado
+        if not self.context['request'].user.is_authenticated:
+            raise ValidationError("Debe estar autenticado para crear o actualizar un insumo.")
+        return data
+
     def create(self, validated_data):
         nombre = validated_data.get("nombre")
         unidad_medida = validated_data.get("fk_UnidadMedida")
         precio = validated_data.get("precio", 0)
         unidades = validated_data.get("unidades", 0)
         contenido = validated_data.get("contenido", 0)
+        usuario = self.context['request'].user  # Obtener el usuario autenticado
 
         equivalencia_base = unidad_medida.equivalenciabase if unidad_medida else 1
         cantidad_gramos = unidades * contenido * equivalencia_base
@@ -34,7 +41,8 @@ class SerializerInsumos(ModelSerializer):
             MovimientoInventario.objects.create(
                 tipo='entrada',
                 fk_Insumo=insumo_existente,
-                unidades=unidades
+                unidades=unidades,
+                usuario=usuario
             )
 
             return insumo_existente
@@ -49,14 +57,14 @@ class SerializerInsumos(ModelSerializer):
         MovimientoInventario.objects.create(
             tipo='entrada',
             fk_Insumo=insumo_nuevo,
-            unidades=unidades
+            unidades=unidades,
+            usuario=usuario
         )
 
         return insumo_nuevo
-    
-    
+
     def update(self, instance, validated_data):
-        # Guardar valores anteriores para calcular la diferencia
+        usuario = self.context['request'].user  # Obtener el usuario autenticado
         unidades_anteriores = instance.unidades
         precio_anterior = instance.precio
         contenido_anterior = instance.contenido
@@ -90,7 +98,8 @@ class SerializerInsumos(ModelSerializer):
             MovimientoInventario.objects.create(
                 tipo=tipo_movimiento,
                 fk_Insumo=instance,
-                unidades=abs(diferencia)
+                unidades=abs(diferencia),
+                usuario=usuario
             )
 
         return instance

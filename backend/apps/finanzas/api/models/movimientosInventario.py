@@ -3,6 +3,7 @@ from apps.trazabilidad.api.models.HerramientasModel import Herramientas
 from apps.finanzas.api.models.insumos import Insumos
 from apps.finanzas.api.models.usosInsumos import UsosInsumos
 from apps.trazabilidad.api.models.UsosHerramientasModel import UsosHerramientas
+from apps.users.models import Usuario
 
 class MovimientoInventario(models.Model):
     TIPO_CHOICES = [
@@ -16,6 +17,7 @@ class MovimientoInventario(models.Model):
     fk_UsoHerramienta = models.ForeignKey(UsosHerramientas, models.SET_NULL, null=True, blank=True)
     unidades = models.IntegerField()
     fecha = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(Usuario, models.SET_NULL, null=True, blank=True, related_name='movimientos_inventario')
 
     def __str__(self):
         if self.fk_Insumo:

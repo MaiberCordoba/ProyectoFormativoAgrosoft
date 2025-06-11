@@ -7,10 +7,17 @@ class UsosHerramientasSerializer(ModelSerializer):
     class Meta:
         model = UsosHerramientas
         fields = '__all__'
-    
+
+    def validate(self, data):
+        # Validar que el usuario esté autenticado
+        if not self.context['request'].user.is_authenticated:
+            raise ValidationError("Debe estar autenticado para registrar un uso de herramienta.")
+        return data
+
     def create(self, validated_data):
         cantidad = validated_data.get("unidades")
         herramienta = validated_data.get("fk_Herramienta")
+        usuario = self.context['request'].user  # Obtener el usuario autenticado
 
         if herramienta is None:
             raise ValidationError("No se proporcionó una herramienta válida.")
@@ -30,13 +37,15 @@ class UsosHerramientasSerializer(ModelSerializer):
             tipo="salida",
             fk_Herramienta=herramienta,
             fk_UsoHerramienta=usoH,
-            unidades=cantidad
+            unidades=cantidad,
+            usuario=usuario  # Asignar el usuario autenticado
         )
         return usoH
 
     def update(self, instance, validated_data):
         nueva_cantidad = validated_data.get("unidades", instance.unidades)
         nueva_herramienta = validated_data.get("fk_Herramienta", instance.fk_Herramienta)
+        usuario = self.context['request'].user  # Obtener el usuario autenticado
 
         if nueva_herramienta is None:
             raise ValidationError("No se proporcionó una herramienta válida.")
@@ -55,6 +64,15 @@ class UsosHerramientasSerializer(ModelSerializer):
             nueva_herramienta.unidades -= nueva_cantidad
             nueva_herramienta.save()
 
+            # Registrar movimiento de salida para la nueva herramienta
+            MovimientoInventario.objects.create(
+                tipo="salida",
+                fk_Herramienta=nueva_herramienta,
+                fk_UsoHerramienta=instance,
+                unidades=nueva_cantidad,
+                usuario=usuario
+            )
+
         else:
             # Si es la misma herramienta, ajustar según la diferencia de cantidades
             diferencia = nueva_cantidad - instance.unidades
@@ -63,9 +81,25 @@ class UsosHerramientasSerializer(ModelSerializer):
                 if nueva_herramienta.unidades < diferencia:
                     raise ValidationError("No hay suficientes unidades disponibles para aumentar la cantidad.")
                 nueva_herramienta.unidades -= diferencia
-            else:
+                # Registrar movimiento de salida
+                MovimientoInventario.objects.create(
+                    tipo="salida",
+                    fk_Herramienta=nueva_herramienta,
+                    fk_UsoHerramienta=instance,
+                    unidades=diferencia,
+                    usuario=usuario
+                )
+            elif diferencia < 0:
                 # Devolver unidades
                 nueva_herramienta.unidades += abs(diferencia)
+                # Registrar movimiento de entrada
+                MovimientoInventario.objects.create(
+                    tipo="entrada",
+                    fk_Herramienta=nueva_herramienta,
+                    fk_UsoHerramienta=instance,
+                    unidades=abs(diferencia),
+                    usuario=usuario
+                )
             nueva_herramienta.save()
 
         # Actualizar el uso
