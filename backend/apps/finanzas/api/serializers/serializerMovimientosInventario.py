@@ -2,11 +2,13 @@ from rest_framework import serializers
 from apps.finanzas.api.models.movimientosInventario import MovimientoInventario
 from apps.finanzas.api.models.insumos import Insumos
 from apps.trazabilidad.api.models.HerramientasModel import Herramientas
+from apps.finanzas.api.models.usosInsumos import UsosInsumos
 from django.utils import timezone
 
 class SerializerMovimientoInventario(serializers.ModelSerializer):
     fecha = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', default_timezone=timezone.get_default_timezone())
-    usuario = serializers.SerializerMethodField()  # Cambiar a SerializerMethodField
+    usuario = serializers.SerializerMethodField()
+    unidad_medida = serializers.SerializerMethodField()  # Nuevo campo para la unidad de medida
 
     class Meta:
         model = MovimientoInventario
@@ -18,8 +20,18 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                 'id': obj.usuario.id,
                 'nombre': obj.usuario.nombre,
                 'apellidos': obj.usuario.apellidos,
+                'rol': obj.usuario.rol
             }
         return None
+
+    def get_unidad_medida(self, obj):
+        if obj.fk_Insumo:
+            # Si el movimiento está relacionado con un insumo, obtener la unidad de medida del insumo
+            return obj.fk_Insumo.fk_UnidadMedida.nombre if obj.fk_Insumo.fk_UnidadMedida else None
+        elif obj.fk_UsoInsumo:
+            # Si está relacionado con un uso de insumo, obtener la unidad de medida del uso
+            return obj.fk_UsoInsumo.fk_UnidadMedida.nombre if obj.fk_UsoInsumo.fk_UnidadMedida else None
+        return None  # Para movimientos de herramientas o sin unidad de medida
 
     def validate(self, data):
         tipo = data.get('tipo')

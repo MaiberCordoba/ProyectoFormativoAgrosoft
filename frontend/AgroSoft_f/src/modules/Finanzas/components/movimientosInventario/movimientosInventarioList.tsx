@@ -101,10 +101,19 @@ export function MovimientosList() {
             }
           />
         );
+
+      case "unidades":
+        return (
+          <span>
+            {item.unidades} <strong> {item.unidad_medida}</strong>{" "}
+          </span>
+        );
+
       case "usuario":
         return (
           <span>
-            {item.usuario?.nombre} {item.usuario?.apellidos}{" "}
+            {item.usuario?.nombre} {item.usuario?.apellidos} (
+            <strong>{item.usuario?.rol}</strong>){" "}
           </span>
         );
 

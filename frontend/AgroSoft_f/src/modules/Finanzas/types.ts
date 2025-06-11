@@ -171,11 +171,13 @@ export interface MovimientoInventario {
   herramienta: Herramientas;
   fk_UsoHerramienta?: number;
   usoHerramienta: UsosHerramientas;
+  unidad_medida?: string;
   fecha?: string;
   usuario?: {
     id: number;
     nombre?: string;
     apellidos?: string;
+    rol?: string;
   };
   /* fk_Cosecha : number,
     cosecha : Cosechas, */
