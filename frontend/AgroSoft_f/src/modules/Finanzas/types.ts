@@ -68,6 +68,7 @@ export interface DetalleResumenEconomico {
   unidades: number;
   total_insumos: number;
   total_mano_obra: number;
+  total_depreciacion: number;
   total_costos: number;
   total_ventas: number;
   beneficio: number;

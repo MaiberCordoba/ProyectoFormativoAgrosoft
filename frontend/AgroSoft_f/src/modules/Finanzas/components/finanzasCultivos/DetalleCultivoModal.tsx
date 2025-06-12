@@ -113,6 +113,12 @@ export const DetalleCultivoModal = ({
                           ${cultivo.total_mano_obra.toLocaleString()}
                         </span>
                       </div>
+                      <div className="flex justify-between">
+                        <span>Costo depreciación herramienta:</span>
+                        <span className="font-medium">
+                          ${cultivo.total_depreciacion.toLocaleString()}
+                        </span>
+                      </div>
                       <Divider />
                       <div className="flex justify-between font-bold">
                         <span>Total egresos:</span>
