@@ -25,15 +25,19 @@ class SerializerUsosInsumos(ModelSerializer):
         return data
 
     def create(self, validated_data):
-        insumo = validated_data['fk_Insumo']
-        unidad_medida = validated_data['fk_UnidadMedida']
-        cantidad_producto = validated_data['cantidadProducto']
-        usuario = self.context['request'].user  # Obtener el usuario autenticado
-        equivalencia_base = unidad_medida.equivalenciabase if unidad_medida else 1
-        cantidad_gramos = cantidad_producto * equivalencia_base
+        insumo = validated_data.get('fk_Insumo')
+        unidad_medida = validated_data.get('fk_UnidadMedida')
+        cantidad_producto = validated_data.get('cantidadProducto')
+        usuario = self.context['request'].user
+        cantidad_gramos = cantidad_producto * unidad_medida.equivalenciabase
+
 
         if insumo.cantidadGramos is None or insumo.cantidadGramos < cantidad_gramos:
-            raise ValidationError("No hay suficiente cantidad disponible del insumo en gramos.")
+            raise ValidationError({
+                'cantidadProducto': f"No hay suficiente cantidad del insumo en stock. "
+                                    f"Solicitado: {cantidad_gramos:.2f} g, "
+                                    f"Disponible: {insumo.cantidadGramos or 0:.2f} g."
+            })
 
         precio_uso_insumo = (insumo.valorTotalInsumos * cantidad_gramos) / insumo.totalGramos
         validated_data['costoUsoInsumo'] = precio_uso_insumo
@@ -73,7 +77,11 @@ class SerializerUsosInsumos(ModelSerializer):
         cantidad_gramos_nueva = cantidad_producto_nuevo * equivalencia_base_nueva
 
         if insumo.cantidadGramos < cantidad_gramos_nueva:
-            raise ValidationError("No hay suficiente cantidad disponible del insumo para esta actualización.")
+            raise ValidationError({
+                'cantidadProducto': f"No hay suficiente cantidad del insumo para esta actualización. "
+                                    f"Solicitado: {cantidad_gramos_nueva:.2f} g, "
+                                    f"Disponible: {insumo.cantidadGramos:.2f} g."
+            })
 
         # Calcular nuevo costo
         precio_uso_insumo = (insumo.valorTotalInsumos * cantidad_gramos_nueva) / insumo.totalGramos

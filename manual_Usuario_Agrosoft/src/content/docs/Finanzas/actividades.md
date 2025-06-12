@@ -43,12 +43,12 @@ Para agregar una nueva actividad:
 
 ---
 
-## 3️⃣ Consultar, editar y eliminar actividades existentes
+## 3️⃣ Consultar y editar actividades existentes
 
 - Para **ver la información** de una actividad, usa la lista disponible en la sección.
 
 ### 📸 Lista de actividades  
-*Captura de pantalla*
+![Captura de pantalla de las actividades](../../../../public/actividades23.png)
 
 - Para **editar** una actividad:
   1. Haz clic en los tres puntos debajo de **Acciones**.
@@ -59,12 +59,3 @@ Para agregar una nueva actividad:
 ### 📸 Ventana editar  
 ![Captura de pantalla del home](../../../../public/eactividad.png)
 
-- Para **eliminar** una actividad:
-  1. Haz clic en los tres puntos debajo de **Acciones**.
-  2. Selecciona **Eliminar**.
-  3. Confirma la acción.
-
-Si no deseas eliminar la actividad, haz clic en **Cerrar**.
-
-### 📸 Ventana eliminar  
-![Captura de pantalla del home](../../../../public/elactividad.png)

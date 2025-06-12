@@ -34,7 +34,7 @@ Para agregar un nuevo producto para el control:
 
 3. Haz clic en **"Guardar"** para registrar el producto.
 
-### 3️⃣ **Consultar, editar y eliminar productos existentes**
+### 3️⃣ **Consultar y editar productos existentes**
 - Para ver la información de un producto, usa la lista disponible en la sección de:
 
 ## Lista de Productos para el Control
@@ -44,7 +44,3 @@ Para agregar un nuevo producto para el control:
 
 ## Ventana Editar Producto para el Control
 ![Captura de pantalla](../../../../public/editar%20productos%20para%20el%20control.png)
-- Para **eliminar** un producto, haz clic en los tres puntos debajo de acciones, selecciona "Borrar" y confirma la eliminación. También puedes hacer clic en "Cerrar" si decides no eliminar el producto.
-
-## Ventana Eliminar Producto para el Control
-![Captura de pantalla](../../../../public/eliminar%20productos%20para%20el%20control.png)

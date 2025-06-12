@@ -27,14 +27,11 @@ Para agregar un nuevo tipo de especie:
    - **Descripción:** (Opcional) Agrega información relevante sobre el tipo de especie.
 4. Haz clic en **"Guardar"** para registrar el tipo de especie.
 
-### **Consultar, editar y eliminar tipos de especie existentes**
+### **Consultar y editar tipos de especie existentes**
 - Para ver la información de un tipo de especie, usa la lista disponible en la sección.
 ## Lista de tipos de especie
 ![Captura de pantalla](../../../assets/cultivos/listaTiposEspecie.png)
 - Para **editar** un tipo de especie, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
 ![Captura de pantalla](../../../assets/cultivos/editarTiposEspecie.png)
-- Para **eliminar** un tipo de especie, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
-   - Si no deseas eliminar el tipo de especie, haz clic en **Cerrar**.
-## Ventana eliminar
-![Captura de pantalla](../../../assets/cultivos/eliminarTiposEspecie.png)
+

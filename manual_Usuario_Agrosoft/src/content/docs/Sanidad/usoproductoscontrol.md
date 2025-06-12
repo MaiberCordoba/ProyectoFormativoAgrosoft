@@ -35,7 +35,7 @@ Para agregar un nuevo registro:
 
 
 
-### 3⃣ **Consultar, editar y eliminar usos registrados**
+### 3⃣ **Consultar y editar usos registrados**
 
 - Todos los usos registrados se mostrarán en una tabla donde puedes consultar la información fácilmente.
 
@@ -47,7 +47,4 @@ Para agregar un nuevo registro:
 ## Ventana Editar Uso de Producto
 ![Captura de pantalla editar uso producto control](../../../../public/uso%20productos%20editar.png)
 
-- Para **eliminar** un uso registrado, haz clic en los tres puntos, selecciona **Eliminar**, y confirma la acción si estás seguro.
 
-## Ventana Eliminar Registro
-![Captura de pantalla eliminar uso producto control](../../../../public/uso%20productos%20eliminar.png)

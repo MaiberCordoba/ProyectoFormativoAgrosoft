@@ -33,7 +33,7 @@ Para agregar un nuevo tipo de afección:
 3. Haz clic en **"Guardar"** para registrar el tipo de afección.
 
 
-### 3⃣ **Consultar, editar y eliminar Tipos de Afección existentes**
+### 3⃣ **Consultar y editar Tipos de Afección existentes**
 
 - Para ver todos los tipos registrados, usa la lista disponible en la pantalla.
 
@@ -45,7 +45,4 @@ Para agregar un nuevo tipo de afección:
 ## Ventana Editar Tipo de Afección
 ![Captura de pantalla editar tipo de afección](../../../../public/tipo%20afecciones%20editar.png)
 
-- Para **eliminar**, haz clic en los tres puntos, selecciona "Eliminar" y confirma la acción.
 
-## Ventana Eliminar Tipo de Afección
-![Captura de pantalla eliminar tipo de afección](../../../../public/tipo%20de%20afecciones%20eliminar.png)

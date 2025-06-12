@@ -30,14 +30,11 @@ Para agregar un nuevo cultivo:
    - **Estado:** Selecciona el estado del cultivo (activo o inactivo).
 4. Haz clic en **"Guardar"** para registrar el cultivo.
 
-### **Consultar, editar y eliminar cultivos existentes**
+### **Consultar y editar cultivos existentes**
 - Para ver la información de un cultivo, usa la lista disponible en la sección.
 ## Lista de cultivos
 ![Captura de pantalla](../../../assets/cultivos/listaCultivo.png)
 - Para **editar** un cultivo, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
 ![Captura de pantalla](../../../assets/cultivos/editarCultivo.png)
-- Para **eliminar** un cultivo, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
-   - Si no deseas eliminar el cultivo, haz clic en **Cerrar**.
-## Ventana eliminar
-![Captura de pantalla](../../../assets/cultivos/eliminarCultivo.png)
+

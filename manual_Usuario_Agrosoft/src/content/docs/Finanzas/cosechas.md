@@ -44,7 +44,7 @@ Para agregar una nueva cosecha:
 
 ---
 
-## 3️⃣ Consultar, editar y eliminar cosechas existentes
+## 3️⃣ Consultar y editar cosechas existentes
 
 - Para **ver** la información de una cosecha, consulta la lista disponible en la sección.
 
@@ -61,13 +61,4 @@ Para agregar una nueva cosecha:
 ![Captura de pantalla del home](../../../../public/ecosecha.png)
 
 
-- Para **eliminar** una cosecha:
-  1. Haz clic en los tres puntos debajo de **Acciones**.
-  2. Selecciona **Eliminar**.
-  3. Confirma la acción.
-
-Si no deseas eliminar la cosecha, haz clic en **Cerrar**.
-
-### 📸 Ventana eliminar  
-![Captura de pantalla del home](../../../../public/elcosecha.png)
 

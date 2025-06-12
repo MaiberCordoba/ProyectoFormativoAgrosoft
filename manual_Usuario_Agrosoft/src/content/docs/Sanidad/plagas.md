@@ -32,7 +32,7 @@ Para agregar una nueva afección:
 
 4. Haz clic en **"Guardar"** para registrar la afección.
 
-### 3⃣ **Consultar, editar y eliminar afecciones existentes**
+### 3⃣ **Consultar y editar afecciones existentes**
 - Para ver la información de una afección, usa la lista disponible en la sección de.
 
 ## Lista de Afecciones
@@ -42,7 +42,3 @@ Para agregar una nueva afección:
 
 ## Ventana Editar Afección
 ![Captura de pantalla](../../../../public/editar%20afectaciones.png)
-- Para **eliminar** una afección, haz clic en los tres puntos debajo de acciones, selecciona "Borrar" y confirma la eliminación. También puedes hacer clic en "Cerrar" si decides no eliminar la afección.
-
-## Ventana Eliminar Afección
-![Captura de pantalla](../../../../public/eliminar%20%20afecctaciones.png)

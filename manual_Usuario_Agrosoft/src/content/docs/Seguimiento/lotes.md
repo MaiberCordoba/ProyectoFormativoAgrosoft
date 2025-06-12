@@ -31,14 +31,10 @@ Para agregar un nuevo lote:
    - **Posición Y:** Establece la coordenada Y dentro del área de cultivo.
 3. Haz clic en **"Guardar"** para registrar el lote.
 
-### **Consultar, editar y eliminar lotes existentes**
+### **Consultar y editar lotes existentes**
 - Para ver la información de un lote, usa la lista disponible en la sección.
 ## Lista de lotes
 ![Captura de pantalla](../../../assets/cultivos/listaLote.png)
 - Para **editar** un lote, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
 ![Captura de pantalla](../../../assets/cultivos/editarLote.png)
-- Para **eliminar** un lote, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
-   - Si no deseas eliminar el lote, haz clic en **Cerrar**.
-## Ventana eliminar
-![Captura de pantalla](../../../assets/cultivos/eliminarLote.png)

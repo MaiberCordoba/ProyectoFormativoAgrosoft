@@ -46,12 +46,12 @@ Para agregar una nueva venta:
 
 ---
 
-## 3️⃣ Consultar, editar y eliminar ventas existentes
+## 3️⃣ Consultar y editar ventas existentes
 
 - Para **ver** la información de una venta, consulta la lista disponible en la sección.
 
 ### 📸 Lista de ventas  
-*Captura de pantalla*
+![Captura de pantalla de registro desechos](../../../../public/hola123.png)
 
 - Para **editar** una venta:
   1. Haz clic en los tres puntos debajo de **Acciones**.
@@ -61,15 +61,3 @@ Para agregar una nueva venta:
 
 ### 📸 Ventana editar  
 ![Captura de pantalla de registro desechos](../../../../public/eventa.png) 
-
-
-- Para **eliminar** una venta:
-  1. Haz clic en los tres puntos debajo de **Acciones**.
-  2. Selecciona **Eliminar**.
-  3. Confirma la acción.
-
-Si no deseas eliminar la venta, haz clic en **Cerrar**.
-
-### 📸 Ventana eliminar  
-![Captura de pantalla de registro desechos](../../../../public/elventa.png) 
-
