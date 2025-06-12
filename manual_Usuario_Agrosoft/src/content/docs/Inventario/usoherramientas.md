@@ -3,7 +3,7 @@ title: Usos de Herramientas
 description: Guía para registrar y gestionar los usos de herramientas en el sistema.
 ---
 
-# 🛠️ Uso de Usos de Herramientas
+#  Uso de Usos de Herramientas
 
 El módulo **Usos de Herramientas** permite registrar y gestionar el uso de herramientas en las actividades agrícolas del sistema. Esto facilita la trazabilidad del equipamiento utilizado y su asignación por actividad.
 
@@ -11,7 +11,7 @@ Antes de crear un uso de herramienta, debe existir al menos una **herramienta** 
 
 ---
 
-## 1️⃣ Acceder a la sección de Usos de Herramientas
+## 1️ Acceder a la sección de Usos de Herramientas
 
 Para gestionar los usos de herramientas, sigue estos pasos:
 
@@ -19,13 +19,13 @@ Para gestionar los usos de herramientas, sigue estos pasos:
 2. En el menú de navegación, selecciona **Seguimiento de Cultivos**.
 3. Dentro de esta sección, haz clic en **Usos de Herramientas**.
 
-### 📸 Página de usos de herramientas  
+###  Página de usos de herramientas  
 ![Captura de pantalla de registro desechos](../../../../public/usosherramientas.png) 
 
 
 ---
 
-## 2️⃣ Registrar un nuevo Uso de Herramienta
+## 2️ Registrar un nuevo Uso de Herramienta
 
 Para agregar un nuevo uso:
 
@@ -33,7 +33,7 @@ Para agregar un nuevo uso:
 2. Dentro de la pantalla de **Usos de Herramientas**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 
-### 📸 Agregar uso de herramienta  
+###  Agregar uso de herramienta  
 *Captura de pantalla agregar uso herramienta*
 
 - **Herramienta:** Selecciona la herramienta que se usará.
@@ -45,11 +45,11 @@ Para agregar un nuevo uso:
 
 ---
 
-## 3️⃣ Consultar y eliminar usos existentes
+## 3️ Consultar y eliminar usos existentes
 
 - Para **ver la información** de un uso de herramienta, usa la lista disponible en la sección.
 
-### 📸 Lista de usos de herramientas  
+###  Lista de usos de herramientas  
 *Captura de pantalla*
 
 - Para **editar** un uso:
@@ -58,7 +58,7 @@ Para agregar un nuevo uso:
   3. Modifica los datos necesarios.
   4. Haz clic en **Guardar**.
 
-### 📸 Ventana editar  
+###  Ventana editar  
 ![Captura de pantalla de registro desechos](../../../../public/eusoherramiento.png) 
 
 

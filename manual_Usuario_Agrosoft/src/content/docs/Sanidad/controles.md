@@ -3,11 +3,11 @@ title: Controles
 description: Guía para gestionar controles en el sistema
 ---
 
-## 🌱 Uso de Controles
+##  Uso de Controles
 
 El módulo **Controles** permite gestionar el registro y aplicación de controles sobre afecciones en los cultivos. Antes de registrar un control, **debe existir al menos una afección y un tipo de control registrada en el sistema**.
 
-### 1⃣ **Acceder a la sección de Controles**
+### 1 **Acceder a la sección de Controles**
 Para gestionar los controles, sigue estos pasos:
 1. Inicia sesión en el sistema.
 2. En el menú de navegación, selecciona **Gestión Fitosanitaria**.
@@ -16,7 +16,7 @@ Para gestionar los controles, sigue estos pasos:
 ## Página de Controles
 ![Captura de pantalla de controles](../../../../public/control%20pantalla%20principal.png)
 
-### 2⃣ **Registrar un nuevo Control**
+### 2 **Registrar un nuevo Control**
 Para agregar un nuevo control:
 1. Asegúrate de que **existe al menos una afección y un tipo de control registrado** en el sistema.
 2. Dentro de la pantalla de **Controles**, haz clic en el botón **"Agregar"**.
@@ -31,7 +31,7 @@ Para agregar un nuevo control:
    - **Fecha de Aplicación:** Indica la fecha en que se aplicó el control.
 4. Haz clic en **"Guardar"** para registrar el control.
 
-### 3⃣ **Consultar y editar controles existentes**
+### 3 **Consultar y editar controles existentes**
 - Para ver la información de un control, usa la lista disponible en la sección.
 
 ## Lista de Controles

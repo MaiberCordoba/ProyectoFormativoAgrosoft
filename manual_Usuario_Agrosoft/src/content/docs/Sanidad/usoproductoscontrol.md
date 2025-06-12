@@ -3,7 +3,7 @@ title: Uso de Productos para el Control
 description: Guía para gestionar el uso de productos con control en el sistema AgroSoft.  
 ---
 
-## 🧪 Uso de Productos Para el Control
+##  Uso de Productos Para el Control
 
 Este módulo permite registrar y administrar el uso de **productos con control** aplicados durante los procesos de control fitosanitario. Antes de registrar una uso de productos para el control, **debe existir al menos una producto para el control y un control registrada en el sistema**.
 
