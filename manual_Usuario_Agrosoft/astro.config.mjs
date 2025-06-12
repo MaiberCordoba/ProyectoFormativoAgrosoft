@@ -14,12 +14,11 @@ export default defineConfig({
 				{
 					label: 'Primeros pasos',
 					items: [
-						// Each item here is one entry in the navigation menu.
 						{ label: 'Pantalla de ingreso', slug: 'primerospasos/login' },
 						{ label: 'Pagina de Inicio', slug: 'primerospasos/home' },
 					],
 				},
-        {
+				{
 					label: 'Cultivos',
 					items: [
 						{ label: 'Introduccion', slug: 'seguimiento/introduccion' },
@@ -30,43 +29,48 @@ export default defineConfig({
 						{ label: 'Lotes', slug: 'seguimiento/lotes' },
 						{ label: 'Eras', slug: 'seguimiento/eras' },
 						{ label: 'Plantaciones', slug: 'seguimiento/plantaciones' },
-				  	],
-				 },
-         {
-					 label: 'IoT',
-					 items:[
-             { label: 'introduccion', slug: 'iot/introduccion' },
-						 { label: 'sensores', slug: 'iot/sensores' },
-					]
-          },
-          {
+					],
+				},
+				{
+					label: 'IoT',
+					items: [
+						{ label: 'introduccion', slug: 'iot/introduccion' },
+						{ label: 'sensores', slug: 'iot/sensores' },
+					],
+				},
+				{
 					label: 'Sanidad',
-					items:[
+					items: [
 						{ label: 'introduccion', slug: 'sanidad/introduccion' },
 						{ label: 'Tipo afeccion', slug: 'sanidad/tipoplaga' },
-						{ label: 'afecciones', slug: 'sanidad/plagas' },	
+						{ label: 'afecciones', slug: 'sanidad/plagas' },
 						{ label: 'Afecciones en cultivo', slug: 'sanidad/afecciones' },
 						{ label: 'Tipo Control', slug: 'sanidad/tipocontrol' },
 						{ label: 'Controles', slug: 'sanidad/controles' },
-						
-						
-					
 					],
 				},
-        {
+				{
 					label: 'Finanzas',
 					items: [
-						// Each item here is one entry in the navigation menu.
 						{ label: 'Introduccion Finanzas', slug: 'finanzas/introduccion' },
 						{ label: 'Actividades', slug: 'finanzas/actividades' },
 						{ label: 'Cosechas', slug: 'finanzas/cosechas' },
 						{ label: 'Desechos', slug: 'finanzas/desechos' },
-						{ label: 'Herramientas', slug: 'finanzas/herramientas' },
 						{ label: 'Tipos Desechos', slug: 'finanzas/tiposdesechos' },
-						{ label: 'Usos Herramientas', slug: 'finanzas/usosherramientas' },
 						{ label: 'Ventas', slug: 'finanzas/ventas' },
 					],
-				 },
+				},
+				{
+					label: 'Inventario',
+					items: [
+						{ label: 'Introducción', slug: 'inventario/introduccion' },
+						{ label: 'Bodega', slug: 'inventario/bodega' },
+						{ label: 'Herramientas', slug: 'inventario/herramientas' },
+						{ label: 'Insumos', slug: 'inventario/insumos' },
+						{ label: 'Uso de insumos', slug: 'inventario/usoinsumos' },
+						{ label: 'Uso de herramientas', slug: 'inventario/usoherramientas' },
+					],
+				},
 			],
 		}),
 	],

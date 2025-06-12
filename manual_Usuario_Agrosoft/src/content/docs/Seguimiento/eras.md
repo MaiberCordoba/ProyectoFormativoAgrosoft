@@ -30,14 +30,10 @@ Para agregar una nueva era:
    - **Posición Y:** Ubicación en el eje Y dentro del lote.
 3. Haz clic en **"Guardar"** para registrar la era.
 
-### **Consultar, editar y eliminar eras existentes**
+### **Consultar y editar eras existentes**
 - Para ver la información de una era, usa la lista disponible en la sección.
 ## Lista de eras
 ![Captura de pantalla](../../../assets/cultivos/listarEra.png)
 - Para **editar** una era, haz clic en los tres puntos debajo de **Acciones**, selecciona **Editar**, modifica los datos necesarios y haz clic en **Guardar**.
 ## Ventana editar
 ![Captura de pantalla](../../../assets/cultivos/editarEra.png)
-- Para **eliminar** una era, haz clic en los tres puntos debajo de **Acciones**, selecciona **Eliminar** y confirma la acción. 
-   - Si no deseas eliminar la era, haz clic en **Cerrar**.
-## Ventana eliminar
-![Captura de pantalla](../../../assets/cultivos/eliminarEra.png)

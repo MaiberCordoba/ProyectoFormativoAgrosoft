@@ -45,7 +45,7 @@ Para agregar un nuevo uso:
 
 ---
 
-## 3️⃣ Consultar, editar y eliminar usos existentes
+## 3️⃣ Consultar y eliminar usos existentes
 
 - Para **ver la información** de un uso de herramienta, usa la lista disponible en la sección.
 
@@ -62,13 +62,4 @@ Para agregar un nuevo uso:
 ![Captura de pantalla de registro desechos](../../../../public/eusoherramiento.png) 
 
 
-- Para **eliminar** un uso:
-  1. Haz clic en los tres puntos debajo de **Acciones**.
-  2. Selecciona **Eliminar**.
-  3. Confirma la acción.
-
-Si no deseas eliminar el uso, haz clic en **Cerrar**.
-
-### 📸 Ventana eliminar  
-![Captura de pantalla de registro desechos](../../../../public/elusoherramienta.png) 
 

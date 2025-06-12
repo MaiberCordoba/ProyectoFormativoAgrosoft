@@ -30,13 +30,11 @@ Para agregar un nuevo semillero:
    - **Especie:** Selecciona la especie a la que pertenecen las semillas.
 4. Haz clic en **"Guardar"** para registrar el semillero.
 
-### **Consultar, editar y eliminar semilleros existentes**
+### **Consultar y editar semilleros existentes**
 - Para ver la información de un semillero, usa la lista disponible en la sección.
 ## lista de semilleros
 ![Captura de pantalla](../../../assets/cultivos/listaSemillero.png)
 - Para **editar** un semillero, haz clic en los tres puntos debajo de acciones, modifica los datos necesarios y haz click en "guardar".
 ## ventana editar
 ![Captura de pantalla](../../../assets/cultivos/editarSemillero.png)
-- Para **eliminar** un semillero, haz clic en los tres puntos debajo de acciones, haz click en borrar y listo se elimina el semillero que elegiste. (Tambien puedes haz click en "cerrar" para no borrar el semillero)
-## ventana eliminar
-![Captura de pantalla](../../../assets/cultivos/eliminarSemillero.png)
+

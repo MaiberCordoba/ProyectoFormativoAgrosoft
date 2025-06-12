@@ -31,7 +31,7 @@ Para agregar un nuevo control:
    - **Fecha de Aplicación:** Indica la fecha en que se aplicó el control.
 4. Haz clic en **"Guardar"** para registrar el control.
 
-### 3⃣ **Consultar, editar y eliminar controles existentes**
+### 3⃣ **Consultar y editar controles existentes**
 - Para ver la información de un control, usa la lista disponible en la sección.
 
 ## Lista de Controles
@@ -42,8 +42,4 @@ Para agregar un nuevo control:
 ## Ventana Editar Control
 ![Captura de pantalla](../../../../public/editar%20control.png)
 
-- Para **eliminar** un control, haz clic en los tres puntos debajo de acciones, selecciona "Borrar" y confirma la eliminación. También puedes hacer clic en "Cerrar" si decides no eliminar el control.
-
-## Ventana Eliminar Control
-![Captura de pantalla](../../../../public/eliminar%20control.png)
 

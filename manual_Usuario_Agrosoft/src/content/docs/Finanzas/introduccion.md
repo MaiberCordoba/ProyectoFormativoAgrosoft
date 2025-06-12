@@ -3,10 +3,6 @@ title: Finanzas
 description: Seguimiento de ganancias y gastos relacionados con los cultivos en el sistema.
 ---
 
-# Finanzas
-
-Gestión y control financiero del sistema agrícola.
-
 <style>
 .card-grid {
   display: grid;
@@ -38,35 +34,40 @@ Proporciona herramientas para visualizar y controlar los movimientos económicos
 
 ## 🔹 Funcionalidades principales
 
-- **Registro de gastos e ingresos:** Registra de manera organizada cada movimiento financiero del sistema.
-- **Seguimiento de costos por actividad:** Identifica los gastos asociados a cada etapa del cultivo.
-- **Gestión de productos y herramientas utilizados:** Relaciona el uso de insumos y herramientas con el costo final.
-- **Análisis de rentabilidad:** Visualiza las ganancias obtenidas tras la venta de las cosechas.
-- **Control de desechos y pérdidas:** Lleva un control de recursos no aprovechados que impactan en el balance.
+1. **Actividades:** Registra las actividades realizadas en los cultivos que generan gastos o ingresos.
+2. **Cosechas:** Documenta la producción obtenida con sus valores estimados de ingreso.
+3. **Desechos:** Controla residuos generados y sus costos asociados.
+4. **Tipos de Desechos:** Clasifica los desechos agrícolas para análisis más precisos.
+5. **Ventas:** Registra y gestiona ventas de productos agrícolas.
 
-## 📋 Actividades  
-Registra y gestiona las actividades realizadas en los cultivos que generan gastos o ingresos.
+<div class="card-grid">
+  <a href="/finanzas/actividades" class="card">
+    <div class="card-icon"></div>
+    <h3>Actividades</h3>
+    <p>Registra tareas agrícolas que generan movimientos financieros</p>
+  </a>
 
-## 🌾 Cosechas  
-Registra las cosechas obtenidas y sus valores estimados de ingreso.
+  <a href="/finanzas/cosechas" class="card">
+    <div class="card-icon"></div>
+    <h3>Cosechas</h3>
+    <p>Documenta cosechas y estima ingresos por producción</p>
+  </a>
 
-## ♻️ Desechos  
-Gestiona los residuos de las actividades agrícolas y sus posibles costos asociados.
+  <a href="/finanzas/desechos" class="card">
+    <div class="card-icon"></div>
+    <h3>Desechos</h3>
+    <p>Gestiona residuos agrícolas y sus implicaciones económicas</p>
+  </a>
 
-## ⚙️ Herramientas  
-Consulta y administra las herramientas disponibles y sus características financieras.
+  <a href="/finanzas/tiposdesechos" class="card">
+    <div class="card-icon"></div>
+    <h3>Tipos de Desechos</h3>
+    <p>Clasifica residuos agrícolas para análisis más detallados</p>
+  </a>
 
-## 🧬 Tipos de Desechos  
-Clasifica los desechos generados para mejorar el análisis de pérdidas.
-
-## 🛠️ Usos de Herramientas  
-Relaciona el uso de herramientas con las actividades realizadas y sus respectivos costos.
-
-## 🧪 Usos de Productos  
-Controla los productos aplicados en cada cultivo y su impacto económico.
-
-## 💰 Ventas  
-Administra las ventas de productos agrícolas y los ingresos generados.
-
-
-
+  <a href="/finanzas/ventas" class="card">
+    <div class="card-icon"></div>
+    <h3>Ventas</h3>
+    <p>Gestiona la venta de productos y sus ingresos</p>
+  </a>
+</div>
