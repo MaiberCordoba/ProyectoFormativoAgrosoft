@@ -85,7 +85,6 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

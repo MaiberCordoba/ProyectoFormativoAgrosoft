@@ -65,7 +65,6 @@ export const CrearControlModal = ({ onClose, onCreate }: CrearControlModalProps)
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit,
           },
         ]}

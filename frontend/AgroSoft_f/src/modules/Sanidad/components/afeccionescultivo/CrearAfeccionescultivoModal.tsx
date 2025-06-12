@@ -94,7 +94,6 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit,
           },
         ]}

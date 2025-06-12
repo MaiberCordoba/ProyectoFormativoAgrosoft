@@ -51,7 +51,6 @@ export const CrearTipoControlModal = ({ onClose, onCreate }: CrearTipoControlMod
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit
         },
       ]}

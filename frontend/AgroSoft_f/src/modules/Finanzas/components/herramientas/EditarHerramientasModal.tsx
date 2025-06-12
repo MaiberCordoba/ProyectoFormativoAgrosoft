@@ -68,7 +68,6 @@ const EditarHerramientaModal: React.FC<EditarHerramientaModalProps> = ({ herrami
         {
           label: isPending ? 'Guardando...' : 'Guardar',
           color: 'success',
-          variant: 'light',
           onClick: handleSubmit,
         },
       ]}

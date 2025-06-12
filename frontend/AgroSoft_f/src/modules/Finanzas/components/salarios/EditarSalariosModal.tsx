@@ -61,7 +61,6 @@ const EditarSalariosModal: React.FC<EditarSalariosModalProps> = ({ salario, onCl
         {
           label: isPending ? 'Guardando...' : 'Guardar',
           color: 'success',
-          variant: 'light',
           onClick: handleSubmit,
         },
       ]}

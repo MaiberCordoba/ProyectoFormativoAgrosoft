@@ -99,7 +99,6 @@ export const CrearAfeccionModal = ({
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit, // Tu función handleSubmit original
           },
         ]}

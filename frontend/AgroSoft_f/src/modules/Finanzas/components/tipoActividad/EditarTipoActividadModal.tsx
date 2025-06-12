@@ -43,7 +43,6 @@ const EditarTipoActividadModal: React.FC<EditarTipoActividadModalProps> = ({ tip
         {
           label: isPending ? 'Guardando...' : 'Guardar',
           color: 'success',
-          variant: 'light',
           onClick: handleSubmit,
         },
       ]}

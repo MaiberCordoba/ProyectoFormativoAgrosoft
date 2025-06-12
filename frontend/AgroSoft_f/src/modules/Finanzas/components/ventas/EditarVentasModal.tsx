@@ -124,7 +124,6 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

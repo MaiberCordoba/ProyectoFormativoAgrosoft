@@ -107,7 +107,6 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit,
           },
         ]}

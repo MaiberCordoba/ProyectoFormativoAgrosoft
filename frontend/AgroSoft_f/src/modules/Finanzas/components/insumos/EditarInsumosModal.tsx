@@ -69,7 +69,6 @@ const EditarInsumoModal: React.FC<EditarInsumoModalProps> = ({ insumo, onClose }
         {
           label: isPending ? 'Guardando...' : 'Guardar',
           color: 'success',
-          variant: 'light',
           onClick: handleSubmit,
         },
       ]}

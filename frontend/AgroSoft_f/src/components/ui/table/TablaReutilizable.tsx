@@ -83,7 +83,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   }, [datosPaginados, sortDescriptor]);
 
   return (
-    <div className="w-full max-w-[1075px] flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
+    <div className="w-full max-w-[1400px] flex flex-col gap-3 mx-auto p-4 bg-white rounded-lg shadow">
       <div className="flex flex-col sm:flex-row justify-between gap-4 items-center w-full">
         <div className="flex flex-col sm:flex-row gap-3 items-center w-full sm:w-auto">
           <div className="w-full sm:w-[250px]">
