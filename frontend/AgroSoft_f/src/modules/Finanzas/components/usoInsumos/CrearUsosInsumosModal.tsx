@@ -6,7 +6,7 @@ import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 
-import { Actividades,Insumos, UnidadesMedida, UsosInsumos } from "../../types";
+import { Actividades, Insumos, UnidadesMedida, UsosInsumos } from "../../types";
 import { Plus } from "lucide-react";
 import { CrearActividadesModal } from "../actividades/CrearActividadModal";
 import { CrearInsumosModal } from "../insumos/CrearInsumosModal";
@@ -27,7 +27,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
   const [fk_Control, setFk_Control] = useState<number | null>(null);
   const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
   const [cantidadProducto, setCantidadProducto] = useState(0);
-  const [error,setError] = useState("")
+  const [error, setError] = useState("")
 
   const [insumoModal, setInsumoModal] = useState(false);
   const [actividadModal, setActividadModal] = useState(false);
@@ -41,6 +41,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
 
   const { mutate, isPending } = usePostUsoInsumo();
 
+
   const handleSubmit = () => {
     if (
       !fk_Insumo ||
@@ -48,29 +49,49 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
       cantidadProducto === null
     ) {
       addToast({
-        title:"Campos requeridos",
-        description:"Por favor, completa todos los campos.",
-        color:"danger"
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger"
       })
       return;
     }
+    const insumoSeleccionado = insumos?.find(c => c.id === fk_Insumo)
+    const unidadSeleccionada = unidadesMedida?.find(c => c.id === fk_UnidadMedida)
+
+    const cantidadEnBase = cantidadProducto * unidadSeleccionada?.equivalenciabase
+
+    if (cantidadEnBase > insumoSeleccionado?.cantidadGramos) {
+      setError("La cantidad seleccionada " + cantidadEnBase + "(g) Supera la cantidad disponible" + insumoSeleccionado?.cantidadGramos+"(g)")
+      return
+    }
     if (fk_Actividad && fk_Control) {
       addToast({
-        title:"Error",
-        description:"Solo puede elegir una actividad o un control,pero no ambos.",
-        color:"danger"
+        title: "Error",
+        description: "Solo puede elegir una actividad o un control,pero no ambos.",
+        color: "danger"
       })
-      setError("Solo puede elegir una actividad o un control,pero no ambos.")
       return
     }
-    if (cantidadProducto < 0){
+    if (!fk_Actividad && !fk_Control) {
       addToast({
-        title:"Valores invalidos",
-        description:"Por favor, ingresa valores positivos.",
-        color:"danger"
+        title: "Error",
+        description: "Debe elegir almenos una actividad o un control.",
+        color: "danger"
       })
       return
     }
+    if (cantidadProducto < 0) {
+      addToast({
+        title: "Valores invalidos",
+        description: "Por favor, ingresa valores positivos.",
+        color: "danger"
+      })
+      return
+    }
+
+
+
+
     setError("")
     mutate(
       {
@@ -210,29 +231,29 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
         )}
 
         {/* Selector de Control */}
-        { isLoadingControles ? (
+        {isLoadingControles ? (
           <p>Cargando Controles...</p>
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
-              label="Control"
-              size="sm"
-              placeholder="Selecciona un control"
-              selectedKeys={fk_Control ? [fk_Control.toString()] : []}
-              onSelectionChange={(keys) => {
-                const selectedKey = Array.from(keys)[0];
-                setFk_Control(selectedKey ? Number(selectedKey) : null);
-              }}
+                label="Control"
+                size="sm"
+                placeholder="Selecciona un control"
+                selectedKeys={fk_Control ? [fk_Control.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_Control(selectedKey ? Number(selectedKey) : null);
+                }}
               >
-              {(controles || []).map((control) => (
-                <SelectItem key={control.id.toString()}>
-                  {control.descripcion}
-                </SelectItem>
-              ))}
-            </Select>
+                {(controles || []).map((control) => (
+                  <SelectItem key={control.id.toString()}>
+                    {control.descripcion}
+                  </SelectItem>
+                ))}
+              </Select>
             </div>
-              <Button
+            <Button
               onPress={() => setControlModal(true)}
               color="success"
               title="Crear Control"
@@ -244,29 +265,29 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
         )}
 
         {/* Selector de Unidad de Medida */}
-        { isLoadingUnidadesMedida ? (
+        {isLoadingUnidadesMedida ? (
           <p>Cargando Undiades de medida...</p>
         ) : (
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <Select
-              label="Unidad de Medida"
-              size="sm"
-              placeholder="Selecciona una unidad"
-              selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
-              onSelectionChange={(keys) => {
-                const selectedKey = Array.from(keys)[0];
-                setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
-              }}
+                label="Unidad de Medida"
+                size="sm"
+                placeholder="Selecciona una unidad"
+                selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0];
+                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                }}
               >
-              {(unidadesMedida || []).map((unidad) => (
-                <SelectItem key={unidad.id.toString()}>
-                  {unidad.nombre}
-                </SelectItem>
-              ))}
-            </Select>
+                {(unidadesMedida || []).map((unidad) => (
+                  <SelectItem key={unidad.id.toString()}>
+                    {unidad.nombre}
+                  </SelectItem>
+                ))}
+              </Select>
             </div>
-              <Button
+            <Button
               onPress={() => setUnidadMedidaModal(true)}
               color="success"
               title="Crear unidad medida"
