@@ -97,7 +97,7 @@ export default function EvapotranspiracionC() {
       <div className="w-full max-w-7xl mx-auto p-4 space-y-8">
         {!evapotranspiracion && (
           <div
-            className="max-w-xl mx-auto"
+            className="max-w-md mx-auto"
             style={{
               background: '#f0fdf4',
               borderRadius: '0.75rem',
@@ -110,10 +110,10 @@ export default function EvapotranspiracionC() {
             }}
           >
             <h2 className="text-2xl font-bold text-green-800 mb-8 flex items-center justify-center gap-2 text-center">
-              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#166534" }}/>
-              Calculadora de Evapotranspiración
+              <Calculator className="text-green-600 w-6 h-6 -mr-1" style={{ color: "#166534" }} />
+              Calcular Evapotranspiración
             </h2>
-            
+
             <div className="flex flex-col gap-4">
               <Select
                 label="Seleccionar Plantación"
@@ -148,7 +148,6 @@ export default function EvapotranspiracionC() {
                   );
                 })}
               </Select>
-
 
               <Input
                 label="Coeficiente de Cultivo (Kc - Opcional)"
