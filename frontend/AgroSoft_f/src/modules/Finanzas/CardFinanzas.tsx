@@ -120,7 +120,6 @@ export function PlantacionesCard() {
   return (
     <div className="flex flex-wrap gap-4 mb-6">
       {plantaciones.map((plantacion) => {
-
         // Manejo seguro de propiedades anidadas
         const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
         const estado =
@@ -131,7 +130,8 @@ export function PlantacionesCard() {
             : "Estado desconocido";
         const fechaSiembra = plantacion.fechaSiembra || "Fecha no disponible";
 
-        if (estado == "Inactivo") return null
+        if (estado == "Inactivo") return null;
+
 
         return (
           <div
@@ -409,36 +409,33 @@ export function TiempoActividadCard() {
         );
 
         return (
-          <>
-            <CustomCard
-              key={tiempoAC.id}
-              title={actividad?.titulo || control?.descripcion || "Sin nombre"}
-              description={
-                actividad?.cultivo?.nombre || plantacion?.cultivo?.nombre
-              }
-              data={{
-                Termino: tiempoAC.fecha,
-                Duración: `${tiempoAC.tiempo} ${unidad?.nombre}`,
-                "Costo de la actividad": `$${tiempoAC.valorTotal}`,
-                Realizo:
-                  usuario?.nombre || control?.usuario?.nombre || "No definido",
-                Salario: salario?.nombre,
-              }}
-              footerButtons={[
-                {
-                  label: "Editar",
-                  color: "primary",
-                  size: "sm",
-                  onPress: () =>
-                    handleActionWithPermission(
-                      () => handleEditar(tiempoAC),
-                      ["admin", "instructor"]
-                    ),
-                },
-
-              ]}
-            />
-          </>
+          <CustomCard
+            key={tiempoAC.id}
+            title={actividad?.titulo || control?.descripcion || "Sin nombre"}
+            description={
+              actividad?.cultivo?.nombre || plantacion?.cultivo?.nombre
+            }
+            data={{
+              Termino: tiempoAC.fecha,
+              Duración: `${tiempoAC.tiempo} ${unidad?.nombre}`,
+              "Costo de la actividad": `$${tiempoAC.valorTotal}`,
+              Realizo:
+                usuario?.nombre || control?.usuario?.nombre || "No definido",
+              Salario: salario?.nombre,
+            }}
+            footerButtons={[
+              {
+                label: "Editar",
+                color: "primary",
+                size: "sm",
+                onPress: () =>
+                  handleActionWithPermission(
+                    () => handleEditar(tiempoAC),
+                    ["admin", "instructor"]
+                  ),
+              },
+            ]}
+          />
         );
       })}
 

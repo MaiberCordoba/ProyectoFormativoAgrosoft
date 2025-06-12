@@ -12,6 +12,7 @@ import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
+import { Chip } from "@heroui/react";
 //import { useGetUsosHerramientas } from "../../hooks/usosHerramientas/useGetUsosHerramientas";
 
 export function MovimientosList() {
@@ -81,6 +82,8 @@ export function MovimientosList() {
   };
 
   const columnas = [
+    { name: "Usuario", uid: "usuario" },
+    { name: "Fecha", uid: "fecha" },
     { name: "Tipo", uid: "tipo" },
     { name: "Unidades", uid: "unidades" },
     { name: "Insumo", uid: "fk_Insumo" },
@@ -98,6 +101,33 @@ export function MovimientosList() {
             }
           />
         );
+
+      case "unidades":
+        return (
+          <span>
+            {item.unidades} <strong> {item.unidad_medida}</strong>{" "}
+          </span>
+        );
+
+      case "usuario":
+        return (
+          <span>
+            {item.usuario?.nombre} {item.usuario?.apellidos} (
+            <strong>{item.usuario?.rol}</strong>){" "}
+          </span>
+        );
+
+      case "tipo":
+        return (
+          <Chip
+            size="sm"
+            className="capitalize"
+            color={item.tipo === "entrada" ? "success" : "danger"}
+          >
+            {item.tipo}
+          </Chip>
+        );
+
       case "fk_Insumo":
         const insumo = insumos?.find((i) => i.id === item.fk_Insumo);
         return <span>{insumo ? insumo.nombre : "No aplica"}</span>;

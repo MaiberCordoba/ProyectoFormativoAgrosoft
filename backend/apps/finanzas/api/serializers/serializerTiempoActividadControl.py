@@ -1,15 +1,22 @@
-from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from apps.finanzas.api.models.tiempoActividadControl import TiempoActividadControl
+from apps.finanzas.api.serializers.serializerActividades import SerializerActividades
+from apps.sanidad.api.serializers.controlesSerializer import ControlesModelSerializer
 
-class SerializerTiempoActividadControl(ModelSerializer):
-    fecha = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only=True) 
+class SerializerTiempoActividadControl(serializers.ModelSerializer):
+    actividad = SerializerActividades(source='fk_actividad', read_only=True)
+    control = ControlesModelSerializer(source='fk_control', read_only=True)
+    fecha = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only=True)
     valorTotal = serializers.IntegerField(read_only=True)
+    estado_pago = serializers.ChoiceField(
+        choices=TiempoActividadControl.ESTADO_PAGO_CHOICES,
+        default='PENDIENTE'
+    )
 
     class Meta:
         model = TiempoActividadControl
         fields = '__all__'
-        read_only_fields = ['fecha','valorTotal']
+        read_only_fields = ['fecha', 'valorTotal']
 
     def validate(self, data):
         actividad = data.get('fk_actividad')

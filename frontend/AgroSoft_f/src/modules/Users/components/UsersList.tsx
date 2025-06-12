@@ -49,7 +49,7 @@ export function UsersList() {
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
-    console.log("🟣 reporteData en UsersList:", reporteData);
+    console.log("reporteData en UsersList:", reporteData);
   }, [reporteData]);
 
   const handleCrearNuevo = () => {

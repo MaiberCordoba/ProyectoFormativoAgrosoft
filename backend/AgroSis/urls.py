@@ -81,13 +81,14 @@ from apps.finanzas.api.routers.routerTipoActividad import routerTipoActividad
 from apps.finanzas.api.routers.routerUsosInsumos import routerUsosInsumos
 from apps.finanzas.api.routers.routerVentas import routerVentas
 from apps.finanzas.api.routers.routerSalarios import routerSalarios
-from apps.finanzas.api.routers.routerTiempoActividadControl import routerTAC
+from apps.finanzas.api.routers.routerTiempoActividadControl import routerTAC 
 from apps.finanzas.api.routers.routerUnidadesTiempo import routerUnidadesTiempo
 from apps.finanzas.api.routers.routerUnidadesMedida import routerUnidadesMedida
 from apps.finanzas.api.routers.routerMovimientoInventario import routerMovimientoInventario
 from apps.finanzas.api.routers.routerBeneficioCosto import routerBeneficioCosto
 from apps.finanzas.api.routers.routerListBeneficioCosto import routerListBeneficioCosto
 #from apps.finanzas.api.routers.routerCosechaVenta import routerCosechaVenta
+from apps.finanzas.api.views.viewTiempoActividadControl import MarcarPagoView, PagarTodoPendienteView
 
 #Usuarios
 from apps.users.urls import router_usuarios
@@ -149,6 +150,8 @@ urlpatterns = [
     path('api/',include(routerBeneficioCosto.urls)),
     path('api/',include(routerListBeneficioCosto.urls)),
     #path('api/',include(routerCosechaVenta.urls)),
+    path('api/tiempoActividadesControles/<int:pk>/marcar-pago/', MarcarPagoView.as_view(), name='marcar-pago'),
+    path('api/pagar-todo-pendiente/', PagarTodoPendienteView.as_view(), name='pagar-todo-pendiente'),
     
      #Usuarios
     path('api/', include('apps.users.urls')),

@@ -68,6 +68,7 @@ export interface DetalleResumenEconomico {
   unidades: number;
   total_insumos: number;
   total_mano_obra: number;
+  total_depreciacion: number;
   total_costos: number;
   total_ventas: number;
   beneficio: number;
@@ -100,8 +101,8 @@ export interface Actividades {
   usuario?: User;
   fk_TipoActividad: number;
   tipoActividad: TipoActividad;
-  fk_Plantacion:number;
-  plantacion:Plantaciones;
+  fk_Plantacion: number;
+  plantacion: Plantaciones;
   titulo: string;
   descripcion: string;
   fecha?: string;
@@ -119,7 +120,7 @@ export interface Cosechas {
   unidadMedida: UnidadesMedida;
   cantidadTotal: number;
   fecha: string;
-  valorGramo:number;
+  valorGramo: number;
 }
 
 export interface Desechos {
@@ -139,8 +140,8 @@ export interface Herramientas {
   nombre: string;
   descripcion: string;
   unidades: number;
-  precio : number;
-  valorTotal : number;
+  precio: number;
+  valorTotal: number;
 }
 
 export interface Insumos {
@@ -171,6 +172,14 @@ export interface MovimientoInventario {
   herramienta: Herramientas;
   fk_UsoHerramienta?: number;
   usoHerramienta: UsosHerramientas;
+  unidad_medida?: string;
+  fecha?: string;
+  usuario?: {
+    id: number;
+    nombre?: string;
+    apellidos?: string;
+    rol?: string;
+  };
   /* fk_Cosecha : number,
     cosecha : Cosechas, */
 }
@@ -191,12 +200,14 @@ export interface TiempoActividadControl {
   fk_unidadTiempo: number;
   unidadTiempo: UnidadesTiempo;
   fk_actividad?: number;
-  actividad: Actividades;
+  actividad?: Actividades;
   fk_control?: number;
-  control: Controles;
+  control?: Controles;
   fk_salario: number;
   salario: Salarios;
-  fecha:string;
+  fecha: string;
+  estado_pago: "PENDIENTE" | "PAGADO";
+  usuario: string;
 }
 
 export interface TipoActividad {
@@ -257,6 +268,6 @@ export interface Ventas {
   fk_UnidadMedida: number;
   unidadMedida: UnidadesMedida;
   cantidad: number;
-  descuento?:number;
+  descuento?: number;
   valorTotal: number;
 }

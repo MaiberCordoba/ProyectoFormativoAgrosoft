@@ -2,11 +2,36 @@ from rest_framework import serializers
 from apps.finanzas.api.models.movimientosInventario import MovimientoInventario
 from apps.finanzas.api.models.insumos import Insumos
 from apps.trazabilidad.api.models.HerramientasModel import Herramientas
+from apps.finanzas.api.models.usosInsumos import UsosInsumos
+from django.utils import timezone
 
 class SerializerMovimientoInventario(serializers.ModelSerializer):
+    fecha = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', default_timezone=timezone.get_default_timezone())
+    usuario = serializers.SerializerMethodField()
+    unidad_medida = serializers.SerializerMethodField()  # Nuevo campo para la unidad de medida
+
     class Meta:
         model = MovimientoInventario
         fields = '__all__'
+
+    def get_usuario(self, obj):
+        if obj.usuario:
+            return {
+                'id': obj.usuario.id,
+                'nombre': obj.usuario.nombre,
+                'apellidos': obj.usuario.apellidos,
+                'rol': obj.usuario.rol
+            }
+        return None
+
+    def get_unidad_medida(self, obj):
+        if obj.fk_Insumo:
+            # Si el movimiento está relacionado con un insumo, obtener la unidad de medida del insumo
+            return obj.fk_Insumo.fk_UnidadMedida.nombre if obj.fk_Insumo.fk_UnidadMedida else None
+        elif obj.fk_UsoInsumo:
+            # Si está relacionado con un uso de insumo, obtener la unidad de medida del uso
+            return obj.fk_UsoInsumo.fk_UnidadMedida.nombre if obj.fk_UsoInsumo.fk_UnidadMedida else None
+        return None  # Para movimientos de herramientas o sin unidad de medida
 
     def validate(self, data):
         tipo = data.get('tipo')
@@ -14,6 +39,11 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
         herramienta = data.get('fk_Herramienta')
         uso_insumo = data.get('fk_UsoInsumo')
         uso_herramienta = data.get('fk_UsoHerramienta')
+        fecha = data.get('fecha')
+
+        # Validar que el usuario esté autenticado
+        if not self.context['request'].user.is_authenticated:
+            raise serializers.ValidationError("Debe estar autenticado para registrar un movimiento.")
 
         if insumo and herramienta:
             raise serializers.ValidationError("Solo se puede registrar un insumo o una herramienta, no ambos.")
@@ -23,10 +53,17 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                 raise serializers.ValidationError("El tipo es obligatorio para movimientos manuales.")
             if 'unidades' not in data:
                 raise serializers.ValidationError("Las unidades son obligatorias para movimientos manuales.")
+            if not fecha:
+                data['fecha'] = timezone.now()
+
+        if fecha and fecha > timezone.now():
+            raise serializers.ValidationError("La fecha no puede ser futura.")
 
         return data
 
     def create(self, validated_data):
+        # Asignar el usuario autenticado
+        validated_data['usuario'] = self.context['request'].user
         tipo = validated_data.get('tipo')
         unidades = validated_data.get('unidades')
         insumo = validated_data.get('fk_Insumo')
@@ -51,14 +88,14 @@ class SerializerMovimientoInventario(serializers.ModelSerializer):
                     if unidades > herramienta_obj.unidades:
                         raise serializers.ValidationError("No hay suficientes unidades en stock.")
                     herramienta_obj.unidades -= unidades
-
-                # Recalcular valorTotal = unidades * precio
                 herramienta_obj.valorTotal = herramienta_obj.unidades * herramienta_obj.precio
                 herramienta_obj.save()
 
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
+        # Asignar el usuario autenticado
+        validated_data['usuario'] = self.context['request'].user
         tipo_anterior = instance.tipo
         unidades_anteriores = instance.unidades
         insumo_anterior = instance.fk_Insumo

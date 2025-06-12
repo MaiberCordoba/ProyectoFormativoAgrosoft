@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Providers from "./context/ToastProvider";
 
@@ -59,6 +58,7 @@ import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
 import CalendarioPage from "./modules/Trazabilidad/pages/calendario";
 import NotificationsPage from "./modules/Notificaciones/pages/NotificationsPage";
+import { PagosPage } from "./modules/Finanzas/pages/pagePagos";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -118,6 +118,7 @@ function App() {
               path="/resumen-finanzas"
               element={<ResumenFinancieroPage />}
             />
+            <Route path="/pagos" element={<PagosPage />} />
 
             {/*Electronica */}
             <Route path="/sensores" element={<IoTPage />} />

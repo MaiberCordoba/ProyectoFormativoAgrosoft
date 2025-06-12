@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       title: "Finanzas",
       icon: DollarSign,
       color: "text-[#254030]",
-      submenus: ["Cosechas", "Ventas", "Salarios", "resumen finanzas"],
+      submenus: ["Cosechas", "Ventas", "Salarios", "pagos", "resumen finanzas"],
     },
     {
       title: "Inventario",
