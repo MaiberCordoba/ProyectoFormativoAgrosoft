@@ -199,12 +199,14 @@ export interface TiempoActividadControl {
   fk_unidadTiempo: number;
   unidadTiempo: UnidadesTiempo;
   fk_actividad?: number;
-  actividad: Actividades;
+  actividad?: Actividades;
   fk_control?: number;
-  control: Controles;
+  control?: Controles;
   fk_salario: number;
   salario: Salarios;
   fecha: string;
+  estado_pago: "PENDIENTE" | "PAGADO";
+  usuario: string;
 }
 
 export interface TipoActividad {

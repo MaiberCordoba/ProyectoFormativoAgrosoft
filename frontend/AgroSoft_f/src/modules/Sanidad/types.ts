@@ -123,6 +123,7 @@ export interface Controles {
   usuario?: {
     id: number;
     nombre: string;
+    apellidos: string;
   };
   afeccion: Afecciones;
 }

@@ -64,12 +64,17 @@ class PagarTodoPendienteView(APIView):
         if not registros.exists():
             return Response({"message": "No hay registros pendientes para pagar"}, status=status.HTTP_200_OK)
 
+        # Contar registros antes de actualizar
+        num_registros = registros.count()
         total_pagado = sum(reg.valorTotal for reg in registros)
+
+        # Actualizar registros
         registros.update(estado_pago='PAGADO')
 
         return Response({
-            "message": f"Se pagaron {registros.count()} registros por un total de ${total_pagado}",
-            "total_pagado": total_pagado
+            "message": f"Se pagaron {num_registros} registros por un total de ${total_pagado}",
+            "total_pagado": total_pagado,
+            "registros_pagados": num_registros
         }, status=status.HTTP_200_OK)
 
 class TotalesMensualesView(APIView):
