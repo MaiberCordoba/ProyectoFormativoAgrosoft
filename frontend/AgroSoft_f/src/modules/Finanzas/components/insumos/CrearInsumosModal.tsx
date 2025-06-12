@@ -108,7 +108,6 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit,
           },
         ]}

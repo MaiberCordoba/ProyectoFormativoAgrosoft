@@ -77,7 +77,6 @@ export const CrearDesechosModal = ({ onClose }: CrearDesechosModalProps) => {
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit,
           },
         ]}

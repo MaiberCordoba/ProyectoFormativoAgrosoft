@@ -48,7 +48,6 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

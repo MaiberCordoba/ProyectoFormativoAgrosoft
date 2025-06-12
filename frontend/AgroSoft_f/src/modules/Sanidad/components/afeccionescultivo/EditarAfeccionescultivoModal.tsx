@@ -60,7 +60,6 @@ const EditarAfeccionCultivoModal: React.FC<EditarAfeccionCultivoModalProps> = ({
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

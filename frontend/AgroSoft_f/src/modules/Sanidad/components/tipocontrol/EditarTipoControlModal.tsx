@@ -43,7 +43,6 @@ const EditarTipoControlModal: React.FC<EditarTipoControlModalProps> = ({ tipoCon
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

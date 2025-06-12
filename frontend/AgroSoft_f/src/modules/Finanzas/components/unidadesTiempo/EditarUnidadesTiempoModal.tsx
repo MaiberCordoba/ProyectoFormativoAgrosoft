@@ -49,7 +49,6 @@ const EditarUnidadesTiempoModal: React.FC<EditarUnidadesTiempoModalProps> = ({ u
         {
           label: isPending ? 'Guardando...' : 'Guardar',
           color: 'success',
-          variant: 'light',
           onClick: handleSubmit,
         },
       ]}

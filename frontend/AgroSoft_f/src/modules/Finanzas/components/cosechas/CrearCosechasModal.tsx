@@ -110,7 +110,6 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           {
             label: isPending ? "Guardando..." : "Guardar",
             color: "success",
-            variant: "light",
             onClick: handleSubmit,
           },
         ]}

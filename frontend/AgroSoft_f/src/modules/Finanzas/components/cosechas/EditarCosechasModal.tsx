@@ -92,7 +92,6 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

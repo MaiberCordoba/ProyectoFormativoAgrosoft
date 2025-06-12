@@ -73,7 +73,6 @@ export const CrearSalariosModal = ({ onClose }: CrearSalariosModalProps) => {
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

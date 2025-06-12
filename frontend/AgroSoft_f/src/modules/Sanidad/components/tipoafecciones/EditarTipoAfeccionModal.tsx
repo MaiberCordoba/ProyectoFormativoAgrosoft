@@ -47,7 +47,6 @@ const EditarTipoAfeccionModal: React.FC<EditarTipoAfeccionesModalProps> = ({ tip
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

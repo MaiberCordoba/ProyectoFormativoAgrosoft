@@ -61,7 +61,6 @@ export const CrearTipoAfeccionModal = ({ onClose, onCreate }: CrearTipoAfeccionM
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}

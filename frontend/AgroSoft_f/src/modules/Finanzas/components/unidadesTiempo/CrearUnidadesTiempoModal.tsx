@@ -60,7 +60,6 @@ export const CrearUnidadesTiempoModal = ({
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}
