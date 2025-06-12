@@ -6,6 +6,7 @@ import EvapotranspiracionCard from "./EvapotranspiracionCard";
 import EvapotranspiracionChart from "./EvapotranspiracionChart";
 import CropKCoefficientTable from "./Kc";
 import Recomendaciones from "./Recomendacion";
+import { Cultivo, Eras, Semillero } from "@/modules/Trazabilidad/types";
 
 type Plantacion = {
   id: number;
@@ -14,13 +15,10 @@ type Plantacion = {
     id: string;
     nombre: string;
   };
-  fk_Era: {
-    id: string;
-    fk_lote: {
-      id: string;
-      nombre: string;
-    };
-  };
+  fk_Era: number;
+  semillero: Semillero;
+  cultivo: Cultivo;
+  eras: Eras;
 };
 
 export default function EvapotranspiracionC() {
@@ -130,21 +128,27 @@ export default function EvapotranspiracionC() {
                 errorMessage={errorET}
                 color={errorET ? "danger" : undefined}
               >
-                {plantaciones.map(plantacion => (
-                  <SelectItem 
-                    key={String(plantacion.id)}
-                  >
-                    {`Cultivo ${plantacion.fk_Cultivo || 'N/D'}, Era ${plantacion.fk_Era || 'N/D'}, Días sembrados: ${
-                      plantacion.fechaSiembra
-                        ? Math.floor(
-                            (Date.now() - new Date(plantacion.fechaSiembra).getTime()) /
-                              (1000 * 60 * 60 * 24)
-                          )
-                        : 'N/D'
-                    }`}
-                  </SelectItem>
-                ))}
+                {plantaciones.map((plantacion) => {
+                  const cultivo = plantacion.cultivo?.nombre || plantacion.semillero?.cultivo?.nombre || 'N/D';
+                  const era = plantacion.eras?.tipo || 'N/D';
+                  const dias = plantacion.fechaSiembra
+                    ? Math.floor(
+                        (Date.now() - new Date(plantacion.fechaSiembra).getTime()) / (1000 * 60 * 60 * 24)
+                      )
+                    : 'N/D';
+
+                  return (
+                    <SelectItem key={String(plantacion.id)} textValue={`Cultivo ${cultivo}`}>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-sm">Cultivo: {cultivo}</span>
+                        <span className="text-xs text-gray-500">Era: {era}</span>
+                        <span className="text-xs text-gray-500">Días sembrados: {dias}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
               </Select>
+
 
               <Input
                 label="Coeficiente de Cultivo (Kc - Opcional)"
