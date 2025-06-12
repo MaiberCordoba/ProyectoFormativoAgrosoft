@@ -150,7 +150,7 @@ export default function IoTPages() {
       title: "Alerta de Sensor",
       description: message,
       variant: "flat",
-      color: "primary",
+      color: "danger",
 
     });
   };

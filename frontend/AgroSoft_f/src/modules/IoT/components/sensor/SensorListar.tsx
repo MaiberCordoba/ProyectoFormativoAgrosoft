@@ -33,7 +33,6 @@ export function SensorLista() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     sensorEliminado,
-    handleEliminar,
   } = useEliminarSensor();
 
   // Función para mostrar alerta de acceso denegado
@@ -146,9 +145,6 @@ export function SensorLista() {
           <AccionesTabla
             onEditar={() =>
               handleActionWithPermission(() => handleEditar(item))
-            }
-            onEliminar={() =>
-              handleActionWithPermission(() => handleEliminar(item))
             }
           />
         );

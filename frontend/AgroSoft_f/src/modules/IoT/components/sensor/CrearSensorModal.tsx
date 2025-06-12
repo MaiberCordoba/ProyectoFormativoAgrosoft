@@ -132,7 +132,7 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
+          variant: "solid",
           onClick: handleSubmit,
         },
       ]}
