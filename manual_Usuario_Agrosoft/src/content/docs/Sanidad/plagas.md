@@ -3,7 +3,7 @@ title: Afecciones
 description: Guía para gestionar Afecciones en el sistema
 ---
 
-## 🌿 Uso de Afecciones
+##  Uso de Afecciones
 
 El módulo **Afecciones** permite gestionar el registro y control de afecciones en los cultivos. Antes de registrar una afección, **debe existir al menos un tipo de afección registrado en el sistema**.
 

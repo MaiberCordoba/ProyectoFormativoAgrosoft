@@ -3,11 +3,11 @@ title: Herramientas
 description: Guía para gestionar las herramientas en el sistema AgroSoft
 ---
 
-## 🛠️ Gestión de Herramientas
+##  Gestión de Herramientas
 
 La sección **Herramientas** permite registrar y controlar los equipos y herramientas utilizados en las actividades agrícolas del sistema AgroSoft.
 
-### 1️⃣ **Acceder a la sección de Herramientas**
+### 1️ **Acceder a la sección de Herramientas**
 Para gestionar las herramientas, sigue estos pasos:
 1. Inicia sesión en el sistema.
 2. Desde el menú lateral, selecciona **Inventario**.
@@ -16,7 +16,7 @@ Para gestionar las herramientas, sigue estos pasos:
 ## Página de Herramientas
 ![Captura página herramientas](../../../../public/herramientaspage.png)
 
-### 2️⃣ **Registrar una nueva Herramienta**
+### 2️ **Registrar una nueva Herramienta**
 Para agregar una nueva herramienta:
 1. En la pantalla de **Herramientas**, haz clic en el botón **"Agregar"**.
 2. Completa los siguientes campos:
@@ -31,7 +31,7 @@ Para agregar una nueva herramienta:
 
 3. Haz clic en **"Guardar"** para registrar la herramienta.
 
-### 3️⃣ **Consultar y editar herramientas existentes**
+### 3️ **Consultar y editar herramientas existentes**
 - En la lista principal puedes visualizar todas las herramientas registradas.
 
 ## Lista de Herramientas

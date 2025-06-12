@@ -3,12 +3,12 @@ title: Actividades
 description: Guía para gestionar actividades en el sistema.
 ---
 
-# 📋 Uso de Actividades
+#  Uso de Actividades
 
 El módulo **Actividades** permite registrar, gestionar y dar seguimiento a las labores agrícolas realizadas en los cultivos. Estas actividades pueden incluir riego, fertilización, control de plagas, entre otras.  
 Antes de crear una actividad, debe existir al menos un **cultivo** y un **usuario** registrado en el sistema.
 
-## 1️⃣ Acceder a la sección de Actividades
+## 1️ Acceder a la sección de Actividades
 
 Para gestionar las actividades, sigue estos pasos:
 
@@ -16,13 +16,13 @@ Para gestionar las actividades, sigue estos pasos:
 2. En el menú de navegación, selecciona **Seguimiento de Cultivos**.
 3. Dentro de esta sección, haz clic en **Actividades**.
 
-### 📸 Página de actividades  
+###  Página de actividades  
 ![Captura de pantalla del home](../../../../public/actividades.png)  
 
 
 ---
 
-## 2️⃣ Registrar una nueva Actividad
+## 2️ Registrar una nueva Actividad
 
 Para agregar una nueva actividad:
 
@@ -30,7 +30,7 @@ Para agregar una nueva actividad:
 2. Dentro de la pantalla de **Actividades**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 
-### 📸 Agregar actividad  
+###  Agregar actividad  
 ![Captura de pantalla del home](../../../../public/aactividad.png)
 
 - **Nombre:** Escribe un nombre para la actividad.
@@ -43,11 +43,11 @@ Para agregar una nueva actividad:
 
 ---
 
-## 3️⃣ Consultar y editar actividades existentes
+## 3️ Consultar y editar actividades existentes
 
 - Para **ver la información** de una actividad, usa la lista disponible en la sección.
 
-### 📸 Lista de actividades  
+###  Lista de actividades  
 ![Captura de pantalla de las actividades](../../../../public/actividades23.png)
 
 - Para **editar** una actividad:
@@ -56,6 +56,6 @@ Para agregar una nueva actividad:
   3. Modifica los datos necesarios.
   4. Haz clic en **Guardar**.
 
-### 📸 Ventana editar  
+###  Ventana editar  
 ![Captura de pantalla del home](../../../../public/eactividad.png)
 

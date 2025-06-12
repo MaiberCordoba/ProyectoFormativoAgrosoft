@@ -3,11 +3,11 @@ title: Tipo de Afección
 description: Guía para gestionar los Tipos de Afección en el sistema AgroSoft.  
 ---
 
-## 🌱  Tipos de Afección
+##   Tipos de Afección
 
 El módulo **Tipo de Afección** permite gestionar las categorías que clasifican las diferentes afecciones que pueden afectar a los cultivos. 
 
-### 1⃣ **Acceder a la sección Tipo de Afección**
+### 1 **Acceder a la sección Tipo de Afección**
 Para gestionar los tipos de afección, sigue estos pasos:
 1. Inicia sesión en el sistema.
 2. En el menú de navegación, selecciona **Gestión Fitosanitaria**.
@@ -17,7 +17,7 @@ Para gestionar los tipos de afección, sigue estos pasos:
 ![Captura de pantalla tipo de afección](../../../../public/tipo%20afecciones%20pantalla%20principal.png)
 
 
-### 2⃣ **Registrar un nuevo Tipo de Afección**
+### 2 **Registrar un nuevo Tipo de Afección**
 
 Para agregar un nuevo tipo de afección:
 1. Dentro de la pantalla **Tipo de Afección**, haz clic en el botón **"Agregar"**.
@@ -33,7 +33,7 @@ Para agregar un nuevo tipo de afección:
 3. Haz clic en **"Guardar"** para registrar el tipo de afección.
 
 
-### 3⃣ **Consultar y editar Tipos de Afección existentes**
+### 3 **Consultar y editar Tipos de Afección existentes**
 
 - Para ver todos los tipos registrados, usa la lista disponible en la pantalla.
 

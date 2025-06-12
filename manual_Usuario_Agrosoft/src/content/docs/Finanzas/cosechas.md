@@ -3,13 +3,13 @@ title: Cosechas
 description: Guía para registrar y gestionar las cosechas de cultivos en el sistema.
 ---
 
-# 🌾 Uso de Cosechas
+#  Uso de Cosechas
 
 El módulo **Cosechas** permite registrar y administrar la producción obtenida de los cultivos. Ayuda a llevar un control detallado de cada recolección realizada, facilitando el análisis de rendimiento y productividad del cultivo.Antes de crear una cosecha, debe existir al menos un **cultivo** registrado en el sistema.
 
 ---
 
-## 1️⃣ Acceder a la sección de Cosechas
+## 1️ Acceder a la sección de Cosechas
 
 Para gestionar las cosechas, sigue estos pasos:
 
@@ -17,12 +17,12 @@ Para gestionar las cosechas, sigue estos pasos:
 2. En el menú de navegación, selecciona **Seguimiento de Cultivos**.
 3. Dentro de esta sección, haz clic en **Cosechas**.
 
-### 📸 Página de cosechas  
-![Captura de pantalla del home](../../../../public/cosechas.png)
+###  Página de cosechas  
+![Captura de pantalla del home](../../../../public/cesechaspage.png)
 
 ---
 
-## 2️⃣ Registrar una nueva Cosecha
+## 2️ Registrar una nueva Cosecha
 
 Para agregar una nueva cosecha:
 
@@ -30,8 +30,8 @@ Para agregar una nueva cosecha:
 2. Dentro de la pantalla de **Cosechas**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 
-### 📸 Agregar cosecha  
-![Captura de pantalla del home](../../../../public/acosecha.png)
+###  Agregar cosecha  
+![Captura de pantalla del home](../../../../public/agregarcosechass.png)
 
 
 - **Cultivo asociado:** Selecciona el cultivo del cual se realiza la cosecha.
@@ -44,12 +44,12 @@ Para agregar una nueva cosecha:
 
 ---
 
-## 3️⃣ Consultar y editar cosechas existentes
+## 3️ Consultar y editar cosechas existentes
 
 - Para **ver** la información de una cosecha, consulta la lista disponible en la sección.
 
-### 📸 Lista de cosechas  
-*Captura de pantalla*
+### Lista de cosechas  
+![Captura listar](../../../../public/listarcosechas.png)
 
 - Para **editar** una cosecha:
   1. Haz clic en los tres puntos debajo de **Acciones**.
@@ -57,8 +57,8 @@ Para agregar una nueva cosecha:
   3. Modifica los datos necesarios.
   4. Haz clic en **Guardar**.
 
-### 📸 Ventana editar  
-![Captura de pantalla del home](../../../../public/ecosecha.png)
+###  Ventana editar  
+![Captura de pantalla del home](../../../../public/editcosechas.png)
 
 
 

@@ -36,6 +36,7 @@ export default defineConfig({
 					items: [
 						{ label: 'introduccion', slug: 'iot/introduccion' },
 						{ label: 'sensores', slug: 'iot/sensores' },
+						{ label: 'Evotranspiracion', slug: 'iot/evotranspiracion' },
 					],
 				},
 				{
@@ -55,9 +56,9 @@ export default defineConfig({
 						{ label: 'Introduccion Finanzas', slug: 'finanzas/introduccion' },
 						{ label: 'Actividades', slug: 'finanzas/actividades' },
 						{ label: 'Cosechas', slug: 'finanzas/cosechas' },
-						{ label: 'Desechos', slug: 'finanzas/desechos' },
-						{ label: 'Tipos Desechos', slug: 'finanzas/tiposdesechos' },
+						{ label: 'Salarios', slug: 'finanzas/salarios' },
 						{ label: 'Ventas', slug: 'finanzas/ventas' },
+						{ label: 'Resumen finanzas', slug: 'finanzas/resumenfinanzas' },
 					],
 				},
 				{

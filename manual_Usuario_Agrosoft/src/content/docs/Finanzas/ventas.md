@@ -3,13 +3,13 @@ title: Ventas
 description: Guía para registrar y gestionar las ventas de productos agrícolas en el sistema.
 ---
 
-# 💰 Uso de Ventas
+#  Uso de Ventas
 
 El módulo **Ventas** permite registrar las transacciones comerciales relacionadas con los productos obtenidos de las cosechas. Facilita el seguimiento de ingresos, compradores y cantidades vendidas, ayudando a mantener un control financiero eficiente del sistema.Antes de registrar una cosecha debe existir al menos una **cosecha** en el sistema.
 
 ---
 
-## 1️⃣ Acceder a la sección de Ventas
+## 1️ Acceder a la sección de Ventas
 
 Para gestionar las ventas, sigue estos pasos:
 
@@ -17,12 +17,12 @@ Para gestionar las ventas, sigue estos pasos:
 2. En el menú de navegación, selecciona **Seguimiento de Cultivos**.
 3. Dentro de esta sección, haz clic en **Ventas**.
 
-### 📸 Página de ventas  
-*Captura de pantalla ventas*
+###  Página de ventas  
+![Captura ventas](../../../../public/ventas12.png)
 
 ---
 
-## 2️⃣ Registrar una nueva Venta
+## 2️ Registrar una nueva Venta
 
 Para agregar una nueva venta:
 
@@ -30,8 +30,8 @@ Para agregar una nueva venta:
 2. Dentro de la pantalla de **Ventas**, haz clic en el botón **"Agregar"**.
 3. Completa los siguientes campos:
 
-### 📸 Agregar venta  
-![Captura de pantalla de registro desechos](../../../../public/ventas.png) 
+###  Agregar venta  
+![Captura de pantalla de registro ventas](../../../../public/registrarventas.png) 
 
 
 - **Producto vendido:** Selecciona el producto (cosecha) vendido.
@@ -46,12 +46,12 @@ Para agregar una nueva venta:
 
 ---
 
-## 3️⃣ Consultar y editar ventas existentes
+## 3️ Consultar y editar ventas existentes
 
 - Para **ver** la información de una venta, consulta la lista disponible en la sección.
 
-### 📸 Lista de ventas  
-![Captura de pantalla de registro desechos](../../../../public/hola123.png)
+###  Lista de ventas  
+![Captura de pantalla de listar](../../../../public/listventas.png)
 
 - Para **editar** una venta:
   1. Haz clic en los tres puntos debajo de **Acciones**.
@@ -59,5 +59,5 @@ Para agregar una nueva venta:
   3. Modifica los datos necesarios.
   4. Haz clic en **Guardar**.
 
-### 📸 Ventana editar  
-![Captura de pantalla de registro desechos](../../../../public/eventa.png) 
+###  Ventana editar  
+![Captura de pantalla de registro desechos](../../../../public/editventas.png) 

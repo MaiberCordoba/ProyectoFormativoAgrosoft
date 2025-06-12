@@ -3,11 +3,11 @@ title: Productos para el Control
 description: Guía para gestionar Productos para el Control dentro del sistema
 ---
 
-## 🌿 Productos para el Control
+##  Productos para el Control
 
 El módulo **Productos para el Control** permite gestionar el registro y administración de productos utilizados en el manejo de plagas y enfermedades en los cultivos.
 
-### 1️⃣ **Acceder a la sección de Productos para el Control**
+### 1️ **Acceder a la sección de Productos para el Control**
 Para gestionar los productos para el control, sigue estos pasos:
 1. Inicia sesión en el sistema.
 2. En el menú de navegación, selecciona **Gestión Fitosanitaria**.
@@ -16,7 +16,7 @@ Para gestionar los productos para el control, sigue estos pasos:
 ## Página de Productos para el Control
 ![Captura de pantalla de productos para el control](../../../../public/pantalla%20principal%20productos%20para%20el%20control.png)
 
-### 2️⃣ **Registrar un nuevo Producto para el Control**
+### 2️ **Registrar un nuevo Producto para el Control**
 Para agregar un nuevo producto para el control:
 1. Dentro de la pantalla de **Productos para el Control**, haz clic en el botón **"Agregar"**.
 2. Completa los siguientes campos:
@@ -34,7 +34,7 @@ Para agregar un nuevo producto para el control:
 
 3. Haz clic en **"Guardar"** para registrar el producto.
 
-### 3️⃣ **Consultar y editar productos existentes**
+### 3️ **Consultar y editar productos existentes**
 - Para ver la información de un producto, usa la lista disponible en la sección de:
 
 ## Lista de Productos para el Control
