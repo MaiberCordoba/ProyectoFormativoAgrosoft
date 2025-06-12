@@ -46,6 +46,7 @@ export default function CustomCard({
         rounded-2xl shadow-md ${hoverEffect ? "hover:shadow-xl transition" : ""}
         bg-${backgroundColor} border border-${borderColor} p-4
       `}
+      style={{borderRadius:"1.5rem"}}
     >
       <CardBody className="flex flex-col items-start text-left justify-center w-full gap-2">
         {icon && <div className={`text-5xl text-${textColor}`}>{icon}</div>}
