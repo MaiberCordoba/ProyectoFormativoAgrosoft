@@ -113,7 +113,6 @@ const EditarSensorModal: React.FC<EditarSensorModalProps> = ({ sensor, onClose }
         {
           label: isPending ? "Guardando..." : "Guardar",
           color: "success",
-          variant: "light",
           onClick: handleSubmit,
         },
       ]}
