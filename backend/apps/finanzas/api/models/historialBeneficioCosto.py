@@ -9,6 +9,7 @@ class HistorialBeneficioCosto(models.Model):
     fecha_registro = models.DateTimeField(auto_now_add=True)
     costo_insumos = models.IntegerField(default=0)
     total_mano_obra = models.IntegerField(default=0)
+    total_depreciacion = models.IntegerField(default=0)  # Nuevo campo
     total_costos = models.IntegerField(default=0)
     total_ventas = models.IntegerField(default=0)
     beneficio = models.IntegerField(default=0)
