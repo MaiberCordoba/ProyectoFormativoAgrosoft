@@ -18,11 +18,6 @@ export const usePostSensor = () => {
         refetchType: "active" 
       });
 
-      addToast({
-        title: "Creación exitosa",
-        description: "Nuevo sensor registrado con éxito.",
-        color: "success",
-      });
     },
     onError: (error) => {
       console.error("Error detallado:", error.response?.data);
