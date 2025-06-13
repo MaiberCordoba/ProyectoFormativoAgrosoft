@@ -1,7 +1,7 @@
 from django.db import models
 
 class UnidadesTiempo(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50,unique=True)
     equivalenciaMinutos = models.IntegerField()
     def save(self, *args, **kwargs):
         if self.nombre:
