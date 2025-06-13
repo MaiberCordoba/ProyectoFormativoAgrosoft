@@ -76,10 +76,19 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       setError(`La cantidad ingresada ${cantidadEnBase} (g), excede la cantidad disponible ${cosechaSeleccionada.cantidadTotal} (g).`);
       return;
     }
-    if (cantidad < 0 || descuento < 0) {
+    if (cantidad < 0) {
       addToast({
         title: "Valores invalidos",
         description: "Por favor, ingresa valores positivos.",
+        color: "danger"
+      })
+      return
+    }
+
+    if (descuento < 0 || descuento > 100){
+      addToast({
+        title: "Valores Invalidos",
+        description : "El descuento no puede ser menor a 0 o mayor a 100",
         color: "danger"
       })
       return
@@ -91,6 +100,8 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       { fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad, descuento },
       {
         onSuccess: () => {
+          refetchCosecha()
+          
           onClose();
           setFk_Cosecha(null);
           setDescuento(0);
