@@ -10,11 +10,16 @@ import {
   Chip,
   Select,
   SelectItem,
+  useDisclosure,
 } from "@heroui/react";
 import apiClient from "@/api/apiClient";
 import { TiempoActividadControl } from "../../types";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { addToast } from "@heroui/toast";
+import ModalComponent from "@/components/Modal"; // Tu Modal global
+import { useDisclosure as useHistorialDisclosure } from "@heroui/react";
+import HistorialPagosModal from "./HistorialPagosModal";
+import { TriangleAlert, TriangleAlertIcon } from "lucide-react";
 
 interface TablaPagosProps {
   onUsuarioChange?: (usuarioId: string) => void;
@@ -27,7 +32,32 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
   const [error, setError] = useState<string | null>(null);
   const [pendingRequests, setPendingRequests] = useState<Set<number>>(
     new Set()
-  ); // Track pending requests
+  );
+
+  // Modal para confirmar cambio de estado de pago individual
+  const {
+    isOpen: isConfirmModalOpen,
+    onOpen: onConfirmModalOpen,
+    onClose: onConfirmModalClose,
+  } = useDisclosure();
+  const [selectedPayment, setSelectedPayment] = useState<{
+    id: number;
+    nuevoEstado: "PENDIENTE" | "PAGADO";
+  } | null>(null);
+
+  // Modal para confirmar pago masivo "Pagar Todo Pendiente"
+  const {
+    isOpen: isConfirmPagarTodoModalOpen,
+    onOpen: onConfirmPagarTodoModalOpen,
+    onClose: onConfirmPagarTodoModalClose,
+  } = useDisclosure();
+
+  // Modal para Historial de Pagos
+  const {
+    isOpen: isHistorialModalOpen,
+    onOpen: onHistorialModalOpen,
+    onClose: onHistorialModalClose,
+  } = useHistorialDisclosure();
 
   const {
     data: usuarios = [],
@@ -35,7 +65,6 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
     error: errorUsuarios,
   } = useGetUsers();
 
-  // Load registros
   useEffect(() => {
     const url = usuarioId
       ? `/tiempoActividadesControles/?usuario_id=${usuarioId}`
@@ -54,66 +83,100 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
       });
   }, [usuarioId]);
 
-  const handleMarcarPago = useCallback(
-    async (id: number, nuevoEstado: "PENDIENTE" | "PAGADO") => {
-      if (pendingRequests.has(id)) return; // Prevent multiple clicks
-
-      setPendingRequests((prev) => new Set(prev).add(id)); // Mark request as pending
-
-      // Optimistic update
-      setRegistros((prevRegistros) =>
-        prevRegistros.map((reg) =>
-          reg.id === id ? { ...reg, estado_pago: nuevoEstado } : reg
-        )
-      );
-
-      try {
-        const response = await apiClient.patch<TiempoActividadControl>(
-          `/tiempoActividadesControles/${id}/marcar-pago/`,
-          { estado_pago: nuevoEstado }
-        );
-        setRegistros((prevRegistros) =>
-          prevRegistros.map((reg) => (reg.id === id ? response.data : reg))
-        );
-      } catch (error) {
-        console.error("Error al marcar pago:", error);
-        // Revert optimistic update on error
-        setRegistros((prevRegistros) =>
-          prevRegistros.map((reg) =>
-            reg.id === id
-              ? {
-                  ...reg,
-                  estado_pago:
-                    nuevoEstado === "PAGADO" ? "PENDIENTE" : "PAGADO",
-                }
-              : reg
-          )
-        );
+  const handleMarcarPagoConfirm = useCallback(
+    (id: number, nuevoEstado: "PENDIENTE" | "PAGADO") => {
+      if (
+        nuevoEstado === "PENDIENTE" &&
+        registros.find((reg) => reg.id === id)?.estado_pago === "PAGADO"
+      ) {
         addToast({
-          title: "Error",
-          description: "Error al actualizar el estado del pago",
+          title: "Acción Restringida",
+          description:
+            "No se puede cambiar el estado de un pago a 'Pendiente' una vez que está 'Pagado'.",
           color: "danger",
         });
-      } finally {
-        setPendingRequests((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(id);
-          return newSet;
-        });
+        return;
       }
+      setSelectedPayment({ id, nuevoEstado });
+      onConfirmModalOpen();
     },
-    [pendingRequests]
+    [onConfirmModalOpen, registros]
   );
 
-  const handlePagarTodo = async () => {
+  const confirmChangePaymentStatus = useCallback(async () => {
+    if (!selectedPayment) return;
+
+    const { id, nuevoEstado } = selectedPayment;
+    onConfirmModalClose();
+
+    if (pendingRequests.has(id)) return;
+
+    setPendingRequests((prev) => new Set(prev).add(id));
+
+    setRegistros((prevRegistros) =>
+      prevRegistros.map((reg) =>
+        reg.id === id ? { ...reg, estado_pago: nuevoEstado } : reg
+      )
+    );
+
+    try {
+      const response = await apiClient.patch<TiempoActividadControl>(
+        `/tiempoActividadesControles/${id}/marcar-pago/`,
+        { estado_pago: nuevoEstado }
+      );
+      setRegistros((prevRegistros) =>
+        prevRegistros.map((reg) => (reg.id === id ? response.data : reg))
+      );
+      addToast({
+        title: "Éxito",
+        description: "Estado de pago actualizado correctamente",
+        color: "success",
+      });
+    } catch (error) {
+      console.error("Error al marcar pago:", error);
+      setRegistros((prevRegistros) =>
+        prevRegistros.map((reg) =>
+          reg.id === id
+            ? {
+                ...reg,
+                estado_pago: nuevoEstado === "PAGADO" ? "PENDIENTE" : "PAGADO",
+              }
+            : reg
+        )
+      );
+      addToast({
+        title: "Error",
+        description: "Error al actualizar el estado del pago",
+        color: "danger",
+      });
+    } finally {
+      setPendingRequests((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+      setSelectedPayment(null);
+    }
+  }, [pendingRequests, selectedPayment, onConfirmModalClose]);
+
+  // Nueva función para iniciar el flujo de confirmación de "Pagar Todo"
+  const handlePagarTodoConfirm = () => {
     if (!usuarioId) {
       addToast({
         title: "Denegado",
-        description: "Por favor selecciona un usuario",
+        description: "Por favor selecciona un usuario para pagar.",
         color: "warning",
       });
       return;
     }
+    // Abrir el modal de confirmación para "Pagar Todo"
+    onConfirmPagarTodoModalOpen();
+  };
+
+  // Función que se ejecuta si se confirma el "Pagar Todo"
+  const confirmPagarTodo = async () => {
+    onConfirmPagarTodoModalClose(); // Cerrar el modal de confirmación
+
     try {
       const response = await apiClient.post<{
         message: string;
@@ -124,7 +187,7 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
         description: response.data.message,
         color: "success",
       });
-      // Reload registros
+      // Recargar registros después del pago masivo
       const url = `/tiempoActividadesControles/?usuario_id=${usuarioId}`;
       const newData = await apiClient.get<TiempoActividadControl[]>(url);
       setRegistros(newData.data);
@@ -167,22 +230,18 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
           </Chip>
         );
       case "acciones":
+        const isPaid = item.estado_pago === "PAGADO";
         return (
           <Button
             size="sm"
-            color={item.estado_pago === "PAGADO" ? "warning" : "success"}
+            color={isPaid ? "warning" : "success"}
             onPress={() =>
-              handleMarcarPago(
-                item.id,
-                item.estado_pago === "PAGADO" ? "PENDIENTE" : "PAGADO"
-              )
+              handleMarcarPagoConfirm(item.id, isPaid ? "PENDIENTE" : "PAGADO")
             }
             className="h-9"
-            isDisabled={pendingRequests.has(item.id)} // Disable button during request
+            isDisabled={pendingRequests.has(item.id) || isPaid}
           >
-            {item.estado_pago === "PAGADO"
-              ? "Marcar Pendiente"
-              : "Marcar Pagado"}
+            {isPaid ? "Ya Pagado" : "Marcar Pagado"}
           </Button>
         );
       default:
@@ -230,14 +289,25 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
           </Select>
         </div>
         <div className="w-full sm:w-auto flex gap-3">
+          {/* Botón para Pagar Todo Pendiente - Ahora abre el modal de confirmación */}
           <Button
             size="sm"
             color="success"
-            onPress={handlePagarTodo}
+            onPress={handlePagarTodoConfirm}
             className="text-white h-9"
             isDisabled={!usuarioId}
           >
             Pagar Todo Pendiente
+          </Button>
+
+          {/* Botón para Historial de Pagos */}
+          <Button
+            size="sm"
+            color="success"
+            onPress={onHistorialModalOpen}
+            className="text-white h-9"
+          >
+            Ver Historial de Pagos
           </Button>
         </div>
       </div>
@@ -280,6 +350,63 @@ const TablaPagos: React.FC<TablaPagosProps> = ({ onUsuarioChange }) => {
           </TableBody>
         </Table>
       </div>
+
+      {/* Modal de Confirmación para cambio de estado individual */}
+      <ModalComponent
+        isOpen={isConfirmModalOpen}
+        onClose={onConfirmModalClose}
+        title="Confirmar Cambio de Estado"
+        footerButtons={[
+          {
+            label: "Confirmar",
+            color:
+              selectedPayment?.nuevoEstado === "PAGADO" ? "success" : "danger",
+            onClick: confirmChangePaymentStatus,
+          },
+        ]}
+      >
+        <div className="flex flex-col items-center justify-center p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-center">
+          {/* Icono de advertencia importado y centrado */}
+          <TriangleAlertIcon className=" mb-4" color="orange" size={80} />{" "}
+          {/* Tamaño más grande y margen inferior */}
+          <p className="text-sm font-medium">
+            ¡Atención! Estás a punto de marcar el pago pendiente para este
+            usuario como PAGADO. Esta acción es irreversible. ¿Estás
+            completamente seguro de proceder?
+          </p>
+        </div>
+      </ModalComponent>
+
+      {/* Nuevo Modal de Confirmación para "Pagar Todo Pendiente" */}
+      <ModalComponent
+        isOpen={isConfirmPagarTodoModalOpen}
+        onClose={onConfirmPagarTodoModalClose}
+        title="Confirmar Pago Masivo"
+        footerButtons={[
+          {
+            label: "Sí, Pagar Todo",
+            color: "success",
+            onClick: confirmPagarTodo,
+          },
+        ]}
+      >
+        <div className="flex flex-col items-center justify-center p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-center">
+          {/* Icono de advertencia importado y centrado */}
+          <TriangleAlertIcon className=" mb-4" color="orange" size={80} />{" "}
+          {/* Tamaño más grande y margen inferior */}
+          <p className="text-sm font-medium">
+            ¡Atención! Estás a punto de marcar TODOS los pagos pendientes para
+            este usuario como PAGADOS. Esta acción es irreversible. ¿Estás
+            completamente seguro de proceder?
+          </p>
+        </div>
+      </ModalComponent>
+
+      {/* Modal del Historial de Pagos */}
+      <HistorialPagosModal
+        isOpen={isHistorialModalOpen}
+        onClose={onHistorialModalClose}
+      />
     </div>
   );
 };
