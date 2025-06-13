@@ -7,7 +7,7 @@ import { addToast } from "@heroui/toast";
 
 interface CrearUnidadesMedidaModalProps {
   onClose: () => void;
-  onCreate: (nuevaUnidadMedida : UnidadesMedida) => void
+  onCreate: (nuevaUnidadMedida: UnidadesMedida) => void
 }
 
 export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalProps) => {
@@ -15,31 +15,39 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
   const [abreviatura, setAbreviatura] = useState("");
   const [tipo, setTipo] = useState<"MASA" | "VOLUMEN" | "">("");
   const [equivalenciabase, setEquivalenciabase] = useState(0);
-  const  [error,setError] = useState("")
+  const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesMedida();
 
   const handleSubmit = () => {
     if (!nombre || !abreviatura || !tipo || equivalenciabase == 0) {
       addToast({
-        title:"Campos requeridos",
-        description:"Por favor, completa todos los campos.",
-        color:"danger"
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger"
       })
       return;
     }
     if (equivalenciabase < 0) {
       addToast({
-        title:"Valores invalidos",
-        description:"Por favor, ingresa valores positivos.",
-        color:"danger"
+        title: "Valores invalidos",
+        description: "Por favor, ingresa valores positivos.",
+        color: "danger"
+      })
+      return;
+    }
+    if (nombre == nombre) {
+      addToast({
+        title: "Valores duplicados",
+        description: "El nombre de esa unidad de medida ya existe.",
+        color: "danger"
       })
       return;
     }
     setError("")
 
     mutate(
-      { id:0,nombre, abreviatura, tipo, equivalenciabase },
+      { id: 0, nombre, abreviatura, tipo, equivalenciabase },
       {
         onSuccess: () => {
           onClose();
@@ -88,9 +96,9 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
         size="sm"
         value={tipo}
         onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0] as "MASA" | "VOLUMEN";
-            setTipo(selectedKey);
-          }}
+          const selectedKey = Array.from(keys)[0] as "MASA" | "VOLUMEN";
+          setTipo(selectedKey);
+        }}
         required
       >
         <SelectItem key="MASA">Masa</SelectItem>

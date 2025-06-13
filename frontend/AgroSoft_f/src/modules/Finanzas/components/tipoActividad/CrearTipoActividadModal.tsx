@@ -7,28 +7,36 @@ import { addToast } from "@heroui/toast";
 
 interface CrearTipoActividadModalProps {
   onClose: () => void;
-  onCreate:(nuevoTipoActividad:TipoActividad) => void
+  onCreate: (nuevoTipoActividad: TipoActividad) => void
 }
 
 export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProps) => {
   const [nombre, setNombre] = useState("");
-  const [error,setError] = useState("")
+  const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostTipoActividad();
 
   const handleSubmit = () => {
     if (!nombre) {
       addToast({
-        title:"Campos requeridos",
-        description:"Por favor, completa todos los campos.",
-        color:"danger"
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger"
+      })
+      return;
+    }
+    if (nombre == nombre) {
+      addToast({
+        title: "Valores duplicados",
+        description: "El nombre de ese tipo de actividad ya existe.",
+        color: "danger"
       })
       return;
     }
     setError("")
 
     mutate(
-      { id:0, nombre },
+      { id: 0, nombre },
       {
         onSuccess: () => {
           onClose();

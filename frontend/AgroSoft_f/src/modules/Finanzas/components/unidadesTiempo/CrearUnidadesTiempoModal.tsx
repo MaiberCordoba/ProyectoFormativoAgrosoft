@@ -7,7 +7,7 @@ import { addToast } from "@heroui/toast";
 
 interface CrearUnidadesTiempoModalProps {
   onClose: () => void;
-  onCreate: (nuevaUnidadTiempo : UnidadesTiempo) => void
+  onCreate: (nuevaUnidadTiempo: UnidadesTiempo) => void
 }
 
 
@@ -16,30 +16,38 @@ export const CrearUnidadesTiempoModal = ({
 }: CrearUnidadesTiempoModalProps) => {
   const [nombre, setNombre] = useState("");
   const [equivalenciaMinutos, setEquivalenciaMinutos] = useState(0);
-  const [error,setError] = useState("")
+  const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesTiempo();
 
   const handleSubmit = () => {
-    if (!nombre  || !equivalenciaMinutos) {
+    if (!nombre || !equivalenciaMinutos) {
       addToast({
-        title:"Campos requeridos",
-        description:"Por favor, completa todos los campos.",
-        color:"danger"
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger"
       })
       return;
     }
-    if (equivalenciaMinutos < 0){
+    if (equivalenciaMinutos < 0) {
       addToast({
-        title:"Valores invalidos",
-        description:"Por favor, ingresa valores positivos.",
-        color:"danger"
+        title: "Valores invalidos",
+        description: "Por favor, ingresa valores positivos.",
+        color: "danger"
       })
       return
     }
+    if (nombre == nombre) {
+      addToast({
+        title: "Valores duplicados",
+        description: "El nombre de esa unidad de tiempo ya existe.",
+        color: "danger"
+      })
+      return;
+    }
     setError("")
     mutate(
-      { id:0,nombre, equivalenciaMinutos },
+      { id: 0, nombre, equivalenciaMinutos },
       {
         onSuccess: () => {
           onClose();
