@@ -156,6 +156,7 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
               radius="full"
               size="sm"
               title="Agregar nuevo lote"
+              className="self-center mt-5"
             >
               <Plus className="w-5 h-5 text-white" />
             </Button>

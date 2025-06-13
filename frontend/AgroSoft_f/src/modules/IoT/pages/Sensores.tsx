@@ -13,7 +13,6 @@ import { BiTestTube } from "react-icons/bi";
 import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import { addToast } from "@heroui/toast";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import '../components/css/card.css'
 
 
@@ -70,7 +69,6 @@ export default function IoTPages() {
   const [sensorAverages, setSensorAverages] = useState<Record<string, any>>({});
   const [loadingAverages, setLoadingAverages] = useState(false);
   const [searchId, setSearchId] = useState("");
-  const [showSensorList, setShowSensorList] = useState<boolean>(false);
 
   useEffect(() => {
 
@@ -308,26 +306,10 @@ export default function IoTPages() {
     </div>
     <div className="h-8" />
     <div className="col-span-full mt-6 flex flex-col items-center">
-      <button
-        className="flex items-center gap-2 px-4 py-2 bg-blue-700 rounded-lg hover:bg-blue-800 transition-all text-sm"
-        onClick={() => setShowSensorList((prev) => !prev)}
-      >
-        {showSensorList ? (
-          <>
-            Ocultar lista <ChevronUp className="w-4 h-4" />
-          </>
-        ) : (
-          <>
-            Ver lista completa <ChevronDown className="w-4 h-4" />
-          </>
-        )}
-      </button>
-      
-      {showSensorList && (
         <div className="w-full mt-4 animate-slideDown">
           <SensorLista />
         </div>
-      )}
+
     </div>
   </div>
 );
