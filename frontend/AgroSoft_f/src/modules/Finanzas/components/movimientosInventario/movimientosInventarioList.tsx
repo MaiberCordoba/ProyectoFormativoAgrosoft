@@ -82,13 +82,13 @@ export function MovimientosList() {
   };
 
   const columnas = [
-    { name: "Usuario", uid: "usuario" },
-    { name: "Fecha", uid: "fecha" },
-    { name: "Tipo", uid: "tipo" },
-    { name: "Unidades", uid: "unidades" },
-    { name: "Insumo", uid: "fk_Insumo" },
-    { name: "Herramienta", uid: "fk_Herramienta" },
-    { name: "Acciones", uid: "acciones" },
+    { name: "Usuario", uid: "usuario", sortable: true  },
+    { name: "Fecha", uid: "fecha", sortable: true  },
+    { name: "Tipo", uid: "tipo", sortable: true  },
+    { name: "Unidades", uid: "unidades", sortable: true  },
+    { name: "Insumo", uid: "fk_Insumo", sortable: true  },
+    { name: "Herramienta", uid: "fk_Herramienta", sortable: true  },
+    { name: "Acciones", uid: "acciones"},
   ];
 
   const renderCell = (item: MovimientoInventario, columnKey: React.Key) => {

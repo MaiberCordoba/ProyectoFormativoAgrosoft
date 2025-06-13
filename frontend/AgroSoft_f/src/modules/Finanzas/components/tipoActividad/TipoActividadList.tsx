@@ -74,7 +74,7 @@ export function TipoActividadList() {
 
   // Columnas de la tabla (Acciones siempre visible)
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
+    { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Acciones", uid: "acciones" }, // La columna de acciones siempre está presente
   ];
 

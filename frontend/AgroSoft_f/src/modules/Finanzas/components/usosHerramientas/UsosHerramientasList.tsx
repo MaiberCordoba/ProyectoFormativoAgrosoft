@@ -79,11 +79,11 @@ export function UsosHerramientasList() {
 
   // Definición de columnas
   const columnas = [
-    { name: "Herramienta", uid: "herramienta" },
-    { name: "Actividad", uid: "actividad" },
-    { name: "Control", uid: "control" },
-    { name: "Unidades", uid: "unidades"},
-    { name: "Acciones", uid: "acciones" },
+    { name: "Herramienta", uid: "herramienta", sortable: true  },
+    { name: "Actividad", uid: "actividad", sortable: true  },
+    { name: "Control", uid: "control", sortable: true  },
+    { name: "Unidades", uid: "unidades", sortable: true },
+    { name: "Acciones", uid: "acciones", sortable: true  },
   ];
 
   // Función de renderizado

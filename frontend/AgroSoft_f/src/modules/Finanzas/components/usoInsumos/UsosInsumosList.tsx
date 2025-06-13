@@ -83,12 +83,12 @@ export function UsosInsumosList() {
   };
 
   const columnas = [
-    { name: "Insumo", uid: "insumo" },
-    { name: "Actividad", uid: "actividad" },
-    { name: "Control", uid: "control" },
-    { name: "Cantidad Usado", uid: "cantidad" },
+    { name: "Insumo", uid: "insumo", sortable: true  },
+    { name: "Actividad", uid: "actividad", sortable: true  },
+    { name: "Control", uid: "control", sortable: true  },
+    { name: "Cantidad Usado", uid: "cantidad", sortable: true  },
     { name: "Unidad Medida", uid: "unidad" },
-    { name: "Costo producto usado", uid: "costo" },
+    { name: "Costo producto usado", uid: "costo", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 

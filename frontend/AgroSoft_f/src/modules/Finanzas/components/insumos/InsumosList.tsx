@@ -72,8 +72,8 @@ export function InsumosList() {
   };
 
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
-    { name: "Descripción", uid: "descripcion" },
+    { name: "Nombre", uid: "nombre", sortable: true  },
+    { name: "Descripción", uid: "descripcion", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 

@@ -75,8 +75,8 @@ export function SalariosList() {
 
   // Definición de columnas
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
-    { name: "Monto", uid: "monto" },
+    { name: "Nombre", uid: "nombre", sortable: true },
+    { name: "Monto", uid: "monto", sortable: true  },
     { name: "Horas", uid: "horas" },
     { name: "Monto por Minutos", uid: "monto_minutos" },
     { name: "Estado", uid: "estado" },

@@ -80,11 +80,11 @@ export function VentasList() {
   };
 
   const columnas = [
-    { name: "Fecha Venta", uid: "fecha" },
-    { name: "Producto", uid: "cosecha" },
-    { name: "Cantidad", uid: "cantidad" },
-    { name: "Unidad de medida", uid: "unidadMedida" },
-    { name: "Valor Total de venta", uid: "valorTotal" },
+    { name: "Fecha Venta", uid: "fecha", sortable: true  },
+    { name: "Producto", uid: "cosecha", sortable: true  },
+    { name: "Cantidad", uid: "cantidad", sortable: true  },
+    { name: "Unidad de medida", uid: "unidadMedida", sortable: true  },
+    { name: "Valor Total de venta", uid: "valorTotal", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 

@@ -83,13 +83,13 @@ export function ActividadesList() {
 
   // Definición de columnas
   const columnas = [
-    { name: "Cultivo", uid: "cultivo" },
+    { name: "Cultivo", uid: "cultivo", sortable: true  },
     { name: "Plantacion", uid: "plantacion" },
     { name: "Usuario", uid: "usuario" },
     { name: "TipoActividad", uid: "tipoActividad"},
-    { name: "Titulo", uid: "titulo" },
+    { name: "Titulo", uid: "titulo", sortable: true  },
     { name: "Descripcion", uid: "descripcion" },
-    { name: "Fecha", uid: "fecha" },
+    { name: "Fecha", uid: "fecha", sortable: true },
     { name: "Estado", uid: "estado" },
     { name: "Acciones", uid: "acciones" },
   ];
