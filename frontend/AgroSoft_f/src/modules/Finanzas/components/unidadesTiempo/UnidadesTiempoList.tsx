@@ -66,8 +66,8 @@ export function UnidadesTiempoList() {
   };
 
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
-    { name: "Equivalencia minutos", uid: "equivalenciaMinutos" },
+    { name: "Nombre", uid: "nombre", sortable: true  },
+    { name: "Equivalencia minutos", uid: "equivalenciaMinutos", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 

@@ -78,10 +78,10 @@ export function HerramientasList() {
   // Definición de columnas
   const columnas = [
     { name: "Lote", uid: "lote" },
-    { name: "Nombre", uid: "nombre" },
+    { name: "Nombre", uid: "nombre", sortable: true  },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Unidades", uid: "unidades" },
-    { name: "Valor Herramientas", uid: "valor" },
+    { name: "Unidades", uid: "unidades", sortable: true  },
+    { name: "Valor Herramientas", uid: "valor", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 

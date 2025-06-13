@@ -104,6 +104,8 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
       },
       {
         onSuccess: () => {
+          refetchInsumos()
+          
           onClose();
           setFk_Insumo(null);
           setFk_Actividad(null);

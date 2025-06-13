@@ -82,11 +82,11 @@ export function CosechasList() {
   // Definición de columnas
   const columnas = [
     { name: "Cultivo", uid: "plantacion" },
-    { name: "Cantidad Cosechada", uid: "cantidad" },
+    { name: "Cantidad Cosechada", uid: "cantidad", sortable: true  },
     { name: "Unidad Medida", uid: "unidadMedida" },
     { name: "Cantidad total (g)", uid: "totalGramos" },
-    { name: "Fecha de cosecha", uid: "fecha" },
-    { name: "Valor Cosecha", uid: "valorTotal" },
+    { name: "Fecha de cosecha", uid: "fecha", sortable: true  },
+    { name: "Valor Cosecha", uid: "valorTotal", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 

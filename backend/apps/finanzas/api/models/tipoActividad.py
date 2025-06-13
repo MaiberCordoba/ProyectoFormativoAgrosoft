@@ -1,7 +1,7 @@
 from django.db import models
 
 class TipoActividad(models.Model):
-    nombre = models.CharField(max_length=70)
+    nombre = models.CharField(max_length=70,unique=True)
 
     def save(self, *args, **kwargs):
         if self.nombre:
