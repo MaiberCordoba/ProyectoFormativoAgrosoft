@@ -72,6 +72,9 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
       {tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
       {
         onSuccess: () => {
+
+          refetchActividad()
+          
           onClose();
           setTiempo(0);
           setFk_UnidadTiempo(null);

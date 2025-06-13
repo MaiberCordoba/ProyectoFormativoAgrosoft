@@ -71,6 +71,8 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
       { fk_Herramienta, fk_Actividad,fk_Control, unidades },
       {
         onSuccess: () => {
+          refetchHerramienta()
+          
           onClose();
           setFk_Herramienta(null);
           setFk_Actividad(null);
