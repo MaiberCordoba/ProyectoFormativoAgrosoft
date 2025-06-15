@@ -4,6 +4,7 @@ import { Input } from "@heroui/react";
 import { usePostTipoActividad } from "../../hooks/tipoActividad/usePostTiposActividad";
 import { TipoActividad } from "../../types";
 import { addToast } from "@heroui/toast";
+import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 
 interface CrearTipoActividadModalProps {
   onClose: () => void;
@@ -15,25 +16,32 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
   const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostTipoActividad();
+  const { data: tipoActividad } = useGetTipoActividad()
 
   const handleSubmit = () => {
-    if (!nombre) {
+    if (!nombre.trim()) {
       addToast({
         title: "Campos requeridos",
         description: "Por favor, completa todos los campos.",
-        color: "danger"
-      })
+        color: "danger",
+      });
       return;
     }
-    if (nombre == nombre) {
+
+    const nombreExiste = tipoActividad?.some(
+      (a) => a.nombre.toLowerCase().trim() === nombre.toLowerCase().trim()
+    );
+
+    if (nombreExiste) {
       addToast({
         title: "Valores duplicados",
         description: "El nombre de ese tipo de actividad ya existe.",
-        color: "danger"
-      })
+        color: "danger",
+      });
       return;
     }
-    setError("")
+
+    setError("");
 
     mutate(
       { id: 0, nombre },
@@ -41,7 +49,7 @@ export const CrearTipoActividadModal = ({ onClose }: CrearTipoActividadModalProp
         onSuccess: () => {
           onClose();
           setNombre("");
-          setError("")
+          setError("");
         },
       }
     );

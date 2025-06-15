@@ -4,6 +4,7 @@ import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { UnidadesTiempo } from "../../types";
 import { addToast } from "@heroui/toast";
+import { useGetUnidadesTiempo } from "../../hooks/unidadesTiempo/useGetUnidadesTiempo";
 
 interface CrearUnidadesTiempoModalProps {
   onClose: () => void;
@@ -19,6 +20,7 @@ export const CrearUnidadesTiempoModal = ({
   const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesTiempo();
+  const { data: unidadTiempo} =useGetUnidadesTiempo()
 
   const handleSubmit = () => {
     if (!nombre || !equivalenciaMinutos) {
@@ -37,12 +39,16 @@ export const CrearUnidadesTiempoModal = ({
       })
       return
     }
-    if (nombre == nombre) {
+    const nombreExiste = unidadTiempo?.some(
+      (a) => a.nombre.toLowerCase().trim() === nombre.toLowerCase().trim()
+    );
+
+    if (nombreExiste) {
       addToast({
         title: "Valores duplicados",
-        description: "El nombre de esa unidad de tiempo ya existe.",
-        color: "danger"
-      })
+        description: "El nombre de ese tipo de actividad ya existe.",
+        color: "danger",
+      });
       return;
     }
     setError("")
