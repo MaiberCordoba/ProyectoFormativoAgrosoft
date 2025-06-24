@@ -19,6 +19,7 @@ export interface ResumenEconomicoListado {
 }
 
 export interface DetalleActividad {
+  id:number;
   tipo_actividad: string | null;
   responsable: string | null;
   fecha: string;
@@ -29,6 +30,7 @@ export interface DetalleActividad {
 }
 
 export interface DetalleControl {
+  id:number;
   descripcion: string;
   fecha: string;
   tipo_control: string | null;
@@ -41,12 +43,14 @@ export interface DetalleControl {
 }
 
 export interface DetalleCosecha {
+  id:number;
   cantidad: number;
   unidad: string | null;
   fecha: string;
 }
 
 export interface DetalleVenta {
+  id:number;
   cantidad: number;
   unidad: string | null;
   fecha: string;
@@ -54,6 +58,7 @@ export interface DetalleVenta {
 }
 
 export interface Insumo {
+  id:number;
   nombre: string;
   cantidad: number;
   unidad: string | null;
@@ -140,7 +145,7 @@ export interface Herramientas {
   nombre: string;
   descripcion: string;
   unidades: number;
-  precio?: number;
+  precio: number;
   valorTotal?: number;
 }
 
@@ -196,7 +201,7 @@ export interface Salarios {
 export interface TiempoActividadControl {
   id: number;
   tiempo?: number;
-  valorTotal?: number;
+  valorTotal: number;
   fk_unidadTiempo: number;
   unidadTiempo?: UnidadesTiempo;
   fk_actividad?: number;
@@ -205,9 +210,21 @@ export interface TiempoActividadControl {
   control?: Controles;
   fk_salario: number;
   salario?: Salarios;
-  fecha?: string;
+  fecha: string;
   estado_pago?: "PENDIENTE" | "PAGADO";
   usuario?: string;
+}
+export interface TiempoActividadControlDTO {
+  id: number;
+  tiempo?: number;
+  fk_unidadTiempo: number;
+  unidadTiempo?: UnidadesTiempo;
+  fk_actividad?: number;
+  actividad?: Actividades;
+  fk_control?: number;
+  control?: Controles;
+  fk_salario: number;
+  salario?: Salarios;
 }
 
 export interface TipoActividad {
