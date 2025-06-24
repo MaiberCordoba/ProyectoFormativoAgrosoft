@@ -100,9 +100,9 @@ export interface Actividades {
   fk_Usuario?: number;
   usuario?: User;
   fk_TipoActividad: number;
-  tipoActividad: TipoActividad;
-  fk_Plantacion: number;
-  plantacion: Plantaciones;
+  tipoActividad?: TipoActividad;
+  fk_Plantacion?: number;
+  plantacion?: Plantaciones;
   titulo: string;
   descripcion: string;
   fecha?: string;
@@ -113,14 +113,14 @@ export interface Cosechas {
   id: number;
   fk_Plantacion?: number;
   plantacion?: Plantaciones;
-  fk_UnidadMedida: number;
-  cantidad: number;
-  valorTotal: number;
-  precioUnidad: number;
-  unidadMedida: UnidadesMedida;
+  fk_UnidadMedida?: number;
+  cantidad?: number;
+  valorTotal?: number;
+  precioUnidad?: number;
+  unidadMedida?: UnidadesMedida;
   cantidadTotal: number;
-  fecha: string;
-  valorGramo: number;
+  fecha?: string;
+  valorGramo?: number;
 }
 
 export interface Desechos {
@@ -140,24 +140,24 @@ export interface Herramientas {
   nombre: string;
   descripcion: string;
   unidades: number;
-  precio: number;
-  valorTotal: number;
+  precio?: number;
+  valorTotal?: number;
 }
 
 export interface Insumos {
   id: number;
-  nombre: string;
-  descripcion: string;
-  precio: number;
+  nombre?: string;
+  descripcion?: string;
+  precio?: number;
   compuestoActivo: string;
-  contenido: number;
-  fichaTecnica: string;
-  unidades: number;
-  fk_UnidadMedida: number;
-  unidadMedida: UnidadesMedida;
-  totalGramos: number;
+  contenido?: number;
+  fichaTecnica?: string;
+  unidades?: number;
+  fk_UnidadMedida?: number;
+  unidadMedida?: UnidadesMedida;
+  totalGramos?: number;
   cantidadGramos: number;
-  valorTotalInsumos: number;
+  valorTotalInsumos?: number;
 }
 
 export interface MovimientoInventario {
@@ -167,11 +167,11 @@ export interface MovimientoInventario {
   fk_Insumo?: number;
   insumo?: Insumos;
   fk_UsoInsumo?: number;
-  usoInsumo: UsosInsumos;
+  usoInsumo?: UsosInsumos;
   fk_Herramienta?: number;
-  herramienta: Herramientas;
+  herramienta?: Herramientas;
   fk_UsoHerramienta?: number;
-  usoHerramienta: UsosHerramientas;
+  usoHerramienta?: UsosHerramientas;
   unidad_medida?: string;
   fecha?: string;
   usuario?: {
@@ -189,25 +189,25 @@ export interface Salarios {
   nombre: string;
   monto: number;
   horas: number;
-  monto_minutos: number;
+  monto_minutos?: number;
   estado: "activo" | "inactivo";
 }
 
 export interface TiempoActividadControl {
   id: number;
-  tiempo: number;
-  valorTotal: number;
+  tiempo?: number;
+  valorTotal?: number;
   fk_unidadTiempo: number;
-  unidadTiempo: UnidadesTiempo;
+  unidadTiempo?: UnidadesTiempo;
   fk_actividad?: number;
   actividad?: Actividades;
   fk_control?: number;
   control?: Controles;
   fk_salario: number;
-  salario: Salarios;
-  fecha: string;
-  estado_pago: "PENDIENTE" | "PAGADO";
-  usuario: string;
+  salario?: Salarios;
+  fecha?: string;
+  estado_pago?: "PENDIENTE" | "PAGADO";
+  usuario?: string;
 }
 
 export interface TipoActividad {
@@ -241,12 +241,12 @@ export interface UsosInsumos {
   insumo?: Insumos;
   fk_Actividad?: number;
   actividad?: Actividades;
-  fk_Control: number;
-  control: Controles;
+  fk_Control?: number;
+  control?: Controles;
   cantidadProducto: number;
-  fk_UnidadMedida: number;
-  unidadMedida: UnidadesMedida;
-  costoUsoInsumo: number;
+  fk_UnidadMedida?: number;
+  unidadMedida?: UnidadesMedida;
+  costoUsoInsumo?: number;
 }
 
 export interface UsosHerramientas {
@@ -255,7 +255,7 @@ export interface UsosHerramientas {
   herramienta?: Herramientas;
   fk_Actividad?: number;
   actividad?: Actividades;
-  fk_Control: number;
+  fk_Control?: number;
   control?: Controles;
   unidades: number;
 }
@@ -264,9 +264,9 @@ export interface Ventas {
   id: number;
   fk_Cosecha?: number;
   cosecha?: Cosechas;
-  fecha: string;
+  fecha?: string;
   fk_UnidadMedida: number;
-  unidadMedida: UnidadesMedida;
+  unidadMedida?: UnidadesMedida;
   cantidad: number;
   descuento?: number;
   valorTotal: number;
