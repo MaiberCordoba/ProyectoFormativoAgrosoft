@@ -17,8 +17,8 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
 }) => {
   const [tipo, setTipo] = useState<'entrada' | 'salida'>(movimiento.tipo);
   const [unidades, setUnidades] = useState<string>(movimiento.unidades.toString());
-  const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(movimiento.fk_Herramienta || null);
-  const [fkInsumo, setFkInsumo] = useState<number | null>(movimiento.fk_Insumo || null);
+  const [fk_Herramienta, setFk_Herramienta] = useState<number | undefined>(movimiento.fk_Herramienta || undefined);
+  const [fkInsumo, setFkInsumo] = useState<number | undefined>(movimiento.fk_Insumo || undefined);
   const [error, setError] = useState("");
 
   const { data: herramientas = [] } = useGetHerramientas();
@@ -75,7 +75,10 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         label="Tipo de Movimiento"
         size="sm"
         selectedKeys={[tipo]}
-        onSelectionChange={(keys) => setTipo(keys.values().next().value as 'entrada' | 'salida')}
+        onSelectionChange={(keys) => {
+          const selected = Array.from(keys)[0] as 'entrada' | 'salida'
+          setTipo(selected)
+        }}
       >
         <SelectItem key="entrada">Entrada</SelectItem>
         <SelectItem key="salida">Salida</SelectItem>
@@ -97,8 +100,8 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0];
-          setFk_Herramienta(key ? Number(key) : null);
-          setFkInsumo(null); // Desactiva insumo si se selecciona herramienta
+          setFk_Herramienta(key ? Number(key) : undefined);
+          setFkInsumo(undefined); // Desactiva insumo si se selecciona herramienta
         }}
       >
         {herramientas.map((h) => (
@@ -113,8 +116,8 @@ const EditarMovimientoInventarioModal: React.FC<EditarMovimientoInventarioModalP
         selectedKeys={fkInsumo ? [fkInsumo.toString()] : []}
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0];
-          setFkInsumo(key ? Number(key) : null);
-          setFk_Herramienta(null); // Desactiva herramienta si se selecciona insumo
+          setFkInsumo(key ? Number(key) : undefined);
+          setFk_Herramienta(undefined); // Desactiva herramienta si se selecciona insumo
         }}
       >
         {insumos.map((uso) => (

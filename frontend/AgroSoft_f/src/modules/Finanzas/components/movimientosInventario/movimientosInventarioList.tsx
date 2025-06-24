@@ -1,8 +1,6 @@
 import { useGetMovimientoInventario } from "../../hooks/movimientoInventario/useGetMovimientoInventario";
-import { useEliminarMovimientoInventario } from "../../hooks/movimientoInventario/useEliminarMovimientosInventario";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
-import EliminarMovimientoInventarioModal from "./EliminarMovimientoInventario";
 import { MovimientoInventario } from "../../types";
 import { useEditarMovimientoInventario } from "../../hooks/movimientoInventario/useEditarMovimientos";
 import { useCrearMovimientoInventario } from "../../hooks/movimientoInventario/useCrearMovimientos";
@@ -21,7 +19,7 @@ export function MovimientosList() {
   const { data: herramientas, isLoading: loadingHerramientas } =
     useGetHerramientas();
   const { user } = useAuth();
-  const userRole = user?.rol || null;
+  const userRole = user?.rol || undefined;
 
   const {
     isOpen: isEditModalOpen,
@@ -35,13 +33,6 @@ export function MovimientosList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearMovimientoInventario();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    movimientoEliminado,
-    handleEliminar,
-  } = useEliminarMovimientoInventario();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -72,10 +63,10 @@ export function MovimientosList() {
           id: 0,
           tipo: "entrada",
           unidades: 0,
-          fk_Insumo: null,
-          fk_UsoInsumo: null,
-          fk_Herramienta: null,
-          fk_UsoHerramienta: null,
+          fk_Insumo: undefined,
+          fk_UsoInsumo: undefined,
+          fk_Herramienta: undefined,
+          fk_UsoHerramienta: undefined,
         }),
       ["ninguno"]
     );
@@ -166,15 +157,7 @@ export function MovimientosList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearMovimientoInventarioModal onClose={closeCreateModal} />
-      )}
-
-      {isDeleteModalOpen && movimientoEliminado && (
-        <EliminarMovimientoInventarioModal
-          movimiento={movimientoEliminado}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <CrearMovimientoInventarioModal onClose={closeCreateModal} onCreate={handleCrear}/>
       )}
     </div>
   );
