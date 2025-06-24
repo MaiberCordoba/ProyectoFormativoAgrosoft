@@ -1,12 +1,10 @@
 import { useGetUsosInsumos } from "../../hooks/usoInsumos/useGetUsoInsumos";
 import { useEditarUsoInsumo } from "../../hooks/usoInsumos/useEditarUsoInsumos";
 import { useCrearUsosInsumo } from "../../hooks/usoInsumos/useCrearUsoInsumos";
-import { useEliminarUsoInsumo } from "../../hooks/usoInsumos/useEliminarUsoInsumos";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarUsosInsumosModal from "./EditarUsosInsumosModal";
 import { CrearUsoInsumoModal } from "./CrearUsosInsumosModal";
-import EliminarUsosInsumosModal from "./EliminarUsosInsumos";
 import { UsosInsumos } from "../../types";
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
@@ -37,13 +35,6 @@ export function UsosInsumosList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUsosInsumo();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    usoInsumoEliminado,
-    handleEliminar,
-  } = useEliminarUsoInsumo();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -164,13 +155,6 @@ export function UsosInsumosList() {
         />
       )}
 
-      {isDeleteModalOpen && usoInsumoEliminado && (
-        <EliminarUsosInsumosModal
-          usoInsumo={usoInsumoEliminado}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
     </div>
   );
 }

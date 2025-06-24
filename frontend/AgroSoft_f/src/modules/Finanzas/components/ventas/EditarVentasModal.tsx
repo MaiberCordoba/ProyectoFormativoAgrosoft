@@ -21,7 +21,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
   const [descuento, setDescuento] = useState<number>(venta.descuento || 0);
   const [error, setError] = useState("");
 
-  const { data: cosechas} = useGetCosechas();
+  const { data: cosechas } = useGetCosechas();
   const { data: unidadesMedida } = useGetUnidadesMedida();
   const { data: plantaciones } = useGetPlantaciones();
   const { mutate, isPending } = usePatchVentas();
@@ -90,7 +90,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
     mutate(
       {
         id: venta.id,
-        data:{
+        data: {
 
           fk_Cosecha,
           fk_UnidadMedida,
@@ -129,14 +129,14 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       ]}
     >
       <p className="text-red-500 text-sm mb-2">{error}</p>
-      
+
       <Select
         label="Cosecha"
         size="sm"
         isDisabled
         selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
       >
-        {cosechaActual && (
+        {cosechaActual ? (
           <SelectItem
             key={cosechaActual.id.toString()}
             textValue={`Producto: ${producto} - Cantidad: ${cosechaActual.cantidadTotal}`}
@@ -146,7 +146,7 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
               <span>Cantidad disponible: {cantidadMaximaAjustada} (g)</span>
             </div>
           </SelectItem>
-        )}
+        ) : null}
       </Select>
 
       <Input

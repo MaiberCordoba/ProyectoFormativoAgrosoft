@@ -1,12 +1,10 @@
 import { useGetVentas } from "../../hooks/ventas/useGetVentas";
 import { useEditarVenta } from "../../hooks/ventas/useEditarVentas";
 import { useCrearVenta } from "../../hooks/ventas/useCrearVentas";
-import { useEliminarVenta } from "../../hooks/ventas/useEliminarVentas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarVentasModal from "./EditarVentasModal";
 import { CrearVentasModal } from "./CrearVentasModal";
-import EliminarVentaModal from "./EliminarVentas";
 import { Ventas } from "../../types";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
@@ -35,12 +33,6 @@ export function VentasList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearVenta();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    ventaEliminada,
-  } = useEliminarVenta();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -145,15 +137,7 @@ export function VentasList() {
         <EditarVentasModal venta={ventaEditada} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && <CrearVentasModal onClose={closeCreateModal} />}
-
-      {isDeleteModalOpen && ventaEliminada && (
-        <EliminarVentaModal
-          venta={ventaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearVentasModal onClose={closeCreateModal} onCreate={handleCrear} />}
     </div>
   );
 }

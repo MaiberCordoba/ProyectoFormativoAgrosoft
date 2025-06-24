@@ -1,13 +1,11 @@
 import { useGetTiempoActividadControl } from "../../hooks/tiempoActividadControl/useGetTiempoActividadDesecho";
 import { useEditarTiempoActividadControl } from "../../hooks/tiempoActividadControl/useEditarTiempoActividadDesecho";
 import { useCrearTiempoActividadControl } from "../../hooks/tiempoActividadControl/useCrearTiempoActividadDesecho";
-import { useEliminarTiempoActividadControl } from "../../hooks/tiempoActividadControl/useEliminarTiempoActividadDesecho";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarTiempoActividadControlModal from "./EditarTiempoActividadControlModal";
 import { CrearTiempoActividadControlModal } from "./CrearTiempoActividadControlModal";
-import EliminarTiempoActividadControlModal from "./EliminarTiempoActividadControl";
-import { TiempoActividadControl } from "../../types";
+import { TiempoActividadControl, TiempoActividadControlDTO } from "../../types";
 import { useGetActividades } from "@/modules/Finanzas/hooks/actividades/useGetActividades";
 import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
 import { useGetSalarios } from "@/modules/Finanzas/hooks/salarios/useGetSalarios";
@@ -33,13 +31,6 @@ export function TiempoActividadControlList() {
     handleCrear
   } = useCrearTiempoActividadControl();
 
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    tiempoActividadControlEliminada,
-    handleEliminar
-  } = useEliminarTiempoActividadControl();
-
   const handleCrearNuevo = () => {
     handleCrear({
       id: 0,
@@ -48,7 +39,8 @@ export function TiempoActividadControlList() {
       fk_unidadTiempo: 0,
       fk_actividad: 0,
       fk_control: 0,
-      fk_salario: 0
+      fk_salario: 0,
+      fecha:"",
     });
   };
 
@@ -90,7 +82,7 @@ export function TiempoActividadControlList() {
           />
         );
       default:
-        return <span>{String(item[columnKey as keyof TiempoActividadControl])}</span>;
+        return <span>{String(item[columnKey as keyof TiempoActividadControlDTO])}</span>;
     }
   };
 
@@ -119,13 +111,6 @@ export function TiempoActividadControlList() {
         <CrearTiempoActividadControlModal onClose={closeCreateModal} />
       )}
 
-      {isDeleteModalOpen && tiempoActividadControlEliminada && (
-        <EliminarTiempoActividadControlModal
-          tiempoActividadControl={tiempoActividadControlEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
     </div>
   );
 }

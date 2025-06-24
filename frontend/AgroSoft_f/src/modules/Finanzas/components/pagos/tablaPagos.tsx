@@ -19,7 +19,7 @@ import { addToast } from "@heroui/toast";
 import ModalComponent from "@/components/Modal"; // Tu Modal global
 import { useDisclosure as useHistorialDisclosure } from "@heroui/react";
 import HistorialPagosModal from "./HistorialPagosModal";
-import { TriangleAlert, TriangleAlertIcon } from "lucide-react";
+import { TriangleAlertIcon } from "lucide-react";
 
 interface TablaPagosProps {
   onUsuarioChange?: (usuarioId: string) => void;

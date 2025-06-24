@@ -15,6 +15,7 @@ import {
   passwordSchema,
 } from "@/schemas/validacionesTypes";
 import { addToast } from "@heroui/toast"; // Asumo que esta importación es correcta
+import { User } from "../types";
 
 const userSchema = z.object({
   id: z.number().optional(),
@@ -31,6 +32,7 @@ type UserFormInputs = z.infer<typeof userSchema>;
 
 interface CrearUsersModalProps {
   onClose: () => void;
+  onCreate : (nuevoUsuario: User) => void
 }
 
 const ROLES = [
