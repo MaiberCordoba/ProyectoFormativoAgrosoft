@@ -67,10 +67,12 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
 
     mutate(
       {
+        id:0,
         fk_Plantacion,
         cantidad: cantidadNumero,
         fk_UnidadMedida,
         fecha,
+        cantidadTotal : 0,
         precioUnidad: precioNumero,
       },
 

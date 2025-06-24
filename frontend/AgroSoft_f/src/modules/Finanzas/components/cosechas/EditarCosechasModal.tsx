@@ -17,22 +17,22 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
 }) => {
   // Cambiamos a string para manejar inputs vacíos
   const [cantidad, setCantidad] = useState<string>(
-    cosecha.cantidad !== null && cosecha.cantidad !== undefined
+    cosecha.cantidad !== undefined && cosecha.cantidad !== undefined
       ? cosecha.cantidad.toString()
       : ""
   );
   const [precioUnidad, setPrecioUnidad] = useState<string>(
-    cosecha.precioUnidad !== null && cosecha.precioUnidad !== undefined
+    cosecha.precioUnidad !== undefined && cosecha.precioUnidad !== undefined
       ? cosecha.precioUnidad.toString()
       : ""
   );
 
-  const [fecha, setFecha] = useState<string>(cosecha.fecha);
-  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(
-    cosecha.fk_Plantacion ?? null
+  const [fecha, setFecha] = useState<string | undefined>(cosecha.fecha);
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | undefined>(
+    cosecha.fk_Plantacion ?? undefined
   );
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(
-    cosecha.fk_UnidadMedida ?? null
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | undefined>(
+    cosecha.fk_UnidadMedida ?? undefined
   );
   const [mensajeError, setMensajeError] = useState("");
 
@@ -142,7 +142,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
           selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_Plantacion(selectedKey ? Number(selectedKey) : null);
+            setFk_Plantacion(selectedKey ? Number(selectedKey) : undefined);
           }}
         >
           {(plantaciones || []).map((plantacion) => (
@@ -163,7 +163,7 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
           selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+            setFk_UnidadMedida(selectedKey ? Number(selectedKey) : undefined);
           }}
         >
           {(unidadesMedida || []).map((unidadMedida) => (
