@@ -57,10 +57,6 @@ export const ModalFiltrable = ({
   }, [datos, textoBusqueda, rangoFechas]);
 
   const totalPaginas = Math.ceil(datosFiltrados.length / filasPorPagina);
-  const datosPagina = datosFiltrados.slice(
-    (paginaActual - 1) * filasPorPagina,
-    paginaActual * filasPorPagina
-  );
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="4xl" className="overflow-hidden">
