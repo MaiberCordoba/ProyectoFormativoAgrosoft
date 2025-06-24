@@ -1,12 +1,10 @@
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useEditarHerramienta } from "../../hooks/herramientas/useEditarHerramientas";
 import { useCrearHerramienta } from "../../hooks/herramientas/useCrearHerramientas";
-import { useEliminarHerramienta } from "../../hooks/herramientas/useEliminarHerramientas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarHerramientasModal from "./EditarHerramientasModal";
 import { CrearHerramientasModal } from "./CrearHerramientasModal";
-import EliminarHerramientaModal from "./EliminarHerramientas";
 import { Herramientas } from "../../types";
 import { useGetLotes } from "@/modules/Trazabilidad/hooks/lotes/useGetLotes";
 import { useAuth } from "@/hooks/UseAuth";
@@ -30,13 +28,6 @@ export function HerramientasList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearHerramienta();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    herramientaEliminada,
-    handleEliminar,
-  } = useEliminarHerramienta();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -69,6 +60,7 @@ export function HerramientasList() {
           nombre: "",
           descripcion: "",
           unidades: 0,
+          precio:0,
           valorTotal: 0,
         }),
       ["admin", "instructor", "pasante"]
@@ -139,16 +131,9 @@ export function HerramientasList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearHerramientasModal onClose={closeCreateModal} />
+        <CrearHerramientasModal onClose={closeCreateModal} onCreate={handleCrear} />
       )}
 
-      {isDeleteModalOpen && herramientaEliminada && (
-        <EliminarHerramientaModal
-          herramienta={herramientaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
     </div>
   );
 }
