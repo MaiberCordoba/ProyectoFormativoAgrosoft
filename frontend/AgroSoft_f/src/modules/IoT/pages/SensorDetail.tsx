@@ -90,9 +90,14 @@ const formatNumber = (value: unknown): string => {
 export default function AllSensorsDashboard() {
   const navigate = useNavigate();
   const [allSensorsData, setAllSensorsData] = useState<SensorConExtras[]>(() => {
+  try {
     const savedData = localStorage.getItem('sensorData');
     return savedData ? JSON.parse(savedData) : [];
-  });
+  } catch (e) {
+    console.error("Error parsing localStorage data:", e);
+    return [];
+  } 
+});
   const [realTimeData, setRealTimeData] = useState<SensorConExtras[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]); // Cambiado a array para múltiples selecciones
@@ -109,7 +114,13 @@ export default function AllSensorsDashboard() {
       try {
         const sensorsResponse = await fetch("http://127.0.0.1:8000/api/sensor/?limit=100");
         if (!sensorsResponse.ok) throw new Error("Error al obtener sensores");
-        const sensorsData: SensorData[] = await sensorsResponse.json();
+        const sensorsData: any = await sensorsResponse.json();
+
+        if (!Array.isArray(sensorsData)) {
+          console.error("La API no devolvió un array:", sensorsData);
+          setAllSensorsData([]);
+          return;
+        }
 
         if (Array.isArray(sensorsData)) {
           const enrichedData = sensorsData.map(item => ({
@@ -205,7 +216,9 @@ export default function AllSensorsDashboard() {
   }, []);
 
   const combinedData = useMemo(() => {
-    return [...allSensorsData, ...realTimeData];
+    const allData = Array.isArray(allSensorsData) ? allSensorsData : [];
+    const realTime = Array.isArray(realTimeData) ? realTimeData : [];
+    return [...allData, ...realTime];
   }, [allSensorsData, realTimeData]);
 
   const checkForAlerts = (sensor: SensorData): boolean => {
@@ -279,12 +292,12 @@ export default function AllSensorsDashboard() {
       sensorGroups.get(sensorId)?.push(sensor);
     });
     
-    // Ordenar cada grupo por fecha
+    // Ordenar cada grupo por fecha 10
     sensorGroups.forEach((values) => {
       values.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
     });
     
-    // Crear estructura para el gráfico
+    // Crear estructura para el gráfico Array
     const chartData: any[] = [];
     
     // Para cada sensor, agregar sus puntos al gráfico
@@ -481,9 +494,11 @@ export default function AllSensorsDashboard() {
             fillColor: [245, 245, 245]
           },
           didDrawPage: (data) => {
-            yPosition = data.cursor.y + 10;
-          }
-        });
+            if (data.cursor) {
+          yPosition = data.cursor.y + 10;
+        }
+      }
+    });
 
         yPosition = (doc as any).lastAutoTable.finalY + 10;
       }
@@ -549,7 +564,9 @@ export default function AllSensorsDashboard() {
             fontStyle: 'bold'
           },
           didDrawPage: (data) => {
-            yPosition = data.cursor.y + 10;
+            if (data.cursor) {
+              yPosition = data.cursor.y + 10;
+            }
           }
         });
       }
@@ -656,9 +673,9 @@ export default function AllSensorsDashboard() {
                 .filter(sensor => selectedTypes.includes(sensor.tipo))
                 .filter(sensor => sensor.id !== undefined)
                 .map(sensor => [sensor.id, sensor])
-            ).values()).map(sensor => (
+            ).values()).map((sensor, index) => (
               <SelectItem 
-                key={sensor.id.toString()}
+                key={sensor.id ? sensor.id.toString() : `sensor-${index}`}
                 className="text-base truncate"
               >
                 {`${dict(SENSOR_TYPES).get(sensor.tipo)} - ${getLocationName(sensor)}`}

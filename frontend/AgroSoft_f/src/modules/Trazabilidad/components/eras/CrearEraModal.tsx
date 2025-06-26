@@ -9,6 +9,7 @@ import { addToast } from "@heroui/toast";
 
 interface CrearEraModalProps {
   onClose: () => void;
+  onCreate: (nuevaEra: { id: number }) => void;
 }
 
 export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {

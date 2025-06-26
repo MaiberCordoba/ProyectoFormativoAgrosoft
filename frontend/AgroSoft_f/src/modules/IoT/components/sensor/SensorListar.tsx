@@ -1,12 +1,10 @@
 import { useGetSensor } from "../../hooks/sensor/useGetSensor";
 import { useEditarSensor } from "../../hooks/sensor/useEditarSensor";
 import { useCrearSensor } from "../../hooks/sensor/useCrearSensor";
-import { useEliminarSensor } from "../../hooks/sensor/useEliminarSenosr";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarSensorModal from "./EditarSensorModal";
 import CrearSensorModal from "./CrearSensorModal";
-import EliminarSensorModal from "./EliminarSensorModal";
 import { SensorData, SENSOR_TYPES } from "../../types/sensorTypes";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/UseAuth";
@@ -29,13 +27,7 @@ export function SensorLista() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearSensor();
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    sensorEliminado,
-  } = useEliminarSensor();
 
-  // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
     addToast({
       title: "Acción no permitida",
@@ -44,10 +36,9 @@ export function SensorLista() {
     });
   };
 
-  // Función para manejar acciones con verificación de permisos
   const handleActionWithPermission = (
     action: () => void,
-    requiredRoles: string[] = ["admin"] // Solo admin por defecto
+    requiredRoles: string[] = ["admin"] 
   ) => {
     if (userRole && requiredRoles.includes(userRole)) {
       action();
@@ -56,7 +47,6 @@ export function SensorLista() {
     }
   };
 
-  // Función para crear nuevo sensor con verificación de permisos
   const handleCrearNuevo = () => {
     handleActionWithPermission(() =>
       handleCrear({
@@ -96,7 +86,7 @@ export function SensorLista() {
       case "fecha":
         return (
           <span
-            onClick={() => irADetalleSensor(item.id)}
+            onClick={() => item.id !== undefined && irADetalleSensor(item.id)}
             className="cursor-pointer text-blue-600 hover:underline"
           >
             {new Date(item.fecha).toLocaleString()}
@@ -105,7 +95,7 @@ export function SensorLista() {
       case "tipo":
         return (
           <span
-            onClick={() => irADetalleSensor(item.id)}
+            onClick={() => item.id !== undefined && irADetalleSensor(item.id)}
             className="cursor-pointer text-blue-600 hover:underline"
           >
             {getSensorLabel(item.tipo)}
@@ -114,7 +104,7 @@ export function SensorLista() {
       case "valor":
         return (
           <span
-            onClick={() => irADetalleSensor(item.id)}
+            onClick={() => item.id !== undefined && irADetalleSensor(item.id)}
             className="cursor-pointer text-blue-600 hover:underline"
           >
             {item.valor}
@@ -172,14 +162,6 @@ export function SensorLista() {
       )}
 
       {isCreateModalOpen && <CrearSensorModal onClose={closeCreateModal} />}
-
-      {isDeleteModalOpen && sensorEliminado && (
-        <EliminarSensorModal
-          sensor={sensorEliminado}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
     </div>
   );
 }
