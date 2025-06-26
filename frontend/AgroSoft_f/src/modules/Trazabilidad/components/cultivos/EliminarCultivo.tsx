@@ -5,7 +5,7 @@ import { Cultivo } from "../../types";
 import { AlertCircle } from "lucide-react";
 
 interface EliminarCultivoModalProps {
-  cultivo?: Cultivo; // Se permite que cultivo sea opcional
+  cultivo?: Cultivo; 
   isOpen: boolean;
   onClose: () => void;
 }
