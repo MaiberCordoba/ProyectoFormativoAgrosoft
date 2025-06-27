@@ -60,7 +60,7 @@ export function SemilleroList() {
     if (permitido) {
       handleCrear({
         id: 0,
-        fk_Cultivo: { nombre: "" },
+        fk_Cultivo:0,
         unidades: 0,
         fechasiembra: "",
         fechaestimada: "",
