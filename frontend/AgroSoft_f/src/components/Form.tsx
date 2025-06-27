@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Select, SelectItem } from "@heroui/react";
+import { Form, Input, Select, SelectItem } from "@heroui/react";
 
 interface FormField {
   name: string;
@@ -21,7 +21,6 @@ interface FormComponentProps {
 const FormComponent: React.FC<FormComponentProps> = ({
   fields,
   onSubmit,
-  submitLabel = "Enviar",
   extraContent,
 }) => {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
@@ -62,6 +61,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
               onChange={(e) =>
                 handleSelectChange(field.name, e.target.value === "true")
               }
+              value={String(formValues[field.name])}
             >
               {options.map((option) => (
                 <SelectItem key={option.key}>{option.label}</SelectItem>

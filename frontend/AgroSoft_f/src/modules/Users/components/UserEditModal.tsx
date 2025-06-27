@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query"; // ✅ Importar QueryClient
+import { useQueryClient } from "@tanstack/react-query"; 
 import FormModal from "@/components/FormModal";
 import { User } from "@/modules/Users/types";
 import { updateUser } from "../api/usersApi";
@@ -30,6 +30,7 @@ const UserEditModal: React.FC<UserEditModalProps> = ({ isOpen, onClose, user }) 
 
   return (
     <FormModal
+      loading= {loading}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}

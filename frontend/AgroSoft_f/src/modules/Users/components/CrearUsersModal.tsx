@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import {  ChangeEvent } from "react";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { usePostUsers } from "../hooks/usePostUsers";
@@ -54,7 +54,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
   } = useForm<UserFormInputs>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      identificacion: "",
+      identificacion:"",
       nombre: "",
       apellidos: "",
       telefono: "",

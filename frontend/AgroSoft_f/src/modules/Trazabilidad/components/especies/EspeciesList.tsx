@@ -36,7 +36,6 @@ export function EspecieList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     EspeciesEliminada,
-    handleEliminar,
   } = useEliminarEspecies();
 
   // Función para mostrar alerta de acceso denegado
@@ -67,7 +66,7 @@ export function EspecieList() {
         descripcion: "",
         img: "",
         tiempocrecimiento: "",
-        fk_tipoespecie: "",
+        fk_tipoespecie: 0,
       });
     } else {
       showAccessDenied();

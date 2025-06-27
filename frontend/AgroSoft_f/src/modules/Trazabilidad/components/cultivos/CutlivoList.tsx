@@ -35,7 +35,6 @@ export function CultivosList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     CultivosEliminada,
-    handleEliminar,
   } = useEliminarCultivos();
 
   // Función para mostrar alerta de acceso denegado
@@ -69,7 +68,7 @@ export function CultivosList() {
       handleCrear({
         nombre: "",
         activo: true,
-        fk_Especie: { nombre: "" },
+        fk_Especie:0,
       });
     } else {
       showAccessDenied();

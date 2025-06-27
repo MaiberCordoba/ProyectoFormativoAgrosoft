@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchPlantaciones } from "../../hooks/plantaciones/usePatchPlantaciones";
-import { Plantaciones } from "../../types";
+import { Cultivo, Plantaciones, Semillero } from "../../types";
 import { Select, SelectItem, Input } from "@heroui/react";
 import { useGetCultivos } from "../../hooks/cultivos/useGetCultivos";
 import { useGetSemilleros } from "../../hooks/semilleros/useGetSemilleros";
@@ -85,51 +85,64 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({
       ]}
     >
       {/* Select Cultivo */}
-      <Select
+     <Select
         label="Cultivo"
         placeholder="Selecciona un cultivo"
         size="sm"
-        selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
+        selectedKeys={fk_Cultivo !== null ? [fk_Cultivo.toString()] : []}
         onSelectionChange={(keys) => {
           const selected = Array.from(keys)[0];
           if (selected) {
             setFk_Cultivo(Number(selected));
-            setFk_semillero(null);
+            setFk_semillero(null); 
           } else {
-            setFk_Cultivo(null);
+            setFk_Cultivo(null); 
           }
         }}
+        isDisabled={false}
       >
-        <SelectItem key="">Ninguno</SelectItem>
-        {cultivos.map((cultivo) => (
-          <SelectItem key={cultivo.id.toString()}>{cultivo.nombre}</SelectItem>
-        ))}
+        {...[
+          <SelectItem key="">
+            Ninguno
+          </SelectItem>,
+          ...cultivos.map((cultivo: Cultivo) => (
+            <SelectItem key={cultivo.id?.toString()} >
+              {cultivo.nombre}
+            </SelectItem>
+          )),
+        ]}
       </Select>
 
       {/* Select Semillero */}
-      <Select
-        className="mt-4"
-        label="Semillero"
-        placeholder="Selecciona un semillero"
-        size="sm"
-        selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
-        onSelectionChange={(keys) => {
-          const selected = Array.from(keys)[0];
-          if (selected) {
-            setFk_semillero(Number(selected));
-            setFk_Cultivo(null);
-          } else {
-            setFk_semillero(null);
-          }
-        }}
-      >
-        <SelectItem key="">Ninguno</SelectItem>
-        {semilleros.map((semillero) => (
-          <SelectItem key={semillero.id.toString()}>
-            {`Semillero #${semillero.id} - ${semillero.unidades} unidades`}
-          </SelectItem>
-        ))}
-      </Select>
+       <Select
+          label="Semillero"
+          placeholder="Selecciona un semillero"
+          size="sm"
+          selectedKeys={fk_semillero !== null ? [fk_semillero.toString()] : []}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0];
+            if (selected) {
+              setFk_semillero(Number(selected));
+              setFk_Cultivo(null); // Asumo que quieres resetear el cultivo cuando cambia el semillero
+            } else {
+              setFk_semillero(null);
+            }
+          }}
+          isDisabled={false}
+        >
+          {...[
+            <SelectItem key="" >
+              Ninguno
+            </SelectItem>,
+            ...semilleros.map((semillero: Semillero) => (
+              <SelectItem
+                key={semillero.id.toString()}
+              >
+                {`Semillero #${semillero.id} - ${semillero.unidades} unidades`}
+              </SelectItem>
+            )),
+          ]}
+        </Select>
 
       {/* Input Unidades */}
       <Input
@@ -164,7 +177,7 @@ const EditarPlantacionModal: React.FC<EditarPlantacionModalProps> = ({
         }}
       >
         {eras.map((era) => (
-          <SelectItem key={era.id.toString()}>
+          <SelectItem key={era.id?.toString()}>
             {`Era ${era.tipo} en ${era.Lote?.nombre || "sin lote"}`}
           </SelectItem>
         ))}

@@ -32,10 +32,7 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({
     if (!cultivo) return;
     setNombre(cultivo.nombre ?? "");
 
-    const especieId =
-      typeof cultivo.fk_Especie === "number"
-        ? cultivo.fk_Especie
-        : cultivo.fk_Especie?.id;
+    const especieId = cultivo.fk_Especie
 
     setFk_EspecieId(especieId ?? null);
 

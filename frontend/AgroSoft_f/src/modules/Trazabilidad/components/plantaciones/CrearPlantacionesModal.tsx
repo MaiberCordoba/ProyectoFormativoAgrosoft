@@ -91,25 +91,30 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
               label="Cultivo"
               placeholder="Selecciona un cultivo"
               size="sm"
-              selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
+              selectedKeys={fk_Cultivo !== null ? [fk_Cultivo.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
                 if (selected) {
                   setFk_Cultivo(Number(selected));
-                  setFk_semillero(null);
+                  setFk_semillero(null); 
                 } else {
-                  setFk_Cultivo(null);
+                  setFk_Cultivo(null); 
                 }
               }}
               isDisabled={false}
             >
-              <SelectItem key="">Ninguno</SelectItem>
-              {cultivos.map((cultivo: Cultivo) => (
-                <SelectItem key={cultivo.id.toString()}>
-                  {cultivo.nombre}
-                </SelectItem>
-              ))}
+              {...[
+                <SelectItem key="">
+                  Ninguno
+                </SelectItem>,
+                ...cultivos.map((cultivo: Cultivo) => (
+                  <SelectItem key={cultivo.id?.toString()} >
+                    {cultivo.nombre}
+                  </SelectItem>
+                )),
+              ]}
             </Select>
+
           </div>
           <Button
             onPress={() => setModalCultivoVisible(true)}
@@ -128,24 +133,30 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
               label="Semillero"
               placeholder="Selecciona un semillero"
               size="sm"
-              selectedKeys={fk_semillero ? [fk_semillero.toString()] : []}
+              selectedKeys={fk_semillero !== null ? [fk_semillero.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
                 if (selected) {
                   setFk_semillero(Number(selected));
-                  setFk_Cultivo(null);
+                  setFk_Cultivo(null); // Asumo que quieres resetear el cultivo cuando cambia el semillero
                 } else {
                   setFk_semillero(null);
                 }
               }}
               isDisabled={false}
             >
-              <SelectItem key="">Ninguno</SelectItem>
-              {semilleros.map((semillero: Semillero) => (
-                <SelectItem key={semillero.id.toString()}>
-                  {`Semillero #${semillero.id} - ${semillero.unidades} unidades`}
-                </SelectItem>
-              ))}
+              {...[
+                <SelectItem key="" >
+                  Ninguno
+                </SelectItem>,
+                ...semilleros.map((semillero: Semillero) => (
+                  <SelectItem
+                    key={semillero.id.toString()}
+                  >
+                    {`Semillero #${semillero.id} - ${semillero.unidades} unidades`}
+                  </SelectItem>
+                )),
+              ]}
             </Select>
           </div>
           <Button
@@ -190,8 +201,8 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
               }}
             >
               {eras.map((era: Eras) => (
-                <SelectItem key={era.id.toString()}>
-                  {`Era ${era.tipo} en ${era.Lote?.nombre || "sin lote"}`}
+                <SelectItem key={era.id?.toString()}>
+                  {`Era ${era.tipo} en ${era.lotes?.nombre || "sin lote"}`}
                 </SelectItem>
               ))}
             </Select>
@@ -213,7 +224,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           onClose={() => setModalCultivoVisible(false)}
           onCreate={(nuevoCultivo) => {
             refetchCultivos();
-            setFk_Cultivo(nuevoCultivo.id);
+            setFk_Cultivo(nuevoCultivo.id || null);
             setModalCultivoVisible(false);
             setFk_semillero(null);
           }}
@@ -237,7 +248,7 @@ export const CrearPlantacionModal = ({ onClose, onCreate }: CrearPlantacionModal
           onClose={() => setModalEraVisible(false)}
           onCreate={(nuevaEra) => {
             refetchEras();
-            setFk_Era(nuevaEra.id);
+            setFk_Era(nuevaEra.id || null);
             setModalEraVisible(false);
           }}
         />

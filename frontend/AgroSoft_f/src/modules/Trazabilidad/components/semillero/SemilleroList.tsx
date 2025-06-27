@@ -34,7 +34,6 @@ export function SemilleroList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     SemillerosEliminada,
-    handleEliminar,
   } = useEliminarSemilleros();
 
   // Función para mostrar alerta de acceso denegado
@@ -87,7 +86,7 @@ export function SemilleroList() {
         return (
           <span>
             {item.cultivo?.nombre
-              ? `${item.cultivo.nombre} ${item.cultivo.fk_Especie?.nombre ?? ""}`
+              ? `${item.cultivo.nombre}`
               : "Desconocido"}
           </span>
         );

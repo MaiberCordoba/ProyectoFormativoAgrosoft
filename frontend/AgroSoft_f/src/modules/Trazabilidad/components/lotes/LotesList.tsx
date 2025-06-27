@@ -34,7 +34,6 @@ export function LoteList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     LotesEliminada,
-    handleEliminar,
   } = useEliminarLotes();
 
   const showAccessDenied = () => {
