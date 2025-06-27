@@ -17,7 +17,7 @@ export interface Especies {
 }
 
 export interface Cultivo {
-  id?: number;
+  id: number;
   nombre: string;
   activo: boolean;
   especies?: Especies;
@@ -34,7 +34,7 @@ export interface Semillero {
 }
 
 export interface Lotes {
-  id?: number;
+  id: number;
   nombre: string;
   descripcion: string;
   latI1: number;
