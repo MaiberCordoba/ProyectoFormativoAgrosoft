@@ -12,9 +12,10 @@ import { addToast } from "@heroui/toast";
 
 interface CrearAfeccionCultivoModalProps {
   onClose: () => void;
+  onCreate: (nuevaAfeccion: AfeccionesCultivo) => void;
 }
 
-export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModalProps) => {
+export const CrearAfeccionCultivoModal = ({ onClose, onCreate }: CrearAfeccionCultivoModalProps) => {
   const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(null);
   const [fk_Plaga, setFk_Plaga] = useState<number | null>(null);
   const [fechaEncuentro, setFechaEncuentro] = useState<string>("");
@@ -46,13 +47,14 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
     };
 
     mutate(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         addToast({
           title: "Afección registrada",
           description: "La afección al cultivo fue registrada exitosamente.",
           color: "success",
         });
         onClose();
+        onCreate(data);
         setFk_Plantacion(null);
         setFk_Plaga(null);
         setEstado("ST");
@@ -110,7 +112,7 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
                 setFk_Plantacion(Number(Array.from(keys)[0]))
               }
             >
-              {plantacionesData?.map((plantacion) => (
+              {(plantacionesData || []).map((plantacion) => (
                 <SelectItem key={plantacion.id.toString()}>
                   {`${plantacion.cultivo?.nombre || `Plantación #${plantacion.id}`} - Era: ${plantacion.eras?.tipo || 'No asignada'}`}
                 </SelectItem>
@@ -140,8 +142,10 @@ export const CrearAfeccionCultivoModal = ({ onClose }: CrearAfeccionCultivoModal
                 setFk_Plaga(Number(Array.from(keys)[0]))
               }
             >
-              {tiposPlagaData?.map((tipo) => (
-                <SelectItem key={tipo.id.toString()}>{tipo.nombre}</SelectItem>
+              {(tiposPlagaData || []).map((tipo) => (
+                <SelectItem key={tipo.id.toString()}>
+                  {tipo.nombre}
+                </SelectItem>
               ))}
             </Select>
           </div>

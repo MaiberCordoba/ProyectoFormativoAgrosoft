@@ -99,8 +99,8 @@ export enum EstadoAfeccion {
 
 export interface AfeccionesCultivo {
   id: number;
-  plagas: Afecciones;
-  plantaciones: Plantaciones;
+  plagas?: Afecciones;
+  plantaciones?: Plantaciones;
   fechaEncuentro: string;
   estado: keyof typeof EstadoAfeccion;
   fk_Plantacion: number;
@@ -117,7 +117,7 @@ export interface Controles {
   id: number;
   fk_Afeccion?: number;
   fk_TipoControl?: number;
-  fechaControl: string;
+  fechaControl?: string;
   descripcion: string;
   fk_Usuario?: number;
   usuario?: {
@@ -125,7 +125,8 @@ export interface Controles {
     nombre: string;
     apellidos: string;
   };
-  afeccion: Afecciones;
+  afeccion?: AfeccionesCultivo;
+  tipoControl?: TipoControl;
 }
 
 export interface ControlDetails {

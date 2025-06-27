@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchControles } from "../../hooks/controles/usePatchControles";
 import { Controles } from "../../types";
-import { Input, Textarea, Select, SelectItem } from "@heroui/react";
+import { Textarea, Select, SelectItem } from "@heroui/react";
 import { useGetAfeccionesCultivo } from "../../hooks/afeccionescultivo/useGetAfeccionescultivo";
 import { useGetTipoControl } from "../../hooks/tipoControl/useGetTipoControl";
 import { useGetUsers } from '@/modules/Users/hooks/useGetUsers'; 

@@ -53,7 +53,6 @@ export function TipoAfeccionesList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     tipoafeccionEliminada,
-    handleEliminar,
   } = useEliminarTipoAfeccion();
 
   const handleCrearNuevo = () => {

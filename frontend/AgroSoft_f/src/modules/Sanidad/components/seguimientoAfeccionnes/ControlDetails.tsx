@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { PDFDownloadLink, Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { Download } from "lucide-react";
-import { ControlDetails } from "../../types";
+import { ControlDetails, Controles } from "../../types";
 
 interface Props {
-  controles: ControlDetails[];
+  controles: Controles[];
 }
 
 const estadoLabels: Record<string, string> = {
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   table: {
-    display: "table",
     width: "auto",
     borderStyle: "solid",
     borderWidth: 1,
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReportePdfControles = ({ controles }: { controles: ControlDetails[] }) => (
+const ReportePdfControles = ({ controles }: { controles: Controles[] }) => (
   <Document>
     <Page style={styles.page}>
       <Text style={styles.title}>REPORTE DE CONTROLES DE AFECCIONES</Text>
