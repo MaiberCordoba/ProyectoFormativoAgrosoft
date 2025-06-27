@@ -12,7 +12,7 @@ import { addToast } from "@heroui/toast";
 
 interface CrearAfeccionCultivoModalProps {
   onClose: () => void;
-  onCreate: (nuevaAfeccion: AfeccionesCultivo) => void;
+  onCreate?: (nuevaAfeccion: AfeccionesCultivo) => void;
 }
 
 export const CrearAfeccionCultivoModal = ({ onClose, onCreate }: CrearAfeccionCultivoModalProps) => {
@@ -54,7 +54,7 @@ export const CrearAfeccionCultivoModal = ({ onClose, onCreate }: CrearAfeccionCu
           color: "success",
         });
         onClose();
-        onCreate(data);
+        onCreate?.(data);
         setFk_Plantacion(null);
         setFk_Plaga(null);
         setEstado("ST");

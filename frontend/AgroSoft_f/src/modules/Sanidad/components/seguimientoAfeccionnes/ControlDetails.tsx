@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PDFDownloadLink, Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import { Download } from "lucide-react";
-import { ControlDetails, Controles } from "../../types";
+import { Controles } from "../../types";
 
 interface Props {
   controles: Controles[];
