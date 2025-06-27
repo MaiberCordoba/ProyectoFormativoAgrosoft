@@ -1,7 +1,7 @@
 // components/Navbar.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, User, LogOut, Menu, X } from "lucide-react";
+import { Bell, User, LogOut, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/UseAuth";
 import NotificationsModal from "@/modules/Notificaciones/components/NotificationsModal";
 import { useNotificationsContext } from "@/context/NotificationsContext";
