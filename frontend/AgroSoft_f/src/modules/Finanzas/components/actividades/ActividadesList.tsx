@@ -1,12 +1,10 @@
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
 import { useEditarActividad } from "../../hooks/actividades/useEditarActividades";
 import { useCrearActividad } from "../../hooks/actividades/useCrearActividades";
-import { useEliminarActividad } from "../../hooks/actividades/useEliminarActividades";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarActividadesModal from "./EditarActividadesModal";
 import { CrearActividadesModal } from "./CrearActividadModal";
-import EliminarActividadesModal from "./EliminarActividades";
 import { Actividades } from "../../types";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 import { useGetCultivos } from "@/modules/Trazabilidad/hooks/cultivos/useGetCultivos";
@@ -44,14 +42,6 @@ export function ActividadesList() {
   } = useCrearActividad();
 
 
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    actividadEliminada,
-    handleEliminar
-  } = useEliminarActividad();
-
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
     addToast({
@@ -65,8 +55,7 @@ export function ActividadesList() {
     const permitido = userRole === "admin" || userRole === "instructor" || userRole === "pasante";
     
     if (permitido) {
-      handleCrear({ id: 0, fk_Cultivo: 0, fk_Plantacion:0, fk_Usuario: 0, 
-                   fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
+      handleCrear({ id: 0, fk_Cultivo: 0, fk_Plantacion:0, fk_Usuario: 0,fk_TipoActividad: 0, titulo: "", descripcion: "", fecha: "", estado: "AS" });
     } else {
       showAccessDenied();
     }
@@ -164,11 +153,8 @@ export function ActividadesList() {
         <EditarActividadesModal actividad={actividadEditada} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && <CrearActividadesModal onClose={closeCreateModal} />}
+      {isCreateModalOpen && <CrearActividadesModal onClose={closeCreateModal} onCreate={handleCrear} />}
 
-      {isDeleteModalOpen && actividadEliminada && (
-        <EliminarActividadesModal actividad={actividadEliminada} isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
-      )}
       {isTiempoACModalOpen && (
       <CrearTiempoActividadControlModal
         onClose={() => setTiempoACModalOpen(false)}

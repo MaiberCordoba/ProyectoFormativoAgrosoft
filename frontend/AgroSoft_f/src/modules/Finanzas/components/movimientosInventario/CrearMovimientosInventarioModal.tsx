@@ -15,8 +15,8 @@ interface CrearMovimientoInventarioModalProps {
 export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInventarioModalProps) => {
   const [tipo, setTipo] = useState<"entrada" | "salida">("entrada");
   const [unidades, setUnidades] = useState<string>("");
-  const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
-  const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
+  const [fk_Insumo, setFk_Insumo] = useState<number | undefined>(undefined);
+  const [fk_Herramienta, setFk_Herramienta] = useState<number | undefined>(undefined);
   const [error, setError] = useState("");
 
   const { mutate, isPending } = usePostMovimiento();
@@ -35,8 +35,8 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
       return;
     }
 
-    const tieneInsumo = fk_Insumo !== null;
-    const tieneHerramienta = fk_Herramienta !== null;
+    const tieneInsumo = fk_Insumo !== undefined;
+    const tieneHerramienta = fk_Herramienta !== undefined;
 
     if (tieneInsumo && tieneHerramienta) {
       addToast({
@@ -58,20 +58,21 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
 
     mutate(
       {
+        id:0,
         tipo,
         unidades: cantidad,
         fk_Insumo,
-        fk_UsoInsumo: null,
+        fk_UsoInsumo: undefined,
         fk_Herramienta,
-        fk_UsoHerramienta: null,
+        fk_UsoHerramienta: undefined,
       },
       {
         onSuccess: () => {
           onClose();
           setTipo("entrada");
           setUnidades("");
-          setFk_Insumo(null);
-          setFk_Herramienta(null);
+          setFk_Insumo(undefined);
+          setFk_Herramienta(undefined);
           setError("");
         },
       }
@@ -125,8 +126,8 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
               selectedKeys={fk_Insumo ? [fk_Insumo.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
-                setFk_Insumo(selected ? Number(selected) : null);
-                setFk_Herramienta(null); // Desactiva herramienta si se selecciona insumo
+                setFk_Insumo(selected ? Number(selected) : undefined);
+                setFk_Herramienta(undefined); // Desactiva herramienta si se selecciona insumo
               }}
               isDisabled={cargandoInsumos}
             >
@@ -145,8 +146,8 @@ export const CrearMovimientoInventarioModal = ({ onClose }: CrearMovimientoInven
               selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
               onSelectionChange={(keys) => {
                 const selected = Array.from(keys)[0];
-                setFk_Herramienta(selected ? Number(selected) : null);
-                setFk_Insumo(null); // Desactiva insumo si se selecciona herramienta
+                setFk_Herramienta(selected ? Number(selected) : undefined);
+                setFk_Insumo(undefined); // Desactiva insumo si se selecciona herramienta
               }}
               isDisabled={cargandoHerramientas}
             >

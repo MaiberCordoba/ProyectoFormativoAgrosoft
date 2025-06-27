@@ -4,6 +4,7 @@ import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { UnidadesMedida } from "../../types";
 import { addToast } from "@heroui/toast";
+import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 
 interface CrearUnidadesMedidaModalProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
   const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesMedida();
+  const {data: unidadesMedida } = useGetUnidadesMedida()
 
   const handleSubmit = () => {
     if (!nombre || !abreviatura || !tipo || equivalenciabase == 0) {
@@ -36,12 +38,16 @@ export const CrearUnidadesMedidaModal = ({ onClose, }: CrearUnidadesMedidaModalP
       })
       return;
     }
-    if (nombre == nombre) {
+    const nombreExiste = unidadesMedida?.some(
+      (a) => a.nombre.toLowerCase().trim() === nombre.toLowerCase().trim()
+    );
+
+    if (nombreExiste) {
       addToast({
         title: "Valores duplicados",
-        description: "El nombre de esa unidad de medida ya existe.",
-        color: "danger"
-      })
+        description: "El nombre de ese unidad medida ya existe.",
+        color: "danger",
+      });
       return;
     }
     setError("")

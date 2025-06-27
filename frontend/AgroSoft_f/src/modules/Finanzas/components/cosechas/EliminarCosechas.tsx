@@ -48,7 +48,7 @@ const EliminarCosechaModal: React.FC<EliminarCosechaModalProps> = ({
         </div>
         
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          ¿Eliminar la cosecha de "{cosecha.cultivo?.nombre}"?
+          ¿Eliminar la cosecha de "{cosecha.plantacion?.cultivo?.nombre}"?
         </h3>
         
         <p className="text-gray-500 mb-4 max-w-md">

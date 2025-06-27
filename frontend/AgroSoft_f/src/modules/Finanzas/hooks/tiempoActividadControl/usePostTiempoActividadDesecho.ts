@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postTiempoActividadControl } from "../../api/tiempoActividadControlApi";
-import { TiempoActividadControl } from "../../types";
+import { TiempoActividadControlDTO } from "../../types";
 import { addToast } from "@heroui/toast";
 
 export const usePostTiempoActividadControl = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<TiempoActividadControl, Error, TiempoActividadControl>({
+  return useMutation<TiempoActividadControlDTO, Error, TiempoActividadControlDTO>({
     mutationKey: ['crearTiempoActividadControl'],
     mutationFn: postTiempoActividadControl,
     onSuccess: (data) => {

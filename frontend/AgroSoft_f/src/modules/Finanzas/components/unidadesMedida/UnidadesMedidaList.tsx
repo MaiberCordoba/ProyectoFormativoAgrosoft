@@ -1,12 +1,10 @@
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { useEditarUnidadesMedida } from "../../hooks/unidadesMedida/useEditarUnidadesMedida";
 import { useCrearUnidadesMedida } from "../../hooks/unidadesMedida/useCrearUnidadesMedida";
-import { useEliminarUnidadesMedida } from "../../hooks/unidadesMedida/useEliminarUnidadesMedida";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarUnidadesMedidaModal from "./EditarUnidadesMedidaModal";
 import { CrearUnidadesMedidaModal } from "./CrearUnidadesMedidaModal";
-import EliminarUnidadesMedidaModal from "./EliminarUnidadesMedida";
 import { UnidadesMedida } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
@@ -28,13 +26,6 @@ export function UnidadesMedidaList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUnidadesMedida();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    unidadMedidaEliminada,
-    handleEliminar,
-  } = useEliminarUnidadesMedida();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -133,15 +124,7 @@ export function UnidadesMedidaList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearUnidadesMedidaModal onClose={closeCreateModal} />
-      )}
-
-      {isDeleteModalOpen && unidadMedidaEliminada && (
-        <EliminarUnidadesMedidaModal
-          unidadMedida={unidadMedidaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <CrearUnidadesMedidaModal onClose={closeCreateModal} onCreate={handleCrear} />
       )}
     </div>
   );

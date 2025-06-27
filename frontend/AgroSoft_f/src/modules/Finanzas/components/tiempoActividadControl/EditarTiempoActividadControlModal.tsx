@@ -18,10 +18,10 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
   onClose,
 }) => {
   const [tiempo, setTiempo] = useState(tiempoActividadControl.tiempo);
-  const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number>(tiempoActividadControl.fk_unidadTiempo);
-  const [fk_actividad, setFk_Actividad] = useState<number>(tiempoActividadControl.fk_actividad);
-  const [fk_control, setFk_Control] = useState<number>(tiempoActividadControl.fk_control);
-  const [fk_salario, setFk_Salario] = useState<number>(tiempoActividadControl.fk_salario);
+  const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number | undefined>(tiempoActividadControl.fk_unidadTiempo);
+  const [fk_actividad, setFk_Actividad] = useState<number | undefined>(tiempoActividadControl.fk_actividad);
+  const [fk_control, setFk_Control] = useState<number | undefined>(tiempoActividadControl.fk_control);
+  const [fk_salario, setFk_Salario] = useState<number | undefined>(tiempoActividadControl.fk_salario);
   const [error, setError]=useState("")
 
   const { data: actividades } = useGetActividades();
@@ -75,7 +75,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
     >
       <p className='text-red-500 text-sm '>{error}</p>
       <Input
-        value={tiempo.toString()}
+        value={tiempo?.toString()}
         size="sm"
         label="Tiempo"
         type="number"
@@ -89,7 +89,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         selectedKeys={fk_unidadTiempo ? [fk_unidadTiempo.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
-          setFk_UnidadTiempo(selectedKey ? Number(selectedKey) : null);
+          setFk_UnidadTiempo(selectedKey ? Number(selectedKey) : undefined);
         }}
       >
         {(unidadesTiempo || []).map((unidad) => (
@@ -103,7 +103,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
-          setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+          setFk_Actividad(selectedKey ? Number(selectedKey) : undefined);
         }}
       >
         {(actividades || []).map((actividad) => (
@@ -117,7 +117,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         selectedKeys={fk_control ? [fk_control.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
-          setFk_Control(selectedKey ? Number(selectedKey) : null);
+          setFk_Control(selectedKey ? Number(selectedKey) : undefined);
         }}
       >
         {(controles || []).map((control) => (
@@ -131,7 +131,7 @@ const EditarTiempoActividadControlModal: React.FC<EditarTiempoActividadControlMo
         selectedKeys={fk_salario ? [fk_salario.toString()] : []}
         onSelectionChange={(keys) => {
           const selectedKey = Array.from(keys)[0];
-          setFk_Salario(selectedKey ? Number(selectedKey) : null);
+          setFk_Salario(selectedKey ? Number(selectedKey) : undefined);
         }}
       >
         {(salarios || []).map((salario) => (

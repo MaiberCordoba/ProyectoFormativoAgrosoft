@@ -17,12 +17,12 @@ interface CrearVentasModalProps {
 }
 
 export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
-  const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
-  const [valorTotal, setValorTotal] = useState<number | null>(null);
+  const [fk_Cosecha, setFk_Cosecha] = useState<number | undefined>(undefined);
+  const [valorTotal, setValorTotal] = useState<number | undefined>(undefined);
   const [descuento, setDescuento] = useState(0);
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | undefined>(undefined);
   const [cantidad, setCantidad] = useState(0);
-  const [cantidadDisponible, setCantidadDisponible] = useState<number | null>(null);
+  const [cantidadDisponible, setCantidadDisponible] = useState<number | undefined>(undefined);
   const [error, setError] = useState("");
 
   const [CosechaModal, setCosechaModal] = useState(false);
@@ -98,16 +98,16 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
     setError("");
 
     mutate(
-      { fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad, descuento },
+      { id:0,fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad, descuento },
       {
         onSuccess: () => {
           refetchCosecha()
 
           onClose();
-          setFk_Cosecha(null);
+          setFk_Cosecha(undefined);
           setDescuento(0);
           setValorTotal(0);
-          setFk_UnidadMedida(null);
+          setFk_UnidadMedida(undefined);
           setCantidad(0);
           setError("");
         },
@@ -154,12 +154,12 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
                 selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  const idSeleccionado = selectedKey ? Number(selectedKey) : null;
+                  const idSeleccionado = selectedKey ? Number(selectedKey) : undefined;
                   setFk_Cosecha(idSeleccionado);
 
                   // Buscar y guardar cantidad disponible
                   const cosechaSeleccionada = cosechas?.find(c => c.id === idSeleccionado);
-                  setCantidadDisponible(cosechaSeleccionada?.cantidadTotal ?? null);
+                  setCantidadDisponible(cosechaSeleccionada?.cantidadTotal ?? undefined);
                 }}
               >
                 {(cosechas || [])
@@ -192,10 +192,10 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
           </div>
         )}
 
-        {cantidadDisponible !== null && fk_UnidadMedida && unidadesMedida && (
+        {cantidadDisponible !== undefined && fk_UnidadMedida && unidadesMedida && (
           (() => {
             const unidadSeleccionada = unidadesMedida.find(u => u.id === fk_UnidadMedida);
-            if (!unidadSeleccionada) return null;
+            if (!unidadSeleccionada) return undefined;
 
             const cantidadEnGramos = cantidad * unidadSeleccionada.equivalenciabase;
             const cantidadRestante = cantidadDisponible - cantidadEnGramos;
@@ -235,7 +235,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(unidadesMedida || []).map((unidadMedida) => (

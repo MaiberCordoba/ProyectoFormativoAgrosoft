@@ -1,12 +1,10 @@
 import { useGetSalarios } from "../../hooks/salarios/useGetSalarios";
 import { useEditarSalarios } from "../../hooks/salarios/useEditarSalarios";
 import { useCrearSalarios } from "../../hooks/salarios/useCrearSalarios";
-import { useEliminarSalarios } from "../../hooks/salarios/useEliminarSalarios";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarSalarioModal from "./EditarSalariosModal";
 import { CrearSalariosModal } from "./CrearSalariosModal";
-import EliminarSalarioModal from "./EliminarSalarios";
 import { Salarios } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
@@ -28,13 +26,6 @@ export function SalariosList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearSalarios();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    salarioEliminado,
-    handleEliminar,
-  } = useEliminarSalarios();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -67,7 +58,7 @@ export function SalariosList() {
           monto: 0,
           horas: 0,
           monto_minutos: 0,
-          estado: "AS",
+          estado: "activo",
         }),
       ["admin"]
     );
@@ -129,15 +120,7 @@ export function SalariosList() {
         <EditarSalarioModal salario={salarioEditado} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && <CrearSalariosModal onClose={closeCreateModal} />}
-
-      {isDeleteModalOpen && salarioEliminado && (
-        <EliminarSalarioModal
-          salario={salarioEliminado}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearSalariosModal onClose={closeCreateModal} onCreate={handleCrear} />}
     </div>
   );
 }

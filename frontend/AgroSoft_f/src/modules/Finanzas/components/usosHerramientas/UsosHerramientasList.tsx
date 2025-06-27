@@ -1,12 +1,10 @@
 import { useGetUsosHerramientas } from "../../hooks/usosHerramientas/useGetUsosHerramientas";
 import { useEditarUsoHerramienta } from "../../hooks/usosHerramientas/useEditarUsosHerramientas";
 import { useCrearUsosHerramienta } from "../../hooks/usosHerramientas/useCrearUsosHerramientas";
-import { useEliminarUsoHerramienta } from "../../hooks/usosHerramientas/useEliminarUsosHerramientas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarUsosHerramientasModal from "./EditarUsosHerramientasModal";
 import { CrearUsoHerramientaModal } from "./CrearUsosHerramientasModal";
-import EliminarUsosHerramientasModal from "./EliminarUsosHerramientas";
 import { UsosHerramientas } from "../../types";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
@@ -33,13 +31,6 @@ export function UsosHerramientasList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUsosHerramienta();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    usoHerramientaEliminada,
-    handleEliminar,
-  } = useEliminarUsoHerramienta();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -111,12 +102,6 @@ export function UsosHerramientasList() {
                 ["admin", "instructor"]
               )
             }
-            onEliminar={() =>
-              handleActionWithPermission(
-                () => handleEliminar(item),
-                ["admin", "instructor"]
-              )
-            }
           />
         );
       default:
@@ -148,15 +133,7 @@ export function UsosHerramientasList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearUsoHerramientaModal onClose={closeCreateModal} />
-      )}
-
-      {isDeleteModalOpen && usoHerramientaEliminada && (
-        <EliminarUsosHerramientasModal
-          usoHerramienta={usoHerramientaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <CrearUsoHerramientaModal onClose={closeCreateModal} onCreate={handleCrear} />
       )}
     </div>
   );

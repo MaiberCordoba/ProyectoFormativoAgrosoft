@@ -1,5 +1,5 @@
 // components/CultivoResumenList.tsx
-import { Button, Spinner } from "@heroui/react";
+import { Spinner } from "@heroui/react";
 import { ResumenEconomicoListado } from "../../types";
 import { CultivoResumenCard } from "./CultivoResumenCard";
 

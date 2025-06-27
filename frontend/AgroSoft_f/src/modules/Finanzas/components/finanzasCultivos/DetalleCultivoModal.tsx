@@ -8,7 +8,6 @@ import {
   Divider,
   Chip,
   Badge,
-  Image,
 } from "@heroui/react";
 import { DetalleResumenEconomico } from "../../types";
 import { useCultivoModals } from "../../hooks/finanzasCultivos/useCultivosModals";
