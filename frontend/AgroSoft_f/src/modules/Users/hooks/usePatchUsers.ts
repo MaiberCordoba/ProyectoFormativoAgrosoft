@@ -6,7 +6,7 @@ import { updateUser } from '../api/usersApi';
 export const usePatchUsers = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<User, Error, { id: number; data: Partial<User> }>({
+  return useMutation<User, Error, { id: number ; data: Partial<User> }>({
     mutationFn: ({ id, data }) => updateUser(id, data),
     onSuccess: (updatedUsers, variables) => {
       // Actualiza la caché después de una mutación exitosa

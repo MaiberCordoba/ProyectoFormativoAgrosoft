@@ -6,7 +6,7 @@ import { registerUser } from "../api/usersApi";
 export const usePostUsers = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<User, Error, User>({
+  return useMutation<User, Error, Partial<User>>({
     mutationKey: ['crearUsuario'],
     mutationFn: registerUser,
     onSuccess: (data) => {

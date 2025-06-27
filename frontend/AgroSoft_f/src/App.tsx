@@ -52,7 +52,6 @@ import { Usuarios } from "./modules/Users/pages/pageUsers";
 import ResetearContrasena from "./modules/Users/components/recuperaciones/resetearContrasena";
 
 //testeo
-import Testeo from "./pages/testeo";
 import Toast from "./components/Toast";
 import ResumenFinancieroPage from "./modules/Finanzas/pages/pageResumenEconomico";
 import { MapPage } from "./modules/Trazabilidad/pages/MapaPage";
@@ -159,10 +158,7 @@ function App() {
               element={<ControlesPage />}
             />
 
-            {/*test*/}
-            <Route path="/testeo" element={<Testeo />}></Route>
-
-            {/*test*/}
+            {/*notificaciones*/}
             <Route
               path="/notificaciones"
               element={<NotificationsPage />}
