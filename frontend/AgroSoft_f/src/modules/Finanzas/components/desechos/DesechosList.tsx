@@ -1,12 +1,10 @@
 import { useGetDesechos } from "../../hooks/desechos/useGetDesechos";
 import { useEditarDesecho } from "../../hooks/desechos/useEditarDesechos";
 import { useCrearDesecho } from "../../hooks/desechos/useCrearDesechos";
-import { useEliminarDesecho } from "../../hooks/desechos/useEliminarDesechos";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarDesechosModal from "./EditarDesechosModal";
 import { CrearDesechosModal } from "./CrearDesechosModal";
-import EliminarDesechoModal from "./EliminarDesechos";
 import { Desechos } from "../../types";
 import { useGetTiposDesechos } from "../../hooks/tiposDesechos/useGetTiposDesechos";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
@@ -28,14 +26,7 @@ export function DesechosList() {
     closeModal: closeCreateModal, 
     handleCrear 
   } = useCrearDesecho();
-  
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    desechoEliminado,
-    handleEliminar
-  } = useEliminarDesecho();
-
+ 
   const handleCrearNuevo = () => {
     handleCrear({ id: 0, fk_Plantacion: 0,fk_TipoDesecho: 0,nombre: "", descripcion: ""});
   };
@@ -54,7 +45,7 @@ export function DesechosList() {
     switch (columnKey) {
       case "plantacion":
         const plantaciones = plantacion?.find((c) => c.id === item.fk_Plantacion);
-        return <span>Plantacion de: {plantaciones ? plantaciones.cultivo.nombre : "No definido"}</span>;
+        return <span>Plantacion de: {plantaciones ? plantaciones.cultivo?.nombre : "No definido"}</span>;
       case "tipoDesecho":
         const tipoDesecho = tiposDesechos?.find((c) => c.id === item.fk_TipoDesecho);
         return <span>{tipoDesecho ? tipoDesecho.nombre : "No definido"}</span>;
@@ -99,16 +90,10 @@ export function DesechosList() {
       {isCreateModalOpen && (
         <CrearDesechosModal
           onClose={closeCreateModal}
+          onCreate={handleCrear}
         />
       )}
 
-      {isDeleteModalOpen && desechoEliminado && (
-        <EliminarDesechoModal
-          desecho={desechoEliminado}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
     </div>
   );
 }

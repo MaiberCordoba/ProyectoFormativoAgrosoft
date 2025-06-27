@@ -22,10 +22,10 @@ interface CrearUsoInsumoModalProps {
 }
 
 export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
-  const [fk_Insumo, setFk_Insumo] = useState<number | null>(null);
-  const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
-  const [fk_Control, setFk_Control] = useState<number | null>(null);
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
+  const [fk_Insumo, setFk_Insumo] = useState<number | undefined>(undefined);
+  const [fk_Actividad, setFk_Actividad] = useState<number | undefined>(undefined);
+  const [fk_Control, setFk_Control] = useState<number | undefined>(undefined);
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | undefined>(undefined);
   const [cantidadProducto, setCantidadProducto] = useState(0);
   const [error, setError] = useState("")
 
@@ -46,7 +46,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
     if (
       !fk_Insumo ||
       !fk_UnidadMedida ||
-      cantidadProducto === null
+      cantidadProducto === undefined
     ) {
       addToast({
         title: "Campos requeridos",
@@ -58,10 +58,20 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
     const insumoSeleccionado = insumos?.find(c => c.id === fk_Insumo)
     const unidadSeleccionada = unidadesMedida?.find(c => c.id === fk_UnidadMedida)
 
+    if (!unidadSeleccionada) {
+      setError("Unidad de medida no valida o no encontrada")
+      return
+    }
+
+    if (!insumoSeleccionado) {
+      setError("Insumo no válido o no encontrado");
+      return;
+    }
+
     const cantidadEnBase = cantidadProducto * unidadSeleccionada?.equivalenciabase
 
     if (cantidadEnBase > insumoSeleccionado?.cantidadGramos) {
-      setError("La cantidad seleccionada " + cantidadEnBase + "(g) Supera la cantidad disponible" + insumoSeleccionado?.cantidadGramos+"(g)")
+      setError("La cantidad seleccionada " + cantidadEnBase + "(g) Supera la cantidad disponible" + insumoSeleccionado?.cantidadGramos + "(g)")
       return
     }
     if (fk_Actividad && fk_Control) {
@@ -105,12 +115,12 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
       {
         onSuccess: () => {
           refetchInsumos()
-          
+
           onClose();
-          setFk_Insumo(null);
-          setFk_Actividad(null);
-          setFk_Control(null);
-          setFk_UnidadMedida(null);
+          setFk_Insumo(undefined);
+          setFk_Actividad(undefined);
+          setFk_Control(undefined);
+          setFk_UnidadMedida(undefined);
           setCantidadProducto(0);
           setError("")
         },
@@ -177,7 +187,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
                 selectedKeys={fk_Insumo ? [fk_Insumo.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Insumo(selectedKey ? Number(selectedKey) : null);
+                  setFk_Insumo(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(insumos || []).map((insumo) => (
@@ -210,7 +220,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
                 selectedKeys={fk_Actividad ? [fk_Actividad.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+                  setFk_Actividad(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(actividades || []).map((actividad) => (
@@ -244,7 +254,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
                 selectedKeys={fk_Control ? [fk_Control.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Control(selectedKey ? Number(selectedKey) : null);
+                  setFk_Control(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(controles || []).map((control) => (
@@ -278,7 +288,7 @@ export const CrearUsoInsumoModal = ({ onClose }: CrearUsoInsumoModalProps) => {
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(unidadesMedida || []).map((unidad) => (

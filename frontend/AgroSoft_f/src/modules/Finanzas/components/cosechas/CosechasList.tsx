@@ -1,12 +1,10 @@
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useEditarCosecha } from "../../hooks/cosechas/useEditarCosechas";
 import { useCrearCosecha } from "../../hooks/cosechas/useCrearCosechas";
-import { useEliminarCosecha } from "../../hooks/cosechas/useEliminarCosechas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarCosechasModal from "./EditarCosechasModal";
 import { CrearCosechasModal } from "./CrearCosechasModal";
-import EliminarCosechasModal from "./EliminarCosechas";
 import { Cosechas } from "../../types";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
@@ -34,13 +32,6 @@ export function CosechasList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearCosecha();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    cosechaEliminada,
-    handleEliminar,
-  } = useEliminarCosecha();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -72,6 +63,7 @@ export function CosechasList() {
           fk_Plantacion: 0,
           fk_UnidadMedida: 0,
           cantidad: 0,
+          cantidadTotal:0,
           fecha: "",
           precioUnidad: 0,
         }),
@@ -156,15 +148,7 @@ export function CosechasList() {
         />
       )}
 
-      {isCreateModalOpen && <CrearCosechasModal onClose={closeCreateModal} />}
-
-      {isDeleteModalOpen && cosechaEliminada && (
-        <EliminarCosechasModal
-          cosecha={cosechaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearCosechasModal onClose={closeCreateModal} onCreate={handleCrear}/>}
     </div>
   );
 }

@@ -24,13 +24,13 @@ interface CrearActividadesModalProps {
 export const CrearActividadesModal = ({
   onClose,
 }: CrearActividadesModalProps) => {
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(null);
-  const [fk_Usuario, setFk_Usuario] = useState<number | null>(null);
-  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(null);
+  const [fk_Cultivo, setFk_Cultivo] = useState<number | undefined>(undefined);
+  const [fk_Usuario, setFk_Usuario] = useState<number | undefined>(undefined);
+  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | undefined>(undefined);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState("");
-  const [fk_Plantacion, setFkPlantacion] = useState<number | null>(null);
+  const [fk_Plantacion, setFkPlantacion] = useState<number | undefined>(undefined);
 
   //Creacion de modales
   const [tipoActividadModal, setTipoActividadModal] = useState(false);
@@ -83,6 +83,7 @@ export const CrearActividadesModal = ({
 
     mutate(
       {
+        id :0,
         fk_Cultivo,
         fk_Plantacion,
         fk_Usuario,
@@ -95,10 +96,10 @@ export const CrearActividadesModal = ({
       {
         onSuccess: () => {
           onClose();
-          setFk_Cultivo(null);
-          setFkPlantacion(null);
-          setFk_Usuario(null);
-          setFk_TipoActividad(null);
+          setFk_Cultivo(undefined);
+          setFkPlantacion(undefined);
+          setFk_Usuario(undefined);
+          setFk_TipoActividad(undefined);
           setTitulo("");
           setDescripcion("");
           setFecha("");
@@ -144,6 +145,9 @@ export const CrearActividadesModal = ({
           },
         ]}
       >
+        <Button>
+          Asignar Herramienta
+        </Button>
         <Input
           label="Titulo"
           type="text"
@@ -183,7 +187,7 @@ export const CrearActividadesModal = ({
                 selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
+                  setFk_Cultivo(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(cultivos || []).map((cultivo) => (
@@ -216,7 +220,7 @@ export const CrearActividadesModal = ({
                 selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFkPlantacion(selectedKey ? Number(selectedKey) : null);
+                  setFkPlantacion(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(plantacion || []).map((p) => (
@@ -258,7 +262,7 @@ export const CrearActividadesModal = ({
                 selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Usuario(selectedKey ? Number(selectedKey) : null);
+                  setFk_Usuario(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(users || []).map((usuario) => (
@@ -294,7 +298,7 @@ export const CrearActividadesModal = ({
                 }
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
+                  setFk_TipoActividad(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(tiposActividad || []).map((tipoActividad) => (

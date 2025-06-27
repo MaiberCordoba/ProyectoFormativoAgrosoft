@@ -20,12 +20,12 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
 }) => {
   const [titulo, setTitulo] = useState<string>(actividad.titulo);
   const [descripcion, setDescripcion] = useState<string>(actividad.descripcion);
-  const [estado, setEstado] = useState<"AS" | "CO" | "CA">(actividad.estado);
-  const [fk_Cultivo, setFk_Cultivo] = useState<number | null>(actividad.fk_Cultivo || null);  
-  const [fk_Plantacion, setFk_Plantacion] = useState<number | null>(actividad.fk_Plantacion || null);  
-  const [fecha, setFecha] = useState<string>(actividad.fecha);  
-  const [fk_Usuario, setFk_Usuario] = useState<number | null>(actividad.fk_Usuario || null); 
-  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | null>(actividad.fk_TipoActividad || null); 
+  const [estado, setEstado] = useState<"AS" | "CO" | "CA" | undefined>(actividad.estado);
+  const [fk_Cultivo, setFk_Cultivo] = useState<number | undefined>(actividad.fk_Cultivo || undefined);  
+  const [fk_Plantacion, setFk_Plantacion] = useState<number | undefined>(actividad.fk_Plantacion || undefined);  
+  const [fecha, setFecha] = useState<string| undefined>(actividad.fecha);  
+  const [fk_Usuario, setFk_Usuario] = useState<number | undefined>(actividad.fk_Usuario || undefined); 
+  const [fk_TipoActividad, setFk_TipoActividad] = useState<number | undefined>(actividad.fk_TipoActividad || undefined); 
 
   //manejo mensaje de error
   const [mensajeError, setMensajeError] = useState("");
@@ -65,9 +65,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
           fk_Usuario, 
           fk_TipoActividad,
         },
-        onClose,
       },
-
       {
         onSuccess: () => {
           onClose();
@@ -110,6 +108,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
       <Input
         value={fecha}
         label="Fecha"
+        type='date'
         size="sm"
         onChange={(e) => setFecha(e.target.value)}
         required
@@ -140,7 +139,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
           selectedKeys={fk_Cultivo ? [fk_Cultivo.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_Cultivo(selectedKey ? Number(selectedKey) : null);
+            setFk_Cultivo(selectedKey ? Number(selectedKey) : undefined);
           }}
         >
           {(cultivos || []).map((cultivo) => (
@@ -160,7 +159,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
           selectedKeys={fk_Plantacion ? [fk_Plantacion.toString()] : []} 
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];  
-            setFk_Plantacion(selectedKey ? Number(selectedKey) : null);  
+            setFk_Plantacion(selectedKey ? Number(selectedKey) : undefined);  
           }}
         >
           {(plantaciones || []).map((p) => (
@@ -179,7 +178,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
           selectedKeys={fk_Usuario ? [fk_Usuario.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_Usuario(selectedKey ? Number(selectedKey) : null);
+            setFk_Usuario(selectedKey ? Number(selectedKey) : undefined);
           }}
         >
           {(users || []).map((usuario) => (
@@ -200,7 +199,7 @@ const EditarActividadesModal: React.FC<EditarActividadesModalProps> = ({
           selectedKeys={fk_TipoActividad ? [fk_TipoActividad.toString()] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0];
-            setFk_TipoActividad(selectedKey ? Number(selectedKey) : null);
+            setFk_TipoActividad(selectedKey ? Number(selectedKey) : undefined);
           }}
         >
           {(tiposActividad || []).map((tipoActividad) => (

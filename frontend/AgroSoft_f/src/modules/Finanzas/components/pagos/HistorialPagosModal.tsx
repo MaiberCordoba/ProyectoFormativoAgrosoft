@@ -173,11 +173,10 @@ const HistorialPagosModal: React.FC<HistorialPagosModalProps> = ({
       case "tipo":
         return (
           <span
-            className={`px-2 py-1 rounded-full text-xs font-semibold ${
-              item.fk_actividad
+            className={`px-2 py-1 rounded-full text-xs font-semibold ${item.fk_actividad
                 ? "bg-blue-100 text-blue-700"
                 : "bg-purple-100 text-purple-700"
-            }`}
+              }`}
           >
             {item.fk_actividad ? "Actividad" : "Control"}
           </span>
@@ -210,6 +209,8 @@ const HistorialPagosModal: React.FC<HistorialPagosModalProps> = ({
                 }}
                 onLimpiarBusqueda={handleClearSearch}
                 placeholderBusqueda="Buscar por usuario o valor..."
+                filtroEstado={new Set<string>()}
+                onCambiarFiltroEstado={() => { }}
               />
               <FilasPorPagina
                 filasPorPagina={rowsPerPage}
