@@ -59,6 +59,7 @@ export const CrearLoteModal = ({ onClose, onCreate }: CrearLoteModalProps) => {
 
     mutate(
       {
+        id:0,
         nombre,
         descripcion,
         latI1: parsedLatI1,

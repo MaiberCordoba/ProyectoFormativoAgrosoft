@@ -38,6 +38,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
 
     mutate(
       {
+        id:0,
         nombre,
         activo,
         fk_Especie,

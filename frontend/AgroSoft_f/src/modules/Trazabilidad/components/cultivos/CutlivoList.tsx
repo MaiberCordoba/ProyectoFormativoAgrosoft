@@ -66,6 +66,7 @@ export function CultivosList() {
 
     if (permitido) {
       handleCrear({
+        id:0,
         nombre: "",
         activo: true,
         fk_Especie:0,

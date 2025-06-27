@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica",
   },
   table: {
-    display: "table",
     width: "auto",
     margin: "10px",
     borderStyle: "solid",

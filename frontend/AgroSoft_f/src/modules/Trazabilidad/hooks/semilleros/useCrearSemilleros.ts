@@ -1,13 +1,13 @@
 import { UseModal } from "@/hooks/useModal"
-import { Semilleros } from "../../types";
 import { useState } from "react";
+import { Semillero } from "../../types";
 
 
 export const useCrearSemilleros = () => {
     const {isOpen, openModal, closeModal} = UseModal();
-    const [SemillerosCreada, setSemillerosCreada] = useState<Semilleros | null>(null);
+    const [SemillerosCreada, setSemillerosCreada] = useState<Semillero | null>(null);
 
-    const handleCrear = (Semilleros: Semilleros) => {
+    const handleCrear = (Semilleros: Semillero) => {
         setSemillerosCreada(Semilleros);
         openModal();
     };

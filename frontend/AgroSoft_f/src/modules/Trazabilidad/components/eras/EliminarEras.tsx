@@ -44,7 +44,7 @@ const EliminarEraModal: React.FC<EliminarEraModalProps> = ({ era, isOpen, onClos
         </div>
 
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          ¿Eliminar la era del lote "{era.lotes?.nombre}"?
+          ¿Eliminar la era del lote "{era.Lote?.nombre}"?
         </h3>
 
         <p className="text-gray-500 mb-4 max-w-md">

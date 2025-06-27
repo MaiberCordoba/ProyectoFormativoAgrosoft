@@ -32,6 +32,8 @@ export const patchEspecies = async (
 };
 
 // Eliminar especie
-export const deleteEspecies = async (id: number): Promise<void> => {
-  await apiClient.delete(`especies/${id}/`);
-};
+
+export const deleteEspecies = async (id: number): Promise<Especies> => {
+    const response = await apiClient.delete<Especies>(`especies/${id}/`);
+    return response.data
+}

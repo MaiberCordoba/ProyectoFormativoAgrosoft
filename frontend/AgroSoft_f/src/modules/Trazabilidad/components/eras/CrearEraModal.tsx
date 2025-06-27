@@ -10,7 +10,7 @@ import { Eras, Lotes } from "../../types";
 
 interface CrearEraModalProps {
   onClose: () => void;
-  onCreate: (nuevaEra: Eras) => void;
+  onCreate?: (nuevaEra: Eras) => void;
 }
 
 export const CrearEraModal = ({ onClose, onCreate }: CrearEraModalProps) => {
@@ -77,7 +77,7 @@ export const CrearEraModal = ({ onClose, onCreate }: CrearEraModalProps) => {
     mutate(payload, {
       onSuccess: (data) => {
         onClose();
-        onCreate(data);
+        onCreate?.(data);
         setFkLoteId(null);
         setTipo("");
         setLatI1("");

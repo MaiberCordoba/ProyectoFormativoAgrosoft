@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Semilleros } from "../../types";
 import { deleteSemilleros } from "../../api/semillerosApi";
 import { addToast } from "@heroui/react";
+import { Semillero } from "../../types";
 
 export const useDeleteSemilleros = () => {
     const queryClient = useQueryClient();
 
-    return useMutation<Semilleros, Error, { id: number }, { previousSemilleros?: Semilleros[] }>({
+    return useMutation<Semillero, Error, { id: number }, { previousSemilleros?: Semillero[] }>({
         mutationFn: ({ id }) => deleteSemilleros(id),
         onMutate: async (variables) => {
             await queryClient.cancelQueries({ queryKey: ['Semilleros'] });
-            const previousSemilleros = queryClient.getQueryData<Semilleros[]>(['Semilleros']);
-            queryClient.setQueryData<Semilleros[]>(['Semilleros'], (old) => 
+            const previousSemilleros = queryClient.getQueryData<Semillero[]>(['Semilleros']);
+            queryClient.setQueryData<Semillero[]>(['Semilleros'], (old) => 
                 old?.filter(Semilleros => Semilleros.id !== variables.id) || []
             );
             return { previousSemilleros };
