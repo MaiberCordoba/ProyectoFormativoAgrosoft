@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useGetPlantaciones } from "../Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { useGetCosechas } from "./hooks/cosechas/useGetCosechas";
 import { Cosechas } from "./types";
@@ -42,21 +41,21 @@ export function CosechasResumenCard() {
 
     acc[cultivoId].cosechas.push(cosecha);
     acc[cultivoId].cantidadTotal += cosecha.cantidadTotal;
-    acc[cultivoId].valorTotal += cosecha.valorTotal;
+    acc[cultivoId].valorTotal += cosecha.valorTotal ?? 0;
     // Actualizar la fecha más reciente
-    if (new Date(cosecha.fecha) > new Date(acc[cultivoId].fechaMasReciente)) {
+    if (new Date(cosecha.fecha ?? "sin Fecha") > new Date(acc[cultivoId].fechaMasReciente ?? "sin fecha")) {
       acc[cultivoId].fechaMasReciente = cosecha.fecha;
     }
 
     return acc;
   }, {} as Record<string, {
-    nombreCultivo: string;
+    nombreCultivo: string | undefined;
     imagenEspecie: string | undefined;
     nombreEspecie: string;
     cantidadTotal: number;
     valorTotal: number;
-    valorGramo: number;
-    fechaMasReciente: string;
+    valorGramo: number | undefined;
+    fechaMasReciente: string | undefined;
     cosechas: Cosechas[];
   }>);
   return (
@@ -69,9 +68,9 @@ export function CosechasResumenCard() {
           data={{
             Especie: cultivo.nombreEspecie,
             Cantidad: `${cultivo.cantidadTotal} (g)`,
-            "Valor *(g)": cultivo.valorGramo,
+            "Valor *(g)": cultivo.valorGramo ?? 0,
             "Valor cosecha": `$${cultivo.valorTotal}`,
-            "Fecha Cosecha": cultivo.fechaMasReciente,
+            "Fecha Cosecha": cultivo.fechaMasReciente ?? "Sin fecha",
           }}
           backgroundColor="white"
           borderColor="green-500"
@@ -225,20 +224,10 @@ export function InsumosCard() {
 }
 
 import { Wrench } from "lucide-react";
-import { useGetTiempoActividadControl } from "./hooks/tiempoActividadControl/useGetTiempoActividadDesecho";
-import { useGetUnidadesTiempo } from "./hooks/unidadesTiempo/useGetUnidadesTiempo";
-import { useGetActividades } from "./hooks/actividades/useGetActividades";
-import { useGetUsers } from "../Users/hooks/useGetUsers";
-import { useGetControles } from "../Sanidad/hooks/controles/useGetControless";
-import EditarTiempoActividadControlModal from "./components/tiempoActividadControl/EditarTiempoActividadControlModal";
-import { useEditarTiempoActividadControl } from "./hooks/tiempoActividadControl/useEditarTiempoActividadDesecho";
-import { useGetSalarios } from "./hooks/salarios/useGetSalarios";
 import { useCrearUsosHerramienta } from "./hooks/usosHerramientas/useCrearUsosHerramientas";
 import { CrearUsoHerramientaModal } from "./components/usosHerramientas/CrearUsosHerramientasModal";
 import { useCrearUsosInsumo } from "./hooks/usoInsumos/useCrearUsoInsumos";
 import { CrearUsoInsumoModal } from "./components/usoInsumos/CrearUsosInsumosModal";
-import { color } from "framer-motion";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react";
 
 export function HerramientasCard() {
   const {
@@ -320,253 +309,5 @@ export function HerramientasCard() {
         />
       )}
     </>
-  );
-}
-
-export function TiempoActividadCard() {
-  const {
-    data: tiempoActividad,
-    isLoading,
-    isError,
-  } = useGetTiempoActividadControl();
-  const { data: unidades = [] } = useGetUnidadesTiempo();
-  const { data: Actividades = [] } = useGetActividades();
-  const { data: usuarios = [] } = useGetUsers();
-  const { data: controles = [] } = useGetControles();
-  const { data: salarios = [] } = useGetSalarios();
-  const { data: plantaciones = [] } = useGetPlantaciones();
-  const { user } = useAuth();
-  const userRole = user?.rol || null;
-
-  const {
-    isOpen: isEditModalOpen,
-    closeModal: closeEditModal,
-    tiempoActividadControlEditada,
-    handleEditar,
-  } = useEditarTiempoActividadControl();
-
-  // Función para mostrar alerta de acceso denegado
-  const showAccessDenied = () => {
-    addToast({
-      title: "Acción no permitida",
-      description: "No tienes permiso para realizar esta acción",
-      color: "danger",
-    });
-  };
-
-  // Función para manejar acciones con verificación de permisos
-  const handleActionWithPermission = (
-    action: () => void,
-    requiredRoles: string[]
-  ) => {
-    if (requiredRoles.includes(userRole || "")) {
-      action();
-    } else {
-      showAccessDenied();
-    }
-  };
-
-  if (isLoading) return <p>Cargando...</p>;
-  if (isError) return <p>Error al cargar...</p>;
-
-  return (
-    <div className="flex flex-wrap gap-4 mb-6">
-      {tiempoActividad?.map((tiempoAC) => {
-        const unidad = unidades.find((p) => p.id === tiempoAC.fk_unidadTiempo);
-        const actividad = Actividades.find(
-          (p) => p.id === tiempoAC.fk_actividad
-        );
-        const usuario = usuarios.find((p) => p.id === actividad?.fk_Usuario);
-        const control = controles.find((p) => p.id === tiempoAC?.fk_control);
-        const salario = salarios.find((p) => p.id === tiempoAC?.fk_salario);
-        const plantacion = plantaciones.find(
-          (p) => p.id === actividad?.fk_Plantacion
-        );
-
-        return (
-          <CustomCard
-            key={tiempoAC.id}
-            title={actividad?.titulo || control?.descripcion || "Sin nombre"}
-            description={
-              actividad?.cultivo?.nombre || plantacion?.cultivo?.nombre
-            }
-            data={{
-              Termino: tiempoAC.fecha,
-              Duración: `${tiempoAC.tiempo} ${unidad?.nombre}`,
-              "Costo de la actividad": `$${tiempoAC.valorTotal}`,
-              Realizo:
-                usuario?.nombre || control?.usuario?.nombre || "No definido",
-              Salario: salario?.nombre,
-            }}
-            footerButtons={[
-              {
-                label: "Editar",
-                color: "primary",
-                size: "sm",
-                onPress: () =>
-                  handleActionWithPermission(
-                    () => handleEditar(tiempoAC),
-                    ["admin", "instructor"]
-                  ),
-              },
-            ]}
-          />
-        );
-      })}
-
-      {isEditModalOpen && tiempoActividadControlEditada && (
-        <EditarTiempoActividadControlModal
-          tiempoActividadControl={tiempoActividadControlEditada}
-          onClose={closeEditModal}
-        />
-      )}
-    </div>
-  );
-}
-
-type PagoUsuario = {
-  id: number;
-  nombre: string;
-  actividades: number;
-  controles: number;
-  total: number;
-}
-
-export function PagarActividades() {
-  const { data: tiempoActividad, isLoading, isError } = useGetTiempoActividadControl();
-  const { data: actividades = [] } = useGetActividades();
-  const { data: controles = [] } = useGetControles();
-  const { data: usuarios = [] } = useGetUsers();
-
-  const [pagosRealizados, setPagosRealizados] = useState<PagoUsuario[]>(() => {
-    const datosGuardados = localStorage.getItem("pagos_realizados");
-    return datosGuardados ? JSON.parse(datosGuardados) : [];
-  });
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem("pagos_realizados", JSON.stringify(pagosRealizados));
-  }, [pagosRealizados]);
-
-  if (isLoading) return <p>Cargando...</p>;
-  if (isError) return <p>Error al cargar los datos...</p>;
-
-  const resumenPorUsuario: Record<
-    string,
-    { id: number; nombre: string; cantidadActividades: number; cantidadControles: number; totalCosto: number }
-  > = {};
-
-  tiempoActividad?.forEach((tiempoAC) => {
-    const actividad = actividades.find((a) => a.id === tiempoAC.fk_actividad);
-    const control = controles.find((c) => c.id === tiempoAC.fk_control);
-
-    const usuario =
-      usuarios.find((u) => u.id === actividad?.fk_Usuario) ||
-      control?.usuario;
-
-    if (!usuario) return;
-
-    const idUsuario = usuario.id;
-
-    if (!resumenPorUsuario[idUsuario]) {
-      resumenPorUsuario[idUsuario] = {
-        id: idUsuario,
-        nombre: usuario.nombre,
-        cantidadActividades: 0,
-        cantidadControles: 0,
-        totalCosto: 0,
-      };
-    }
-
-    if (actividad) {
-      resumenPorUsuario[idUsuario].cantidadActividades += 1;
-    } else if (control) {
-      resumenPorUsuario[idUsuario].cantidadControles += 1;
-    }
-
-    resumenPorUsuario[idUsuario].totalCosto += tiempoAC.valorTotal;
-  });
-
-  const marcarComoPagado = (resumen: any) => {
-    const nuevoPago: PagoUsuario = {
-      id: resumen.id,
-      nombre: resumen.nombre,
-      actividades: resumen.cantidadActividades,
-      controles: resumen.cantidadControles,
-      total: resumen.totalCosto,
-    };
-
-    const actualizados = [...pagosRealizados, nuevoPago];
-    setPagosRealizados(actualizados);
-    addToast({
-      title: "Pagos",
-      description: `Se realizó el pago a ${resumen.nombre}`,
-      color: "primary",
-    });
-  };
-
-  const totalPagado = pagosRealizados.reduce((acc, pago) => acc + pago.total, 0);
-
-  return (
-    <div>
-      {/* Botón para mostrar el modal en la esquina superior derecha */}
-      {pagosRealizados.length > 0 && (
-        <div className="flex justify-end mb-4">
-          <Button onPress={() => setModalVisible(true)} variant="solid" color="success" size="sm">
-            Ver pagos realizados
-          </Button>
-        </div>
-      )}
-
-      {/* Tarjetas para usuarios NO pagados */}
-      <div className="flex flex-wrap gap-4 mb-6">
-        {Object.values(resumenPorUsuario)
-          .filter((resumen) => !pagosRealizados.some((p) => p.id === resumen.id))
-          .map((resumen) => (
-            <CustomCard
-              key={resumen.id}
-              title={resumen.nombre}
-              description="Resumen de actividades y controles"
-              data={{
-                "Cantidad de actividades": resumen.cantidadActividades,
-                "Cantidad de controles": resumen.cantidadControles,
-                "Total a pagar": `$${resumen.totalCosto.toFixed(2)}`,
-              }}
-              footerButtons={[
-                {
-                  label: "Marcar como pagado",
-                  color: "success",
-                  size: "sm",
-                  onPress: () => marcarComoPagado(resumen),
-                },
-              ]}
-            />
-          ))}
-      </div>
-
-      {/* Modal para ver pagos realizados */}
-      <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
-        <ModalContent>
-          <ModalHeader>Pagos realizados</ModalHeader>
-          <ModalBody>
-            {pagosRealizados.map((pago) => (
-              <div key={pago.id} className="mb-2 border-b pb-2">
-                <p className="font-semibold">{pago.nombre}</p>
-                <p>Actividades: {pago.actividades}</p>
-                <p>Controles: {pago.controles}</p>
-                <p>Total pagado: ${pago.total.toFixed(2)}</p>
-              </div>
-            ))}
-            <div className="mt-4 font-bold text-right">
-              Total general pagado: ${totalPagado.toFixed(2)}
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button onPress={() => setModalVisible(false)} color="primary">Cerrar</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </div>
   );
 }

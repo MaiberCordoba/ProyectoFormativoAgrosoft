@@ -15,7 +15,7 @@ interface CrearHerramientasModalProps {
 }
 
 export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps) => {
-  const [fk_Lote, setFk_Lote] = useState<number | null>(null);
+  const [fk_Lote, setFk_Lote] = useState<number | undefined>(undefined);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [unidades, setUnidades] = useState<string>("");
@@ -66,7 +66,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
       {
         onSuccess: () => {
           onClose();
-          setFk_Lote(null);
+          setFk_Lote(undefined);
           setUnidades("");
           setNombre("");
           setDescripcion("");
@@ -147,7 +147,7 @@ export const CrearHerramientasModal = ({ onClose }: CrearHerramientasModalProps)
                 selectedKeys={fk_Lote?.toString() ? [fk_Lote.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Lote(selectedKey ? Number(selectedKey) : null);
+                  setFk_Lote(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(lotes || []).map((lote) => (
