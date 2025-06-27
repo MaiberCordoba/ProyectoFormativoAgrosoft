@@ -253,7 +253,9 @@ export async function generateSensorReport(options: ReportOptions) {
         6: { cellWidth: 20 }
       },
       didDrawPage: (data) => {
-        yPosition = data.cursor.y + 10;
+        if (data.cursor) {
+          yPosition = data.cursor.y + 10;
+        };
       }
     });
   };
@@ -335,12 +337,14 @@ export async function generateSensorReport(options: ReportOptions) {
         5: { cellWidth: 20 }
       },
       didDrawPage: (data) => {
-        yPosition = data.cursor.y + 10;
+        if (data.cursor) {
+          yPosition = data.cursor.y + 10;
+        };
       }
     });
   };
 
-  const addETSection = (etData: ETData[]) => {
+  const addETSection = async (etData: ETData[]) => {
     if (!options.includeET || !options.loteId || etData.length === 0) return;
 
     if (yPosition > 220) {
@@ -380,7 +384,9 @@ export async function generateSensorReport(options: ReportOptions) {
         1: { cellWidth: 40 }
       },
       didDrawPage: (data) => {
-        yPosition = data.cursor.y + 15;
+        if (data.cursor) {
+          yPosition = data.cursor.y + 15;
+        };
       }
     });
 
@@ -478,7 +484,7 @@ export async function generateSensorReport(options: ReportOptions) {
               <YAxis />
               <Tooltip 
                 formatter={(value: number) => [`${value} ${SENSOR_UNITS[tipo]}`, 'Valor']}
-                labelFormatter={(label) => `Hora: ${label}`}
+                labelFormatter={(label: any) => `Hora: ${label}`}
               />
               <Line 
                 type="monotone" 
