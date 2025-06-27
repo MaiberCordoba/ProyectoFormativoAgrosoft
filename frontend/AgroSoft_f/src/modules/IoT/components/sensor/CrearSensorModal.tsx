@@ -8,6 +8,7 @@ import { SENSOR_TYPES, SensorData } from "../../types/sensorTypes";
 import { Plus } from "lucide-react";
 import { CrearLoteModal } from "@/modules/Trazabilidad/components/lotes/CrearLotesModal";
 import { CrearEraModal } from "@/modules/Trazabilidad/components/eras/CrearEraModal";
+import { Eras, Lotes } from "@/modules/Trazabilidad/types";
 
 interface Lote {
   id: number;
@@ -67,15 +68,15 @@ const CrearSensorModal = ({ onClose }: CrearSensorModalProps) => {
   const isLoteRequired = tipo && LOTES_ONLY.includes(tipo);
   const isEraRequired = tipo && ERAS_ONLY.includes(tipo);
 
-  const handleLoteCreado = (nuevoLote: { id: number }) => {
+  const handleLoteCreado = (nuevoLote: Lotes) => {
     refetchLotes();
-    setFkLote(nuevoLote.id);
+    setFkLote(nuevoLote.id || null);
     setShowLoteModal(false);
   };
 
-  const handleEraCreada = (nuevaEra: { id: number }) => {
+  const handleEraCreada = (nuevaEra: Eras) => {
     refetchEras();
-    setFkEras(nuevaEra.id);
+    setFkEras(nuevaEra.id  || null);
     setShowEraModal(false);
   };
 
