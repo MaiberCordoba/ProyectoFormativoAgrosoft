@@ -16,7 +16,7 @@ interface CrearCultivoModalProps {
 export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps) => {
   const [nombre, setNombre] = useState<string>("");
   const [activo, setActivo] = useState<boolean>(true);
-  const [fk_EspecieId, setFk_EspecieId] = useState<number | null>(null);
+  const [fk_Especie, setFk_Especie] = useState<number | null>(null);
   const [mostrarModalEspecie, setMostrarModalEspecie] = useState(false);
 
   const { mutate, isPending } = usePostCultivos();
@@ -27,7 +27,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
   } = useGetEspecies();
 
   const handleSubmit = () => {
-    if (!nombre || !fk_EspecieId) {
+    if (!nombre || !fk_Especie) {
       addToast({
         title: "Campos obligatorios",
         description: "Por favor completa todos los campos.",
@@ -40,7 +40,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
       {
         nombre,
         activo,
-        fk_Especie: fk_EspecieId,
+        fk_Especie,
       },
       {
         onSuccess: (data) => {
@@ -50,7 +50,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
             color: "success",
           });
           setNombre("");
-          setFk_EspecieId(null);
+          setFk_Especie(null);
           setActivo(true);
           onCreate(data); // ← Solo notifica desde aquí
           onClose();
@@ -68,7 +68,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
 
   const handleEspecieCreada = (nuevaEspecie: { id: number }) => {
     refetchEspecies();
-    setFk_EspecieId(nuevaEspecie.id);
+    setFk_Especie(nuevaEspecie.id);
     setMostrarModalEspecie(false);
   };
 
@@ -104,10 +104,10 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
                 label="Especie"
                 placeholder="Selecciona una especie"
                 size="sm" 
-                selectedKeys={fk_EspecieId ? [fk_EspecieId.toString()] : []}
+                selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0];
-                  setFk_EspecieId(Number(selected));
+                  setFk_Especie(Number(selected));
                 }}
               >
                 {(especies || []).map((especie) => (

@@ -6,7 +6,7 @@ import { addToast } from "@heroui/toast";
 
 interface CrearTiposEspecieModalProps {
   onClose: () => void;
-  onCreate: (nuevoTipo: { id: number }) => void;
+  onCreate?: (nuevoTipo: { id: number }) => void;
 }
 
 export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieModalProps) => {
@@ -41,7 +41,7 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
         });
 
         try {
-          onCreate(data);
+          onCreate?.(data);
         } catch (err) {
           console.error("Error en onCreate:", err);
         }

@@ -84,7 +84,7 @@ export interface TiposAfecciones {
 
 export interface Afecciones {
   id: number;
-  tipoPlaga: TiposAfecciones;
+  tipoPlaga?: TiposAfecciones;
   nombre: string;
   descripcion: string;
   img: string;

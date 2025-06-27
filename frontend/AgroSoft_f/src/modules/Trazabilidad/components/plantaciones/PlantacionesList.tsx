@@ -46,7 +46,6 @@ export function PlantacionesList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     PlantacionesEliminada,
-    handleEliminar,
   } = useEliminarPlantaciones();
 
   const [showPreview, setShowPreview] = useState(false);
@@ -58,29 +57,13 @@ export function PlantacionesList() {
         id: 0,
         nombre: "",
         activo: false,
-        fk_Especie: {
-          id: 0,
-          nombre: "",
-        },
+        fk_Especie:0,
       },
       semillero: null,
       eras: {
         id: 0,
         tipo: "",
-        fk_lote: {
-          id: 0,
-          nombre: "",
-          descripcion: "",
-          latI1: 0,
-          longI1: 0,
-          latS1: 0,
-          longS1: 0,
-          latI2: 0,
-          longI2: 0,
-          latS2: 0,
-          longS2: 0,
-          estado: null,
-        },
+        fk_lote: 0,
         latI1: 0,
         longI1: 0,
         latS1: 0,
