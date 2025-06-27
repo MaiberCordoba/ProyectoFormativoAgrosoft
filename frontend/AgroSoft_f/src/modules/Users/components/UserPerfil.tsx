@@ -10,11 +10,12 @@ import { addToast } from "@heroui/react";
 interface EditarPerfilModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onUpdateSuccess?: () => void;
 }
 
 const EditarPerfilModal: React.FC<EditarPerfilModalProps> = ({ 
   isOpen, 
-  onClose
+  onClose,
 }) => {
   const { user: authUser, updateUser: updateAuthUser } = useAuth();
   const { data: users, refetch: refetchUsers } = useGetUsers();

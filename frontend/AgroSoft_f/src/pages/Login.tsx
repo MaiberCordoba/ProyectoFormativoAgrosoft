@@ -123,7 +123,7 @@ const Login = () => {
       </div>
 
       {registerModalUsers && (
-        <CrearUsersModal onClose={() => setRegisterModalUsers(false)} />
+        <CrearUsersModal onClose={() => setRegisterModalUsers(false)} /> 
       )}
       {solicitarRecuperacion && (
         <SolicitarRecuperacionModal

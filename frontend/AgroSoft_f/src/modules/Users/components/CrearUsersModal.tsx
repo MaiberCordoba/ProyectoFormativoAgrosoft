@@ -32,7 +32,7 @@ type UserFormInputs = z.infer<typeof userSchema>;
 
 interface CrearUsersModalProps {
   onClose: () => void;
-  onCreate : (nuevoUsuario: User) => void
+  onCreate? : (nuevoUsuario: User) => void
 }
 
 const ROLES = [
