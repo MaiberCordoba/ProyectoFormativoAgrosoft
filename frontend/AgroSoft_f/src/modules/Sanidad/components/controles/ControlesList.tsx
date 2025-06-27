@@ -52,7 +52,6 @@ export function ControlesList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     controlEliminado,
-    handleEliminar,
   } = useEliminarControl();
 
   const handleCrearNuevo = () => {

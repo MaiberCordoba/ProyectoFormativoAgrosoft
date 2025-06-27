@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { UsersList } from "../components/UsersList";
 import { useAuth } from "@/hooks/UseAuth";
-import { MapPage } from "@/modules/Trazabilidad/pages/MapaPage";
-import EditarPerfilModal from "../components/UserPerfil";
+import { Inicio } from "@/pages/Inicio";
 
 export function Usuarios() {
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -25,7 +24,7 @@ export function Usuarios() {
       {userRole === "admin" ? (
         <UsersList />
       ) : (
-        <EditarPerfilModal /> // Reemplaza con tu componente para no-admins
+        <Inicio /> // Reemplaza con tu componente para no-admins
       )}
     </div>
   );

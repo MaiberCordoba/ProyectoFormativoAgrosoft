@@ -36,7 +36,6 @@ export function EraList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     ErasEliminada,
-    handleEliminar,
   } = useEliminarEras();
 
   // Función para mostrar alerta de acceso denegado
@@ -64,15 +63,15 @@ export function EraList() {
       handleCrear({
         id: 0,
         tipo: "",
-        fk_lote: { nombre: "" },
-        latI1: null,
-        longI1: null,
-        latS1: null,
-        longS1: null,
-        latI2: null,
-        longI2: null,
-        latS2: null,
-        longS2: null,
+        fk_lote: 0,
+        latI1: 0,
+        longI1: 0,
+        latS1: 0,
+        longS1: 0,
+        latI2: 0,
+        longI2: 0,
+        latS2: 0,
+        longS2: 0,
       });
     } else {
       showAccessDenied();

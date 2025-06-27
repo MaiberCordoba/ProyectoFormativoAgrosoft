@@ -6,13 +6,14 @@ import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearLoteModal } from "../lotes/CrearLotesModal";
 import { addToast } from "@heroui/toast";
+import { Eras, Lotes } from "../../types";
 
 interface CrearEraModalProps {
   onClose: () => void;
-  onCreate: (nuevaEra: { id: number }) => void;
+  onCreate: (nuevaEra: Eras) => void;
 }
 
-export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
+export const CrearEraModal = ({ onClose, onCreate }: CrearEraModalProps) => {
   const [fk_lote, setFkLoteId] = useState<number | null>(null);
   const [tipo, setTipo] = useState("");
 
@@ -74,8 +75,9 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
     };
 
     mutate(payload, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         onClose();
+        onCreate(data);
         setFkLoteId(null);
         setTipo("");
         setLatI1("");
@@ -106,9 +108,9 @@ export const CrearEraModal = ({ onClose }: CrearEraModalProps) => {
     });
   };
 
-  const handleLoteCreado = (nuevoLote: { id: number }) => {
-    refetch();
-    setFkLoteId(nuevoLote.id);
+  const handleLoteCreado = async (nuevoLote:Lotes) => {
+     await refetch();
+    setFkLoteId(nuevoLote.id || null);
     setModalLoteVisible(false);
   };
 

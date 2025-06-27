@@ -2,7 +2,6 @@ import { useGetAfeccionesCultivo } from "../../hooks/afeccionescultivo/useGetAfe
 import { useEditarAfeccionCultivo } from "../../hooks/afeccionescultivo/useEditarAfeccionescultivo";
 import { useCrearAfeccionCultivo } from "../../hooks/afeccionescultivo/useCrearAfeccionescultivo";
 import { useEliminarAfeccionCultivo } from "../../hooks/afeccionescultivo/useEliminarAfeccionescultivo";
-import { useGetAfecciones } from "../../hooks/afecciones/useGetAfecciones";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarAfeccionCultivoModal from "./EditarAfeccionescultivoModal";
@@ -14,7 +13,6 @@ import { addToast } from "@heroui/toast"; // Importa addToast
 
 export function AfeccionesCultivoList() {
   const { data, isLoading, error } = useGetAfeccionesCultivo();
-  const { data: afecciones } = useGetAfecciones();
   const { user } = useAuth(); // Obtiene el usuario autenticado
   const userRole = user?.rol || null; // Obtiene el rol del usuario
 
@@ -54,7 +52,6 @@ export function AfeccionesCultivoList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     afeccionCultivoEliminada,
-    handleEliminar,
   } = useEliminarAfeccionCultivo();
 
   const handleCrearNuevo = () => {
@@ -64,6 +61,7 @@ export function AfeccionesCultivoList() {
 
     if (permitido) {
       handleCrear({
+        id:0,
         fk_Plantacion: 0,
         fk_Plaga: 0,
         fechaEncuentro: "",

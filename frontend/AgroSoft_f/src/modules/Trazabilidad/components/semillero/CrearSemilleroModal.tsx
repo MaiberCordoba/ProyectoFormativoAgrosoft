@@ -6,10 +6,11 @@ import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { CrearCultivoModal } from "../cultivos/CrearCultivosModal";
 import { addToast } from "@heroui/toast";
+import { Cultivo, Semillero } from "../../types";
 
 interface CrearSemilleroModalProps {
   onClose: () => void;
-  onCreate: (nuevoSemillero: { id: number }) => void;
+  onCreate: (nuevoSemillero: Semillero) => void;
 }
 
 export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalProps) => {
@@ -34,7 +35,7 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
     }
 
     mutate(
-      { unidades: Number(unidades), fechasiembra, fechaestimada, fk_Cultivo },
+      { id: 0, unidades, fechasiembra, fechaestimada, fk_Cultivo },
       {
         onSuccess: (data) => {
           onCreate(data);
@@ -48,9 +49,9 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
     );
   };
 
-  const handleCultivoCreado = (nuevoCultivo: { id: number }) => {
+  const handleCultivoCreado = (nuevoCultivo: Cultivo) => {
     refetch(); // actualiza la lista de cultivos
-    setFk_Cultivo(nuevoCultivo.id); // selecciona automáticamente el nuevo cultivo
+    setFk_Cultivo(nuevoCultivo.id || null); // selecciona automáticamente el nuevo cultivo
     setModalCultivoVisible(false);
   };
 
@@ -108,7 +109,7 @@ export const CrearSemilleroModal = ({ onClose, onCreate }: CrearSemilleroModalPr
                 }}
               >
                 {(cultivos || []).map((cultivo) => (
-                  <SelectItem key={cultivo.id.toString()}>
+                  <SelectItem key={cultivo.id?.toString()}>
                     {cultivo.nombre}
                   </SelectItem>
                 ))}

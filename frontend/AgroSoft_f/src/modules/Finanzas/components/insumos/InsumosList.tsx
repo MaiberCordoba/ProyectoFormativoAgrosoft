@@ -1,12 +1,10 @@
 import { useGetInsumos } from "../../hooks/insumos/useGetInsumos";
 import { useCrearInsumos } from "../../hooks/insumos/useCrearInsumos";
 import { useEditarInsumos } from "../../hooks/insumos/useEditarInsumos";
-import { useEliminarInsumos } from "../../hooks/insumos/useEliminarInsumos";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import { CrearInsumosModal } from "./CrearInsumosModal";
 import EditarInsumosModal from "./EditarInsumosModal";
-import EliminarInsumosModal from "./EliminarInsumos";
 import { Insumos } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
@@ -28,13 +26,6 @@ export function InsumosList() {
     insumoEditado,
     handleEditar,
   } = useEditarInsumos();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    insumoEliminado,
-    handleEliminar,
-  } = useEliminarInsumos();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -62,18 +53,23 @@ export function InsumosList() {
     handleActionWithPermission(
       () =>
         handleCrear({
-          id: null,
+          id: 0,
           nombre: "",
           fk_UnidadMedida: 0,
           descripcion: "",
+          compuestoActivo:"",
+          precio:0,
+          contenido:0,
+          unidades:0,
+          cantidadGramos:0
         }),
       ["admin", "instructor", "pasante"]
     );
   };
 
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
-    { name: "Descripción", uid: "descripcion" },
+    { name: "Nombre", uid: "nombre", sortable: true  },
+    { name: "Descripción", uid: "descripcion", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -113,18 +109,10 @@ export function InsumosList() {
         onCrearNuevo={handleCrearNuevo}
       />
 
-      {isCreateModalOpen && <CrearInsumosModal onClose={closeCreateModal} />}
+      {isCreateModalOpen && <CrearInsumosModal onClose={closeCreateModal} onCreate={handleCrear}/>}
 
       {isEditModalOpen && insumoEditado && (
         <EditarInsumosModal insumo={insumoEditado} onClose={closeEditModal} />
-      )}
-
-      {isDeleteModalOpen && insumoEliminado && (
-        <EliminarInsumosModal
-          insumo={insumoEliminado}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
       )}
     </div>
   );

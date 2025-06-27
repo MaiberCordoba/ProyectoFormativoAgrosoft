@@ -1,14 +1,14 @@
 export interface User {
   id: number;
-  identificacion: number;
+  identificacion: number | string;
   nombre: string;
   apellidos: string;
   telefono: string;
   correoElectronico: string;
   rol: string;
-  admin: boolean;
+  admin?: boolean;
   password?: string;
-  estado: string;
+  estado?: string;
 }
 
 export interface SensorData {

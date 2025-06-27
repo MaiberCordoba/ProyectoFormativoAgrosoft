@@ -6,7 +6,7 @@ import { useGetUnidadesTiempo } from "@/modules/Finanzas/hooks/unidadesTiempo/us
 import { useGetControles } from "@/modules/Sanidad/hooks/controles/useGetControless";
 import { useGetSalarios } from "@/modules/Finanzas/hooks/salarios/useGetSalarios";
 import { usePostTiempoActividadControl } from "../../hooks/tiempoActividadControl/usePostTiempoActividadDesecho";
-import { Actividades, Salarios, TiempoActividadControl, UnidadesTiempo } from "../../types";
+import { Actividades, Salarios, TiempoActividadControlDTO, UnidadesTiempo } from "../../types";
 import { Controles } from "@/modules/Sanidad/types";
 import { Plus } from "lucide-react";
 import { CrearActividadesModal } from "../actividades/CrearActividadModal";
@@ -17,15 +17,15 @@ import { addToast } from "@heroui/toast";
 
 interface CrearTiempoActividadControlModalProps {
   onClose: () => void;
-  onCreate: (nuevoTiempoAC: TiempoActividadControl) => void
+  onCreate?: (nuevoTiempoAC: TiempoActividadControlDTO) => void
 }
 
 export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActividadControlModalProps) => {
   const [tiempo, setTiempo] = useState(0);
-  const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number | null>(null);
-  const [fk_actividad, setFk_Actividad] = useState<number | null>(null);
-  const [fk_control, setFk_Control] = useState<number | null>(null);
-  const [fk_salario, setFk_Salario] = useState<number | null>(null);
+  const [fk_unidadTiempo, setFk_UnidadTiempo] = useState<number | undefined>(undefined);
+  const [fk_actividad, setFk_Actividad] = useState<number | undefined>(undefined);
+  const [fk_control, setFk_Control] = useState<number | undefined>(undefined);
+  const [fk_salario, setFk_Salario] = useState<number | undefined>(undefined);
 
   const [actividadModal, setActividadModal] = useState(false)
   const [unidadTiempoModal, setUnidadTiempoModal] = useState(false)
@@ -69,15 +69,18 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
     setError("")
 
     mutate(
-      {tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
+      {id:0,tiempo,fk_unidadTiempo, fk_actividad, fk_control, fk_salario },
       {
         onSuccess: () => {
+
+          refetchActividad()
+          
           onClose();
           setTiempo(0);
-          setFk_UnidadTiempo(null);
-          setFk_Actividad(null);
-          setFk_Control(null);
-          setFk_Salario(null);
+          setFk_UnidadTiempo(undefined);
+          setFk_Actividad(undefined);
+          setFk_Control(undefined);
+          setFk_Salario(undefined);
           setError("")
         },
       }
@@ -141,7 +144,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
                 selectedKeys={fk_unidadTiempo ? [fk_unidadTiempo.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_UnidadTiempo(selectedKey ? Number(selectedKey) : null);
+                  setFk_UnidadTiempo(selectedKey ? Number(selectedKey) : undefined);
                 }}
                 >
                 {(unidadesTiempo || []).map((unidad) => (
@@ -172,7 +175,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
             selectedKeys={fk_actividad ? [fk_actividad.toString()] : []}
             onSelectionChange={(keys) => {
               const selectedKey = Array.from(keys)[0];
-              setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+              setFk_Actividad(selectedKey ? Number(selectedKey) : undefined);
             }}
             >
               {(actividades || [])
@@ -205,7 +208,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
               selectedKeys={fk_control ? [fk_control.toString()] : []}
               onSelectionChange={(keys) => {
                 const selectedKey = Array.from(keys)[0];
-                setFk_Control(selectedKey ? Number(selectedKey) : null);
+                setFk_Control(selectedKey ? Number(selectedKey) : undefined);
               }}
               >
               {(controles || []).map((control) => (
@@ -236,7 +239,7 @@ export const CrearTiempoActividadControlModal = ({ onClose }: CrearTiempoActivid
               selectedKeys={fk_salario ? [fk_salario.toString()] : []}
               onSelectionChange={(keys) => {
                 const selectedKey = Array.from(keys)[0];
-                setFk_Salario(selectedKey ? Number(selectedKey) : null);
+                setFk_Salario(selectedKey ? Number(selectedKey) : undefined);
               }}
             >
               {(salarios || []).map((salario) => (

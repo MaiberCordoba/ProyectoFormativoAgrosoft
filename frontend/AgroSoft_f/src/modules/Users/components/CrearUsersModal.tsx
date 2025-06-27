@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import {  ChangeEvent } from "react";
 import ModalComponent from "@/components/Modal";
 import { Input, Select, SelectItem } from "@heroui/react";
 import { usePostUsers } from "../hooks/usePostUsers";
@@ -15,6 +15,7 @@ import {
   passwordSchema,
 } from "@/schemas/validacionesTypes";
 import { addToast } from "@heroui/toast"; // Asumo que esta importación es correcta
+import { User } from "../types";
 
 const userSchema = z.object({
   id: z.number().optional(),
@@ -31,6 +32,7 @@ type UserFormInputs = z.infer<typeof userSchema>;
 
 interface CrearUsersModalProps {
   onClose: () => void;
+  onCreate : (nuevoUsuario: User) => void
 }
 
 const ROLES = [
@@ -52,7 +54,7 @@ export const CrearUsersModal = ({ onClose }: CrearUsersModalProps) => {
   } = useForm<UserFormInputs>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      identificacion: "",
+      identificacion:"",
       nombre: "",
       apellidos: "",
       telefono: "",

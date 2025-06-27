@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ModalComponent from '@/components/Modal';
 import { usePatchAfecciones } from '../../hooks/afecciones/usePatchAfecciones';
 import { Afecciones } from '../../types';
-import { Button, Image, Input, Textarea, Select, SelectItem } from '@heroui/react';
+import { Button,Input, Textarea, Select, SelectItem } from '@heroui/react';
 import { useGetTipoAfecciones } from '../../hooks/tiposAfecciones/useGetTipoAfecciones'; 
 
 interface EditarAfeccionModalProps {

@@ -1,12 +1,10 @@
 import { useGetUnidadesTiempo } from "../../hooks/unidadesTiempo/useGetUnidadesTiempo";
 import { useEditarUnidadesTiempo } from "../../hooks/unidadesTiempo/useEditarUnidadesTiempo";
 import { useCrearUnidadesTiempo } from "../../hooks/unidadesTiempo/useCrearUnidadesTiempo";
-import { useEliminarUnidadesTiempo } from "../../hooks/unidadesTiempo/useEliminarUnidadesTiempo";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarUnidadesTiempoModal from "./EditarUnidadesTiempoModal";
 import { CrearUnidadesTiempoModal } from "./CrearUnidadesTiempoModal";
-import EliminarUnidadesTiempoModal from "./EliminarUnidadesTiempo";
 import { UnidadesTiempo } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
@@ -28,13 +26,6 @@ export function UnidadesTiempoList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUnidadesTiempo();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    unidadTiempoEliminada,
-    handleEliminar,
-  } = useEliminarUnidadesTiempo();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -66,8 +57,8 @@ export function UnidadesTiempoList() {
   };
 
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
-    { name: "Equivalencia minutos", uid: "equivalenciaMinutos" },
+    { name: "Nombre", uid: "nombre", sortable: true  },
+    { name: "Equivalencia minutos", uid: "equivalenciaMinutos", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -113,15 +104,7 @@ export function UnidadesTiempoList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearUnidadesTiempoModal onClose={closeCreateModal} />
-      )}
-
-      {isDeleteModalOpen && unidadTiempoEliminada && (
-        <EliminarUnidadesTiempoModal
-          unidadTiempo={unidadTiempoEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <CrearUnidadesTiempoModal onClose={closeCreateModal} onCreate={handleCrear} />
       )}
     </div>
   );

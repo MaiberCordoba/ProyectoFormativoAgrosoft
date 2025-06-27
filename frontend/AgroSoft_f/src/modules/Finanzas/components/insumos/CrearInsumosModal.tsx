@@ -70,10 +70,11 @@ export const CrearInsumosModal = ({ onClose }: CrearInsumosModalProps) => {
       formData.append("precio",precio.toString())
       formData.append("compuestoActivo",compuestoActivo)
       formData.append("contenido",contenido.toString())
-      formData.append("fichaTecnica",fichaTecnica)
       formData.append("unidades",unidades.toString())
       formData.append("fk_UnidadMedida",fk_UnidadMedida.toString())
-
+      if (fichaTecnica){
+        formData.append("fichaTecnica",fichaTecnica)
+      }
     mutate(formData,
       {
         onSuccess: () => {

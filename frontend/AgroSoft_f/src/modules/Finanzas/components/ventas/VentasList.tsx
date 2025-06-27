@@ -1,12 +1,10 @@
 import { useGetVentas } from "../../hooks/ventas/useGetVentas";
 import { useEditarVenta } from "../../hooks/ventas/useEditarVentas";
 import { useCrearVenta } from "../../hooks/ventas/useCrearVentas";
-import { useEliminarVenta } from "../../hooks/ventas/useEliminarVentas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarVentasModal from "./EditarVentasModal";
 import { CrearVentasModal } from "./CrearVentasModal";
-import EliminarVentaModal from "./EliminarVentas";
 import { Ventas } from "../../types";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
@@ -35,12 +33,6 @@ export function VentasList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearVenta();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    ventaEliminada,
-  } = useEliminarVenta();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -80,11 +72,11 @@ export function VentasList() {
   };
 
   const columnas = [
-    { name: "Fecha Venta", uid: "fecha" },
-    { name: "Producto", uid: "cosecha" },
-    { name: "Cantidad", uid: "cantidad" },
-    { name: "Unidad de medida", uid: "unidadMedida" },
-    { name: "Valor Total de venta", uid: "valorTotal" },
+    { name: "Fecha Venta", uid: "fecha", sortable: true  },
+    { name: "Producto", uid: "cosecha", sortable: true  },
+    { name: "Cantidad", uid: "cantidad", sortable: true  },
+    { name: "Unidad de medida", uid: "unidadMedida", sortable: true  },
+    { name: "Valor Total de venta", uid: "valorTotal", sortable: true  },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -145,15 +137,7 @@ export function VentasList() {
         <EditarVentasModal venta={ventaEditada} onClose={closeEditModal} />
       )}
 
-      {isCreateModalOpen && <CrearVentasModal onClose={closeCreateModal} />}
-
-      {isDeleteModalOpen && ventaEliminada && (
-        <EliminarVentaModal
-          venta={ventaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
-      )}
+      {isCreateModalOpen && <CrearVentasModal onClose={closeCreateModal} onCreate={handleCrear} />}
     </div>
   );
 }

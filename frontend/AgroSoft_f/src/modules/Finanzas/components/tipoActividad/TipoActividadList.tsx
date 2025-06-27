@@ -1,12 +1,10 @@
 import { useGetTipoActividad } from "../../hooks/tipoActividad/useGetTiposActividad";
 import { useEditarTipoActividad } from "../../hooks/tipoActividad/useEditarTiposActividad";
 import { useCrearTipoActividad } from "../../hooks/tipoActividad/useCrearTiposActividad";
-import { useEliminarTipoActividad } from "../../hooks/tipoActividad/useEliminarTiposActividad";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarTipoActividadModal from "./EditarTipoActividadModal";
 import { CrearTipoActividadModal } from "./CrearTipoActividadModal";
-import EliminarTipoActividadModal from "./EliminarTipoActividad";
 import { TipoActividad } from "../../types";
 import { useAuth } from "@/hooks/UseAuth"; // Asegúrate de que la ruta sea correcta
 import { addToast } from "@heroui/toast";
@@ -28,13 +26,6 @@ export function TipoActividadList() {
     closeModal: closeCreateModal,
     handleCrear, // Esta función abre el modal de creación
   } = useCrearTipoActividad();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    tipoActividadEliminada,
-    handleEliminar, // Esta función abre el modal de eliminación
-  } = useEliminarTipoActividad();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -64,17 +55,11 @@ export function TipoActividadList() {
   };
 
   // Función para manejar la eliminación con verificación de permisos
-  const handleEliminarConPermiso = (item: TipoActividad) => {
-    if (hasRole("admin")) {
-      handleEliminar(item); // Abre el modal de eliminación
-    } else {
-      showAccessDenied();
-    }
-  };
+
 
   // Columnas de la tabla (Acciones siempre visible)
   const columnas = [
-    { name: "Nombre", uid: "nombre" },
+    { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Acciones", uid: "acciones" }, // La columna de acciones siempre está presente
   ];
 
@@ -118,15 +103,7 @@ export function TipoActividadList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearTipoActividadModal onClose={closeCreateModal} />
-      )}
-
-      {isDeleteModalOpen && tipoActividadEliminada && (
-        <EliminarTipoActividadModal
-          tipoActividad={tipoActividadEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <CrearTipoActividadModal onClose={closeCreateModal} onCreate={handleCrear} />
       )}
     </div>
   );

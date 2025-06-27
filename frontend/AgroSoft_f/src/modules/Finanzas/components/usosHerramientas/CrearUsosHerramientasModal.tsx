@@ -19,9 +19,9 @@ interface CrearUsoHerramientaModalProps {
 }
 
 export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalProps) => {
-  const [fk_Herramienta, setFk_Herramienta] = useState<number | null>(null);
-  const [fk_Actividad, setFk_Actividad] = useState<number | null>(null);
-  const [fk_Control, setFk_Control] = useState<number | null>(null);
+  const [fk_Herramienta, setFk_Herramienta] = useState<number | undefined>(undefined);
+  const [fk_Actividad, setFk_Actividad] = useState<number | undefined>(undefined);
+  const [fk_Control, setFk_Control] = useState<number | undefined>(undefined);
   const [unidades, setUnidades] = useState(0)
   const [error,setError] = useState("")
 
@@ -60,6 +60,10 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
       return
     }
     const herramientaSeleccionada = herramientas?.find(h => h.id === fk_Herramienta);
+    if(!herramientaSeleccionada){
+      setError("Herramienta no valida o no seleccionada")
+      return
+    }
 
     if (unidades > herramientaSeleccionada.unidades){
       setError(`Solo hay disponibles ${herramientaSeleccionada?.unidades} unidades de esta herramienta.`)
@@ -68,13 +72,15 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
     setError("")
 
     mutate(
-      { fk_Herramienta, fk_Actividad,fk_Control, unidades },
+      {id:0, fk_Herramienta, fk_Actividad,fk_Control, unidades },
       {
         onSuccess: () => {
+          refetchHerramienta()
+          
           onClose();
-          setFk_Herramienta(null);
-          setFk_Actividad(null);
-          setFk_Control(null);
+          setFk_Herramienta(undefined);
+          setFk_Actividad(undefined);
+          setFk_Control(undefined);
           setUnidades(0)
           setError("")
         },
@@ -133,7 +139,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
                 selectedKeys={fk_Herramienta ? [fk_Herramienta.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Herramienta(selectedKey ? Number(selectedKey) : null);
+                  setFk_Herramienta(selectedKey ? Number(selectedKey) : undefined);
                 }}
                 >
                 {(herramientas || []).map((herramienta) => (
@@ -174,7 +180,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
               selectedKeys={fk_Actividad ? [fk_Actividad.toString()] : []}
               onSelectionChange={(keys) => {
                 const selectedKey = Array.from(keys)[0];
-                setFk_Actividad(selectedKey ? Number(selectedKey) : null);
+                setFk_Actividad(selectedKey ? Number(selectedKey) : undefined);
               }}
             >
               {(actividades || []).map((actividad) => (
@@ -207,7 +213,7 @@ export const CrearUsoHerramientaModal = ({ onClose }: CrearUsoHerramientaModalPr
               selectedKeys={fk_Control ? [fk_Control.toString()] : []}
               onSelectionChange={(keys) => {
                 const selectedKey = Array.from(keys)[0];
-                setFk_Control(selectedKey ? Number(selectedKey) : null);
+                setFk_Control(selectedKey ? Number(selectedKey) : undefined);
               }}
             >
               {(controles || []).map((control) => (

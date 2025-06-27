@@ -25,6 +25,7 @@ interface FormModalProps {
     options?: { label: string; value: string }[];
   }>;
   initialValues?: Record<string, any>;
+  loading?: boolean;
 }
 
 const FormModal: React.FC<FormModalProps> = ({
@@ -76,7 +77,7 @@ const FormModal: React.FC<FormModalProps> = ({
                         onChange={(value) => handleChange(field.name, value)}
                       >
                         {field.options?.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
+                          <SelectItem key={option.value} >
                             {option.label}
                           </SelectItem>
                         ))}
@@ -97,7 +98,12 @@ const FormModal: React.FC<FormModalProps> = ({
               <Button color="danger" variant="flat" onPress={onClose}>
                 Cancelar
               </Button>
-              <Button color="primary" onPress={handleSubmit}>
+              <Button 
+                color="primary" 
+                onPress={handleSubmit}
+                isDisabled
+                isLoading // si quieres que muestre spinner, según tu librería
+              >
                 Guardar
               </Button>
             </ModalFooter>

@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, Image, Chip } from "@heroui/react";
+import { Card, CardHeader, CardBody, Chip } from "@heroui/react";
 import { ResumenEconomicoListado } from "../../types";
 
 interface CultivoResumenCardProps {

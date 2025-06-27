@@ -4,10 +4,11 @@ import ModalComponent from "@/components/Modal";
 import { Input } from "@heroui/react";
 import { UnidadesTiempo } from "../../types";
 import { addToast } from "@heroui/toast";
+import { useGetUnidadesTiempo } from "../../hooks/unidadesTiempo/useGetUnidadesTiempo";
 
 interface CrearUnidadesTiempoModalProps {
   onClose: () => void;
-  onCreate: (nuevaUnidadTiempo : UnidadesTiempo) => void
+  onCreate: (nuevaUnidadTiempo: UnidadesTiempo) => void
 }
 
 
@@ -16,30 +17,43 @@ export const CrearUnidadesTiempoModal = ({
 }: CrearUnidadesTiempoModalProps) => {
   const [nombre, setNombre] = useState("");
   const [equivalenciaMinutos, setEquivalenciaMinutos] = useState(0);
-  const [error,setError] = useState("")
+  const [error, setError] = useState("")
 
   const { mutate, isPending } = usePostUnidadesTiempo();
+  const { data: unidadTiempo} =useGetUnidadesTiempo()
 
   const handleSubmit = () => {
-    if (!nombre  || !equivalenciaMinutos) {
+    if (!nombre || !equivalenciaMinutos) {
       addToast({
-        title:"Campos requeridos",
-        description:"Por favor, completa todos los campos.",
-        color:"danger"
+        title: "Campos requeridos",
+        description: "Por favor, completa todos los campos.",
+        color: "danger"
       })
       return;
     }
-    if (equivalenciaMinutos < 0){
+    if (equivalenciaMinutos < 0) {
       addToast({
-        title:"Valores invalidos",
-        description:"Por favor, ingresa valores positivos.",
-        color:"danger"
+        title: "Valores invalidos",
+        description: "Por favor, ingresa valores positivos.",
+        color: "danger"
       })
       return
     }
+    const nombreExiste = unidadTiempo?.some(
+      (a) => a.nombre.toLowerCase().trim() === nombre.toLowerCase().trim()
+    );
+
+    if (nombreExiste) {
+      addToast({
+        title: "Valores duplicados",
+        description: "El nombre de ese tipo de actividad ya existe.",
+        color: "danger",
+      });
+      return;
+    }
     setError("")
     mutate(
-      { id:0,nombre, equivalenciaMinutos },
+      { id: 0, nombre, equivalenciaMinutos },
       {
         onSuccess: () => {
           onClose();

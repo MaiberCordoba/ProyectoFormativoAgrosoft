@@ -1,12 +1,10 @@
 import { useGetUsosHerramientas } from "../../hooks/usosHerramientas/useGetUsosHerramientas";
 import { useEditarUsoHerramienta } from "../../hooks/usosHerramientas/useEditarUsosHerramientas";
 import { useCrearUsosHerramienta } from "../../hooks/usosHerramientas/useCrearUsosHerramientas";
-import { useEliminarUsoHerramienta } from "../../hooks/usosHerramientas/useEliminarUsosHerramientas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import EditarUsosHerramientasModal from "./EditarUsosHerramientasModal";
 import { CrearUsoHerramientaModal } from "./CrearUsosHerramientasModal";
-import EliminarUsosHerramientasModal from "./EliminarUsosHerramientas";
 import { UsosHerramientas } from "../../types";
 import { useGetHerramientas } from "../../hooks/herramientas/useGetHerramientas";
 import { useGetActividades } from "../../hooks/actividades/useGetActividades";
@@ -33,13 +31,6 @@ export function UsosHerramientasList() {
     closeModal: closeCreateModal,
     handleCrear,
   } = useCrearUsosHerramienta();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    closeModal: closeDeleteModal,
-    usoHerramientaEliminada,
-    handleEliminar,
-  } = useEliminarUsoHerramienta();
 
   // Función para mostrar alerta de acceso denegado
   const showAccessDenied = () => {
@@ -79,11 +70,11 @@ export function UsosHerramientasList() {
 
   // Definición de columnas
   const columnas = [
-    { name: "Herramienta", uid: "herramienta" },
-    { name: "Actividad", uid: "actividad" },
-    { name: "Control", uid: "control" },
-    { name: "Unidades", uid: "unidades"},
-    { name: "Acciones", uid: "acciones" },
+    { name: "Herramienta", uid: "herramienta", sortable: true  },
+    { name: "Actividad", uid: "actividad", sortable: true  },
+    { name: "Control", uid: "control", sortable: true  },
+    { name: "Unidades", uid: "unidades", sortable: true },
+    { name: "Acciones", uid: "acciones", sortable: true  },
   ];
 
   // Función de renderizado
@@ -108,12 +99,6 @@ export function UsosHerramientasList() {
             onEditar={() =>
               handleActionWithPermission(
                 () => handleEditar(item),
-                ["admin", "instructor"]
-              )
-            }
-            onEliminar={() =>
-              handleActionWithPermission(
-                () => handleEliminar(item),
                 ["admin", "instructor"]
               )
             }
@@ -148,15 +133,7 @@ export function UsosHerramientasList() {
       )}
 
       {isCreateModalOpen && (
-        <CrearUsoHerramientaModal onClose={closeCreateModal} />
-      )}
-
-      {isDeleteModalOpen && usoHerramientaEliminada && (
-        <EliminarUsosHerramientasModal
-          usoHerramienta={usoHerramientaEliminada}
-          isOpen={isDeleteModalOpen}
-          onClose={closeDeleteModal}
-        />
+        <CrearUsoHerramientaModal onClose={closeCreateModal} onCreate={handleCrear} />
       )}
     </div>
   );

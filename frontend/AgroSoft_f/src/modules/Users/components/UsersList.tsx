@@ -34,7 +34,6 @@ export function UsersList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     UsersEliminada,
-    handleEliminar,
   } = useEliminarUsers();
 
   const [isRegistroMasivoOpen, setIsRegistroMasivoOpen] = useState(false);
@@ -162,7 +161,7 @@ export function UsersList() {
       />
 
       {/* Mostrar previsualización solo cuando showPreview sea true */}
-      {showPreview && (
+      {showPreview && reporteData && (
         <div className="border rounded mt-4 relative">
           <h2 className="text-sm font-semibold px-2 py-1 bg-gray-100 flex justify-between items-center">
             Vista previa del PDF
@@ -175,7 +174,7 @@ export function UsersList() {
             </button>
           </h2>
           <PDFViewer width="100%" height={600}>
-            <ReportePdfUsuarios data={reporteData || []} />
+            <ReportePdfUsuarios data={reporteData} />
           </PDFViewer>
         </div>
       )}

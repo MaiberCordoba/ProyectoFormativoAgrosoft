@@ -52,7 +52,6 @@ export function TipoControlList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     tipoControlEliminado,
-    handleEliminar,
   } = useEliminarTipoControl();
 
   const handleCrearNuevo = () => {

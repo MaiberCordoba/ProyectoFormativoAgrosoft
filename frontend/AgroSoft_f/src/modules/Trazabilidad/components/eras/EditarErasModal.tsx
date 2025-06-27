@@ -12,7 +12,7 @@ interface EditarEraModalProps {
 }
 
 const EditarEraModal: React.FC<EditarEraModalProps> = ({ era, onClose }) => {
-  const [fk_lote, setFkLoteId] = useState<number | null>(era.fk_lote?.id ?? null);
+  const [fk_lote, setFkLoteId] = useState<number | null>(era.fk_lote);
   const [tipo, setTipo] = useState(era.tipo ?? "");
 
   const [latI1, setLatI1] = useState<number | null>(era.latI1 ?? null);

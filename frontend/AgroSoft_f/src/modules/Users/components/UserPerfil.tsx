@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { User } from "@/modules/Users/types";
-import { Input, Button } from "@heroui/react";
+import { Input } from "@heroui/react";
 import ModalComponent from "@/components/Modal";
 import { useAuth } from "@/hooks/UseAuth";
 import { usePatchUsers } from "../hooks/usePatchUsers";
@@ -65,22 +65,29 @@ const EditarPerfilModal: React.FC<EditarPerfilModalProps> = ({
     return;
   }
 
+  function convertValue(key: keyof User, value: string): string | number {
+  switch (key) {
+    case 'identificacion':
+      return Number(value);
+    default:
+      return value;
+  }
+}
+
   const changedData: Partial<User> = {};
   
   // Campos normales (excluyendo password)
-  Object.keys(userData).forEach(key => {
-    if (key === "password") return; // Saltamos password aquí
-    
-    const userKey = key as keyof User;
-    const currentValue = userData[key as keyof typeof userData];
-    const originalValue = currentUser[userKey]?.toString() || "";
-    
-    if (currentValue !== originalValue) {
-      changedData[userKey] = userKey === 'identificacion' 
-        ? Number(currentValue)
-        : currentValue;
-    }
-  });
+Object.keys(userData).forEach(key => {
+  if (key === "password") return;
+
+  const userKey = key as keyof User;
+  const currentValue = userData[key as keyof typeof userData];
+  const originalValue = currentUser[userKey]?.toString() || "";
+
+  if (currentValue !== originalValue) {
+    changedData[userKey] = convertValue(userKey, currentValue) as any;
+  }
+});
   
   // Manejo especial para password: solo si no está vacío y es diferente
   if (

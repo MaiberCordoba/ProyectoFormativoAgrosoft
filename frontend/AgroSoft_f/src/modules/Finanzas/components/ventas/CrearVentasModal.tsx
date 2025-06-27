@@ -17,11 +17,12 @@ interface CrearVentasModalProps {
 }
 
 export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
-  const [fk_Cosecha, setFk_Cosecha] = useState<number | null>(null);
-  const [valorTotal, setValorTotal] = useState<number | null>(null);
+  const [fk_Cosecha, setFk_Cosecha] = useState<number | undefined>(undefined);
+  const [valorTotal, setValorTotal] = useState<number | undefined>(undefined);
   const [descuento, setDescuento] = useState(0);
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(null);
+  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | undefined>(undefined);
   const [cantidad, setCantidad] = useState(0);
+  const [cantidadDisponible, setCantidadDisponible] = useState<number | undefined>(undefined);
   const [error, setError] = useState("");
 
   const [CosechaModal, setCosechaModal] = useState(false);
@@ -76,7 +77,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       setError(`La cantidad ingresada ${cantidadEnBase} (g), excede la cantidad disponible ${cosechaSeleccionada.cantidadTotal} (g).`);
       return;
     }
-    if (cantidad < 0 || descuento < 0) {
+    if (cantidad < 0) {
       addToast({
         title: "Valores invalidos",
         description: "Por favor, ingresa valores positivos.",
@@ -85,17 +86,28 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
       return
     }
 
+    if (descuento < 0 || descuento > 100) {
+      addToast({
+        title: "Valores Invalidos",
+        description: "El descuento no puede ser menor a 0 o mayor a 100",
+        color: "danger"
+      })
+      return
+    }
+
     setError("");
 
     mutate(
-      { fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad, descuento },
+      { id:0,fk_Cosecha, valorTotal, fk_UnidadMedida, cantidad, descuento },
       {
         onSuccess: () => {
+          refetchCosecha()
+
           onClose();
-          setFk_Cosecha(null);
+          setFk_Cosecha(undefined);
           setDescuento(0);
           setValorTotal(0);
-          setFk_UnidadMedida(null);
+          setFk_UnidadMedida(undefined);
           setCantidad(0);
           setError("");
         },
@@ -142,26 +154,31 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
                 selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_Cosecha(selectedKey ? Number(selectedKey) : null);
+                  const idSeleccionado = selectedKey ? Number(selectedKey) : undefined;
+                  setFk_Cosecha(idSeleccionado);
+
+                  // Buscar y guardar cantidad disponible
+                  const cosechaSeleccionada = cosechas?.find(c => c.id === idSeleccionado);
+                  setCantidadDisponible(cosechaSeleccionada?.cantidadTotal ?? undefined);
                 }}
               >
                 {(cosechas || [])
-                .filter((cosecha)=> cosecha.cantidadTotal > 0)
-                .map((cosecha) => {
-                  const plantacion = plantaciones?.find(p => p.id === cosecha.fk_Plantacion);
-                  const producto = plantacion?.cultivo?.nombre || "Sin producto";
-                  return (
-                    <SelectItem
-                      key={cosecha.id.toString()}
-                      textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidad}`}
-                    >
-                      <div className="flex flex-col">
-                        <span className="font-semibold">Producto: {producto}</span>
-                        <span>Cantidad: {cosecha.cantidadTotal} (g)</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
+                  .filter((cosecha) => cosecha.cantidadTotal > 0)
+                  .map((cosecha) => {
+                    const plantacion = plantaciones?.find(p => p.id === cosecha.fk_Plantacion);
+                    const producto = plantacion?.cultivo?.nombre || "Sin producto";
+                    return (
+                      <SelectItem
+                        key={cosecha.id.toString()}
+                        textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidad}`}
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-semibold">Producto: {producto}</span>
+                          <span>Cantidad: {cosecha.cantidadTotal} (g)</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
               </Select>
             </div>
             <Button
@@ -174,6 +191,30 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
             </Button>
           </div>
         )}
+
+        {cantidadDisponible !== undefined && fk_UnidadMedida && unidadesMedida && (
+          (() => {
+            const unidadSeleccionada = unidadesMedida.find(u => u.id === fk_UnidadMedida);
+            if (!unidadSeleccionada) return undefined;
+
+            const cantidadEnGramos = cantidad * unidadSeleccionada.equivalenciabase;
+            const cantidadRestante = cantidadDisponible - cantidadEnGramos;
+
+            return (
+              <div className="mt-2 text-sm">
+                <p className="text-gray-700">
+                  <strong>Disponible:</strong> {cantidadDisponible.toFixed(2)} g
+                </p>
+                <p className={cantidadRestante < 0 ? "text-red-500" : "text-green-600"}>
+                  <strong>Restante:</strong> {cantidadRestante > 0 ? cantidadRestante.toFixed(2) : 0} g
+                </p>
+              </div>
+            );
+          })()
+        )}
+
+
+
         <Input
           label="Cantidad de producto"
           type="number"
@@ -194,7 +235,7 @@ export const CrearVentasModal = ({ onClose }: CrearVentasModalProps) => {
                 selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
-                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : undefined);
                 }}
               >
                 {(unidadesMedida || []).map((unidadMedida) => (

@@ -53,7 +53,6 @@ export function TiposEspecieList() {
     isOpen: isDeleteModalOpen,
     closeModal: closeDeleteModal,
     TiposEspecieEliminada,
-    handleEliminar
   } = useEliminarTiposEspecie();
 
   const handleCrearNuevo = () => {

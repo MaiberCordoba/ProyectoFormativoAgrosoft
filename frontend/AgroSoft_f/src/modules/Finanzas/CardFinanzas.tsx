@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGetPlantaciones } from "../Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { useGetCosechas } from "./hooks/cosechas/useGetCosechas";
-import { CrearVentasModal } from "./components/ventas/CrearVentasModal";
 import { Cosechas } from "./types";
 import { useGetInsumos } from "./hooks/insumos/useGetInsumos";
 import { useGetUnidadesMedida } from "./hooks/unidadesMedida/useGetUnidadesMedida";
@@ -11,102 +10,78 @@ import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
 
 export function CosechasResumenCard() {
-  const [modalVentas, setModalVentas] = useState(false);
-  const [cosechaSeleccionada, setCosechaSeleccionada] =
-    useState<Cosechas | null>(null);
-
   const {
     data: cosechas = [],
     isLoading: loadingCosechas,
     isError,
   } = useGetCosechas();
-  const { data: plantaciones = [], isLoading: loadingPlantaciones } =
-    useGetPlantaciones();
-  const { user } = useAuth();
-  const userRole = user?.rol || null;
-
-  // Función para mostrar alerta de acceso denegado
-  const showAccessDenied = () => {
-    addToast({
-      title: "Acción no permitida",
-      description: "No tienes permiso para realizar esta acción",
-      color: "danger",
-    });
-  };
+  const { data: plantaciones = [], isLoading: loadingPlantaciones } = useGetPlantaciones();
 
   // Función para manejar acciones con verificación de permisos
-  const handleActionWithPermission = (
-    action: () => void,
-    requiredRoles: string[]
-  ) => {
-    if (requiredRoles.includes(userRole || "")) {
-      action();
-    } else {
-      showAccessDenied();
-    }
-  };
-
   if (loadingCosechas || loadingPlantaciones) return <p>Cargando...</p>;
   if (isError) return <p>Hubo un error al cargar la información</p>;
 
-  const handleVentaCosecha = (cosecha: Cosechas) => {
-    handleActionWithPermission(() => {
-      setCosechaSeleccionada(cosecha);
-      setModalVentas(true);
-    }, ["admin", "instructor", "pasante"]);
-  };
+  // Agrupar cosechas por cultivo
+  const cosechasPorCultivo = cosechas.reduce((acc, cosecha) => {
+    const plantacion = plantaciones.find((p) => p.id === cosecha.fk_Plantacion);
+    const cultivoId = plantacion?.cultivo?.id;
+    if (!cultivoId || !cosecha.cantidadTotal || cosecha.cantidadTotal <= 0) return acc;
 
+    if (!acc[cultivoId]) {
+      acc[cultivoId] = {
+        nombreCultivo: plantacion?.cultivo?.nombre ?? "Desconocido",
+        imagenEspecie: plantacion?.cultivo?.especies?.img,
+        nombreEspecie: plantacion?.cultivo?.especies?.nombre ?? "Desconocido",
+        cantidadTotal: 0,
+        valorTotal: 0,
+        valorGramo: cosecha.valorGramo, // Asumimos que el valor por gramo es el mismo para todas las cosechas del cultivo
+        fechaMasReciente: cosecha.fecha,
+        cosechas: [],
+      };
+    }
+
+    acc[cultivoId].cosechas.push(cosecha);
+    acc[cultivoId].cantidadTotal += cosecha.cantidadTotal;
+    acc[cultivoId].valorTotal += cosecha.valorTotal;
+    // Actualizar la fecha más reciente
+    if (new Date(cosecha.fecha) > new Date(acc[cultivoId].fechaMasReciente)) {
+      acc[cultivoId].fechaMasReciente = cosecha.fecha;
+    }
+
+    return acc;
+  }, {} as Record<string, {
+    nombreCultivo: string;
+    imagenEspecie: string | undefined;
+    nombreEspecie: string;
+    cantidadTotal: number;
+    valorTotal: number;
+    valorGramo: number;
+    fechaMasReciente: string;
+    cosechas: Cosechas[];
+  }>);
   return (
     <div className="flex flex-wrap gap-4 mb-6">
-      {cosechas.map((cosecha) => {
-        const plantacion = plantaciones.find(
-          (p) => p.id === cosecha.fk_Plantacion
-        );
-
-        if (!cosecha.cantidadTotal || cosecha.cantidadTotal <= 0) return null;
-
-        const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
-        const imagenEspecie = plantacion?.cultivo?.especies?.img;
-        const nombreEspecie =
-          plantacion?.cultivo?.especies?.nombre ?? "Desconocido";
-
-        return (
-          <CustomCard
-            key={cosecha.id}
-            title={nombreCultivo}
-            image={imagenEspecie}
-            data={{
-              Especie: nombreEspecie,
-
-              Cantidad: cosecha.cantidadTotal + "(g)",
-              "Valor *(g)": cosecha.valorGramo,
-              "Valor cosecha": `$${cosecha.valorTotal}`,
-              "Fecha Cosecha": cosecha.fecha,
-            }}
-            backgroundColor="white"
-            borderColor="green-500"
-            textColor="green-800"
-            footerButtons={[
-              {
-                label: "Vender",
-                color: "primary",
-                size: "sm",
-                onPress: () => handleVentaCosecha(cosecha),
-              },
-            ]}
-          />
-        );
-      })}
-      {modalVentas && cosechaSeleccionada && (
-        <CrearVentasModal
-          onClose={() => setModalVentas(false)}
-          onCreate={handleVentaCosecha}
-          cosecha={cosechaSeleccionada}
+      {Object.values(cosechasPorCultivo).map((cultivo) => (
+        <CustomCard
+          key={cultivo.nombreCultivo}
+          title={cultivo.nombreCultivo}
+          image={cultivo.imagenEspecie}
+          data={{
+            Especie: cultivo.nombreEspecie,
+            Cantidad: `${cultivo.cantidadTotal} (g)`,
+            "Valor *(g)": cultivo.valorGramo,
+            "Valor cosecha": `$${cultivo.valorTotal}`,
+            "Fecha Cosecha": cultivo.fechaMasReciente,
+          }}
+          backgroundColor="white"
+          borderColor="green-500"
+          textColor="green-800"
         />
-      )}
+      ))}
     </div>
   );
 }
+
 export function PlantacionesCard() {
   const {
     data: plantaciones = [],
