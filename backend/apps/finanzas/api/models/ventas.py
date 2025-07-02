@@ -1,14 +1,12 @@
 from django.db import models
 from apps.finanzas.api.models.cosechas import Cosechas
-from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
+from apps.users.models import Usuario 
 
 class Ventas(models.Model):
-    fk_Cosecha = models.ForeignKey(Cosechas, on_delete=models.SET_NULL, null=True)
-    fecha = models.DateField(auto_now=True)
-    fk_UnidadMedida = models.ForeignKey(UnidadesMedida, on_delete=models.SET_NULL, null=True)
-    cantidad = models.IntegerField()
-    descuento = models.IntegerField(null=True)
-    valorTotal = models.IntegerField(blank=True, null=True)
-
+    cosechas = models.ManyToManyField(Cosechas, through='VentaCosecha')
+    fecha = models.DateTimeField(auto_now=True)
+    numero_factura = models.CharField(max_length=20, unique=True, blank=True)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
-        return 'FECHA VENTA: ' + str(self.fecha) + ' COSECHA: ' + str(self.fk_Cosecha)
+        return f'Venta {self.numero_factura} - {self.fecha}'

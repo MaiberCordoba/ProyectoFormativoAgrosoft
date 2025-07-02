@@ -277,14 +277,32 @@ export interface UsosHerramientas {
   unidades: number;
 }
 
+//export interface Ventas {
+//  id: number;
+//  fk_Cosecha?: number;
+//  cosecha?: Cosechas;
+//  fecha?: string;
+//  fk_UnidadMedida: number;
+//  unidadMedida?: UnidadesMedida;
+//  cantidad: number;
+//  descuento?: number;
+//  valorTotal: number;
+//}
+
+export interface VentaCosecha {
+  cosecha: number;
+  cantidad: number;
+  unidad_medida: number;
+  precio_unitario: string;
+  descuento: string;
+  valor_total: string;
+}
+
 export interface Ventas {
   id: number;
-  fk_Cosecha?: number;
-  cosecha?: Cosechas;
-  fecha?: string;
-  fk_UnidadMedida: number;
-  unidadMedida?: UnidadesMedida;
-  cantidad: number;
-  descuento?: number;
-  valorTotal: number;
+  cosechas: VentaCosecha[];
+  fecha: string;
+  numero_factura: string;
+  valor_total: string;
+  usuario: number;
 }

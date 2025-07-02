@@ -1,20 +1,20 @@
-import { UseModal } from "@/hooks/useModal"
-import { Ventas } from "../../types";
 import { useState } from "react";
+import { UseModal } from "@/hooks/useModal";
+import { Ventas } from "../../types";
 
 export const useCrearVenta = () => {
-    const { isOpen, openModal, closeModal } = UseModal();
-    const [ventaCreada, setVentaCreada] = useState<Ventas | null>(null);
+  const { isOpen, openModal, closeModal } = UseModal();
+  const [ventaCreada, setVentaCreada] = useState<Ventas | null>(null);
 
-    const handleCrear = (venta: Ventas) => {
-        setVentaCreada(venta);
-        openModal();
-    };
+  const handleCrear = () => {
+    setVentaCreada(null);
+    openModal();
+  };
 
-    return {
-        isOpen,
-        closeModal,
-        ventaCreada,
-        handleCrear,
-    };
+  return {
+    isOpen,
+    closeModal,
+    ventaCreada,
+    handleCrear,
+  };
 };

@@ -1,88 +1,124 @@
-import React, { useEffect, useState } from "react";
-import ModalComponent from "@/components/Modal";
+import { useState, useEffect } from "react";
 import { usePatchVentas } from "../../hooks/ventas/usePatchVentas";
+import ModalComponent from "@/components/Modal";
+import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
+import { CrearCosechasModal } from "../cosechas/CrearCosechasModal";
+import { Cosechas, UnidadesMedida, VentaCosecha, Ventas } from "../../types";
+import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
+import { Plus, Trash2 } from "lucide-react";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
-import { Input, Select, SelectItem } from "@heroui/react";
-import { Ventas } from "../../types";
 import { addToast } from "@heroui/toast";
 
-interface EditarVentaModalProps {
+interface EditarVentasModalProps {
   venta: Ventas;
   onClose: () => void;
 }
 
-const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) => {
-  const [fk_Cosecha] = useState<number | null>(venta.fk_Cosecha || null); // solo lectura
-  const [fk_UnidadMedida, setFk_UnidadMedida] = useState<number | null>(venta.fk_UnidadMedida || null);
-  const [cantidad, setCantidad] = useState<number>(venta.cantidad || 0);
-  const [valorTotal, setValorTotal] = useState<number>(venta.valorTotal || 0);
-  const [descuento, setDescuento] = useState<number>(venta.descuento || 0);
+export const EditarVentasModal = ({ venta, onClose }: EditarVentasModalProps) => {
+  const [ventaCosechas, setVentaCosechas] = useState<VentaCosecha[]>(venta.cosechas);
   const [error, setError] = useState("");
+  const [cosechaModal, setCosechaModal] = useState(false);
+  const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
 
-  const { data: cosechas } = useGetCosechas();
-  const { data: unidadesMedida } = useGetUnidadesMedida();
+  const { data: cosechas, isLoading: isLoadingCosechas, refetch: refetchCosecha } = useGetCosechas();
   const { data: plantaciones } = useGetPlantaciones();
+  const { data: unidadesMedida, isLoading: isLoadingUnidadesMedida, refetch: refetchUnidadMedida } = useGetUnidadesMedida();
   const { mutate, isPending } = usePatchVentas();
 
   useEffect(() => {
-    if (!cantidad || !fk_Cosecha || !cosechas || !fk_UnidadMedida || !unidadesMedida) return;
+    if (!cosechas || !unidadesMedida) return;
 
-    const cosecha = cosechas.find(c => c.id === fk_Cosecha);
-    const unidad = unidadesMedida.find(u => u.id === fk_UnidadMedida);
+    const updatedVentaCosechas = ventaCosechas.map((vc) => {
+      const cosecha = cosechas.find((c) => c.id === vc.cosecha);
+      const unidad = unidadesMedida.find((u) => u.id === vc.unidad_medida);
+      if (!cosecha || !unidad || vc.cantidad <= 0) {
+        return { ...vc, precio_unitario: "0.00", valor_total: "0.00" };
+      }
 
-    if (!cosecha || !unidad) return;
+      const cantidadEnBase = vc.cantidad * unidad.equivalenciabase;
+      const precioUnitario = cosecha.valorGramo || 0;
+      const porcentajeDescuento = Number(vc.descuento) / 100;
+      const valorTotal = cantidadEnBase * precioUnitario * (1 - porcentajeDescuento);
+      return {
+        ...vc,
+        precio_unitario: precioUnitario.toFixed(2),
+        valor_total: valorTotal.toFixed(2),
+      };
+    });
 
-    const cantidadEnBase = cantidad * unidad.equivalenciabase;
-    const precioUnitario = cosecha.valorGramo || 0;
-    const porcentajeDescuento = descuento ? descuento / 100 : 0;
-    const total = cantidadEnBase * precioUnitario * (1 - porcentajeDescuento);
+    setVentaCosechas(updatedVentaCosechas);
+  }, [ventaCosechas, cosechas, unidadesMedida]);
 
-    setValorTotal(Number(total.toFixed(2)));
-  }, [cantidad, descuento, fk_Cosecha, cosechas, fk_UnidadMedida, unidadesMedida]);
+  const addCosecha = () => {
+    setVentaCosechas([...ventaCosechas, { cosecha: 0, cantidad: 1, unidad_medida: 0, descuento: "0", precio_unitario: "0.00", valor_total: "0.00" }]);
+  };
 
-  const handleSubmit = () => {
-    if (!fk_Cosecha || !valorTotal || !fk_UnidadMedida || !cantidad) {
-      addToast({
-        title: "Campos requeridos",
-        description: "Por favor, completa todos los campos.",
-        color: "danger",
-      });
-      return;
-    }
+  const updateCosecha = (index: number, field: keyof VentaCosecha, value: number | string) => {
+    const updated = [...ventaCosechas];
+    updated[index] = { ...updated[index], [field]: value };
+    setVentaCosechas(updated);
+  };
 
-    const cosechaSeleccionada = cosechas?.find(c => c.id === fk_Cosecha);
-    const unidadSeleccionada = unidadesMedida?.find(u => u.id === fk_UnidadMedida);
-    const unidadAnterior = unidadesMedida?.find(u => u.id === venta.fk_UnidadMedida);
-
-    if (!cosechaSeleccionada || !unidadSeleccionada || !unidadAnterior) {
+  const removeCosecha = (index: number) => {
+    if (ventaCosechas.length === 1) {
       addToast({
         title: "Error",
-        description: "Datos inválidos. Verifica la unidad o cosecha.",
+        description: "Debe haber al menos una cosecha.",
         color: "danger",
       });
       return;
     }
+    setVentaCosechas(ventaCosechas.filter((_, i) => i !== index));
+  };
 
-    const cantidadAnteriorBase = venta.cantidad * unidadAnterior.equivalenciabase;
-    const cantidadEnBase = cantidad * unidadSeleccionada.equivalenciabase;
-    const cantidadDisponibleTotal = cosechaSeleccionada.cantidadTotal + cantidadAnteriorBase;
+  const handleSubmit = () => {
+    for (const [index, vc] of ventaCosechas.entries()) {
+      if (!vc.cosecha || !vc.unidad_medida || vc.cantidad <= 0) {
+        addToast({
+          title: "Campos requeridos",
+          description: `Complete todos los campos para la cosecha ${index + 1}.`,
+          color: "danger",
+        });
+        return;
+      }
 
-    if (cantidadEnBase > cantidadDisponibleTotal) {
-      setError(
-        `La cantidad ingresada (${cantidadEnBase} g) excede la disponible (${cantidadDisponibleTotal} g, incluyendo la cantidad previa).`
-      );
-      return;
-    }
+      const cosechaSeleccionada = cosechas?.find((c) => c.id === vc.cosecha);
+      const unidadSeleccionada = unidadesMedida?.find((u) => u.id === vc.unidad_medida);
 
-    if (cantidad < 0 || descuento < 0) {
-      addToast({
-        title: "Valores inválidos",
-        description: "Por favor, ingresa valores positivos.",
-        color: "danger",
-      });
-      return;
+      if (!cosechaSeleccionada || !unidadSeleccionada) {
+        addToast({
+          title: "Error",
+          description: `Cosecha o unidad de medida no válida en la cosecha ${index + 1}.`,
+          color: "danger",
+        });
+        return;
+      }
+
+      const cantidadEnBase = vc.cantidad * unidadSeleccionada.equivalenciabase;
+      const originalCosecha = venta.cosechas.find((ovc) => ovc.cosecha === vc.cosecha);
+      const cantidadAnteriorBase = originalCosecha
+        ? originalCosecha.cantidad * (unidadesMedida?.find((u) => u.id === originalCosecha.unidad_medida)?.equivalenciabase || 1)
+        : 0;
+      const cantidadDisponibleTotal = cosechaSeleccionada.cantidadTotal + cantidadAnteriorBase;
+
+      if (cantidadEnBase > cantidadDisponibleTotal) {
+        setError(
+          `Cosecha ${index + 1}: La cantidad ingresada (${cantidadEnBase} g) excede la cantidad disponible (${cantidadDisponibleTotal} g).`
+        );
+        return;
+      }
+
+      const descuentoNum = Number(vc.descuento);
+      if (descuentoNum < 0 || descuentoNum > 100) {
+        addToast({
+          title: "Valores inválidos",
+          description: `El descuento en la cosecha ${index + 1} debe estar entre 0 y 100.`,
+          color: "danger",
+        });
+        return;
+      }
     }
 
     setError("");
@@ -91,108 +127,230 @@ const EditarVentaModal: React.FC<EditarVentaModalProps> = ({ venta, onClose }) =
       {
         id: venta.id,
         data: {
-
-          fk_Cosecha,
-          fk_UnidadMedida,
-          cantidad,
-          valorTotal,
-          descuento,
-        }
+          cosechas: ventaCosechas.map((vc) => ({
+            cosecha: vc.cosecha,
+            cantidad: vc.cantidad,
+            unidad_medida: vc.unidad_medida,
+            descuento: Number(vc.descuento),
+          })),
+        },
       },
       {
         onSuccess: () => {
+          refetchCosecha();
           onClose();
+          addToast({
+            title: "Éxito",
+            description: "Venta actualizada con éxito.",
+            color: "success",
+          });
+        },
+        onError: (error) => {
+          addToast({
+            title: "Error",
+            description: `Error al actualizar la venta: ${error.message}`,
+            color: "danger",
+          });
         },
       }
     );
   };
 
-  const cosechaActual = cosechas?.find(c => c.id === fk_Cosecha);
-  const plantacion = plantaciones?.find(p => p.id === cosechaActual?.fk_Plantacion);
-  const producto = plantacion?.cultivo?.nombre || "Sin producto";
+  const handleCosechaCreada = (nuevaCosecha: Cosechas) => {
+    refetchCosecha();
+    setVentaCosechas((prev) => {
+      const updated = [...prev];
+      updated[0] = { ...updated[0], cosecha: nuevaCosecha.id };
+      return updated;
+    });
+    setCosechaModal(false);
+  };
 
-  const unidadAnterior = unidadesMedida?.find(u => u.id === venta.fk_UnidadMedida);
-  const cantidadAnteriorBase = venta.cantidad * (unidadAnterior?.equivalenciabase || 1);
-  const cantidadMaximaAjustada = (cosechaActual?.cantidadTotal || 0) + cantidadAnteriorBase;
+  const handleUnidadMedidaCreada = (nuevaUnidadMedida: UnidadesMedida) => {
+    refetchUnidadMedida();
+    setVentaCosechas((prev) => {
+      const updated = [...prev];
+      updated[0] = { ...updated[0], unidad_medida: nuevaUnidadMedida.id };
+      return updated;
+    });
+    setUnidadMedidaModal(false);
+  };
 
   return (
-    <ModalComponent
-      isOpen={true}
-      onClose={onClose}
-      title="Editar Venta"
-      footerButtons={[
-        {
-          label: isPending ? "Guardando..." : "Guardar",
-          color: "success",
-          onClick: handleSubmit,
-        },
-      ]}
-    >
-      <p className="text-red-500 text-sm mb-2">{error}</p>
-
-      <Select
-        label="Cosecha"
-        size="sm"
-        isDisabled
-        selectedKeys={fk_Cosecha ? [fk_Cosecha.toString()] : []}
+    <>
+      <ModalComponent
+        isOpen={true}
+        onClose={onClose}
+        title="Editar Venta"
+        footerButtons={[
+          {
+            label: isPending ? "Guardando..." : "Guardar",
+            color: "success",
+            onClick: handleSubmit,
+          },
+        ]}
       >
-        {cosechaActual ? (
-          <SelectItem
-            key={cosechaActual.id.toString()}
-            textValue={`Producto: ${producto} - Cantidad: ${cosechaActual.cantidadTotal}`}
-          >
-            <div className="flex flex-col">
-              <span className="font-semibold">Producto: {producto}</span>
-              <span>Cantidad disponible: {cantidadMaximaAjustada} (g)</span>
-            </div>
-          </SelectItem>
-        ) : null}
-      </Select>
+        <p className="text-red-500 text-sm mb-2">{error}</p>
+        {isLoadingCosechas || isLoadingUnidadesMedida ? (
+          <p>Cargando...</p>
+        ) : (
+          <>
+            {ventaCosechas.map((vc, index) => {
+              const cosechaSeleccionada = cosechas?.find((c) => c.id === vc.cosecha);
+              const unidadSeleccionada = unidadesMedida?.find((u) => u.id === vc.unidad_medida);
+              const cantidadEnBase = unidadSeleccionada ? vc.cantidad * unidadSeleccionada.equivalenciabase : 0;
+              const originalCosecha = venta.cosechas.find((ovc) => ovc.cosecha === vc.cosecha);
+              const cantidadAnteriorBase = originalCosecha
+                ? originalCosecha.cantidad * (unidadesMedida?.find((u) => u.id === originalCosecha.unidad_medida)?.equivalenciabase || 1)
+                : 0;
+              const cantidadDisponible = (cosechaSeleccionada?.cantidadTotal || 0) + cantidadAnteriorBase;
+              const cantidadRestante = cantidadDisponible - cantidadEnBase;
 
-      <Input
-        label={`Cantidad de producto (máx: ${cantidadMaximaAjustada} g)`}
-        type="number"
-        size="sm"
-        value={cantidad.toString()}
-        onChange={(e) => setCantidad(Number(e.target.value))}
-        required
-      />
+              return (
+                <div key={index} className="mb-4 border p-4 rounded">
+                  <h3 className="font-semibold mb-2">Cosecha {index + 1}</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <Select
+                        label="Cosecha"
+                        size="sm"
+                        placeholder="Selecciona el producto y cantidad"
+                        selectedKeys={vc.cosecha ? [vc.cosecha.toString()] : []}
+                        onSelectionChange={(keys) => {
+                          const selectedKey = Array.from(keys)[0];
+                          updateCosecha(index, "cosecha", selectedKey ? Number(selectedKey) : 0);
+                        }}
+                      >
+                        {(cosechas || [])
+                          .filter((cosecha) => cosecha.cantidadTotal > 0)
+                          .map((cosecha) => {
+                            const plantacion = plantaciones?.find((p) => p.id === cosecha.fk_Plantacion);
+                            const producto = plantacion?.cultivo?.nombre || "Sin producto";
+                            return (
+                              <SelectItem
+                                key={cosecha.id.toString()}
+                                textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidadTotal}`}
+                              >
+                                <div className="flex flex-col">
+                                  <span className="font-semibold">Producto: {producto}</span>
+                                  <span>Cantidad: {cosecha.cantidadTotal} (g)</span>
+                                </div>
+                              </SelectItem>
+                            );
+                          })}
+                      </Select>
+                    </div>
+                    {index === 0 && (
+                      <Button
+                        onPress={() => setCosechaModal(true)}
+                        title="Crear cosecha"
+                        color="success"
+                        size="sm"
+                      >
+                        <Plus className="w-5 h-5 text-white" />
+                      </Button>
+                    )}
+                  </div>
 
-      <Input
-        label="Valor Total"
-        type="number"
-        size="sm"
-        value={valorTotal.toString()}
-        onChange={(e) => setValorTotal(Number(e.target.value))}
-        readOnly
-      />
+                  <Input
+                    label={`Cantidad de producto (máx: ${cantidadDisponible.toFixed(2)} g)`}
+                    type="number"
+                    size="sm"
+                    value={vc.cantidad.toString()}
+                    onChange={(e) => updateCosecha(index, "cantidad", Number(e.target.value))}
+                    required
+                    min="1"
+                  />
 
-      <Input
-        label="Descuento (%)"
-        type="number"
-        size="sm"
-        value={descuento.toString()}
-        onChange={(e) => setDescuento(Number(e.target.value))}
-      />
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <Select
+                        label="Unidades de medida"
+                        size="sm"
+                        placeholder="Selecciona la unidad de medida"
+                        selectedKeys={vc.unidad_medida ? [vc.unidad_medida.toString()] : []}
+                        onSelectionChange={(keys) => {
+                          const selectedKey = Array.from(keys)[0];
+                          updateCosecha(index, "unidad_medida", selectedKey ? Number(selectedKey) : 0);
+                        }}
+                      >
+                        {(unidadesMedida || []).map((unidadMedida) => (
+                          <SelectItem key={unidadMedida.id.toString()} textValue={unidadMedida.nombre}>
+                            {unidadMedida.nombre}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+                    {index === 0 && (
+                      <Button
+                        onPress={() => setUnidadMedidaModal(true)}
+                        title="Crear unidad de medida"
+                        color="success"
+                        size="sm"
+                      >
+                        <Plus className="w-5 h-5 text-white" />
+                      </Button>
+                    )}
+                  </div>
 
-      <Select
-        label="Unidad de medida"
-        size="sm"
-        placeholder="Selecciona la unidad"
-        selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
-        onSelectionChange={(keys) => {
-          const selectedKey = Array.from(keys)[0];
-          setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
-        }}
-      >
-        {(unidadesMedida || []).map((unidad) => (
-          <SelectItem key={unidad.id.toString()} textValue={unidad.nombre}>
-            {unidad.nombre}
-          </SelectItem>
-        ))}
-      </Select>
-    </ModalComponent>
+                  <Input
+                    label="Descuento (%)"
+                    type="number"
+                    size="sm"
+                    value={vc.descuento.toString()}
+                    onChange={(e) => updateCosecha(index, "descuento", e.target.value)}
+                    min="0"
+                    max="100"
+                  />
+
+                  {cosechaSeleccionada && unidadSeleccionada && (
+                    <div className="mt-2 text-sm">
+                      <p className="text-gray-700">
+                        <strong>Disponible:</strong> {cantidadDisponible.toFixed(2)} g
+                      </p>
+                      <p className={cantidadRestante < 0 ? "text-red-500" : "text-green-600"}>
+                        <strong>Restante:</strong> {cantidadRestante > 0 ? cantidadRestante.toFixed(2) : 0} g
+                      </p>
+                      <p>
+                        <strong>Precio unitario:</strong> ${vc.precio_unitario}
+                      </p>
+                      <p>
+                        <strong>Valor total:</strong> ${vc.valor_total}
+                      </p>
+                    </div>
+                  )}
+
+                  {ventaCosechas.length > 1 && (
+                    <Button
+                      onPress={() => removeCosecha(index)}
+                      color="danger"
+                      size="sm"
+                      className="mt-2"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                      Eliminar
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
+            <Button onPress={addCosecha} color="primary" size="sm" className="mb-4">
+              <Plus className="w-5 h-5" />
+              Añadir otra cosecha
+            </Button>
+          </>
+        )}
+      </ModalComponent>
+
+      {cosechaModal && (
+        <CrearCosechasModal onClose={() => setCosechaModal(false)} onCreate={handleCosechaCreada} />
+      )}
+      {unidadMedidaModal && (
+        <CrearUnidadesMedidaModal
+          onClose={() => setUnidadMedidaModal(false)}
+          onCreate={handleUnidadMedidaCreada}
+        />
+      )}
+    </>
   );
 };
-
-export default EditarVentaModal;
