@@ -111,9 +111,9 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
       }
 
       const cantidadEnBase = vc.cantidad * unidadSeleccionada.equivalenciabase;
-      if (cantidadEnBase > cosechaSeleccionada.cantidadTotal) {
+      if (cantidadEnBase > cosechaSeleccionada.cantidad_disponible!) {
         setError(
-          `Cosecha ${index + 1}: La cantidad ingresada (${cantidadEnBase} g) excede la cantidad disponible (${cosechaSeleccionada.cantidadTotal} g).`
+          `Cosecha ${index + 1}: La cantidad ingresada (${cantidadEnBase} g) excede la cantidad disponible (${cosechaSeleccionada.cantidad_disponible} g).`
         );
         return;
       }
@@ -206,7 +206,7 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
               const cosechaSeleccionada = cosechas?.find((c) => c.id === vc.cosecha);
               const unidadSeleccionada = unidadesMedida?.find((u) => u.id === vc.unidad_medida);
               const cantidadEnBase = unidadSeleccionada ? vc.cantidad * unidadSeleccionada.equivalenciabase : 0;
-              const cantidadDisponible = cosechaSeleccionada?.cantidadTotal || 0;
+              const cantidadDisponible = cosechaSeleccionada?.cantidad_disponible || 0;
               const cantidadRestante = cantidadDisponible - cantidadEnBase;
 
               return (
@@ -225,18 +225,18 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
                         }}
                       >
                         {(cosechas || [])
-                          .filter((cosecha) => cosecha.cantidadTotal > 0)
+                          .filter((cosecha) => cosecha.cantidad_disponible! > 0)
                           .map((cosecha) => {
                             const plantacion = plantaciones?.find((p) => p.id === cosecha.fk_Plantacion);
                             const producto = plantacion?.cultivo?.nombre || "Sin producto";
                             return (
                               <SelectItem
                                 key={cosecha.id.toString()}
-                                textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidadTotal}`}
+                                textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidad_disponible!}`}
                               >
                                 <div className="flex flex-col">
                                   <span className="font-semibold">Producto: {producto}</span>
-                                  <span>Cantidad: {cosecha.cantidadTotal} (g)</span>
+                                  <span>Cantidad: {cosecha.cantidad_disponible!} (g)</span>
                                   {cosecha.valorGramo == null && (
                                     <span className="text-red-500">Precio no definido</span>
                                   )}
@@ -312,7 +312,7 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
                   {cosechaSeleccionada && unidadSeleccionada && (
                     <div className="mt-2 text-sm">
                       <p className="text-gray-700">
-                        <strong>Disponible:</strong> {cosechaSeleccionada.cantidadTotal.toFixed(2)} g
+                        <strong>Disponible:</strong> {cosechaSeleccionada.cantidad_disponible!.toFixed(2)} g
                       </p>
                       <p className={cantidadRestante < 0 ? "text-red-500" : "text-green-600"}>
                         <strong>Restante:</strong> {cantidadRestante > 0 ? cantidadRestante.toFixed(2) : 0} g

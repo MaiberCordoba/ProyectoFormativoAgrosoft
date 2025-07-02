@@ -16,15 +16,13 @@ export function CosechasResumenCard() {
   } = useGetCosechas();
   const { data: plantaciones = [], isLoading: loadingPlantaciones } = useGetPlantaciones();
 
-  // Función para manejar acciones con verificación de permisos
   if (loadingCosechas || loadingPlantaciones) return <p>Cargando...</p>;
   if (isError) return <p>Hubo un error al cargar la información</p>;
 
-  // Agrupar cosechas por cultivo
   const cosechasPorCultivo = cosechas.reduce((acc, cosecha) => {
     const plantacion = plantaciones.find((p) => p.id === cosecha.fk_Plantacion);
     const cultivoId = plantacion?.cultivo?.id;
-    if (!cultivoId || !cosecha.cantidadTotal || cosecha.cantidadTotal <= 0) return acc;
+    if (!cultivoId || !cosecha.cantidadTotal || cosecha.cantidad_disponible! <= 0) return acc;
 
     if (!acc[cultivoId]) {
       acc[cultivoId] = {
@@ -32,8 +30,9 @@ export function CosechasResumenCard() {
         imagenEspecie: plantacion?.cultivo?.especies?.img,
         nombreEspecie: plantacion?.cultivo?.especies?.nombre ?? "Desconocido",
         cantidadTotal: 0,
-        valorTotal: 0,
-        valorGramo: cosecha.valorGramo, // Asumimos que el valor por gramo es el mismo para todas las cosechas del cultivo
+        disponible: 0, 
+        valorTotal: 0, 
+        valorGramo: cosecha.valorGramo,
         fechaMasReciente: cosecha.fecha,
         cosechas: [],
       };
@@ -41,7 +40,9 @@ export function CosechasResumenCard() {
 
     acc[cultivoId].cosechas.push(cosecha);
     acc[cultivoId].cantidadTotal += cosecha.cantidadTotal;
-    acc[cultivoId].valorTotal += cosecha.valorTotal ?? 0;
+    acc[cultivoId].disponible += cosecha.cantidad_disponible!;
+    acc[cultivoId].valorTotal! += cosecha.valorTotal ?? 0;
+    
     // Actualizar la fecha más reciente
     if (new Date(cosecha.fecha ?? "sin Fecha") > new Date(acc[cultivoId].fechaMasReciente ?? "sin fecha")) {
       acc[cultivoId].fechaMasReciente = cosecha.fecha;
@@ -53,11 +54,26 @@ export function CosechasResumenCard() {
     imagenEspecie: string | undefined;
     nombreEspecie: string;
     cantidadTotal: number;
-    valorTotal: number;
+    disponible: number;
+    valorTotal: number | undefined;
     valorGramo: number | undefined;
     fechaMasReciente: string | undefined;
     cosechas: Cosechas[];
   }>);
+
+  //formato de valor total
+  const formatCurrency = (amount: number | undefined) => {
+    if (amount === undefined || amount === null) {
+      return "$0.00"; 
+    }
+    return new Intl.NumberFormat('es-CO', { 
+      style: 'currency',
+      currency: 'COP', 
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+
   return (
     <div className="flex flex-wrap gap-4 mb-6">
       {Object.values(cosechasPorCultivo).map((cultivo) => (
@@ -67,9 +83,11 @@ export function CosechasResumenCard() {
           image={cultivo.imagenEspecie}
           data={{
             Especie: cultivo.nombreEspecie,
-            Cantidad: `${cultivo.cantidadTotal} (g)`,
+            "Cantidad cosechada": `${cultivo.cantidadTotal} (g)`,
+            "Cantidad disponible": `${cultivo.disponible} (g)`,
             "Valor *(g)": cultivo.valorGramo ?? 0,
-            "Valor cosecha": `$${cultivo.valorTotal}`,
+            // ¡CAMBIO CLAVE AQUÍ! Usando la función de formato
+            "Valor cosecha": formatCurrency(cultivo.valorTotal), 
             "Fecha Cosecha": cultivo.fechaMasReciente ?? "Sin fecha",
           }}
           backgroundColor="white"

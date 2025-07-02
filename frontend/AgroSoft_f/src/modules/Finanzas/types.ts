@@ -126,6 +126,7 @@ export interface Cosechas {
   cantidadTotal: number;
   fecha?: string;
   valorGramo?: number;
+  cantidad_disponible?: number; 
 }
 
 export interface Desechos {
