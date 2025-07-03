@@ -1,6 +1,4 @@
 import { useGetPlantaciones } from "../Trazabilidad/hooks/plantaciones/useGetPlantaciones";
-import { useGetCosechas } from "./hooks/cosechas/useGetCosechas";
-import { Cosechas } from "./types";
 import { useGetInsumos } from "./hooks/insumos/useGetInsumos";
 import { useGetUnidadesMedida } from "./hooks/unidadesMedida/useGetUnidadesMedida";
 import { useGetHerramientas } from "./hooks/herramientas/useGetHerramientas";
@@ -8,95 +6,42 @@ import CustomCard from "./CustomCard";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
 
+
+
 export function CosechasResumenCard() {
-  const {
-    data: cosechas = [],
-    isLoading: loadingCosechas,
-    isError,
-  } = useGetCosechas();
-  const { data: plantaciones = [], isLoading: loadingPlantaciones } = useGetPlantaciones();
+    const { cosechasAgrupadas, isLoading, isError } = useCosechasGrouped();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCultivo, setSelectedCultivo] = useState<CultivoAgrupadoDetail | null>(null);
 
-  if (loadingCosechas || loadingPlantaciones) return <p>Cargando...</p>;
-  if (isError) return <p>Hubo un error al cargar la información</p>;
+    if (isLoading) return <p className="text-center text-gray-600">Cargando información de cosechas...</p>;
+    if (isError) return <p className="text-center text-red-500">Hubo un error al cargar la información de cosechas.</p>;
 
-  const cosechasPorCultivo = cosechas.reduce((acc, cosecha) => {
-    const plantacion = plantaciones.find((p) => p.id === cosecha.fk_Plantacion);
-    const cultivoId = plantacion?.cultivo?.id;
-    if (!cultivoId || !cosecha.cantidadTotal || cosecha.cantidad_disponible! <= 0) return acc;
+    const handleOpenModal = (cultivo: CultivoAgrupadoDetail) => {
+        setSelectedCultivo(cultivo);
+        setIsModalOpen(true);
+    };
 
-    if (!acc[cultivoId]) {
-      acc[cultivoId] = {
-        nombreCultivo: plantacion?.cultivo?.nombre ?? "Desconocido",
-        imagenEspecie: plantacion?.cultivo?.especies?.img,
-        nombreEspecie: plantacion?.cultivo?.especies?.nombre ?? "Desconocido",
-        cantidadTotal: 0,
-        disponible: 0, 
-        valorTotal: 0, 
-        valorGramo: cosecha.valorGramo,
-        fechaMasReciente: cosecha.fecha,
-        cosechas: [],
-      };
-    }
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedCultivo(null);
+    };
 
-    acc[cultivoId].cosechas.push(cosecha);
-    acc[cultivoId].cantidadTotal += cosecha.cantidadTotal;
-    acc[cultivoId].disponible += cosecha.cantidad_disponible!;
-    acc[cultivoId].valorTotal! += cosecha.valorTotal ?? 0;
-    
-    // Actualizar la fecha más reciente
-    if (new Date(cosecha.fecha ?? "sin Fecha") > new Date(acc[cultivoId].fechaMasReciente ?? "sin fecha")) {
-      acc[cultivoId].fechaMasReciente = cosecha.fecha;
-    }
-
-    return acc;
-  }, {} as Record<string, {
-    nombreCultivo: string | undefined;
-    imagenEspecie: string | undefined;
-    nombreEspecie: string;
-    cantidadTotal: number;
-    disponible: number;
-    valorTotal: number | undefined;
-    valorGramo: number | undefined;
-    fechaMasReciente: string | undefined;
-    cosechas: Cosechas[];
-  }>);
-
-  //formato de valor total
-  const formatCurrency = (amount: number | undefined) => {
-    if (amount === undefined || amount === null) {
-      return "$0.00"; 
-    }
-    return new Intl.NumberFormat('es-CO', { 
-      style: 'currency',
-      currency: 'COP', 
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
-
-  return (
-    <div className="flex flex-wrap gap-4 mb-6">
-      {Object.values(cosechasPorCultivo).map((cultivo) => (
-        <CustomCard
-          key={cultivo.nombreCultivo}
-          title={cultivo.nombreCultivo}
-          image={cultivo.imagenEspecie}
-          data={{
-            Especie: cultivo.nombreEspecie,
-            "Cantidad cosechada": `${cultivo.cantidadTotal} (g)`,
-            "Cantidad disponible": `${cultivo.disponible} (g)`,
-            "Valor *(g)": cultivo.valorGramo ?? 0,
-            // ¡CAMBIO CLAVE AQUÍ! Usando la función de formato
-            "Valor cosecha": formatCurrency(cultivo.valorTotal), 
-            "Fecha Cosecha": cultivo.fechaMasReciente ?? "Sin fecha",
-          }}
-          backgroundColor="white"
-          borderColor="green-500"
-          textColor="green-800"
-        />
-      ))}
-    </div>
-  );
+    return (
+        <div className="flex flex-wrap gap-4 mb-6">
+            {cosechasAgrupadas.map((cultivo) => (
+                <CosechaCultivoCard
+                    key={cultivo.nombreCultivo}
+                    cultivo={cultivo}
+                    onOpenDetails={handleOpenModal}
+                />
+            ))}
+            <CosechaLotesModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                cultivo={selectedCultivo}
+            />
+        </div>
+    );
 }
 
 export function PlantacionesCard() {
@@ -246,6 +191,10 @@ import { useCrearUsosHerramienta } from "./hooks/usosHerramientas/useCrearUsosHe
 import { CrearUsoHerramientaModal } from "./components/usosHerramientas/CrearUsosHerramientasModal";
 import { useCrearUsosInsumo } from "./hooks/usoInsumos/useCrearUsoInsumos";
 import { CrearUsoInsumoModal } from "./components/usoInsumos/CrearUsosInsumosModal";
+import { useState } from "react";
+import { CultivoAgrupadoDetail, useCosechasGrouped } from "./hooks/useCosechasGrouped";
+import { CosechaCultivoCard } from "./components/cosechas/CosechaCultivoCard";
+import { CosechaLotesModal } from "./components/cosechas/CosechaLotesModal";
 
 export function HerramientasCard() {
   const {

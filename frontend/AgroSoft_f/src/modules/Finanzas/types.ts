@@ -1,4 +1,5 @@
 //Creacion de los tipos de datos
+import { string } from "zod";
 import { Controles } from "../Sanidad/types";
 import { Cultivo, Lotes, Plantaciones } from "../Trazabilidad/types";
 import { User } from "../Users/types";
@@ -120,12 +121,12 @@ export interface Cosechas {
   plantacion?: Plantaciones;
   fk_UnidadMedida?: number;
   cantidad?: number;
-  valorTotal?: number;
+  valorTotal?: number | string;
   precioUnidad?: number;
   unidadMedida?: UnidadesMedida;
   cantidadTotal: number;
   fecha?: string;
-  valorGramo?: number;
+  valorGramo?: number | string;
   cantidad_disponible?: number; 
 }
 

@@ -2,7 +2,6 @@ import { Select, SelectItem, Input, Button } from "@heroui/react";
 import { Cosechas, UnidadesMedida, VentaCosecha } from "../../types";
 import { Trash2, Plus } from "lucide-react";
 import { Plantaciones } from "@/modules/Trazabilidad/types";
-import { RoundIconButton } from "@/components/ui/buttonRound";
 
 interface CosechaFormProps {
   index: number;
@@ -47,25 +46,29 @@ export const CosechaForm = ({
               const selectedKey = Array.from(keys)[0];
               updateCosecha(index, "cosecha", selectedKey ? Number(selectedKey) : 0);
             }}
-            // Restauramos flex-1 para que ocupe el espacio disponible
-            // Pero agregamos un min-w para asegurar un ancho mínimo legible
-            className="flex-1 min-w-[150px]" // Ajusta este min-width si es necesario
+            className="flex-1"
           >
             {(cosechas || [])
               .filter((cosecha) => (cosecha.cantidad_disponible ?? 0) > 0)
               .map((cosecha) => {
                 const plantacion = plantaciones?.find((p) => p.id === cosecha.fk_Plantacion);
                 const producto = plantacion?.cultivo?.nombre || "Sin producto";
+                const lote = plantacion?.eras.Lote?.nombre ?? "Sin lote";
+                const valorGramo = typeof cosecha.valorGramo === 'string' ? parseFloat(cosecha.valorGramo) : cosecha.valorGramo;
                 return (
                   <SelectItem
                     key={cosecha.id.toString()}
-                    textValue={`Producto: ${producto} - Cantidad: ${cosecha.cantidad_disponible}`}
+                    textValue={`Producto: ${producto} - Fecha: ${cosecha.fecha ?? "Sin fecha"} - Lote: ${lote}`}
                   >
                     <div className="flex flex-col">
                       <span className="font-semibold">{producto}</span>
-                      <span>Cantidad: {cosecha.cantidad_disponible ?? 0} g</span>
-                      {cosecha.valorGramo == null && (
-                        <span className="text-red-500">Precio no definido</span>
+                      <span className="text-xs">Fecha: {cosecha.fecha ?? "Sin fecha"}</span>
+                      <span className="text-xs">Lote: {lote}</span>
+                      <span className="text-xs">Disponible: {cosecha.cantidad_disponible ?? 0} g</span>
+                      {valorGramo == null || isNaN(valorGramo) ? (
+                        <span className="text-red-500 text-xs">Precio no definido</span>
+                      ) : (
+                        <span className="text-blue-700 text-xs">Valor por Gramo: ${valorGramo.toFixed(2)}</span>
                       )}
                     </div>
                   </SelectItem>
@@ -73,11 +76,9 @@ export const CosechaForm = ({
               })}
           </Select>
           {index === 0 && (
-            <RoundIconButton
-                onPress={onOpenCosechaModal}
-                color="success"
-                icon={<Plus className="w-5 h-5" />}
-            />
+            <Button onPress={onOpenCosechaModal} color="success" size="sm">
+              <Plus className="w-5 h-5" />
+            </Button>
           )}
         </div>
       </td>
@@ -92,12 +93,7 @@ export const CosechaForm = ({
           className="w-full"
         />
       </td>
-      {/* --- CAMBIO CLAVE AQUÍ: Ajustar el ancho de la celda de la tabla --- */}
-      {/* Añadimos un 'min-w' a la 'td' para asegurarnos de que la columna tenga suficiente espacio
-          para el Select, el botón y el dropdown. El valor exacto puede requerir ajustes.
-          Opcionalmente, puedes mover este 'min-w' al div dentro del 'td'.
-      */}
-      <td className="p-2 min-w-[200px]"> {/* Prueba con un min-width, ajusta según necesidad */}
+      <td className="p-2">
         <div className="flex items-center gap-2">
           <Select
             placeholder="Selecciona la unidad"
@@ -107,8 +103,7 @@ export const CosechaForm = ({
               const selectedKey = Array.from(keys)[0];
               updateCosecha(index, "unidad_medida", selectedKey ? Number(selectedKey) : 0);
             }}
-            // También restauramos flex-1 y añadimos un min-w al Select aquí
-            className="flex-1 min-w-[120px]" // Ajusta este min-width
+            className="flex-1"
           >
             {(unidadesMedida || []).map((unidadMedida) => (
               <SelectItem key={unidadMedida.id.toString()} textValue={unidadMedida.nombre}>
@@ -117,11 +112,9 @@ export const CosechaForm = ({
             ))}
           </Select>
           {index === 0 && (
-            <RoundIconButton
-                onPress={onOpenUnidadMedidaModal}
-                color="success"
-                icon={<Plus className="w-5 h-5" />}
-            />
+            <Button onPress={onOpenUnidadMedidaModal} color="success" size="sm">
+              <Plus className="w-5 h-5" />
+            </Button>
           )}
         </div>
       </td>
@@ -137,12 +130,8 @@ export const CosechaForm = ({
           className="w-full"
         />
       </td>
-      <td className="p-2 text-sm">
-        {cosechaSeleccionada ? `$${ventaCosecha.precio_unitario}` : "-"}
-      </td>
-      <td className="p-2 text-sm">
-        {cosechaSeleccionada ? `$${ventaCosecha.valor_total}` : "-"}
-      </td>
+      <td className="p-2 text-sm">{cosechaSeleccionada ? `$${ventaCosecha.precio_unitario}` : "-"}</td>
+      <td className="p-2 text-sm">{cosechaSeleccionada ? `$${ventaCosecha.valor_total}` : "-"}</td>
       <td className="p-2 text-sm">
         {cosechaSeleccionada && unidadSeleccionada && (
           <div>
@@ -154,11 +143,9 @@ export const CosechaForm = ({
       </td>
       <td className="p-2">
         {canRemove && (
-            <RoundIconButton
-                onPress={() => removeCosecha(index)}
-                color="danger"
-                icon={<Trash2 className="w-5 h-5" />}
-            />
+          <Button onPress={() => removeCosecha(index)} color="danger" size="sm">
+            <Trash2 className="w-5 h-5" />
+          </Button>
         )}
       </td>
     </tr>

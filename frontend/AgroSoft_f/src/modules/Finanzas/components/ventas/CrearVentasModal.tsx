@@ -5,14 +5,17 @@ import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesM
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
 import { CrearCosechasModal } from "../cosechas/CrearCosechasModal";
 import { CrearUnidadesMedidaModal } from "../unidadesMedida/CrearUnidadesMedidaModal";
+import { CosechaForm } from "./CosechaForm";
 import { ResumenPago } from "./ResumenPago";
+import { useVentaCosechas } from "../../hooks/ventas/useVentaCosechas";
+import { useCosechasGrouped, LoteDetail } from "../../hooks/useCosechasGrouped";
 import ModalGlobal from "@/components/ui/modalOpt";
+import { Button } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import { Cosechas, UnidadesMedida } from "../../types";
-import { useVentaCosechas } from "../../hooks/ventas/useVentaCosechas";
-import { CosechaForm } from "./CosechaForm";
-import { RoundIconButton } from "@/components/ui/buttonRound";
+import { CosechaCultivoCard } from "../cosechas/CosechaCultivoCard";
+import { CosechaLotesModal } from "../cosechas/CosechaLotesModal";
 
 interface CrearVentasModalProps {
   onClose: () => void;
@@ -22,13 +25,16 @@ interface CrearVentasModalProps {
 export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) => {
   const [cosechaModal, setCosechaModal] = useState(false);
   const [unidadMedidaModal, setUnidadMedidaModal] = useState(false);
+  const [lotesModal, setLotesModal] = useState(false);
+  const [selectedCultivo, setSelectedCultivo] = useState(null);
 
   const { data: cosechas, isLoading: isLoadingCosechas, refetch: refetchCosecha } = useGetCosechas();
   const { data: plantaciones } = useGetPlantaciones();
   const { data: unidadesMedida, isLoading: isLoadingUnidadesMedida, refetch: refetchUnidadMedida } = useGetUnidadesMedida();
+  const { cosechasAgrupadas, isLoading: isLoadingCosechasAgrupadas } = useCosechasGrouped();
   const { mutate, isPending } = usePostVentas();
 
-  const { ventaCosechas, error, addCosecha, updateCosecha, removeCosecha, validateCosechas, getTotalVenta } =
+  const { ventaCosechas, error, addCosecha, updateCosecha, removeCosecha, validateCosechas, getTotalVenta, handleBackendError } =
     useVentaCosechas({ cosechas, unidadesMedida });
 
   const handleSubmit = () => {
@@ -55,18 +61,9 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
           refetchCosecha();
           onCreate();
           onClose();
-          addToast({
-            title: "Éxito",
-            description: "Venta creada con éxito.",
-            color: "success",
-          });
         },
         onError: (error) => {
-          addToast({
-            title: "Error",
-            description: `Error al crear la venta: ${error.message}`,
-            color: "danger",
-          });
+          handleBackendError(error);
         },
       }
     );
@@ -84,6 +81,18 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
     setUnidadMedidaModal(false);
   };
 
+  const handleOpenLotesModal = (cultivo) => {
+    setSelectedCultivo(cultivo);
+    setLotesModal(true);
+  };
+
+  const handleSelectCosecha = (lote: LoteDetail) => {
+    addCosecha();
+    updateCosecha(ventaCosechas.length - 1, "cosecha", lote.id);
+    setLotesModal(false);
+    setSelectedCultivo(null);
+  };
+
   return (
     <>
       <ModalGlobal
@@ -99,12 +108,28 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
           },
         ]}
       >
-        {isLoadingCosechas || isLoadingUnidadesMedida ? (
+        {isLoadingCosechas || isLoadingUnidadesMedida || isLoadingCosechasAgrupadas ? (
           <p className="text-center">Cargando...</p>
         ) : (
           <div className="flex flex-col gap-6">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Seleccionar Productos</h3>
+              <h3 className="text-lg font-semibold text-green-800 bg-green-100 p-2 rounded-md mb-2">
+                Seleccionar Cultivos
+              </h3>
+              <div className="flex flex-wrap gap-4 mb-6">
+                {cosechasAgrupadas.map((cultivo) => (
+                  <CosechaCultivoCard
+                    key={cultivo.nombreCultivo}
+                    cultivo={cultivo}
+                    onOpenDetails={handleOpenLotesModal}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-green-800 bg-green-100 p-2 rounded-md mb-2">
+                Productos Seleccionados
+              </h3>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
@@ -138,21 +163,10 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
                   </tbody>
                 </table>
               </div>
-
-              
-              <div className="mt-3 mb-4" >
-                <div className="flex items-center gap-2"> {/* Contenedor flex para alinear */}
-                  <RoundIconButton
-                    onPress={addCosecha}
-                    color="success"
-                    icon={<Plus className="w-5 h-5" />}
-                  />
-                  <p className="text-gray-700 text-sm"> 
-                    Agregar Productos
-                  </p>
-                </div>
-              </div>
-              
+              <Button onPress={addCosecha} color="success" size="sm" className="mt-4">
+                <Plus className="w-5 h-5" />
+                Añadir Producto
+              </Button>
             </div>
             <ResumenPago ventaCosechas={ventaCosechas} totalVenta={getTotalVenta()} />
             {error && <p className="text-red-500 text-sm text-center">{error}</p>}
@@ -167,6 +181,17 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
         <CrearUnidadesMedidaModal
           onClose={() => setUnidadMedidaModal(false)}
           onCreate={handleUnidadMedidaCreada}
+        />
+      )}
+      {lotesModal && (
+        <CosechaLotesModal
+          isOpen={lotesModal}
+          onClose={() => {
+            setLotesModal(false);
+            setSelectedCultivo(null);
+          }}
+          cultivo={selectedCultivo}
+          onSelectCosecha={handleSelectCosecha}
         />
       )}
     </>
