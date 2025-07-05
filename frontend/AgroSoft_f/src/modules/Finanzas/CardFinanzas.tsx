@@ -14,6 +14,10 @@ export function CosechasResumenCard() {
     const [selectedCultivo, setSelectedCultivo] = useState<CultivoAgrupadoDetail | null>(null);
     const [filtroBusqueda, setFiltroBusqueda] = useState("");
 
+    const cultivosFiltrados = cosechasAgrupadas.filter((cultivo) =>
+        cultivo.nombreCultivo?.toLowerCase().includes(filtroBusqueda.toLowerCase())
+    );
+
     useEffect(() => {
         console.log('CosechasResumenCard renderizado', { filtroBusqueda, cultivosFiltradosLength: cultivosFiltrados.length });
     });
@@ -31,9 +35,7 @@ export function CosechasResumenCard() {
         setSelectedCultivo(null);
     };
 
-    const cultivosFiltrados = cosechasAgrupadas.filter((cultivo) =>
-        cultivo.nombreCultivo?.toLowerCase().includes(filtroBusqueda.toLowerCase())
-    );
+    
 
     return (
         <div className="flex flex-col gap-4 mb-6">
