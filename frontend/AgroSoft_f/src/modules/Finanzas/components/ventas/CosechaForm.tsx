@@ -1,7 +1,8 @@
-import { Select, SelectItem, Input, Button } from "@heroui/react";
+import { Select, SelectItem, Input } from "@heroui/react";
 import { Cosechas, UnidadesMedida, VentaCosecha } from "../../types";
 import { Trash2, Plus } from "lucide-react";
 import { Plantaciones } from "@/modules/Trazabilidad/types";
+import { RoundIconButton } from "@/components/ui/buttonRound";
 
 interface CosechaFormProps {
   index: number;
@@ -47,6 +48,7 @@ export const CosechaForm = ({
               updateCosecha(index, "cosecha", selectedKey ? Number(selectedKey) : 0);
             }}
             className="flex-1"
+            aria-label="Seleccionar producto" // Añadido para accesibilidad
           >
             {(cosechas || [])
               .filter((cosecha) => (cosecha.cantidad_disponible ?? 0) > 0)
@@ -76,9 +78,11 @@ export const CosechaForm = ({
               })}
           </Select>
           {index === 0 && (
-            <Button onPress={onOpenCosechaModal} color="success" size="sm">
-              <Plus className="w-5 h-5" />
-            </Button>
+            <RoundIconButton
+               onPress={onOpenCosechaModal}
+               color="success"
+               icon={<Plus className="w-5 h-5" />}
+            />
           )}
         </div>
       </td>
@@ -91,6 +95,7 @@ export const CosechaForm = ({
           onChange={(e) => updateCosecha(index, "cantidad", Number(e.target.value))}
           min="1"
           className="w-full"
+          aria-label="Cantidad del producto" // Añadido para accesibilidad
         />
       </td>
       <td className="p-2">
@@ -104,6 +109,7 @@ export const CosechaForm = ({
               updateCosecha(index, "unidad_medida", selectedKey ? Number(selectedKey) : 0);
             }}
             className="flex-1"
+            aria-label="Seleccionar unidad de medida" // Añadido para accesibilidad
           >
             {(unidadesMedida || []).map((unidadMedida) => (
               <SelectItem key={unidadMedida.id.toString()} textValue={unidadMedida.nombre}>
@@ -112,9 +118,11 @@ export const CosechaForm = ({
             ))}
           </Select>
           {index === 0 && (
-            <Button onPress={onOpenUnidadMedidaModal} color="success" size="sm">
-              <Plus className="w-5 h-5" />
-            </Button>
+            <RoundIconButton
+               onPress={onOpenUnidadMedidaModal}
+               color="success"
+               icon={<Plus className="w-5 h-5" />}
+            />
           )}
         </div>
       </td>
@@ -128,6 +136,7 @@ export const CosechaForm = ({
           min="0"
           max="100"
           className="w-full"
+          aria-label="Porcentaje de descuento" // Añadido para accesibilidad
         />
       </td>
       <td className="p-2 text-sm">{cosechaSeleccionada ? `$${ventaCosecha.precio_unitario}` : "-"}</td>
@@ -143,9 +152,11 @@ export const CosechaForm = ({
       </td>
       <td className="p-2">
         {canRemove && (
-          <Button onPress={() => removeCosecha(index)} color="danger" size="sm">
-            <Trash2 className="w-5 h-5" />
-          </Button>
+          <RoundIconButton 
+            onPress={() => removeCosecha(index)}
+            color="danger"
+            icon={<Trash2 className="w-5 h-5" />}>
+          </RoundIconButton>
         )}
       </td>
     </tr>

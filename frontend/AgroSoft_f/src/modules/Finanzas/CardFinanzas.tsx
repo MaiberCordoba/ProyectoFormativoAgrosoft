@@ -12,6 +12,11 @@ export function CosechasResumenCard() {
     const { cosechasAgrupadas, isLoading, isError } = useCosechasGrouped();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCultivo, setSelectedCultivo] = useState<CultivoAgrupadoDetail | null>(null);
+    const [filtroBusqueda, setFiltroBusqueda] = useState("");
+
+    useEffect(() => {
+        console.log('CosechasResumenCard renderizado', { filtroBusqueda, cultivosFiltradosLength: cultivosFiltrados.length });
+    });
 
     if (isLoading) return <p className="text-center text-gray-600">Cargando información de cosechas...</p>;
     if (isError) return <p className="text-center text-red-500">Hubo un error al cargar la información de cosechas.</p>;
@@ -26,15 +31,32 @@ export function CosechasResumenCard() {
         setSelectedCultivo(null);
     };
 
+    const cultivosFiltrados = cosechasAgrupadas.filter((cultivo) =>
+        cultivo.nombreCultivo?.toLowerCase().includes(filtroBusqueda.toLowerCase())
+    );
+
     return (
-        <div className="flex flex-wrap gap-4 mb-6">
-            {cosechasAgrupadas.map((cultivo) => (
-                <CosechaCultivoCard
-                    key={cultivo.nombreCultivo}
-                    cultivo={cultivo}
-                    onOpenDetails={handleOpenModal}
-                />
-            ))}
+        <div className="flex flex-col gap-4 mb-6">
+            <FiltrosTabla
+                valorFiltro={filtroBusqueda}
+                onCambiarBusqueda={setFiltroBusqueda}
+                onLimpiarBusqueda={() => setFiltroBusqueda("")}
+                placeholderBusqueda="Buscar por cultivo (ej. Lechuga)"
+                className="max-w-sm" // Añadido para input más corto
+            />
+            <div className="flex flex-row overflow-x-auto gap-4 pb-4 scroll-smooth">
+                {cultivosFiltrados.length > 0 ? (
+                    cultivosFiltrados.map((cultivo, index) => (
+                        <CosechaCultivoCard
+                            key={`${cultivo.nombreCultivo}-${index}`}
+                            cultivo={cultivo}
+                            onOpenDetails={handleOpenModal}
+                        />
+                    ))
+                ) : (
+                    <p className="text-sm text-gray-500">No se encontraron cultivos.</p>
+                )}
+            </div>
             <CosechaLotesModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
@@ -191,10 +213,11 @@ import { useCrearUsosHerramienta } from "./hooks/usosHerramientas/useCrearUsosHe
 import { CrearUsoHerramientaModal } from "./components/usosHerramientas/CrearUsosHerramientasModal";
 import { useCrearUsosInsumo } from "./hooks/usoInsumos/useCrearUsoInsumos";
 import { CrearUsoInsumoModal } from "./components/usoInsumos/CrearUsosInsumosModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CultivoAgrupadoDetail, useCosechasGrouped } from "./hooks/useCosechasGrouped";
 import { CosechaCultivoCard } from "./components/cosechas/CosechaCultivoCard";
 import { CosechaLotesModal } from "./components/cosechas/CosechaLotesModal";
+import { FiltrosTabla } from "@/components/ui/table/FiltrosTabla";
 
 export function HerramientasCard() {
   const {

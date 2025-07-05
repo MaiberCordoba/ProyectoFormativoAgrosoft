@@ -44,51 +44,51 @@ export default function CustomCard({
       isPressable={isPressable}
       onPress={onPress}
       className={`
-        w-[280px] min-w-[280px] h-auto
+        w-[200px] min-w-[200px] h-auto
         flex flex-col justify-between
-        rounded-xl shadow-md ${hoverEffect ? "hover:shadow-lg transition-shadow" : ""}
-        bg-${backgroundColor} border border-${borderColor} p-3
+        rounded-lg shadow-sm ${hoverEffect ? "hover:shadow-md transition-shadow" : ""}
+        bg-${backgroundColor} border border-${borderColor} p-2
       `}
     >
-      <CardBody className="flex flex-col items-start text-left gap-2">
-        {icon && <div className={`text-4xl text-${textColor}`}>{icon}</div>}
+      <CardBody className="flex flex-col items-start text-left gap-1">
+        {icon && <div className={`text-3xl text-${textColor}`}>{icon}</div>}
         {image && (
           <img
             src={image}
             alt={title}
-            className="w-16 h-16 object-cover rounded-md mx-auto"
+            className="w-12 h-12 object-cover rounded-md mx-auto"
           />
         )}
         {title && (
-          <h3 className={`font-semibold text-base text-${textColor} bg-green-100 w-full p-2 rounded-md`}>
+          <h3 className={`font-semibold text-sm text-${textColor} bg-green-100 w-full p-1 rounded-md`}>
             {title}
           </h3>
         )}
-        {subtitle && <p className={`text-sm text-gray-600 w-full`}>{subtitle}</p>}
-        {description && <p className={`text-sm text-gray-600 w-full`}>{description}</p>}
+        {subtitle && <p className={`text-xs text-gray-600 w-full`}>{subtitle}</p>}
+        {description && <p className={`text-xs text-gray-600 w-full`}>{description}</p>}
         {Object.entries(data).map(([label, value]) => (
-          <p key={label} className="text-sm text-left">
-            <strong>{label}</strong>: {value}
+          <p key={label} className="text-xs text-left">
+            <span className="font-semibold">{label}</span>: {value}
           </p>
         ))}
         {children}
       </CardBody>
       {footerButtons.length > 0 && (
         <>
-          <div className="w-full border-t border-gray-200 my-2" />
-          <CardFooter className="w-full flex flex-wrap gap-2 justify-start">
+          <div className="w-full border-t border-gray-200 my-1" />
+          <CardFooter className="w-full flex flex-wrap gap-1 justify-start">
             {footerButtons.map((btn, i) => (
               <Button
                 key={i}
                 onPress={btn.onPress}
                 className={`
-                  px-3 py-1 rounded text-sm
-                  bg-${btn.color ?? "primary"}/10
-                  text-${btn.color ?? "primary"}
-                  border border-${btn.color ?? "primary"}/20
-                  hover:bg-${btn.color ?? "primary"}/20
+                  px-2 py-1 rounded text-xs
+                  bg-${btn.color ?? "success"}/10
+                  text-${btn.color ?? "success"}
+                  border border-${btn.color ?? "success"}/20
+                  hover:bg-${btn.color ?? "success"}/20
                   transition-colors duration-200
-                  ${btn.size === "sm" ? "text-xs" : btn.size === "lg" ? "text-base" : ""}
+                  ${btn.size === "sm" ? "text-xs" : btn.size === "lg" ? "text-sm" : ""}
                 `}
                 size="sm"
               >
