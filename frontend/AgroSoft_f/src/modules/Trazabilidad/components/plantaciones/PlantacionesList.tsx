@@ -171,14 +171,6 @@ export function PlantacionesList() {
 
   return (
     <div className="p-4 space-y-4">
-      {/* Agrega un título para confirmar que el componente se renderiza */}
-      <h2 className="text-xl font-semibold">Listado de Plantaciones</h2>
-
-      {filteredData.length === 0 ? (
-        <div className="p-4 bg-yellow-50 rounded-lg text-yellow-700">
-          <p>No se encontraron plantaciones registradas</p>
-        </div>
-      ) : (
         <TablaReutilizable
           datos={datosConCultivoNombre}
           columnas={columnas}
@@ -197,7 +189,6 @@ export function PlantacionesList() {
             </button>
           )}
         />
-      )}
 
       {showPreview && (
         <div className="border rounded mt-4 relative">
