@@ -40,9 +40,10 @@ class ViewVentas(ModelViewSet):
             try:
                 cosecha = Cosechas.objects.get(id=cosecha_data['cosecha'])
                 unidad_medida = UnidadesMedida.objects.get(id=cosecha_data['unidad_medida'])
-                cantidad = cosecha_data['cantidad']
+                cantidad = Decimal(cosecha_data['cantidad'])
                 descuento = Decimal(cosecha_data.get('descuento', 0))
-                precio_unitario = Decimal(cosecha_data.get('precio_unitario', cosecha.precioUnidad))
+                # Usar valorGramo (COP/g) y convertir cantidad a gramos
+                precio_unitario = Decimal(cosecha.valorGramo or 0)
 
                 if cantidad <= 0:
                     raise ValueError("La cantidad debe ser mayor que cero.")
@@ -57,7 +58,8 @@ class ViewVentas(ModelViewSet):
                         f"La cantidad solicitada ({cantidad_en_base} g) excede la cantidad disponible ({cosecha.cantidad_disponible} g)."
                     )
 
-                valor_total = Decimal(cantidad_en_base) * Decimal(precio_unitario) * (1 - Decimal(descuento) / 100)
+                # Calcular valor_total usando cantidad_en_base (g) y valorGramo (COP/g)
+                valor_total = cantidad_en_base * precio_unitario * (1 - descuento / 100)
                 cosecha.cantidad_disponible -= cantidad_en_base
                 cosecha.save()
 

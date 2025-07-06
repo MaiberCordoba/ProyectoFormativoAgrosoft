@@ -1,5 +1,4 @@
 //Creacion de los tipos de datos
-import { string } from "zod";
 import { Controles } from "../Sanidad/types";
 import { Cultivo, Lotes, Plantaciones } from "../Trazabilidad/types";
 import { User } from "../Users/types";

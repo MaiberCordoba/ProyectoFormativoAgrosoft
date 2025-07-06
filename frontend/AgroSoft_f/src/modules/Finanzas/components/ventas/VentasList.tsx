@@ -20,7 +20,7 @@ export function VentasList() {
   const { data: cosechas, isLoading: loadingCosechas } = useGetCosechas();
   const { data: plantaciones } = useGetPlantaciones();
   const { data: unidadesMedida, isLoading: loadingUnidadesMedida } = useGetUnidadesMedida();
-  const { data: usuario, isLoading: loadingUsuario } = useGetUsers();
+  const { data: usuario } = useGetUsers();
   const {
     isOpen: isEditModalOpen,
     closeModal: closeEditModal,

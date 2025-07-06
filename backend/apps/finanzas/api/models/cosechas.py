@@ -8,7 +8,7 @@ class Cosechas(models.Model):
     cantidad = models.IntegerField(null=True)
     precioUnidad = models.IntegerField(null=True)
     cantidadTotal = models.FloatField(null=True, blank=True)  
-    cantidad_disponible = models.FloatField(null=True, blank=True)  
+    cantidad_disponible = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     valorTotal = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     valorGramo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fecha = models.DateField(auto_now=False)
