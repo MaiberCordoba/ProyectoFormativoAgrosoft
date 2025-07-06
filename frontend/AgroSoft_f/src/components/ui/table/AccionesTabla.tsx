@@ -10,10 +10,12 @@ import { VerticalDotsIcon } from "./Icons";
 
 interface AccionesTablaProps {
   onEditar: () => void;
-  onEliminar?: () => void; // Hacer onEliminar opcional
+  onEliminar?: () => void;
   permitirEditar?: boolean;
   permitirEliminar?: boolean;
   onVerDetalles?: () => void;
+  onDescargar?: () => void;
+  renderDescargar?: () => JSX.Element;
 }
 
 export const AccionesTabla: React.FC<AccionesTablaProps> = ({
@@ -22,8 +24,9 @@ export const AccionesTabla: React.FC<AccionesTablaProps> = ({
   permitirEditar = true,
   permitirEliminar = true,
   onVerDetalles,
+  onDescargar,
+  renderDescargar,
 }) => {
-  // Crear elementos de menú de forma condicional
   const menuItems = React.useMemo(() => {
     const items = [];
 
@@ -43,7 +46,6 @@ export const AccionesTabla: React.FC<AccionesTablaProps> = ({
       );
     }
 
-    // Solo agregar "Eliminar" si onEliminar está definido y permitirEliminar es true
     if (onEliminar && permitirEliminar) {
       items.push(
         <DropdownItem key="eliminar" onPress={onEliminar}>
@@ -52,16 +54,20 @@ export const AccionesTabla: React.FC<AccionesTablaProps> = ({
       );
     }
 
-    return items;
-  }, [onVerDetalles, permitirEditar, permitirEliminar, onEditar, onEliminar]);
+    if (onDescargar) {
+      items.push(
+        <DropdownItem key="descargar" onPress={onDescargar}>
+          Descargar Factura
+        </DropdownItem>
+      );
+    }
 
-  // Si no hay acciones disponibles
-  if (menuItems.length === 0) {
-    return <span className="text-gray-400 text-sm">Sin acciones</span>;
-  }
+    return items;
+  }, [onVerDetalles, permitirEditar, permitirEliminar, onEditar, onEliminar, onDescargar]);
 
   return (
     <div className="relative flex justify-end items-center gap-2">
+      {renderDescargar && renderDescargar()}
       <Dropdown>
         <DropdownTrigger>
           <Button isIconOnly size="sm" className="bg-success p-2 rounded">

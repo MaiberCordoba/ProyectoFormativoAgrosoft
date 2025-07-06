@@ -4,7 +4,7 @@ import { useCrearVenta } from "../../hooks/ventas/useCrearVentas";
 import { TablaReutilizable } from "@/components/ui/table/TablaReutilizable";
 import { AccionesTabla } from "@/components/ui/table/AccionesTabla";
 import { CrearVentasModal } from "./CrearVentasModal";
-import { Ventas } from "../../types";
+import { Ventas, UnidadesMedida } from "../../types";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/useGetPlantaciones";
@@ -12,6 +12,11 @@ import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
 import { EditarVentasModal } from "./EditarVentasModal";
 import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { RoundIconButton } from "@/components/ui/buttonRound";
+import { Download } from "lucide-react";
+import { formatCurrency, useCosechasGrouped } from "../../hooks/useCosechasGrouped";
+import { FacturaPDF } from "./VentaPdf";
 
 export function VentasList() {
   const { user } = useAuth();
@@ -20,7 +25,8 @@ export function VentasList() {
   const { data: cosechas, isLoading: loadingCosechas } = useGetCosechas();
   const { data: plantaciones } = useGetPlantaciones();
   const { data: unidadesMedida, isLoading: loadingUnidadesMedida } = useGetUnidadesMedida();
-  const { data: usuario } = useGetUsers();
+  const { data: usuarios } = useGetUsers();
+  const { cosechasAgrupadas } = useCosechasGrouped();
   const {
     isOpen: isEditModalOpen,
     closeModal: closeEditModal,
@@ -69,16 +75,44 @@ export function VentasList() {
   ];
 
   const renderCell = (item: Ventas, columnKey: React.Key) => {
+    const ventaPDF = {
+      numero_factura: item.numero_factura,
+      fecha: item.fecha,
+      usuario: usuarios?.find((us) => us.id === item.usuario)?.nombre + ' ' + usuarios?.find((us) => us.id === item.usuario)?.apellidos || 'Desconocido',
+      cosechas: item.cosechas.map((vc) => {
+        const cosecha = cosechas?.find((c) => c.id === vc.cosecha);
+        const plantacion = plantaciones?.find((p) => p.id === cosecha?.fk_Plantacion);
+        const unidad = unidadesMedida?.find((u) => u.id === vc.unidad_medida) || {
+          id: 0,
+          nombre: 'N/A',
+          equivalenciabase: 1,
+          abreviatura: 'N/A',
+          tipo: 'MASA', // Ajustado para cumplir con 'MASA' | 'VOLUMEN'
+        } as UnidadesMedida;
+        return {
+          cosecha: {
+            id: vc.cosecha,
+            nombreEspecie: cosechasAgrupadas.find((ca) => ca.lotes.some((l) => l.id === vc.cosecha))?.nombreEspecie || plantacion?.cultivo?.nombre || 'Desconocido',
+          },
+          cantidad: vc.cantidad,
+          unidad_medida: unidad,
+          precio_unitario: vc.precio_unitario,
+          descuento: vc.descuento,
+          valor_total: vc.valor_total,
+        };
+      }),
+      valor_total: item.valor_total,
+    };
+
     switch (columnKey) {
       case "fecha":
         return <span>{new Date(item.fecha).toLocaleString()}</span>;
       case "numero_factura":
         return <span>{item.numero_factura}</span>;
       case "valor_total":
-        return <span>${item.valor_total}</span>;
+        return <span>{formatCurrency(Number(item.valor_total))}</span>;
       case "usuario":
-        const user = usuario?.find((us) => us.id === item.usuario);
-        return <span>{user?.nombre} {user?.apellidos}</span>;
+        return <span>{ventaPDF.usuario}</span>;
       case "cosechas":
         return (
           <ul className="list-disc pl-4">
@@ -92,7 +126,7 @@ export function VentasList() {
                 <li key={index}>
                   <span>
                     Producto: {producto}, Cantidad: {vc.cantidad} {unidad?.nombre || "N/A"},
-                    Precio: ${vc.precio_unitario}, Descuento: {vc.descuento}%, Total: ${vc.valor_total}
+                    Precio: {formatCurrency(Number(vc.precio_unitario))}, Descuento: {vc.descuento}%, Total: {formatCurrency(Number(vc.valor_total))}
                   </span>
                 </li>
               );
@@ -108,6 +142,19 @@ export function VentasList() {
                 ["admin", "instructor"]
               )
             }
+            onDescargar={() => {}}
+            renderDescargar={() => (
+              <PDFDownloadLink document={<FacturaPDF venta={ventaPDF} />} fileName={`factura-${item.numero_factura}.pdf`}>
+                {({ loading }) => (
+                  <RoundIconButton
+                    color="primary"
+                    icon={<Download className="w-5 h-5" />}
+                    disabled={loading}
+                    aria-label={loading ? 'Generando PDF...' : 'Descargar Factura'}
+                  />
+                )}
+              </PDFDownloadLink>
+            )}
           />
         );
       default:
