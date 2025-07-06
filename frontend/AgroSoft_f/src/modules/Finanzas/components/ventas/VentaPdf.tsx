@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 
 const Header = ({ numero_factura, fecha, usuario }: { numero_factura: string; fecha: string; usuario: string }) => (
   <View style={styles.header}>
-    <Image src="rutalogoAgrosoft" style={styles.logo} />
+    <Image src='../../../../../public/logoAgrosoft.png' style={styles.logo} />
     <View style={styles.companyInfo}>
       <Text style={styles.title}>Factura de Venta</Text>
       <Text>Factura #{numero_factura}</Text>

@@ -142,12 +142,10 @@ export function VentasList() {
                 ["admin", "instructor"]
               )
             }
-            onDescargar={() => {}}
             renderDescargar={() => (
               <PDFDownloadLink document={<FacturaPDF venta={ventaPDF} />} fileName={`factura-${item.numero_factura}.pdf`}>
                 {({ loading }) => (
                   <RoundIconButton
-                    color="primary"
                     icon={<Download className="w-5 h-5" />}
                     disabled={loading}
                     aria-label={loading ? 'Generando PDF...' : 'Descargar Factura'}

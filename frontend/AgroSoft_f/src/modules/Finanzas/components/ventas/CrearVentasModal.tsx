@@ -274,17 +274,6 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
             onClose();
           }}
           title="Descargar Factura"
-          footerButtons={[
-            {
-              label: "Cerrar",
-              color: "success",
-              onClick: () => {
-                setShowDownloadModal(false);
-                setVentaCreada(null);
-                onClose();
-              },
-            },
-          ]}
         >
           <div className="flex flex-col items-center gap-4">
             <p className="text-center text-gray-700">¿Desea descargar la factura de la venta creada?</p>
