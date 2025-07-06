@@ -63,7 +63,7 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
   );
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "id",
-    direction: "ascending",
+    direction: "descending", // Cambiado a descending para mostrar nuevos primero
   });
 
   const headerColumns = React.useMemo(() => {
@@ -77,6 +77,13 @@ export const TablaReutilizable = <T extends { [key: string]: any }>({
     return [...datosPaginados].sort((a: T, b: T) => {
       const first = a[sortDescriptor.column as keyof T];
       const second = b[sortDescriptor.column as keyof T];
+      // Manejar valores numéricos (como id) para ordenamiento correcto
+      if (sortDescriptor.column === "id") {
+        return sortDescriptor.direction === "descending"
+          ? Number(second) - Number(first)
+          : Number(first) - Number(second);
+      }
+      // Para otras columnas, usar localeCompare
       const cmp = String(first).localeCompare(String(second));
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
