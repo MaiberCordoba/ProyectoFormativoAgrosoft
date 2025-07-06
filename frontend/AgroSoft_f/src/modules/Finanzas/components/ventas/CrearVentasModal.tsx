@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePostVentas } from "../../hooks/ventas/usePostVentas";
 import { useGetCosechas } from "../../hooks/cosechas/useGetCosechas";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
@@ -38,11 +38,6 @@ export const CrearVentasModal = ({ onClose, onCreate }: CrearVentasModalProps) =
 
   const { ventaCosechas, error, addCosecha, updateCosecha, removeCosecha, validateCosechas, getTotalVenta, handleBackendError } =
     useVentaCosechas({ cosechas, unidadesMedida });
-
-  // Depuración para detectar re-renderizados
-  useEffect(() => {
-    console.log('CrearVentasModal renderizado', { filtroBusqueda, cultivosFiltradosLength: cultivosFiltrados.length });
-  });
 
   const handleSubmit = () => {
     if (!validateCosechas()) {

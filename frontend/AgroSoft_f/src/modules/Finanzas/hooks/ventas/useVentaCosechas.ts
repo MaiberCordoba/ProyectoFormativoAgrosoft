@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Cosechas, UnidadesMedida, VentaCosecha } from "../../types";
 import { addToast } from "@heroui/toast";
 
@@ -16,10 +16,11 @@ export const useVentaCosechas = ({ cosechas, unidadesMedida, initialCosechas = [
   );
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!cosechas || !unidadesMedida) return;
+  // Función auxiliar para calcular valores actualizados
+  const calculateUpdatedVentaCosechas = useMemo(() => {
+    if (!cosechas || !unidadesMedida) return ventaCosechas;
 
-    const updatedVentaCosechas = ventaCosechas.map((vc) => {
+    return ventaCosechas.map((vc) => {
       const cosecha = cosechas.find((c) => c.id === vc.cosecha);
       const unidad = unidadesMedida.find((u) => u.id === vc.unidad_medida);
 
@@ -28,7 +29,7 @@ export const useVentaCosechas = ({ cosechas, unidadesMedida, initialCosechas = [
       }
 
       const cantidadEnBase = vc.cantidad * unidad.equivalenciabase;
-      const precioUnitario = Number(cosecha.valorGramo) || 0;
+      const precioUnitario = Number(cosecha.valorGramo) || 0; // Usar valorGramo (COP/g)
       const porcentajeDescuento = Number(vc.descuento) / 100;
       const valorTotal = cantidadEnBase * precioUnitario * (1 - porcentajeDescuento);
 
@@ -38,9 +39,16 @@ export const useVentaCosechas = ({ cosechas, unidadesMedida, initialCosechas = [
         valor_total: valorTotal.toFixed(2),
       };
     });
+  }, [cosechas, unidadesMedida, ventaCosechas]);
 
-    setVentaCosechas(updatedVentaCosechas);
-  }, [ventaCosechas, cosechas, unidadesMedida]);
+  // Actualizar ventaCosechas solo si es necesario
+  useEffect(() => {
+    const updated = calculateUpdatedVentaCosechas;
+    // Comparar para evitar actualizaciones innecesarias
+    if (JSON.stringify(updated) !== JSON.stringify(ventaCosechas)) {
+      setVentaCosechas(updated);
+    }
+  }, [calculateUpdatedVentaCosechas]);
 
   const addCosecha = () => {
     setVentaCosechas([...ventaCosechas, { cosecha: 0, cantidad: 1, unidad_medida: 0, descuento: "0", precio_unitario: "0.00", valor_total: "0.00" }]);
