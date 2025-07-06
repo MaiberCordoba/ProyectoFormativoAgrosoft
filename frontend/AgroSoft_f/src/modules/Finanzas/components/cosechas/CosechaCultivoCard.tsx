@@ -27,7 +27,7 @@ export const CosechaCultivoCard: React.FC<CosechaCultivoCardProps> = ({ cultivo,
                     <span className="font-semibold">Disponible:</span> {cultivo.cantidadDisponibleCultivo} g
                 </p>
                 <p className="text-xs text-gray-700">
-                    <span className="font-semibold">Valor:</span> {formatCurrency(cultivo.valorTotalCultivo)}
+                    <span className="font-semibold">Valor por vender:</span> {formatCurrency(cultivo.valorTotalCultivo)}
                 </p>
             </div>
             <Button

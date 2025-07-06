@@ -7,7 +7,7 @@ export interface LoteDetail {
     id: number;
     cantidadTotal: number;
     cantidad_disponible: number;
-    valorTotal: number;
+    valorTotal: number; // Valor del stock disponible (cantidad_disponible * valorGramo)
     valorGramo: number;
     fecha: string | undefined;
     lote: string | undefined; 
@@ -21,7 +21,7 @@ export interface CultivoAgrupadoDetail {
     nombreEspecie: string;
     cantidadTotalCosechadaCultivo: number;
     cantidadDisponibleCultivo: number;
-    valorTotalCultivo: number;
+    valorTotalCultivo: number; // Suma de valorTotal de los lotes
     lotes: LoteDetail[];
 }
 
@@ -53,19 +53,15 @@ export function useCosechasGrouped() {
                 return acc;
             }
 
-            let valorTotalCosecha: number;
-            if (typeof cosecha.valorTotal === 'number') {
-                valorTotalCosecha = cosecha.valorTotal;
-            } else {
-                valorTotalCosecha = parseFloat(cosecha.valorTotal ?? '0');
-            }
-
             let valorGramoCosecha: number;
             if (typeof cosecha.valorGramo === 'number') {
                 valorGramoCosecha = cosecha.valorGramo;
             } else {
                 valorGramoCosecha = parseFloat(cosecha.valorGramo ?? '0');
             }
+
+            // Calcular valorTotal como cantidad_disponible * valorGramo
+            const valorTotalCosecha = (cosecha.cantidad_disponible ?? 0) * valorGramoCosecha;
 
             if (!acc[cultivoId]) {
                 acc[cultivoId] = {
@@ -90,8 +86,8 @@ export function useCosechasGrouped() {
                 valorTotal: valorTotalCosecha,
                 valorGramo: valorGramoCosecha,
                 fecha: cosecha.fecha,
-                era: plantacion?.eras.tipo ?? "Sin lote",
-                lote: plantacion?.eras.Lote?.nombre ?? "Sin lote",
+                era: plantacion?.eras?.tipo ?? "Sin lote",
+                lote: plantacion?.eras?.Lote?.nombre ?? "Sin lote",
             });
 
             return acc;

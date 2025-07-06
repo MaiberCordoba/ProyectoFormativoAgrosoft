@@ -62,9 +62,7 @@ export const CosechaLotesModal: React.FC<CosechaLotesModalProps> = ({ isOpen, on
                                         <p className="text-blue-700 font-bold">
                                             <span className="font-semibold">Valor por Gramo:</span> {valorGramo == null || isNaN(valorGramo) ? "No definido" : `$${valorGramo.toFixed(2)}`}
                                         </p>
-                                        <p className="text-purple-700 font-bold">
-                                            <span className="font-semibold">Valor Total:</span> {formatCurrency(lote.valorTotal)}
-                                        </p>
+                                        
                                     </div>
                                     {/* Indicador de clickeabilidad */}
                                     {onSelectCosecha && (
