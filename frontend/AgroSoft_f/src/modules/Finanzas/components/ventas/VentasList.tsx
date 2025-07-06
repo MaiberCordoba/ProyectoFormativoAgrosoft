@@ -11,6 +11,7 @@ import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/us
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
 import { EditarVentasModal } from "./EditarVentasModal";
+import { useGetUsers } from "@/modules/Users/hooks/useGetUsers";
 
 export function VentasList() {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ export function VentasList() {
   const { data: cosechas, isLoading: loadingCosechas } = useGetCosechas();
   const { data: plantaciones } = useGetPlantaciones();
   const { data: unidadesMedida, isLoading: loadingUnidadesMedida } = useGetUnidadesMedida();
+  const { data: usuario, isLoading: loadingUsuario } = useGetUsers();
   const {
     isOpen: isEditModalOpen,
     closeModal: closeEditModal,
@@ -75,7 +77,8 @@ export function VentasList() {
       case "valor_total":
         return <span>${item.valor_total}</span>;
       case "usuario":
-        return <span>{item.usuario}</span>;
+        const user = usuario?.find((us) => us.id === item.usuario);
+        return <span>{user?.nombre} {user?.apellidos}</span>;
       case "cosechas":
         return (
           <ul className="list-disc pl-4">
@@ -84,6 +87,7 @@ export function VentasList() {
               const plantacion = plantaciones?.find((p) => p.id === cosecha?.fk_Plantacion);
               const producto = plantacion?.cultivo?.nombre || "Sin producto";
               const unidad = unidadesMedida?.find((u) => u.id === vc.unidad_medida);
+
               return (
                 <li key={index}>
                   <span>
