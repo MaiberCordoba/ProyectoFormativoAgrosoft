@@ -107,11 +107,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Lista base de menús
   const baseMenuItems = [
     {
-      title: "IoT",
-      icon: Monitor,
-      submenus: ["sensores", "evapotranspiracion"],
-    },
-    {
       title: "Cultivos",
       icon: Leaf,
       color: "text-[#254030]",
@@ -124,6 +119,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         "Eras",
         "Informacion Cultivos Sembrados",
       ],
+    },
+    {
+      title: "IoT",
+      icon: Monitor,
+      submenus: ["sensores", "evapotranspiracion"],
     },
     {
       title: "Actividades",

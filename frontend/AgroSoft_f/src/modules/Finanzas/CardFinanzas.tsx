@@ -56,7 +56,7 @@ export function CosechasResumenCard() {
                         />
                     ))
                 ) : (
-                    <p className="text-sm text-gray-500">No se encontraron cultivos.</p>
+                    <p className="text-sm text-gray-500">No se encontraron cosechas.</p>
                 )}
             </div>
             <CosechaLotesModal
