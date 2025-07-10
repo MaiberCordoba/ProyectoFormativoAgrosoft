@@ -47,7 +47,7 @@ export function useCosechasGrouped() {
 
         return cosechas.reduce((acc, cosecha) => {
             const plantacion = plantaciones.find((p) => p.id === cosecha.fk_Plantacion);
-            const cultivoId = plantacion?.cultivo?.id;
+            const cultivoId = plantacion?.cultivo?.id || plantacion?.semillero?.cultivo?.id;
 
             if (!cultivoId || (cosecha.cantidadTotal === null || cosecha.cantidadTotal === undefined) || (cosecha.cantidad_disponible === null || cosecha.cantidad_disponible === undefined) || cosecha.cantidad_disponible <= 0) {
                 return acc;
@@ -65,9 +65,9 @@ export function useCosechasGrouped() {
 
             if (!acc[cultivoId]) {
                 acc[cultivoId] = {
-                    nombreCultivo: plantacion?.cultivo?.nombre ?? "Desconocido",
-                    imagenEspecie: plantacion?.cultivo?.especies?.img,
-                    nombreEspecie: plantacion?.cultivo?.especies?.nombre ?? "Desconocido",
+                    nombreCultivo: plantacion?.cultivo?.nombre || plantacion?.semillero?.cultivo?.nombre  || "Desconocido",
+                    imagenEspecie: plantacion?.cultivo?.img || plantacion?.semillero?.cultivo?.img || "",
+                    nombreEspecie: plantacion?.cultivo?.especies?.nombre || plantacion?.semillero?.cultivo?.especies?.nombre || "Desconocido",
                     cantidadTotalCosechadaCultivo: 0,
                     cantidadDisponibleCultivo: 0,
                     valorTotalCultivo: 0,
