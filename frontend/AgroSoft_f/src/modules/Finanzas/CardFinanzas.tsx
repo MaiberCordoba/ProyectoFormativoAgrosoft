@@ -82,10 +82,10 @@ export function PlantacionesCard() {
     <div className="flex flex-wrap gap-4 mb-6">
       {plantaciones.map((plantacion) => {
         // Manejo seguro de propiedades anidadas
-        const nombreCultivo = plantacion?.cultivo?.nombre ?? "Desconocido";
+        const nombreCultivo = plantacion?.cultivo?.nombre  || plantacion?.semillero?.cultivo?.nombre  || "Desconocido";
         const estado =
-          plantacion?.cultivo?.activo !== undefined
-            ? plantacion.cultivo.activo
+          plantacion?.cultivo?.activo || plantacion?.semillero?.cultivo?.activo  || undefined
+            ? plantacion.cultivo?.activo || plantacion.semillero?.cultivo?.activo
               ? "Activo"
               : "Inactivo"
             : "Estado desconocido";
