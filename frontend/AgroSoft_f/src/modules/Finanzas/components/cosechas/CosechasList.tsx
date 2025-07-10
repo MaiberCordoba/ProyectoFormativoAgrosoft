@@ -90,7 +90,7 @@ export function CosechasList() {
         );
         return (
           <span>
-            {plantaciones ? plantaciones?.cultivo?.nombre : "No definido"}
+            {plantaciones ? plantaciones?.cultivo?.nombre  || plantaciones?.semillero?.cultivo?.nombre :  "No definido"}
           </span>
         );
       case "unidadMedida":
