@@ -98,7 +98,7 @@ export const CosechaForm = ({
           aria-label="Cantidad del producto" // Añadido para accesibilidad
         />
       </td>
-      <td className="p-2">
+      <td className="p-2 min-w-[200px]">
         <div className="flex items-center gap-2">
           <Select
             placeholder="Selecciona la unidad"
