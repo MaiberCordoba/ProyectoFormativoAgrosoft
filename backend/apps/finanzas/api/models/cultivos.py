@@ -5,6 +5,8 @@ class Cultivos(models.Model):
     nombre = models.CharField(max_length=50,null=True,unique=True)
     activo = models.BooleanField(default=False, null=False)
     fk_Especie = models.ForeignKey(Especies,on_delete=models.SET_NULL, null=True)
+    img = models.ImageField(upload_to="cultivos/", null=True, blank=True)
+
 
     def save(self, *args, **kwargs):
         if self.nombre:

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePostTiposEspecie } from "../../hooks/tiposEspecie/usePostTiposEspecie";
 import ModalComponent from "@/components/Modal";
-import { Button, Input } from "@heroui/react";
+import { Button, Input, Textarea } from "@heroui/react";
 import { addToast } from "@heroui/toast";
 
 interface CrearTiposEspecieModalProps {
@@ -12,13 +12,11 @@ interface CrearTiposEspecieModalProps {
 export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieModalProps) => {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [img, setImg] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
 
   const { mutate, isPending } = usePostTiposEspecie();
 
   const handleSubmit = () => {
-    if (!nombre || !descripcion || !img) {
+    if (!nombre || !descripcion) {
       addToast({
         title: "Campos incompletos",
         description: "Por favor, completa todos los campos.",
@@ -27,12 +25,9 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
       return;
     }
 
-    const formData = new FormData();
-    formData.append("nombre", nombre);
-    formData.append("descripcion", descripcion);
-    formData.append("img", img);
+    const data = { nombre, descripcion };
 
-    mutate(formData, {
+    mutate(data, {
       onSuccess: (data) => {
         addToast({
           title: "Creación exitosa",
@@ -48,8 +43,6 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
 
         setNombre("");
         setDescripcion("");
-        setImg(null);
-        setPreview(null);
         onClose();
       },
       onError: (error) => {
@@ -86,48 +79,13 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
         size="sm"
       />
 
-      <Input
+      <Textarea
         label="Descripción"
-        type="text"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
         required
         size="sm"
       />
-
-      <div className="mt-4">
-        <Button
-          type="button"
-          variant="solid"
-          onPress={() => document.getElementById("imgTipoEspecieInput")?.click()}
-        >
-          Seleccionar imagen
-        </Button>
-
-        <input
-          id="imgTipoEspecieInput"
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              setImg(file);
-              setPreview(URL.createObjectURL(file));
-            }
-          }}
-        />
-      </div>
-
-      {preview && (
-        <div className="mt-4">
-          <img
-            src={preview}
-            alt="Vista previa"
-            className="w-48 h-48 object-cover rounded-lg border border-gray-300"
-          />
-        </div>
-      )}
     </ModalComponent>
   );
 };

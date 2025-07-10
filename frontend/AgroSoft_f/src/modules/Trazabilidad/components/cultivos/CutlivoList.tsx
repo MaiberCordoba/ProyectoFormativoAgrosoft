@@ -9,8 +9,8 @@ import { CrearCultivoModal } from "./CrearCultivosModal";
 import EliminarCultivoModal from "./EliminarCultivo";
 import { Cultivo } from "../../types";
 import { useAuth } from "@/hooks/UseAuth";
-import { addToast } from "@heroui/toast"; // Importa tu utilidad de toasts
-import { Chip } from "@heroui/react";
+import { addToast } from "@heroui/toast";
+import { Chip, Image } from "@heroui/react";
 
 export function CultivosList() {
   const { data: cultivos, isLoading, error } = useGetCultivos();
@@ -66,10 +66,11 @@ export function CultivosList() {
 
     if (permitido) {
       handleCrear({
-        id:0,
+        id: 0,
         nombre: "",
         activo: true,
-        fk_Especie:0,
+        fk_Especie: 0,
+        img: "", // Añadimos el campo img
       });
     } else {
       showAccessDenied();
@@ -79,6 +80,7 @@ export function CultivosList() {
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Especie", uid: "especies", sortable: false },
+    { name: "Imagen", uid: "img" }, // Añadimos la columna para la imagen
     { name: "Estado", uid: "activo", sortable: true },
     { name: "Acciones", uid: "acciones" },
   ];
@@ -89,17 +91,26 @@ export function CultivosList() {
         return <span>{item.nombre}</span>;
       case "especies":
         return <span>{item.especies?.nombre || "Sin especie"}</span>;
+      case "img":
+        return (
+          <Image
+            isZoomed
+            src={item.img || "/placeholder-image.jpg"} // Usamos una imagen por defecto si no hay img
+            alt={item.nombre}
+            className="w-14 h-14 object-cover rounded-lg border"
+          />
+        );
       case "activo":
-              return (
-                <Chip
-                  size="sm"
-                  className="capitalize"
-                  variant="dot"
-                  color={item.activo ? "success" : "danger"}
-                >
-                  {item.activo ? "Activo" : "Inactivo"}
-                </Chip>
-              );
+        return (
+          <Chip
+            size="sm"
+            className="capitalize"
+            variant="dot"
+            color={item.activo ? "success" : "danger"}
+          >
+            {item.activo ? "Activo" : "Inactivo"}
+          </Chip>
+        );
       case "acciones":
         return (
           <AccionesTabla
@@ -141,7 +152,6 @@ export function CultivosList() {
         <CrearCultivoModal
           onClose={closeCreateModal}
           onCreate={() => {
-            // solo cerrar modal, sin notificaciones aquí
             closeCreateModal();
           }}
         />

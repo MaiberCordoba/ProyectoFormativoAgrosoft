@@ -6,7 +6,7 @@ import { addToast } from "@heroui/react";
 export const usePatchCultivos = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Cultivo, Error, { id: number; data: Partial<Cultivo> }>({
+  return useMutation<Cultivo, Error, { id: number; data: FormData }>({
     mutationFn: ({ id, data }) => patchCultivos(id, data),
     onSuccess: (updatedCultivos, variables) => {
       // Actualiza la caché después de una mutación exitosa

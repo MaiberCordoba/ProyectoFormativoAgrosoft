@@ -6,15 +6,24 @@ export const getCultivos = async ():Promise<Cultivo[]> => {
     return response.data
 };
 
-export const postCultivos = async (data?:any):Promise<Cultivo> => {
-    const response = await apiClient.post<Cultivo>('cultivos/',data);
-    return response.data
-}
+export const postCultivos = async (data: FormData): Promise<TiposEspecie> => {
+  const response = await apiClient.post<Cultivo>('cultivos/', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
 
-export const patchCultivos = async ( id: number, data: Partial<Cultivo>): Promise<Cultivo> => {
-    const response = await apiClient.patch<Cultivo>(`cultivos/${id}/`, data);
-    return response.data;
-  };
+// Actualizar un tipo de especie (también con FormData)
+export const patchCultivos = async (id: number, data: FormData): Promise<Cultivo> => {
+  const response = await apiClient.patch<Cultivo>(`cultivos/${id}/`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
 
 
 export const deleteCultivos = async (id: number): Promise<Cultivo> => {

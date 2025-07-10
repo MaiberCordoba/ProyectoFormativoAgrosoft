@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ModalComponent from "@/components/Modal";
 import { usePatchCultivos } from "../../hooks/cultivos/usePatchCultivos";
 import { Cultivo } from "../../types";
-import { Input, Select, SelectItem, Switch } from "@heroui/react";
+import { Input, Select, SelectItem, Switch, Button } from "@heroui/react";
 import { useGetEspecies } from "../../hooks/especies/useGetEpecies";
 import { addToast } from "@heroui/toast";
 
@@ -15,28 +15,25 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({
   cultivo,
   onClose,
 }) => {
-
   const [nombre, setNombre] = useState<string>("");
   const [fk_EspecieId, setFk_EspecieId] = useState<number | null>(null);
   const [selectedSpeciesKeys, setSelectedSpeciesKeys] = useState<Set<string>>(
     new Set()
   );
   const [activo, setActivo] = useState<boolean>(true);
+  const [img, setImg] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>(cultivo.img || "");
+
   const { mutate, isPending } = usePatchCultivos();
-  const {
-    data: especies,
-    isLoading: isLoadingEspecies,
-  } = useGetEspecies();
+  const { data: especies, isLoading: isLoadingEspecies } = useGetEspecies();
 
   useEffect(() => {
     if (!cultivo) return;
     setNombre(cultivo.nombre ?? "");
-
-    const especieId = cultivo.fk_Especie
-
+    const especieId = cultivo.fk_Especie;
     setFk_EspecieId(especieId ?? null);
-
     setActivo(!!cultivo.activo);
+    setPreview(cultivo.img || "");
   }, [cultivo]);
 
   useEffect(() => {
@@ -55,10 +52,18 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({
       return;
     }
 
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("fk_Especie", fk_EspecieId.toString());
+    formData.append("activo", activo.toString());
+    if (img) {
+      formData.append("img", img);
+    }
+
     mutate(
       {
         id: cultivo.id,
-        data: { nombre, fk_Especie: fk_EspecieId, activo },
+        data: formData,
       },
       {
         onSuccess: () => {
@@ -80,7 +85,6 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({
     );
   };
 
-  /* ---------------------------- render ---------------------------- */
   return (
     <ModalComponent
       isOpen={true}
@@ -121,6 +125,41 @@ const EditarCultivoModal: React.FC<EditarCultivoModalProps> = ({
             <SelectItem key={esp.id.toString()}>{esp.nombre}</SelectItem>
           ))}
         </Select>
+      )}
+
+      {/* Imagen */}
+      <div className="mt-4">
+        <Button
+          type="button"
+          variant="solid"
+          onPress={() => document.getElementById("imgInput")?.click()}
+        >
+          Cambiar imagen
+        </Button>
+
+        <input
+          id="imgInput"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setImg(file);
+              setPreview(URL.createObjectURL(file));
+            }
+          }}
+        />
+      </div>
+
+      {preview && (
+        <div className="mt-4">
+          <img
+            src={preview}
+            alt="Vista previa"
+            className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+          />
+        </div>
       )}
 
       {/* Activo / Inactivo */}

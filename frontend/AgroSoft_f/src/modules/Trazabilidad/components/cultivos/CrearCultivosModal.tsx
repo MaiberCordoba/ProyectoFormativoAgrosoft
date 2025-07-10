@@ -17,6 +17,8 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
   const [nombre, setNombre] = useState<string>("");
   const [activo, setActivo] = useState<boolean>(true);
   const [fk_Especie, setFk_Especie] = useState<number | null>(null);
+  const [img, setImg] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [mostrarModalEspecie, setMostrarModalEspecie] = useState(false);
 
   const { mutate, isPending } = usePostCultivos();
@@ -27,44 +29,44 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
   } = useGetEspecies();
 
   const handleSubmit = () => {
-    if (!nombre || !fk_Especie) {
+    if (!nombre || !fk_Especie || !img) {
       addToast({
         title: "Campos obligatorios",
-        description: "Por favor completa todos los campos.",
+        description: "Por favor completa todos los campos, incluyendo la imagen.",
         color: "danger",
       });
       return;
     }
 
-    mutate(
-      {
-        id:0,
-        nombre,
-        activo,
-        fk_Especie,
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("fk_Especie", fk_Especie.toString());
+    formData.append("activo", activo.toString());
+    formData.append("img", img);
+
+    mutate(formData, {
+      onSuccess: (data) => {
+        addToast({
+          title: "Creación exitosa",
+          description: "Cultivo registrado con éxito",
+          color: "success",
+        });
+        setNombre("");
+        setFk_Especie(null);
+        setActivo(true);
+        setImg(null);
+        setPreview(null);
+        onCreate(data);
+        onClose();
       },
-      {
-        onSuccess: (data) => {
-          addToast({
-            title: "Creación exitosa",
-            description: "Cultivo registrado con éxito",
-            color: "success",
-          });
-          setNombre("");
-          setFk_Especie(null);
-          setActivo(true);
-          onCreate(data); // ← Solo notifica desde aquí
-          onClose();
-        },
-        onError: () => {
-          addToast({
-            title: "Error al crear cultivo",
-            description: "No se pudo registrar el cultivo",
-            color: "danger",
-          });
-        },
-      }
-    );
+      onError: () => {
+        addToast({
+          title: "Error al crear cultivo",
+          description: "No se pudo registrar el cultivo",
+          color: "danger",
+        });
+      },
+    });
   };
 
   const handleEspecieCreada = (nuevaEspecie: { id: number }) => {
@@ -104,7 +106,7 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
               <Select
                 label="Especie"
                 placeholder="Selecciona una especie"
-                size="sm" 
+                size="sm"
                 selectedKeys={fk_Especie ? [fk_Especie.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selected = Array.from(keys)[0];
@@ -127,6 +129,40 @@ export const CrearCultivoModal = ({ onClose, onCreate }: CrearCultivoModalProps)
             <Plus className="w-5 h-5 text-white" />
           </Button>
         </div>
+
+        <div className="mt-4">
+          <Button
+            type="button"
+            variant="solid"
+            onPress={() => document.getElementById("imgCultivoInput")?.click()}
+          >
+            Seleccionar imagen
+          </Button>
+
+          <input
+            id="imgCultivoInput"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImg(file);
+                setPreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+        </div>
+
+        {preview && (
+          <div className="mt-4">
+            <img
+              src={preview}
+              alt="Vista previa"
+              className="w-48 h-48 object-cover rounded-lg border border-gray-300"
+            />
+          </div>
+        )}
 
         <div className="flex items-center gap-4 mt-4">
           <Switch
