@@ -6,7 +6,7 @@ export const getCultivos = async ():Promise<Cultivo[]> => {
     return response.data
 };
 
-export const postCultivos = async (data: FormData): Promise<TiposEspecie> => {
+export const postCultivos = async (data: FormData): Promise<Cultivo> => {
   const response = await apiClient.post<Cultivo>('cultivos/', data, {
     headers: {
       'Content-Type': 'multipart/form-data',
