@@ -4,18 +4,21 @@ import { Cultivo, Lotes, Plantaciones } from "../Trazabilidad/types";
 import { User } from "../Users/types";
 
 export interface ResumenEconomicoListado {
-  id: number;
-  nombre: string;
+  plantacion_id: number;
   cultivo_id: number;
   nombre_especie: string | null;
-  unidades: number;
+  nombre_cultivo: string;
   fecha_siembra: string | null;
+  nombre_era: string | null;
   costo_insumos: number;
   total_mano_obra: number;
+  mano_obra_semillero: number;
+  total_depreciacion: number;
   total_costos: number;
   total_ventas: number;
   beneficio: number;
   relacion_beneficio_costo: number;
+  img?: string | null; 
 }
 
 export interface DetalleActividad {

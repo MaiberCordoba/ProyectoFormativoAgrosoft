@@ -84,7 +84,7 @@ class ListCultivoEconomicViewSet(viewsets.ViewSet):
                     continue  # Saltar plantaciones sin cultivo asociado
 
                 nombre_especie = cultivo.fk_Especie.nombre if cultivo.fk_Especie else None
-                nombre_era = plantacion.fk_Era.nombre if plantacion.fk_Era and hasattr(plantacion.fk_Era, 'nombre') else None
+                nombre_era = plantacion.fk_Era.tipo if plantacion.fk_Era and hasattr(plantacion.fk_Era, 'tipo') else None
                 actividades_plantacion = Actividades.objects.filter(fk_Plantacion=plantacion).prefetch_related(
                     Prefetch('usosherramientas_set', queryset=UsosHerramientas.objects.select_related('fk_Herramienta')),
                     Prefetch('usosinsumos_set', queryset=UsosInsumos.objects.select_related('fk_UnidadMedida')),
