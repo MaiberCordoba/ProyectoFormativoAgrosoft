@@ -18,7 +18,6 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   const userId = user?.id || null;
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
 
-  // Cargar notificaciones iniciales
   useEffect(() => {
     if (!userId) {
       setNotificaciones([]);
@@ -28,64 +27,46 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     const fetchNotificaciones = async () => {
       try {
         const data = await getNotificaciones();
-        console.log("Notificaciones cargadas:", data); // Depuración
         setNotificaciones(data);
-      } catch (err) {
-        console.error("Error al cargar notificaciones", err);
+      } catch {
+        // Manejar error silenciosamente
       }
     };
 
     fetchNotificaciones();
   }, [userId]);
 
-  // Integrar WebSocket
   useSocketNotificaciones((noti: Notificacion) => {
     setNotificaciones((prev) => {
-      if (prev.some((n) => n.id === noti.id)) {
-        console.log("Notificación duplicada recibida por WebSocket:", noti); // Depuración
-        return prev;
-      }
-      console.log("Nueva notificación recibida por WebSocket:", noti); // Depuración
+      if (prev.some((n) => n.id === noti.id)) return prev;
       return [noti, ...prev];
     });
   });
 
   const marcarLeida = async (id: number) => {
-    // Actualización optimista
-    setNotificaciones((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
-    );
-
+    setNotificaciones((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)));
     try {
       await marcarComoLeida(id);
-      console.log("Notificación marcada como leída en el backend:", id); // Depuración
-    } catch (err) {
-      console.error("Error al marcar como leída:", err);
+    } catch {
       try {
         const data = await getNotificaciones();
-        console.log("Notificaciones recargadas después de error:", data); // Depuración
         setNotificaciones(data);
-      } catch (fetchErr) {
-        console.error("Error al recargar notificaciones:", fetchErr);
+      } catch {
+        // Manejar error silenciosamente
       }
     }
   };
 
   const marcarTodasLeidas = async () => {
-    // Actualización optimista
     setNotificaciones((prev) => prev.map((n) => ({ ...n, is_read: true })));
-
     try {
       await marcarTodasComoLeidas();
-      console.log("Todas las notificaciones marcadas como leídas en el backend"); // Depuración
-    } catch (err) {
-      console.error("Error al marcar todas como leídas:", err);
+    } catch {
       try {
         const data = await getNotificaciones();
-        console.log("Notificaciones recargadas después de error:", data); // Depuración
         setNotificaciones(data);
-      } catch (fetchErr) {
-        console.error("Error al recargar notificaciones:", fetchErr);
+      } catch {
+        // Manejar error silenciosamente
       }
     }
   };

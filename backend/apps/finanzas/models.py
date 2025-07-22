@@ -17,3 +17,4 @@ from apps.finanzas.api.models.unidadesMedida import UnidadesMedida
 from apps.finanzas.api.models.unidadesTiempo import UnidadesTiempo
 from apps.finanzas.api.models.usosInsumos import UsosInsumos
 from apps.finanzas.api.models.ventas import Ventas
+from apps.finanzas.api.models.cosechaVenta import VentaCosecha

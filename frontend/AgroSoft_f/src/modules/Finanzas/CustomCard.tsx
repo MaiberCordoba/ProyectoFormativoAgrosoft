@@ -1,4 +1,5 @@
 import { Button, Card, CardBody, CardFooter } from "@heroui/react";
+import React from "react";
 
 interface CustomCardProps {
   title?: string;
@@ -19,6 +20,7 @@ interface CustomCardProps {
   hoverEffect?: boolean;
   isPressable?: boolean;
   onPress?: () => void;
+  children?: React.ReactNode;
 }
 
 export default function CustomCard({
@@ -30,65 +32,68 @@ export default function CustomCard({
   data = {},
   footerButtons = [],
   backgroundColor = "white",
-  borderColor = "gray-200",
-  textColor = "gray-800",
+  borderColor = "green-500",
+  textColor = "green-800",
   hoverEffect = true,
   isPressable = false,
   onPress,
+  children,
 }: CustomCardProps) {
   return (
     <Card
       isPressable={isPressable}
       onPress={onPress}
       className={`
-        w-[280px] min-w-[280px] h-auto 
+        w-[200px] min-w-[200px] h-auto
         flex flex-col justify-between
-        rounded-2xl shadow-md ${hoverEffect ? "hover:shadow-xl transition" : ""}
-        bg-${backgroundColor} border border-${borderColor} p-4
+        rounded-lg shadow-sm ${hoverEffect ? "hover:shadow-md transition-shadow" : ""}
+        bg-${backgroundColor} border border-${borderColor} p-2
       `}
-      style={{borderRadius:"1.5rem"}}
     >
-      <CardBody className="flex flex-col items-start text-left justify-center w-full gap-2">
-        {icon && <div className={`text-5xl text-${textColor}`}>{icon}</div>}
+      <CardBody className="flex flex-col items-start text-left gap-1">
+        {icon && <div className={`text-3xl text-${textColor}`}>{icon}</div>}
         {image && (
           <img
             src={image}
             alt={title}
-            className="w-20 h-20 object-cover rounded mx-auto self center"
+            className="w-12 h-12 object-cover rounded-md mx-auto"
           />
         )}
-        {title && <h3 className={`font-bold text-lg text-${textColor} text-center`}>{title}</h3>}
-        {subtitle && <p className="text-sm text-gray-500 text-center">{subtitle}</p>}
-        {description && <p className="text-sm text-center text-gray-600">{description}</p>}
-
+        {title && (
+          <h3 className={`font-semibold text-sm text-${textColor} bg-green-100 w-full p-1 rounded-md`}>
+            {title}
+          </h3>
+        )}
+        {subtitle && <p className={`text-xs text-gray-600 w-full`}>{subtitle}</p>}
+        {description && <p className={`text-xs text-gray-600 w-full`}>{description}</p>}
         {Object.entries(data).map(([label, value]) => (
-          <p key={label} className="text-sm text-center">
-            <strong>{label}</strong>: {value}
+          <p key={label} className="text-xs text-left">
+            <span className="font-semibold">{label}</span>: {value}
           </p>
         ))}
+        {children}
       </CardBody>
-
       {footerButtons.length > 0 && (
         <>
-          <div className="w-full border-t border-gray-200 my-2" />
-          <CardFooter className="w-full flex flex-wrap gap-2 justify-center">
+          <div className="w-full border-t border-gray-200 my-1" />
+          <CardFooter className="w-full flex flex-wrap gap-1 justify-start">
             {footerButtons.map((btn, i) => (
-                <Button
+              <Button
                 key={i}
                 onPress={btn.onPress}
                 className={`
-                  px-3 py-1 rounded text-sm
-                  bg-${btn.color ?? "primary"}/20 
-                  text-${btn.color ?? "primary"} 
-                  border border-${btn.color ?? "primary"}/30
-                  hover:bg-${btn.color ?? "primary"}/30 
+                  px-2 py-1 rounded text-xs
+                  bg-${btn.color ?? "success"}/10
+                  text-${btn.color ?? "success"}
+                  border border-${btn.color ?? "success"}/20
+                  hover:bg-${btn.color ?? "success"}/20
                   transition-colors duration-200
-                  ${btn.size === "sm" ? "text-xs" : btn.size === "lg" ? "text-base" : ""}
+                  ${btn.size === "sm" ? "text-xs" : btn.size === "lg" ? "text-sm" : ""}
                 `}
                 size="sm"
-                >
-                    {btn.label}
-                </Button>
+              >
+                {btn.label}
+              </Button>
             ))}
           </CardFooter>
         </>

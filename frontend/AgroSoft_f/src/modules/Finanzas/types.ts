@@ -4,18 +4,21 @@ import { Cultivo, Lotes, Plantaciones } from "../Trazabilidad/types";
 import { User } from "../Users/types";
 
 export interface ResumenEconomicoListado {
-  id: number;
-  nombre: string;
+  plantacion_id: number;
   cultivo_id: number;
   nombre_especie: string | null;
-  unidades: number;
+  nombre_cultivo: string;
   fecha_siembra: string | null;
+  nombre_era: string | null;
   costo_insumos: number;
   total_mano_obra: number;
+  mano_obra_semillero: number;
+  total_depreciacion: number;
   total_costos: number;
   total_ventas: number;
   beneficio: number;
   relacion_beneficio_costo: number;
+  img?: string | null; 
 }
 
 export interface DetalleActividad {
@@ -120,12 +123,13 @@ export interface Cosechas {
   plantacion?: Plantaciones;
   fk_UnidadMedida?: number;
   cantidad?: number;
-  valorTotal?: number;
+  valorTotal?: number | string;
   precioUnidad?: number;
   unidadMedida?: UnidadesMedida;
   cantidadTotal: number;
   fecha?: string;
-  valorGramo?: number;
+  valorGramo?: number | string;
+  cantidad_disponible?: number; 
 }
 
 export interface Desechos {
@@ -277,14 +281,32 @@ export interface UsosHerramientas {
   unidades: number;
 }
 
+//export interface Ventas {
+//  id: number;
+//  fk_Cosecha?: number;
+//  cosecha?: Cosechas;
+//  fecha?: string;
+//  fk_UnidadMedida: number;
+//  unidadMedida?: UnidadesMedida;
+//  cantidad: number;
+//  descuento?: number;
+//  valorTotal: number;
+//}
+
+export interface VentaCosecha {
+  cosecha: number;
+  cantidad: number;
+  unidad_medida: number;
+  precio_unitario: string;
+  descuento: string;
+  valor_total: string;
+}
+
 export interface Ventas {
   id: number;
-  fk_Cosecha?: number;
-  cosecha?: Cosechas;
-  fecha?: string;
-  fk_UnidadMedida: number;
-  unidadMedida?: UnidadesMedida;
-  cantidad: number;
-  descuento?: number;
-  valorTotal: number;
+  cosechas: VentaCosecha[];
+  fecha: string;
+  numero_factura: string;
+  valor_total: string;
+  usuario: number;
 }

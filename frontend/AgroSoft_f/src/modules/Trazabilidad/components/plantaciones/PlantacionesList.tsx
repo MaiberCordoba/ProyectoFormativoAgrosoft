@@ -171,6 +171,8 @@ export function PlantacionesList() {
 
   return (
     <div className="p-4 space-y-4">
+      <h2 className="text-xl font-semibold">Listado de Plantaciones</h2>
+      
         <TablaReutilizable
           datos={datosConCultivoNombre}
           columnas={columnas}

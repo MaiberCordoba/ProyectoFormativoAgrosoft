@@ -3,7 +3,6 @@ export interface TiposEspecie {
   id: number;
   nombre: string;
   descripcion: string;
-  img: string;
 }
 
 export interface Especies {
@@ -22,6 +21,7 @@ export interface Cultivo {
   activo: boolean;
   especies?: Especies;
   fk_Especie?:number;
+  img?: string;
 }
 
 export interface Semillero {

@@ -5,7 +5,7 @@ import { Cultivo } from "../../types";
 export const usePostCultivos = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Cultivo, Error, Cultivo>({
+  return useMutation<Cultivo, Error, FormData>({
     mutationKey: ['crearCultivos'],
     mutationFn: postCultivos,
     onSuccess: () => {

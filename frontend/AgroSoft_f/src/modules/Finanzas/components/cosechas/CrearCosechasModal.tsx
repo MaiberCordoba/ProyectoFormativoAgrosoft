@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePostCosecha } from "../../hooks/cosechas/usePostCosechas";
 import ModalComponent from "@/components/Modal";
-import { Input, Select, SelectItem, Button } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import { Plus } from "lucide-react";
 import { useGetUnidadesMedida } from "../../hooks/unidadesMedida/useGetUnidadesMedida";
 import { Cosechas, UnidadesMedida } from "../../types";
@@ -10,6 +10,7 @@ import { useGetPlantaciones } from "@/modules/Trazabilidad/hooks/plantaciones/us
 import { Plantaciones } from "@/modules/Trazabilidad/types";
 import { CrearPlantacionModal } from "@/modules/Trazabilidad/components/plantaciones/CrearPlantacionesModal";
 import { addToast } from "@heroui/toast";
+import { RoundIconButton } from "@/components/ui/buttonRound";
 
 interface CrearCosechasModalProps {
   onClose: () => void;
@@ -128,7 +129,40 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
           onChange={(e) => setFecha(e.target.value)}
           min={new Date().toISOString().split("T")[0]}
           required
-        />
+          />
+
+          {isLoadingUnidadMedida ? (
+            <p>Cargando unidades de medida...</p>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <Select
+                  label="Unidad de medida"
+                  size="sm"
+                  placeholder="Selecciona una unidad de medida"
+                  selectedKeys={
+                    fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []
+                  }
+                  onSelectionChange={(keys) => {
+                    const selectedKey = Array.from(keys)[0];
+                    setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
+                  }}
+                >
+                  {(UnidadMedida || []).map((unidadesMedida) => (
+                    <SelectItem key={unidadesMedida.id.toString()}>
+                      {unidadesMedida.nombre}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <RoundIconButton
+                onPress={() => setUnidadMedidaModal(true)}
+                color="success"
+                icon={<Plus className="w-5 h-5 text-white" />}
+              >
+              </RoundIconButton>
+            </div>
+          )}
 
         <Input
           label="Cantidad cosechada"
@@ -170,61 +204,23 @@ export const CrearCosechasModal = ({ onClose }: CrearCosechasModalProps) => {
                 }}
               >
                 {(plantaciones || [])
-                .filter((plantacion) => plantacion.cultivo?.activo)
+                .filter((plantacion) => plantacion.cultivo?.activo || plantacion.semillero?.cultivo?.activo)
                 .map((plantacion) => (
                   <SelectItem key={plantacion.id.toString()}>
-                    {plantacion.cultivo?.nombre}
+                    {plantacion.cultivo?.nombre || plantacion.semillero?.cultivo?.nombre || "Desconocido"}
                   </SelectItem>
                 ))}
               </Select>
             </div>
-            <Button
+            <RoundIconButton
               onPress={() => setPlantacionModal(true)}
               color="success"
-              title="Crear nueva plantacion"
-              radius="full"
-              size="sm"
+              icon={<Plus className="w-5 h-5 text-white" />}
             >
-              <Plus className="w-5 h-5 text-white" />
-            </Button>
+            </RoundIconButton>
           </div>
         )}
 
-        {isLoadingUnidadMedida ? (
-          <p>Cargando unidades de medida...</p>
-        ) : (
-          <div className="flex items-center gap-2">
-            <div className="flex-1">
-              <Select
-                label="Unidad de medida"
-                size="sm"
-                placeholder="Selecciona una unidad de medida"
-                selectedKeys={
-                  fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []
-                }
-                onSelectionChange={(keys) => {
-                  const selectedKey = Array.from(keys)[0];
-                  setFk_UnidadMedida(selectedKey ? Number(selectedKey) : null);
-                }}
-              >
-                {(UnidadMedida || []).map((unidadesMedida) => (
-                  <SelectItem key={unidadesMedida.id.toString()}>
-                    {unidadesMedida.nombre}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <Button
-              onPress={() => setUnidadMedidaModal(true)}
-              color="success"
-              title="Crear nueva Unidad de Medida"
-              radius="full"
-              size="sm"
-            >
-              <Plus className="w-5 h-5 text-white" />
-            </Button>
-          </div>
-        )}
       </ModalComponent>
 
       {PlantacionModal && (

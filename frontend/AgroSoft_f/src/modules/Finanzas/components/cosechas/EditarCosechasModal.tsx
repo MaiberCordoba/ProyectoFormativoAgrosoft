@@ -106,7 +106,28 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
         label="Fecha de Cosecha"
         type="date"
         onChange={(e) => setFecha(e.target.value)}
-      />
+        />
+
+        {isLoadingUnidadMedida ? (
+          <p>Cargando unidades de medida...</p>
+        ) : (
+          <Select
+            label="Unidad de medida"
+            size="sm"
+            placeholder="Selecciona una unidad de medida"
+            selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0];
+              setFk_UnidadMedida(selectedKey ? Number(selectedKey) : undefined);
+            }}
+          >
+            {(unidadesMedida || []).map((unidadMedida) => (
+              <SelectItem key={unidadMedida.id.toString()}>
+                {unidadMedida.nombre}
+              </SelectItem>
+            ))}
+          </Select>
+        )}
 
       <Input
         value={cantidad}
@@ -147,32 +168,12 @@ const EditarCosechaModal: React.FC<EditarCosechaModalProps> = ({
         >
           {(plantaciones || []).map((plantacion) => (
             <SelectItem key={plantacion.id.toString()}>
-              {plantacion.cultivo?.nombre}
+              {plantacion.cultivo?.nombre || plantacion.semillero?.cultivo?.nombre || "Desconocido"}
             </SelectItem>
           ))}
         </Select>
       )}
 
-      {isLoadingUnidadMedida ? (
-        <p>Cargando unidades de medida...</p>
-      ) : (
-        <Select
-          label="Unidad de medida"
-          size="sm"
-          placeholder="Selecciona una unidad de medida"
-          selectedKeys={fk_UnidadMedida ? [fk_UnidadMedida.toString()] : []}
-          onSelectionChange={(keys) => {
-            const selectedKey = Array.from(keys)[0];
-            setFk_UnidadMedida(selectedKey ? Number(selectedKey) : undefined);
-          }}
-        >
-          {(unidadesMedida || []).map((unidadMedida) => (
-            <SelectItem key={unidadMedida.id.toString()}>
-              {unidadMedida.nombre}
-            </SelectItem>
-          ))}
-        </Select>
-      )}
     </ModalComponent>
   );
 };

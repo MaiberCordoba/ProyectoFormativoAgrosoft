@@ -1,4 +1,3 @@
-// components/CultivoResumenList.tsx
 import { Spinner } from "@heroui/react";
 import { ResumenEconomicoListado } from "../../types";
 import { CultivoResumenCard } from "./CultivoResumenCard";
@@ -6,7 +5,7 @@ import { CultivoResumenCard } from "./CultivoResumenCard";
 interface CultivoResumenListProps {
   resumenes: ResumenEconomicoListado[];
   loading?: boolean;
-  onSelectCultivo: (cultivoId: number) => void; // Ahora espera un number
+  onSelectCultivo: (cultivoId: number) => void;
   onOpenHistorial: (cultivo: ResumenEconomicoListado) => void;
 }
 
@@ -34,11 +33,10 @@ export const CultivoResumenList = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {resumenes.map((resumen) => (
-        <div className="flex justify-between items-center">
+        <div key={resumen.cultivo_id} className="flex justify-between items-center">
           <CultivoResumenCard
-            key={resumen.cultivo_id}
             resumen={resumen}
-            onSelect={() => onSelectCultivo(resumen.cultivo_id)} // Pasamos solo el ID
+            onSelect={() => onSelectCultivo(resumen.cultivo_id)}
           />
         </div>
       ))}

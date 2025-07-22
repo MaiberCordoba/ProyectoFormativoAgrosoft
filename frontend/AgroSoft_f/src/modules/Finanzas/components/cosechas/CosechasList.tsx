@@ -74,9 +74,8 @@ export function CosechasList() {
   // Definición de columnas
   const columnas = [
     { name: "Cultivo", uid: "plantacion" },
-    { name: "Cantidad Cosechada", uid: "cantidad", sortable: true  },
+    { name: "Cantidad Cosechada (g)", uid: "totalGramos", sortable: true  },
     { name: "Unidad Medida", uid: "unidadMedida" },
-    { name: "Cantidad total (g)", uid: "totalGramos" },
     { name: "Fecha de cosecha", uid: "fecha", sortable: true  },
     { name: "Valor Cosecha", uid: "valorTotal", sortable: true  },
     { name: "Acciones", uid: "acciones" },
@@ -91,7 +90,7 @@ export function CosechasList() {
         );
         return (
           <span>
-            {plantaciones ? plantaciones?.cultivo?.nombre : "No definido"}
+            {plantaciones ? plantaciones?.cultivo?.nombre  || plantaciones?.semillero?.cultivo?.nombre :  "No definido"}
           </span>
         );
       case "unidadMedida":
@@ -101,8 +100,6 @@ export function CosechasList() {
         return (
           <span>{unidadMedida ? unidadMedida.nombre : "No definido"}</span>
         );
-      case "cantidad":
-        return <span>{item.cantidad}</span>;
       case "totalGramos":
         return <span>{item.cantidadTotal}</span>;
       case "fecha":

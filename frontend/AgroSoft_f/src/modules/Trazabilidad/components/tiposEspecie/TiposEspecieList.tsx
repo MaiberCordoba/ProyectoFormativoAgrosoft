@@ -8,7 +8,6 @@ import EditarTiposEspecieModal from "./EditarTiposEspecieModal";
 import { CrearTiposEspecieModal } from "./CrearTiposEspecieModal";
 import EliminarTiposEspecieModal from "./EliminarTiposEspecie";
 import { TiposEspecie } from "../../types";
-import { Image } from "@heroui/react";
 import { useAuth } from "@/hooks/UseAuth";
 import { addToast } from "@heroui/toast";
 
@@ -59,7 +58,7 @@ export function TiposEspecieList() {
     const permitido = ["admin", "instructor", "pasante"].includes(userRole || "");
     
     if (permitido) {
-      handleCrear({ id: 0, nombre: "", descripcion: "", img: "" });
+      handleCrear({ id: 0, nombre: "", descripcion: "" });
     } else {
       showAccessDenied();
     }
@@ -68,7 +67,6 @@ export function TiposEspecieList() {
   const columnas = [
     { name: "Nombre", uid: "nombre", sortable: true },
     { name: "Descripción", uid: "descripcion" },
-    { name: "Imagen", uid: "img" },
     { name: "Acciones", uid: "acciones" },
   ];
 
@@ -78,15 +76,6 @@ export function TiposEspecieList() {
         return <span>{item.nombre}</span>;
       case "descripcion":
         return <span>{item.descripcion}</span>;
-      case "img":
-        return (
-          <Image
-            isZoomed
-            src={item.img}
-            alt={item.nombre}
-            className="w-14 h-14 object-cover rounded-lg border"
-          />
-        );
       case "acciones":
         return (
           <AccionesTabla

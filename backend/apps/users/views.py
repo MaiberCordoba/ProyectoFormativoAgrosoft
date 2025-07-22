@@ -8,7 +8,8 @@ from .serializers import UsuarioSerializer
 import pandas as pd
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
-
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class UsuarioViewSet(ModelViewSet):
     queryset = Usuario.objects.all()
@@ -19,15 +20,38 @@ class UsuarioViewSet(ModelViewSet):
             return [AllowAny()]  # Permite a cualquier usuario registrarse
         return [IsAuthenticated()]
 
+    def update(self, request, *args, **kwargs):
+        """Actualiza un usuario y envía notificación WebSocket si el estado cambia."""
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        # Enviar notificación WebSocket al grupo del usuario
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{instance.id}",
+            {
+                "type": "send_user_update",
+                "id": instance.id,
+                "email": instance.correoElectronico,
+                "estado": instance.estado,
+                "rol": instance.rol,
+            }
+        )
+
+        return Response(serializer.data)
+
     @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
     def me(self, request):
-        """Devuelve la información del usuario autenticado"""
+        """Devuelve la información del usuario autenticado."""
         serializer = UsuarioSerializer(request.user)
         return Response(serializer.data)
 
     @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated], url_path='reporte')
     def reporte_usuarios(self, request):
-        """Devuelve un resumen del total de usuarios, activos e inactivos"""
+        """Devuelve un resumen del total de usuarios, activos e inactivos."""
         total = Usuario.objects.count()
         activos = Usuario.objects.filter(estado='activo').count()
         inactivos = Usuario.objects.filter(estado='inactivo').count()
@@ -38,10 +62,9 @@ class UsuarioViewSet(ModelViewSet):
             'usuarios_inactivos': inactivos
         })
 
-
 class RegistroMasivoUsuariosView(APIView):
     parser_classes = [MultiPartParser]
-    permission_classes = [IsAuthenticated]  # Cambiado a autenticado por seguridad
+    permission_classes = [IsAuthenticated]  # Requiere autenticación
 
     def post(self, request, *args, **kwargs):
         archivo = request.FILES.get('archivo')
@@ -62,10 +85,11 @@ class RegistroMasivoUsuariosView(APIView):
 
         errores = []
         registros_exitosos = 0
-        
+        channel_layer = get_channel_layer()
+
         for index, row in df.iterrows():
             fila = index + 2  # Contar desde fila 2
-            
+
             # Validar campos requeridos
             if any(pd.isna(row.get(col)) for col in required_columns):
                 errores.append({
@@ -79,7 +103,9 @@ class RegistroMasivoUsuariosView(APIView):
                     'nombre': str(row['nombre']).strip(),
                     'apellidos': str(row['apellido']).strip(),
                     'identificacion': int(row['identificacion']),
-                    'rol': 'visitante'
+                    'rol': 'visitante',
+                    'estado': 'activo',  # Estado por defecto
+                    'correoElectronico': row.get('correoElectronico', f"{row['nombre'].lower()}.{row['apellido'].lower()}@example.com")
                 }
             except ValueError:
                 errores.append({
@@ -97,8 +123,19 @@ class RegistroMasivoUsuariosView(APIView):
             serializer = UsuarioSerializer(data=data)
             if serializer.is_valid():
                 try:
-                    serializer.save()
+                    usuario = serializer.save()
                     registros_exitosos += 1
+                    # Enviar notificación WebSocket al grupo del usuario creado
+                    async_to_sync(channel_layer.group_send)(
+                        f"user_{usuario.id}",
+                        {
+                            "type": "send_user_update",
+                            "id": usuario.id,
+                            "email": usuario.correoElectronico,
+                            "estado": usuario.estado,
+                            "rol": usuario.rol,
+                        }
+                    )
                 except Exception as e:
                     errores.append({
                         'fila': fila,
@@ -112,7 +149,7 @@ class RegistroMasivoUsuariosView(APIView):
             'exitosos': registros_exitosos,
             'errores': len(errores)
         }
-        
+
         if errores:
             response_data['detalle_errores'] = errores
             status_code = status.HTTP_207_MULTI_STATUS
