@@ -1,65 +1,53 @@
 // hooks/useSocketNotificaciones.ts
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Notificacion } from "../types";
 import { useAuth } from "@/hooks/UseAuth";
-
-const WS_URL = import.meta.env. REACT_APP_WS_URL || "ws://localhost:8000";
-console.log("URL del WebSocket:", WS_URL);
 
 export const useSocketNotificaciones = (onNotificacion: (noti: Notificacion) => void) => {
   const { user, token } = useAuth();
   const userId = user?.id || null;
-  const socketRef = useRef<WebSocket | null>(null);
-  const reconnectIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  const maxReconnectAttempts = 5;
 
   useEffect(() => {
-    if (!userId || !token) {
-      console.warn("No se proporcionó userId o token para WebSocket");
-      return;
-    }
+    if (!userId || !token) return;
 
     const connectWebSocket = () => {
-      socketRef.current = new WebSocket(`${WS_URL}/ws/notifications/${userId}/?token=${token}`);
+      const wsBaseUrl = import.meta.env.VITE_WEBSOCKET_URL_PROD || import.meta.env.VITE_WEBSOCKET_URL;
+      wsRef.current = new WebSocket(`${wsBaseUrl}/ws/notifications/${userId}/?token=${token}`);
 
-      socketRef.current.onopen = () => {
-        console.log(`WebSocket conectado para usuario ${userId}`);
-        if (reconnectIntervalRef.current) {
-          clearInterval(reconnectIntervalRef.current);
-          reconnectIntervalRef.current = null;
-        }
+      wsRef.current.onopen = () => {
+        setReconnectAttempts(0);
       };
 
-      socketRef.current.onmessage = (event) => {
+      wsRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === "notification") {
           onNotificacion(data.notification);
         }
       };
 
-      socketRef.current.onerror = (err) => {
-        console.error("Error en WebSocket", err);
+      wsRef.current.onclose = (event) => {
+        wsRef.current = null;
+        if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
+          setReconnectAttempts((prev) => prev + 1);
+          setTimeout(connectWebSocket, 5000);
+        }
       };
 
-      socketRef.current.onclose = () => {
-        console.log("WebSocket desconectado");
-        if (!reconnectIntervalRef.current) {
-          reconnectIntervalRef.current = setInterval(() => {
-            console.log("Intentando reconectar WebSocket...");
-            connectWebSocket();
-          }, 5000);
-        }
+      wsRef.current.onerror = () => {
+        wsRef.current = null;
       };
     };
 
     connectWebSocket();
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.close(1000, "Componente desmontado");
       }
-      if (reconnectIntervalRef.current) {
-        clearInterval(reconnectIntervalRef.current);
-      }
+      wsRef.current = null;
     };
-  }, [userId, token, onNotificacion]);
+  }, [userId, token, onNotificacion, reconnectAttempts]);
 };
