@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Select, SelectItem } from "@heroui/react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface FormField {
   name: string;
@@ -8,7 +9,7 @@ interface FormField {
   placeholder?: string;
   required?: boolean;
   errorMessage?: string;
-  options?: string; // Añadido para manejar opciones del select
+  options?: string;
 }
 
 interface FormComponentProps {
@@ -24,6 +25,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
   extraContent,
 }) => {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [showPassword, setShowPassword] = useState<Record<string, boolean>>({});
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,6 +41,13 @@ const FormComponent: React.FC<FormComponentProps> = ({
     }));
   };
 
+  const togglePasswordVisibility = (fieldName: string) => {
+    setShowPassword((prev) => ({
+      ...prev,
+      [fieldName]: !prev[fieldName],
+    }));
+  };
+
   return (
     <Form
       className="w-full max-w-xs flex flex-col gap-4"
@@ -46,7 +55,6 @@ const FormComponent: React.FC<FormComponentProps> = ({
     >
       {fields.map((field) => {
         if (field.options) {
-          // Aquí manejamos el caso del Select con valores booleanos
           const options = [
             { key: "true", label: "True", value: true },
             { key: "false", label: "False", value: false },
@@ -68,8 +76,35 @@ const FormComponent: React.FC<FormComponentProps> = ({
               ))}
             </Select>
           );
+        } else if (field.type === "password") {
+          return (
+            <Input
+              size="sm"
+              key={field.name}
+              isRequired={field.required}
+              errorMessage={field.errorMessage}
+              label={field.label}
+              labelPlacement="inside"
+              name={field.name}
+              placeholder={field.placeholder}
+              type={showPassword[field.name] ? "text" : "password"}
+              className="w-full"
+              endContent={
+                <button
+                  type="button"
+                  className="text-gray-600 focus:outline-none"
+                  onClick={() => togglePasswordVisibility(field.name)}
+                >
+                  {showPassword[field.name] ? (
+                    <Eye className="h-5 w-5" />
+                  ) : (
+                    <EyeOff className="h-5 w-5" />
+                  )}
+                </button>
+              }
+            />
+          );
         } else {
-          // Esto mantiene el comportamiento actual para los Inputs
           return (
             <Input
               size="sm"
@@ -81,6 +116,7 @@ const FormComponent: React.FC<FormComponentProps> = ({
               name={field.name}
               placeholder={field.placeholder}
               type={field.type || "text"}
+              className="w-full"
             />
           );
         }
