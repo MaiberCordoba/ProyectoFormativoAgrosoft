@@ -2,20 +2,29 @@ import { useState } from "react";
 import { login, getUser } from "@/api/Auth";
 import { useAuth } from "@/hooks/UseAuth";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import FormComponent from "@/components/Form";
 import logo from "../../public/logoAgrosoft.png";
 import { Link } from "@heroui/react";
 import { CrearUsersModal } from "@/modules/Users/components/CrearUsersModal";
 import { SolicitarRecuperacionModal } from "@/modules/Users/components/recuperaciones/solicitarRecuperacion";
 import { addToast } from "@heroui/toast";
+import { getUserCount } from "@/modules/Users/api/usersApi";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [registerModalUsers, setRegisterModalUsers] = useState(false);
   const [solicitarRecuperacion, setSolicitarRecuperacion] = useState(false);
+
+  const { data: userCount } = useQuery({
+    queryKey: ["userCount"],
+    queryFn: getUserCount,
+    staleTime: Infinity,
+  });
 
   const handleSubmit = async (data: Record<string, any>) => {
     setErrorMessage("");
@@ -25,7 +34,6 @@ const Login = () => {
         password: data.password,
       });
       const userData = await getUser(response.access);
-      console.log("Login exitoso, token:", response.access, "user:", userData);
       if (userData.estado === "inactivo") {
         addToast({
           title: "Cuenta inactiva",
@@ -38,10 +46,14 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(userData));
       authLogin(response.access, userData);
       navigate("/home");
-    } catch (error) {
-      console.error("Error de autenticación:", error);
+    } catch {
       setErrorMessage("Correo o contraseña incorrectos. Inténtalo de nuevo.");
     }
+  };
+
+  const handleRegisterModalClose = () => {
+    setRegisterModalUsers(false);
+    queryClient.invalidateQueries({ queryKey: ["userCount"] });
   };
 
   return (
@@ -108,22 +120,24 @@ const Login = () => {
               Iniciar sesión
             </button>
 
-            <p className="mt-4 text-center text-xs text-gray-600">
-              ¿No tienes una cuenta?{" "}
-              <Link
-                onPress={() => setRegisterModalUsers(true)}
-                underline="hover"
-                className="text-[#327d45] hover:underline"
-              >
-                Regístrate aquí
-              </Link>
-            </p>
+            {userCount?.count === 0 && (
+              <p className="mt-4 text-center text-xs text-gray-600">
+                ¿No tienes una cuenta?{" "}
+                <Link
+                  onPress={() => setRegisterModalUsers(true)}
+                  underline="hover"
+                  className="text-[#327d45] hover:underline"
+                >
+                  Regístrate aquí
+                </Link>
+              </p>
+            )}
           </div>
         </div>
       </div>
 
       {registerModalUsers && (
-        <CrearUsersModal onClose={() => setRegisterModalUsers(false)} /> 
+        <CrearUsersModal onClose={handleRegisterModalClose} />
       )}
       {solicitarRecuperacion && (
         <SolicitarRecuperacionModal

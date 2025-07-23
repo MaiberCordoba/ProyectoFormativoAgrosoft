@@ -157,3 +157,8 @@ class RegistroMasivoUsuariosView(APIView):
             status_code = status.HTTP_201_CREATED
 
         return Response(response_data, status=status_code)
+    
+class UserCountView(APIView):
+    def get(self, request):
+        count = Usuario.objects.count()  
+        return Response({"count": count})

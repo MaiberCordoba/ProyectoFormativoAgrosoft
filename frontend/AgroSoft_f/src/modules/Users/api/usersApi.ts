@@ -41,3 +41,8 @@ export const getReporteUsuarios = async () => {
     usuarios_inactivos: number;
   };
 };
+
+export const getUserCount = async () => {
+  const response = await apiClient.get("/usuarios/count/");
+  return response.data;
+};
