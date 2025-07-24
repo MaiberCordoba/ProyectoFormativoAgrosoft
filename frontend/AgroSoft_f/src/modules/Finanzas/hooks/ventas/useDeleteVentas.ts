@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+/* import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Ventas } from "../../types";
 import { deleteVentas } from "../../api/ventasApi";
 import { addToast } from "@heroui/toast";
@@ -39,3 +39,4 @@ export const useDeleteVenta = () => {
         }
     });
 };
+ */

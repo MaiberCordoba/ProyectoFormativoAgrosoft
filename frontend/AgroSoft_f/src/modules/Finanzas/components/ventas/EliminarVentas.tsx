@@ -1,6 +1,5 @@
-import React from "react";
+/* import React from "react";
 import ModalComponent from "@/components/Modal";
-import { useDeleteVenta } from "../../hooks/ventas/useDeleteVentas"; // Cambié el hook
 import { Ventas } from "../../types";
 import { AlertCircle } from "lucide-react";
 
@@ -61,3 +60,4 @@ const EliminarVentaModal: React.FC<EliminarVentaModalProps> = ({
 };
 
 export default EliminarVentaModal;
+ */
