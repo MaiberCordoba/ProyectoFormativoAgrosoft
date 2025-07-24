@@ -1,9 +1,10 @@
-import { createContext, useState, useEffect, useCallback, useRef } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
 import { User } from "@/modules/Users/types";
 import apiClient from "@/api/apiClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
+import { websocketService } from "@/services/websocketService";
 
 interface AuthContextType {
   user: User | null;
@@ -38,9 +39,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     return false;
   });
-  const wsRef = useRef<WebSocket | null>(null);
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
-  const maxReconnectAttempts = 5;
 
   const { data: user, isLoading, refetch: refetchUser } = useQuery({
     queryKey: ["current-user"],
@@ -59,7 +57,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return null;
         }
         return userData;
-      } catch {
+      } catch (error) {
+        console.error("Error al obtener usuario:", error);
         logout();
         return null;
       }
@@ -77,87 +76,72 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    // Evitar decisiones hasta que la consulta de usuario termine
+    if (isLoading) {
+      return;
+    }
+
     if (window.location.pathname === "/login" || !token || !isTokenValid(token)) {
+      console.log("Redirigiendo al login: no hay token o token inválido");
       setIsAuthenticated(false);
       if (token) logout();
       return;
     }
 
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    if (!user) {
+      console.log("No hay usuario, esperando consulta o ejecutando logout");
+      setIsAuthenticated(false);
+      logout();
+      return;
+    }
 
     const decoded = jwtDecode<JwtPayload>(token);
-    const wsBaseUrl = import.meta.env.VITE_WEBSOCKET_URL_PROD || import.meta.env.VITE_WEBSOCKET_URL;
-    wsRef.current = new WebSocket(`${wsBaseUrl}/ws/user/${decoded.user_id}/`);
+    const wsUrl = `${import.meta.env.VITE_WEBSOCKET_URL}/ws/user/${decoded.user_id}/`;
+    websocketService.connect({
+      url: wsUrl,
+      onMessage: (data) => {
+        if (data.type === "user_data") {
+          const updatedUser: User = {
+            id: data.id,
+            correoElectronico: data.email,
+            estado: data.estado,
+            rol: data.rol,
+            telefono: data.telefono || "",
+            nombre: data.nombre || user?.nombre || "",
+            apellidos: data.apellidos || user?.apellidos || "",
+            identificacion: data.identificacion || user?.identificacion || "",
+          };
+          queryClient.setQueryData(["current-user"], updatedUser);
+          queryClient.invalidateQueries({ queryKey: ["current-user"] });
 
-    wsRef.current.onopen = () => {
-      setReconnectAttempts(0);
-    };
-
-    wsRef.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === "user_data") {
-        const updatedUser: User = {
-          id: data.id,
-          correoElectronico: data.email,
-          estado: data.estado,
-          rol: data.rol,
-          telefono: data.telefono || "",
-          nombre: data.nombre || user?.nombre || "",
-          apellidos: data.apellidos || user?.apellidos || "",
-          identificacion: data.identificacion || user?.identificacion || "",
-        };
-        queryClient.setQueryData(["current-user"], updatedUser);
-        queryClient.invalidateQueries({ queryKey: ["current-user"] });
-
-        if (data.estado === "inactivo") {
-          logout();
-          addToast({
-            title: "Cuenta inactiva",
-            description: "Tu cuenta está inactiva. Contacta al administrador.",
-            color: "danger",
-          });
-        } else {
-          setIsAuthenticated(true);
+          if (data.estado === "inactivo") {
+            logout();
+            addToast({
+              title: "Cuenta inactiva",
+              description: "Tu cuenta está inactiva. Contacta al administrador.",
+              color: "danger",
+            });
+          } else {
+            setIsAuthenticated(true);
+          }
         }
-      }
-    };
-
-    wsRef.current.onclose = (event) => {
-      wsRef.current = null;
-      if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
-        setReconnectAttempts((prev) => prev + 1);
-        reconnect();
-      } else if (reconnectAttempts >= maxReconnectAttempts) {
+      },
+      onClose: (event) => console.log(`WebSocket de usuario cerrado, código: ${event.code}`),
+      onError: (event) => {
+        console.error(`Error en WebSocket de usuario ${decoded.user_id}`, event);
         addToast({
           title: "Error de conexión",
-          description: "No se pudo conectar al servidor de notificaciones.",
+          description: "No se pudo conectar al servidor de usuario. Intenta recargar la página.",
           color: "danger",
         });
-      }
-    };
-
-    wsRef.current.onerror = () => {
-      wsRef.current = null;
-    };
+      },
+    });
 
     return () => {
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.close(1000, "Componente desmontado");
-      }
-      wsRef.current = null;
+      console.log(`Cerrando conexión WebSocket para ${wsUrl}`);
+      websocketService.close(wsUrl);
     };
-  }, [token, isTokenValid, queryClient, reconnectAttempts]);
-
-  const reconnect = useCallback(() => {
-    if (reconnectAttempts >= maxReconnectAttempts) return;
-    setTimeout(() => {
-      if (token && isTokenValid(token)) {
-        const decoded = jwtDecode<JwtPayload>(token);
-        const wsBaseUrl = import.meta.env.VITE_WEBSOCKET_URL_PROD || import.meta.env.VITE_WEBSOCKET_URL;
-        wsRef.current = new WebSocket(`${wsBaseUrl}/ws/user/${decoded.user_id}/`);
-      }
-    }, 5000);
-  }, [token, isTokenValid, reconnectAttempts]);
+  }, [token, user, isLoading, isTokenValid, queryClient]);
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
@@ -193,18 +177,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = useCallback(() => {
+    console.log("Ejecutando logout");
     localStorage.removeItem("token");
     setToken(null);
     queryClient.removeQueries({ queryKey: ["current-user"] });
     setIsAuthenticated(false);
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.close(1000, "Logout");
-    }
-    wsRef.current = null;
+    websocketService.close(`${import.meta.env.VITE_WEBSOCKET_URL}/ws/user/${user?.id}/`);
     if (window.location.pathname !== "/login") {
       window.location.replace("/login");
     }
-  }, [queryClient]);
+  }, [queryClient, user?.id]);
 
   const updateUser = (userData: User) => {
     queryClient.setQueryData(["current-user"], userData);
@@ -212,7 +194,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const refreshUser = async () => {
-    console.log("Refrescando usuario con refetchUser");
     await refetchUser();
   };
 

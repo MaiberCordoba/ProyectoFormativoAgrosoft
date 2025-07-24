@@ -1,53 +1,27 @@
-// hooks/useSocketNotificaciones.ts
-import { useEffect, useRef, useState } from "react";
-import { Notificacion } from "../types";
+import { useEffect } from "react";
 import { useAuth } from "@/hooks/UseAuth";
+import { Notificacion } from "../types";
+import { websocketService } from "@/services/websocketService";
 
-export const useSocketNotificaciones = (onNotificacion: (noti: Notificacion) => void) => {
-  const { user, token } = useAuth();
+export const useSocketNotificaciones = (onNotification: (noti: Notificacion) => void) => {
+  const { user } = useAuth();
   const userId = user?.id || null;
-  const wsRef = useRef<WebSocket | null>(null);
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
-  const maxReconnectAttempts = 5;
 
   useEffect(() => {
-    if (!userId || !token) return;
+    if (!userId) return;
 
-    const connectWebSocket = () => {
-      const wsBaseUrl = import.meta.env.VITE_WEBSOCKET_URL_PROD || import.meta.env.VITE_WEBSOCKET_URL;
-      wsRef.current = new WebSocket(`${wsBaseUrl}/ws/notifications/${userId}/?token=${token}`);
-
-      wsRef.current.onopen = () => {
-        setReconnectAttempts(0);
-      };
-
-      wsRef.current.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+    const wsUrl = `${import.meta.env.VITE_WEBSOCKET_URL}/ws/notifications/${userId}/`;
+    websocketService.connect({
+      url: wsUrl,
+      onMessage: (data) => {
         if (data.type === "notification") {
-          onNotificacion(data.notification);
+          onNotification(data.notification);
         }
-      };
-
-      wsRef.current.onclose = (event) => {
-        wsRef.current = null;
-        if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
-          setReconnectAttempts((prev) => prev + 1);
-          setTimeout(connectWebSocket, 5000);
-        }
-      };
-
-      wsRef.current.onerror = () => {
-        wsRef.current = null;
-      };
-    };
-
-    connectWebSocket();
+      },
+    });
 
     return () => {
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.close(1000, "Componente desmontado");
-      }
-      wsRef.current = null;
+      websocketService.close(wsUrl);
     };
-  }, [userId, token, onNotificacion, reconnectAttempts]);
+  }, [userId, onNotification]);
 };
