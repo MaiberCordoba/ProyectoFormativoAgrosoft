@@ -1,9 +1,8 @@
-// context/NotificationsContext.tsx
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useAuth } from "@/hooks/UseAuth";
 import { Notificacion } from "@/modules/Notificaciones/types";
 import { getNotificaciones, marcarComoLeida, marcarTodasComoLeidas } from "@/modules/Notificaciones/api/notifications";
-import { useSocketNotificaciones } from "@/modules/Notificaciones/hooks/useSocketNotifications";
+import { websocketService } from "@/services/websocketService";
 
 interface NotificationsContextType {
   notificaciones: Notificacion[];
@@ -21,9 +20,11 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   useEffect(() => {
     if (!userId) {
       setNotificaciones([]);
+      websocketService.close(`${import.meta.env.VITE_WEBSOCKET_URL}/ws/notifications/${userId}/`);
       return;
     }
 
+    // Cargar notificaciones iniciales
     const fetchNotificaciones = async () => {
       try {
         const data = await getNotificaciones();
@@ -34,14 +35,28 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     };
 
     fetchNotificaciones();
-  }, [userId]);
 
-  useSocketNotificaciones((noti: Notificacion) => {
-    setNotificaciones((prev) => {
-      if (prev.some((n) => n.id === noti.id)) return prev;
-      return [noti, ...prev];
+    // Configurar WebSocket
+    const wsUrl = `${import.meta.env.VITE_WEBSOCKET_URL}/ws/notifications/${userId}/`;
+    websocketService.connect({
+      url: wsUrl,
+      onMessage: (data) => {
+        if (data.type === "notification") {
+          const noti: Notificacion = data.notification;
+          setNotificaciones((prev) => {
+            if (prev.some((n) => n.id === noti.id)) return prev;
+            return [noti, ...prev];
+          });
+        }
+      },
+      onClose: (event) => console.log(`WebSocket de notificaciones cerrado, código: ${event.code}`),
+      onError: () => console.error("Error en WebSocket de notificaciones"),
     });
-  });
+
+    return () => {
+      websocketService.close(wsUrl);
+    };
+  }, [userId]);
 
   const marcarLeida = async (id: number) => {
     setNotificaciones((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)));

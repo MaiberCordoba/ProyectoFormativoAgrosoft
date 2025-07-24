@@ -48,10 +48,6 @@ const Navbar: React.FC<NavbarProps> = ({
   
   const unreadCount = notificaciones.filter((n) => !n.is_read).length;
 
-  // Depuración
-  console.log("Notificaciones en Navbar:", notificaciones);
-  console.log("Unread Count:", unreadCount);
-
   return (
     <>
       <nav className="flex items-center justify-between h-full px-4 md:px-6 text-white bg-sena-green">
