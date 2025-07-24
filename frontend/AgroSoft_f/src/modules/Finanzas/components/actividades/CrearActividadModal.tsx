@@ -145,9 +145,6 @@ export const CrearActividadesModal = ({
           },
         ]}
       >
-        <Button>
-          Asignar Herramienta
-        </Button>
         <Input
           label="Titulo"
           type="text"
