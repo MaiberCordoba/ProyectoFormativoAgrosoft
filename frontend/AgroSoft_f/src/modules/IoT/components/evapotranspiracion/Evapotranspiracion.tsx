@@ -32,7 +32,7 @@ export default function EvapotranspiracionC() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/plantaciones/');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}plantaciones/`);
         const plantacionesData = await response.json();
         setPlantaciones(plantacionesData);
       } catch (error) {
@@ -67,7 +67,7 @@ export default function EvapotranspiracionC() {
       
       if (kcValue) params.append('kc', kcValue);
 
-      const response = await fetch(`http://localhost:8000/api/evapotranspiracion/?${params}`);
+      const response = await fetch(`${import.meta.env.VITE_WEBSOCKET_URL}/api/evapotranspiracion/?${params}`);
       
       if (!response.ok) throw new Error("Error al calcular evapotranspiración");
       
