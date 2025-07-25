@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePostTiposEspecie } from "../../hooks/tiposEspecie/usePostTiposEspecie";
 import ModalComponent from "@/components/Modal";
-import { Button, Input, Textarea } from "@heroui/react";
+import { Input, Textarea } from "@heroui/react";
 import { addToast } from "@heroui/toast";
 
 interface CrearTiposEspecieModalProps {
@@ -25,7 +25,7 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
       return;
     }
 
-    const data = { nombre, descripcion };
+    const data = {id:0 , nombre, descripcion };
 
     mutate(data, {
       onSuccess: (data) => {

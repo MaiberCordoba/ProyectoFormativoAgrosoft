@@ -6,7 +6,7 @@ import { addToast } from "@heroui/toast";
 export const usePatchTiposEspecie = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<TiposEspecie, Error, { id: number; data: FormData }>({
+  return useMutation<TiposEspecie, Error, { id: number; data: TiposEspecie }>({
     mutationKey: ['actualizarTiposEspecie'],
     mutationFn: async ({ id, data }) => patchTiposEspecie(id, data),
     onSuccess: (data) => {

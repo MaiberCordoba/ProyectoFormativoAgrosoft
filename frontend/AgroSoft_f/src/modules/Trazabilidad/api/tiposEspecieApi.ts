@@ -8,22 +8,14 @@ export const getTiposEspecie = async (): Promise<TiposEspecie[]> => {
 };
 
 // Crear un nuevo tipo de especie (usando FormData)
-export const postTiposEspecie = async (data: FormData): Promise<TiposEspecie> => {
-  const response = await apiClient.post<TiposEspecie>('tiposespecie/', data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+export const postTiposEspecie = async (data?:any): Promise<TiposEspecie> => {
+  const response = await apiClient.post<TiposEspecie>('tiposespecie/', data)
   return response.data;
 };
 
 // Actualizar un tipo de especie (también con FormData)
-export const patchTiposEspecie = async (id: number, data: FormData): Promise<TiposEspecie> => {
-  const response = await apiClient.patch<TiposEspecie>(`tiposespecie/${id}/`, data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+export const patchTiposEspecie = async (id: number, data: Partial<TiposEspecie>): Promise<TiposEspecie> => {
+  const response = await apiClient.patch<TiposEspecie>(`tiposespecie/${id}/`, data)
   return response.data;
 };
 

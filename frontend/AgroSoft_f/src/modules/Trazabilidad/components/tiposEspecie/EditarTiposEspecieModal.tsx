@@ -26,7 +26,7 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
       return;
     }
 
-    const data = { nombre, descripcion };
+    const data = { id:0 , nombre, descripcion };
 
     mutate(
       { id: especie.id, data },
