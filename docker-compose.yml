@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_agrosoft
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - agrosoft_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_agrosoft
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - agrosoft_net
+
+  backend:
+    image: advg2005/backend-agrosoft:1.1
+    container_name: backend_agrosoft
+    restart: always
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - REDIS_URL=${REDIS_URL}
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+    networks:
+      - agrosoft_net
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    image: advg2005/frontend-agrosoft:1.1
+    container_name: frontend_agrosoft
+    restart: always
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_WEBSOCKET_URL=${VITE_WEBSOCKET_URL}
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - agrosoft_net
+
+volumes:
+  postgres_data:
+
+networks:
+  agrosoft_net:
+    driver: bridge

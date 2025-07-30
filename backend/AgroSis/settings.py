@@ -34,7 +34,7 @@ SIMPLE_JWT = {
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -99,7 +99,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [{"host": "127.0.0.1", "port": 6379}],
+            "hosts": [{"host": "redis", "port": 6379}],
         },
     },
 }
@@ -112,6 +112,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOW_CREDENTIALS = True   
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://frontend:80",
+    "http://frontend:5173",
+    "http://192.168.101.70:5173" # Asegúrate de que esta URL sea la correcta para tu frontend
 ]
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -119,11 +122,11 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'AgroSisDjango',
-        'USER': 'postgres',
-        'PASSWORD': 'adso2024',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get("DB_NAME", "AgroSisDjango"),
+        'USER': os.environ.get("DB_USER", "postgres"),
+        'PASSWORD': os.environ.get("DB_PASSWORD", "adso2024"),
+        'HOST': os.environ.get("DB_HOST", "localhost"),
+        'PORT': os.environ.get("DB_PORT", "5432"),
     }
 }
 
@@ -164,6 +167,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -176,7 +180,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-FRONTEND_URL = "http://localhost:5173"
+FRONTEND_URL = "http://192.168.101.70:5173"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
