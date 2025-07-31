@@ -10,7 +10,7 @@ COPY .env .env
 COPY .npmrc .npmrc
 
 # Instalar dependencias
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copiar el resto del código
 COPY . .

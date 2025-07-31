@@ -23,10 +23,14 @@ services:
     networks:
       - agrosoft_net
 
-  backend:
+  backend_agrosoft:
     image: advg2005/backend-agrosoft:1.1
     container_name: backend_agrosoft
     restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - media_data:/app/media
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -37,8 +41,6 @@ services:
     depends_on:
       - db
       - redis
-    ports:
-      - "8000:8000"
     networks:
       - agrosoft_net
     command: >
@@ -47,21 +49,38 @@ services:
              python manage.py runserver 0.0.0.0:8000"
 
   frontend:
-    image: advg2005/frontend-agrosoft:1.1
+    build:
+      context: ./frontend/AgroSoft_f
+      dockerfile: Dockerfile
+    image: frontend-agrosoft:1
     container_name: frontend_agrosoft
     restart: always
     environment:
-      - VITE_API_URL=${VITE_API_URL}
-      - VITE_WEBSOCKET_URL=${VITE_WEBSOCKET_URL}
+      - VITE_API_URL=/api/
+      - VITE_WEBSOCKET_URL=/
     depends_on:
-      - backend
+      - backend_agrosoft
+    networks:
+      - agrosoft_net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: always
     ports:
-      - "5173:80"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - media_data:/app/media
+    depends_on:
+      - frontend
+      - backend_agrosoft
     networks:
       - agrosoft_net
 
 volumes:
   postgres_data:
+  media_data:
 
 networks:
   agrosoft_net:
