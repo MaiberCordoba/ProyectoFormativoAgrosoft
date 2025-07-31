@@ -17,7 +17,7 @@ export const useEvapotranspiracionHistorica = (cultivoId: number, loteId: number
   return useQuery<ETData[]>({
     queryKey: ["etHistorica", cultivoId, loteId],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:8000/api/evapotranspiracion/historica/`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}evapotranspiracion/historica/`, {
         params: { cultivo_id: cultivoId, lote_id: loteId }
       });
       return res.data;

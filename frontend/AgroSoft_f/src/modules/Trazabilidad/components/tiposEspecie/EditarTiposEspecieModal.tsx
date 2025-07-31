@@ -26,10 +26,13 @@ const EditarTiposEspecieModal: React.FC<EditarTiposEspecieModalProps> = ({ espec
       return;
     }
 
-    const data = { nombre, descripcion };
+    // ✅ Convertimos a FormData
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
 
     mutate(
-      { id: especie.id, data },
+      { id: especie.id, data: formData },
       {
         onSuccess: () => {
           addToast({

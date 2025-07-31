@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePostTiposEspecie } from "../../hooks/tiposEspecie/usePostTiposEspecie";
 import ModalComponent from "@/components/Modal";
-import { Button, Input, Textarea } from "@heroui/react";
+import { Input, Textarea } from "@heroui/react";
 import { addToast } from "@heroui/toast";
 
 interface CrearTiposEspecieModalProps {
@@ -25,9 +25,12 @@ export const CrearTiposEspecieModal = ({ onClose, onCreate }: CrearTiposEspecieM
       return;
     }
 
-    const data = { nombre, descripcion };
+    // ✅ Convertimos a FormData
+    const formData = new FormData();
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
 
-    mutate(data, {
+    mutate(formData, {
       onSuccess: (data) => {
         addToast({
           title: "Creación exitosa",

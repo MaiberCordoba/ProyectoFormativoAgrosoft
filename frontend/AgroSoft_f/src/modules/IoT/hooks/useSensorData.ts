@@ -4,7 +4,7 @@ function useSensorData(sensorId: string) {
   const [sensorData, setSensorData] = useState({ valor: 0, alerta: "" });
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/sensor/${sensorId}/`);
+    const ws = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}/ws/sensor/${sensorId}/`);
 
     ws.onmessage = (event) => {
       try {

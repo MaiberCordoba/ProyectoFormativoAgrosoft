@@ -52,8 +52,8 @@ const ResumenFinancieroPage = () => {
   const handleOpenHistorial = (cultivo?: ResumenEconomicoListado) => {
     if (cultivo) {
       setSelectedCultivoHistorial({
-        id: cultivo.id,
-        nombre: cultivo.nombre,
+        id: cultivo.cultivo_id,
+        nombre: cultivo.nombre_cultivo,
       });
     } else {
       setSelectedCultivoHistorial({});
