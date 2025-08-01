@@ -8,6 +8,7 @@ import "@/modules/Trazabilidad/components/calendario/calendario.css";
 import { useEffect, useState } from "react";
 import { Actividades } from "@/modules/Finanzas/types";
 import { Controles } from "@/modules/Sanidad/types";
+import apiClient from "@/api/apiClient";
 
 const locales = { es };
 
@@ -56,7 +57,7 @@ export default function CalendarioActividades() {
 
     const headers = { Authorization: `Bearer ${token}` };
 
-    const fetchActividades = fetch("http://127.0.0.1:8000/api/actividades/", { headers })
+    const fetchActividades = fetch(`${apiClient}actividades/`, { headers })
       .then((res) => {
         if (res.status === 401) throw new Error("No autorizado");
         return res.json();
@@ -70,7 +71,7 @@ export default function CalendarioActividades() {
         }))
       );
 
-    const fetchControles = fetch("http://127.0.0.1:8000/api/controles/", { headers })
+    const fetchControles = fetch(`${apiClient}controles/`, { headers })
       .then((res) => {
         if (res.status === 401) throw new Error("No autorizado");
         return res.json();

@@ -9,6 +9,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { ArrowLeft } from "lucide-react";
+import apiClient from "@/api/apiClient";
 
 // Tipos de datos
 export interface SensorData {
@@ -112,7 +113,7 @@ export default function AllSensorsDashboard() {
     const fetchInitialData = async () => {
       setIsLoading(true);
       try {
-        const sensorsResponse = await fetch("http://127.0.0.1:8000/api/sensor/?limit=100");
+        const sensorsResponse = await fetch(`${apiClient}sensor/?limit=100`);
         if (!sensorsResponse.ok) throw new Error("Error al obtener sensores");
         const sensorsData: any = await sensorsResponse.json();
 
@@ -132,8 +133,8 @@ export default function AllSensorsDashboard() {
           localStorage.setItem('sensorData', JSON.stringify(enrichedData));
 
           const [lotesResponse, erasResponse] = await Promise.all([
-            fetch("http://127.0.0.1:8000/api/lote/"),
-            fetch("http://127.0.0.1:8000/api/eras/")
+            fetch(`${apiClient}lote/`),
+            fetch(`${apiClient}eras/`)
           ]);
 
           if (!lotesResponse.ok || !erasResponse.ok) {

@@ -14,6 +14,7 @@ import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import { addToast } from "@heroui/toast";
 import '../components/css/card.css'
+import apiClient from "@/api/apiClient";
 
 
 type SensorData = {
@@ -72,11 +73,11 @@ export default function IoTPages() {
 
   useEffect(() => {
 
-  fetch('http://127.0.0.1:8000/api/lote/')
+  fetch(`${apiClient}lote/`)
     .then(res => res.json())
     .then(data => setLotes(data));
 
-  fetch('http://127.0.0.1:8000/api/eras/')
+  fetch(`${apiClient}eras/`)
     .then(res => res.json())
     .then(data => setEras(data));
 }, []);
@@ -89,7 +90,7 @@ export default function IoTPages() {
       if (filters.eraId) params.append('era_id', filters.eraId);
       params.append('hours', filters.hours);
 
-      const response = await fetch(`http://127.0.0.1:8000/api/sensor/averages/?${params.toString()}`);
+      const response = await fetch(`${apiClient}sensor/averages/?${params.toString()}`);
       if (!response.ok) throw new Error("Error al obtener promedios");
       
       const data = await response.json();
@@ -156,7 +157,7 @@ export default function IoTPages() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/sensor/?limit=100`);
+        const response = await fetch(`${apiClient}sensor/?limit=100`);
         if (!response.ok) throw new Error("Error al obtener sensores");
         const sensorsData: SensorData[] = await response.json();
 
