@@ -78,24 +78,6 @@ services:
     networks:
       - agrosoft_net
 
-  manual_usuarios:
-    image: advg2005/manual-usuario-agrosoft:1.0
-    container_name: manual_usuarios_agrosoft
-    restart: always
-    ports:
-      - "4321:4321"
-    networks:
-      - agrosoft_net
-
-  documentacion_tecnica:
-    image: advg2005/documentacion-tecnica-agrosoft:1.0
-    container_name: documentacion_tecnica_agrosoft
-    restart: always
-    ports:
-      - "4322:4322"
-    networks:
-      - agrosoft_net
-
 volumes:
   postgres_data:
   media_data:
