@@ -14,7 +14,7 @@ Para gestionar las bodegas, sigue estos pasos:
 3. Haz clic en **Bodega** para acceder al módulo.
 
 ## Página principal de Bodega
-![Captura página principal](../../../../public/bodegapage.png)
+![Captura página principal](../../../../src/assets/inventario/1b.png)
 
 
 ### 2 **Consultar y editar movimiento del inventario**
@@ -22,11 +22,11 @@ Para gestionar las bodegas, sigue estos pasos:
 
 ## Lista de movimientos del inventario
 
-![Captura  movimiento de inventario](../../../../public/bodegapage.png)
+![Captura página principal](../../../../src/assets/inventario/1b.png)
 
 
 - Para **editar** un movimiento, haz clic en los tres puntos en la columna de acciones, ajusta los datos necesarios y haz clic en **"Guardar"**.
 
 ## Editar movimientos del inventario
-![Captura  movimiento de inventario](../../../../public/editMoviemientoinven.png)
+![Captura página principal](../../../../src/assets/inventario/image.png)
 

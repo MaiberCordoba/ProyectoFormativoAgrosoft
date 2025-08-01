@@ -14,7 +14,7 @@ Para gestionar las plantaciones, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Plantaciones**.
 
 ## Página de plantaciones
-![Captura de pantalla plantaciones](../../../../public/plantaciones.png)
+![Captura de pantalla plantaciones](../../../../src/assets/cultivos/paginaplantaciones.png)
 
 ### **Registrar una nueva Plantación**
 Para agregar una nueva plantación:

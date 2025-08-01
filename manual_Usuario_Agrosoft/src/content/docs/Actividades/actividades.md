@@ -3,7 +3,7 @@ title: Actividades
 description: Guía para gestionar actividades en el sistema.
 ---
 
-#  Uso de Actividades
+# Actividades
 
 El módulo **Actividades** permite registrar, gestionar y dar seguimiento a las labores agrícolas realizadas en los cultivos. Estas actividades pueden incluir riego, fertilización, control de plagas, entre otras.  
 Antes de crear una actividad, debe existir al menos un **cultivo** y un **usuario** registrado en el sistema.
