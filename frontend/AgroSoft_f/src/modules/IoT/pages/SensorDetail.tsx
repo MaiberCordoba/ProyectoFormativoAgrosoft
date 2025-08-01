@@ -171,7 +171,7 @@ export default function AllSensorsDashboard() {
   }, [allSensorsData]);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8000/ws/sensor/");
+    const socket = new WebSocket(`ws://${apiClient}/ws/sensor/`);
 
     socket.onmessage = (event) => {
       try {
