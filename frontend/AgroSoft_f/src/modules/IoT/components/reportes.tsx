@@ -3,7 +3,6 @@ import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { SENSOR_TYPES, SENSOR_UNITS } from "../types/sensorTypes";
 import { ensureDate, formatDateForDisplay, formatDateTimeForDisplay } from "./dateUtils";
-import apiClient from "@/api/apiClient";
 
 interface ReportOptions {
   sensorTypes?: string[];
@@ -68,8 +67,8 @@ export async function generateSensorReport(options: ReportOptions) {
   const fetchLocationNames = async () => {
     try {
       const [lotesResponse, erasResponse] = await Promise.all([
-        fetch(`${apiClient}lote/`),
-        fetch(`${apiClient}eras/`),
+        fetch(`${import.meta.env.VITE_WEBSOCKET_URL}lote/`),
+        fetch(`${import.meta.env.VITE_WEBSOCKET_URL}eras/`),
       ]);
 
       if (!lotesResponse.ok || !erasResponse.ok) {
@@ -166,7 +165,7 @@ export async function generateSensorReport(options: ReportOptions) {
     }
     
     try {
-      const response = await fetch(`${apiClient}sensor/history/?${params.toString()}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}sensor/history/?${params.toString()}`);
       if (!response.ok) throw new Error("Error al obtener datos históricos");
       return await response.json();
     } catch (error) {
@@ -180,8 +179,8 @@ export async function generateSensorReport(options: ReportOptions) {
     
     try {
       const url = options.cultivoId 
-        ? `${apiClient}evapotranspiracion/historica/?lote_id=${options.loteId}&cultivo_id=${options.cultivoId}`
-        : `${apiClient}evapotranspiracion/historica/?lote_id=${options.loteId}`;
+        ? `${import.meta.env.VITE_WEBSOCKET_URL}evapotranspiracion/historica/?lote_id=${options.loteId}&cultivo_id=${options.cultivoId}`
+        : `${import.meta.env.VITE_WEBSOCKET_URL}evapotranspiracion/historica/?lote_id=${options.loteId}`;
       
       const response = await fetch(url);
       if (!response.ok) throw new Error("Error al obtener datos de evapotranspiración");

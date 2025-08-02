@@ -9,7 +9,6 @@ import { Plus } from "lucide-react";
 import { CrearLoteModal } from "@/modules/Trazabilidad/components/lotes/CrearLotesModal";
 import { CrearEraModal } from "@/modules/Trazabilidad/components/eras/CrearEraModal";
 import { Eras, Lotes } from "@/modules/Trazabilidad/types";
-import apiClient from "@/api/apiClient";
 
 interface Lote {
   id: number;
@@ -28,13 +27,13 @@ interface CrearSensorModalProps {
 
 
 const fetchLotes = async (): Promise<Lote[]> => {
-  const res = await fetch(`${apiClient}lote/`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}lote/`);
   if (!res.ok) throw new Error("Error al obtener los lotes");
   return res.json();
 };
 
 const fetchEras = async (): Promise<Era[]> => {
-  const res = await fetch(`${apiClient}eras/`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}eras/`);
   if (!res.ok) throw new Error("Error al obtener las eras");
   return res.json();
 };

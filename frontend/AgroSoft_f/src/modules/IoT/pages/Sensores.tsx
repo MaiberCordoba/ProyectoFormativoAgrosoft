@@ -14,7 +14,6 @@ import SensorCard from "../components/SensorCard";
 import { SensorLista } from "../components/sensor/SensorListar";
 import { addToast } from "@heroui/toast";
 import '../components/css/card.css'
-import apiClient from "@/api/apiClient";
 
 
 type SensorData = {
@@ -73,11 +72,11 @@ export default function IoTPages() {
 
   useEffect(() => {
 
-  fetch(`${apiClient}lote/`)
+  fetch(`${import.meta.env.VITE_API_URL}lote/`)
     .then(res => res.json())
     .then(data => setLotes(data));
 
-  fetch(`${apiClient}eras/`)
+  fetch(`${import.meta.env.VITE_API_URL}eras/`)
     .then(res => res.json())
     .then(data => setEras(data));
 }, []);
@@ -90,7 +89,7 @@ export default function IoTPages() {
       if (filters.eraId) params.append('era_id', filters.eraId);
       params.append('hours', filters.hours);
 
-      const response = await fetch(`${apiClient}sensor/averages/?${params.toString()}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}sensor/averages/?${params.toString()}`);
       if (!response.ok) throw new Error("Error al obtener promedios");
       
       const data = await response.json();
@@ -157,7 +156,7 @@ export default function IoTPages() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch(`${apiClient}sensor/?limit=100`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}sensor/?limit=100`);
         if (!response.ok) throw new Error("Error al obtener sensores");
         const sensorsData: SensorData[] = await response.json();
 
