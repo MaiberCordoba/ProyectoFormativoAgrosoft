@@ -1,4 +1,4 @@
-/* calendario.css */
+
 
 .calendario-contenedor {
   background-color: #f9fafb;
@@ -56,11 +56,11 @@
 }
 
 .rbc-toolbar button:hover {
-  background-color: #245E36 !important; /* más oscuro al pasar el cursor */
+  background-color: #245E36 !important; 
 }
 
 .rbc-toolbar button.rbc-active {
-  background-color: #245E36 !important; /* más oscuro cuando está activo */
+  background-color: #245E36 !important; 
 }
 
 .rbc-month-view,
