@@ -20,7 +20,7 @@ Para gestionar los usos de herramientas, sigue estos pasos:
 3. Dentro de esta sección, haz clic en **Usos de Herramientas**.
 
 ###  Página de usos de herramientas  
-![Captura de pantalla de registro desechos](../../../../public/usosherramientas.png) 
+![Captura de pantalla de registro desechos](../../../../src/assets/inventario/1.png) 
 
 
 ---
@@ -42,7 +42,7 @@ Para agregar un nuevo uso:
 - **Fecha:** Fecha del uso.
 
 4. Haz clic en **"Guardar"** para registrar el uso.
-
+![Captura de pantalla de registro desechos](../../../../src/assets/inventario/2.png) 
 ---
 
 ## 3️ Consultar y eliminar usos existentes
@@ -50,7 +50,7 @@ Para agregar un nuevo uso:
 - Para **ver la información** de un uso de herramienta, usa la lista disponible en la sección.
 
 ###  Lista de usos de herramientas  
-*Captura de pantalla*
+![Captura de pantalla de registro desechos](../../../../src/assets/inventario/3.png) 
 
 - Para **editar** un uso:
   1. Haz clic en los tres puntos debajo de **Acciones**.
@@ -59,7 +59,7 @@ Para agregar un nuevo uso:
   4. Haz clic en **Guardar**.
 
 ###  Ventana editar  
-![Captura de pantalla de registro desechos](../../../../public/eusoherramiento.png) 
+![Captura de pantalla de registro desechos](../../../../src/assets/inventario/4.png) 
 
 
 

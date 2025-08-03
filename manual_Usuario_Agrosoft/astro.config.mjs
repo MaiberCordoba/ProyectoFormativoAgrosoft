@@ -54,7 +54,7 @@ export default defineConfig({
 					label: 'Finanzas',
 					items: [
 						{ label: 'Introduccion Finanzas', slug: 'finanzas/introduccion' },
-						{ label: 'Actividades', slug: 'finanzas/actividades' },
+						{ label: 'Pagos', slug: 'finanzas/pagos' },
 						{ label: 'Cosechas', slug: 'finanzas/cosechas' },
 						{ label: 'Salarios', slug: 'finanzas/salarios' },
 						{ label: 'Ventas', slug: 'finanzas/ventas' },
@@ -70,6 +70,16 @@ export default defineConfig({
 						{ label: 'Insumos', slug: 'inventario/insumos' },
 						{ label: 'Uso de insumos', slug: 'inventario/usoinsumos' },
 						{ label: 'Uso de herramientas', slug: 'inventario/usoherramientas' },
+					],
+				},
+				{
+					label: 'Actividades',
+					items: [
+						{ label: 'Introducción', slug: 'actividades/introduccion' },
+						{ label: 'Actividades', slug: 'actividades/actividades' },
+						{ label: 'Tipos Actividades', slug: 'actividades/tiposactividades' },
+						{ label: 'Unidad medida', slug: 'actividades/unidadmedida' },
+						{ label: 'Unidad tiempo', slug: 'actividades/unidadtiempo' },
 					],
 				},
 			],

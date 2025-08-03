@@ -1,6 +1,6 @@
 ---
 title: Finanzas
-description: Seguimiento de ganancias y gastos relacionados con los cultivos en el sistema.
+description: Módulo para gestionar ingresos y gastos relacionados con las actividades agrícolas.
 ---
 
 <style>
@@ -29,45 +29,45 @@ description: Seguimiento de ganancias y gastos relacionados con los cultivos en 
 }
 </style>
 
-El módulo **Finanzas** permite llevar un seguimiento detallado de los ingresos y egresos relacionados con los cultivos dentro del sistema.  
-Proporciona herramientas para visualizar y controlar los movimientos económicos derivados de las actividades agrícolas, ayudando en la toma de decisiones eficientes.
+El módulo **Finanzas** permite llevar un control detallado de los ingresos y egresos derivados de las actividades agrícolas.  
+Ofrece herramientas para registrar, visualizar y analizar los movimientos económicos, facilitando la toma de decisiones informadas sobre la producción y gestión del cultivo.
 
 ## 🔹 Funcionalidades principales
 
-1. **Actividades:** Registra las actividades realizadas en los cultivos que generan gastos o ingresos.
-2. **Cosechas:** Documenta la producción obtenida con sus valores estimados de ingreso.
-3. **Desechos:** Controla residuos generados y sus costos asociados.
-4. **Tipos de Desechos:** Clasifica los desechos agrícolas para análisis más precisos.
-5. **Ventas:** Registra y gestiona ventas de productos agrícolas.
+1. **Pagos:** Registra y gestiona los pagos asociados a actividades realizadas.
+2. **Cosechas:** Documenta la producción obtenida y estima los ingresos generados.
+3. **Salarios:** Controla el pago de salarios al personal involucrado en las labores agrícolas.
+4. **Resumen Finanzas:** Proporciona un resumen general de ingresos y egresos registrados.
+5. **Ventas:** Administra las ventas de productos agrícolas y sus ingresos correspondientes.
 
 <div class="card-grid">
-  <a href="/finanzas/actividades" class="card">
+  <a href="/finanzas/pagos" class="card">
     <div class="card-icon"></div>
-    <h3>Actividades</h3>
-    <p>Registra tareas agrícolas que generan movimientos financieros</p>
+    <h3>Pagos</h3>
+    <p>Registra y gestiona los pagos por actividades agrícolas realizadas.</p>
   </a>
 
   <a href="/finanzas/cosechas" class="card">
     <div class="card-icon"></div>
     <h3>Cosechas</h3>
-    <p>Documenta cosechas y estima ingresos por producción</p>
+    <p>Documenta la producción agrícola y estima los ingresos generados.</p>
   </a>
 
-  <a href="/finanzas/desechos" class="card">
+  <a href="/finanzas/salarios" class="card">
     <div class="card-icon"></div>
-    <h3>Desechos</h3>
-    <p>Gestiona residuos agrícolas y sus implicaciones económicas</p>
+    <h3>Salarios</h3>
+    <p>Gestiona los pagos de salarios al personal agrícola.</p>
   </a>
 
-  <a href="/finanzas/tiposdesechos" class="card">
+  <a href="/finanzas/resumenfinanzas" class="card">
     <div class="card-icon"></div>
-    <h3>Tipos de Desechos</h3>
-    <p>Clasifica residuos agrícolas para análisis más detallados</p>
+    <h3>Resumen Finanzas</h3>
+    <p>Consulta un resumen general de todos los ingresos y gastos registrados.</p>
   </a>
 
   <a href="/finanzas/ventas" class="card">
     <div class="card-icon"></div>
     <h3>Ventas</h3>
-    <p>Gestiona la venta de productos y sus ingresos</p>
+    <p>Administra las ventas de productos agrícolas y registra sus ingresos.</p>
   </a>
 </div>

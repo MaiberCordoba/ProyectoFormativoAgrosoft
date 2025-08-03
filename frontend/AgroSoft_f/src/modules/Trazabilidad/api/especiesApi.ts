@@ -1,13 +1,13 @@
 import apiClient from "@/api/apiClient";
 import { Especies } from "../types";
 
-// Obtener todas las especies
+
 export const getEspecies = async (): Promise<Especies[]> => {
   const response = await apiClient.get("especies/");
   return response.data;
 };
 
-// Crear nueva especie (puede incluir imágenes en FormData)
+
 export const postEspecies = async (data: FormData): Promise<Especies> => {
   const response = await apiClient.post<Especies>("especies/", data, {
     headers: {
@@ -17,7 +17,7 @@ export const postEspecies = async (data: FormData): Promise<Especies> => {
   return response.data;
 };
 
-// Editar especie (puede usar FormData o JSON)
+
 export const patchEspecies = async (
   id: number,
   data: FormData | Partial<Especies>
@@ -31,9 +31,16 @@ export const patchEspecies = async (
   return response.data;
 };
 
+<<<<<<< HEAD
 // Eliminar especie
 
 export const deleteEspecies = async (id: number): Promise<Especies> => {
     const response = await apiClient.delete<Especies>(`especies/${id}/`);
     return response.data
 }
+=======
+
+export const deleteEspecies = async (id: number): Promise<void> => {
+  await apiClient.delete(`especies/${id}/`);
+};
+>>>>>>> 1b9a9e6858cb65236c7f46060617be0007ff3aa6

@@ -3,7 +3,7 @@ import { Plantaciones } from "../types";
 
 export const getPlantaciones = async (): Promise<Plantaciones[]> => {
   const response = await apiClient.get("plantaciones/");
-  return response.data; // Retorna los datos directamente
+  return response.data; 
 };
 
 export const postPlantaciones = async (data: any): Promise<Plantaciones> => {

@@ -3,7 +3,7 @@ title: Ventas
 description: Guía para registrar y gestionar las ventas de productos agrícolas en el sistema.
 ---
 
-#  Uso de Ventas
+# Ventas
 
 El módulo **Ventas** permite registrar las transacciones comerciales relacionadas con los productos obtenidos de las cosechas. Facilita el seguimiento de ingresos, compradores y cantidades vendidas, ayudando a mantener un control financiero eficiente del sistema.Antes de registrar una cosecha debe existir al menos una **cosecha** en el sistema.
 
