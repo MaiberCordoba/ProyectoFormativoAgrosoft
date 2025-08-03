@@ -34,7 +34,7 @@ SIMPLE_JWT = {
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -122,11 +122,11 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DB_NAME", "AgroSisDjango"),
-        'USER': os.environ.get("DB_USER", "postgres"),
-        'PASSWORD': os.environ.get("DB_PASSWORD", "1234"),
-        'HOST': os.environ.get("DB_HOST", "localhost"),
-        'PORT': os.environ.get("DB_PORT", "5432"),
+        'NAME': "AgroSisDjango",
+        'USER': "postgres",
+        'PASSWORD': "adso2024",
+        'HOST': "localhost",
+        'PORT': "5432",
     }
 }
 
@@ -180,7 +180,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-FRONTEND_URL = "http://192.168.101.70:5173"
+FRONTEND_URL = "http://localhost:5173"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
